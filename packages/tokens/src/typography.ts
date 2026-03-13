@@ -3,25 +3,25 @@
  */
 
 export const fontFamilies = {
-  primary: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
-  monospace: '"SF Mono", Monaco, "Cascadia Code", "Roboto Mono", Consolas, "Courier New", monospace',
+  primary: '"Elevance Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
+  monospace: '"Roboto Mono", "SF Mono", Monaco, "Cascadia Code", Consolas, "Courier New", monospace',
 } as const;
 
 export const fontSizes = {
-  xs: '12px',
-  sm: '14px',
-  base: '16px',
-  lg: '18px',
-  xl: '20px',
-  '2xl': '24px',
-  '3xl': '30px',
-  '4xl': '36px',
-  '5xl': '48px',
-  '6xl': '60px',
+  10: '10px',
+  12: '12px',
+  14: '14px',
+  16: '16px',
+  20: '20px',
+  24: '24px',
+  28: '28px',
+  32: '32px',
+  48: '48px',
+  60: '60px',
+  72: '72px',
 } as const;
 
 export const fontWeights = {
-  light: 300,
   regular: 400,
   medium: 500,
   semibold: 600,
@@ -29,120 +29,258 @@ export const fontWeights = {
 } as const;
 
 export const lineHeights = {
-  tight: 1.25,
-  normal: 1.5,
-  relaxed: 1.75,
-  loose: 2,
+  12: '12px',
+  14: '14px',
+  16: '16px',
+  19: '19px',
+  24: '24px',
+  28: '28px',
+  33: '33px',
+  38: '38px',
+  56: '56px',
+  72: '72px',
+  86: '86px',
 } as const;
 
 export const letterSpacing = {
-  tighter: '-0.05em',
-  tight: '-0.025em',
-  normal: '0',
-  wide: '0.025em',
-  wider: '0.05em',
-  widest: '0.1em',
+  0: '0px',
+  1: '1px',
+  1.5: '1.5px',
 } as const;
 
 export interface TypographyStyle {
   fontFamily: string;
   fontSize: string;
   fontWeight: number;
-  lineHeight: number;
+  lineHeight: string;
   letterSpacing: string;
 }
 
 export const typography = {
-  h1: {
-    fontFamily: fontFamilies.primary,
-    fontSize: fontSizes['5xl'],
-    fontWeight: fontWeights.bold,
-    lineHeight: lineHeights.tight,
-    letterSpacing: letterSpacing.tight,
-  },
-  h2: {
-    fontFamily: fontFamilies.primary,
-    fontSize: fontSizes['4xl'],
-    fontWeight: fontWeights.bold,
-    lineHeight: lineHeights.tight,
-    letterSpacing: letterSpacing.tight,
-  },
-  h3: {
-    fontFamily: fontFamilies.primary,
-    fontSize: fontSizes['3xl'],
-    fontWeight: fontWeights.semibold,
-    lineHeight: lineHeights.tight,
-    letterSpacing: letterSpacing.normal,
-  },
-  h4: {
-    fontFamily: fontFamilies.primary,
-    fontSize: fontSizes['2xl'],
-    fontWeight: fontWeights.semibold,
-    lineHeight: lineHeights.normal,
-    letterSpacing: letterSpacing.normal,
-  },
-  h5: {
-    fontFamily: fontFamilies.primary,
-    fontSize: fontSizes.xl,
-    fontWeight: fontWeights.semibold,
-    lineHeight: lineHeights.normal,
-    letterSpacing: letterSpacing.normal,
-  },
-  h6: {
-    fontFamily: fontFamilies.primary,
-    fontSize: fontSizes.lg,
-    fontWeight: fontWeights.semibold,
-    lineHeight: lineHeights.normal,
-    letterSpacing: letterSpacing.normal,
-  },
-  'body-large': {
-    fontFamily: fontFamilies.primary,
-    fontSize: fontSizes.lg,
-    fontWeight: fontWeights.regular,
-    lineHeight: lineHeights.relaxed,
-    letterSpacing: letterSpacing.normal,
-  },
-  'body-regular': {
-    fontFamily: fontFamilies.primary,
-    fontSize: fontSizes.base,
-    fontWeight: fontWeights.regular,
-    lineHeight: lineHeights.normal,
-    letterSpacing: letterSpacing.normal,
-  },
-  'body-small': {
-    fontFamily: fontFamilies.primary,
-    fontSize: fontSizes.sm,
-    fontWeight: fontWeights.regular,
-    lineHeight: lineHeights.normal,
-    letterSpacing: letterSpacing.normal,
+  code: {
+    regular: {
+      fontFamily: fontFamilies.monospace,
+      fontSize: fontSizes[10],
+      fontWeight: fontWeights.regular,
+      lineHeight: lineHeights[12],
+      letterSpacing: letterSpacing[1.5],
+    },
   },
   caption: {
-    fontFamily: fontFamilies.primary,
-    fontSize: fontSizes.xs,
-    fontWeight: fontWeights.regular,
-    lineHeight: lineHeights.normal,
-    letterSpacing: letterSpacing.wide,
+    regular: {
+      fontFamily: fontFamilies.primary,
+      fontSize: fontSizes[12],
+      fontWeight: fontWeights.regular,
+      lineHeight: lineHeights[14],
+      letterSpacing: letterSpacing[1],
+    },
+    medium: {
+      fontFamily: fontFamilies.primary,
+      fontSize: fontSizes[12],
+      fontWeight: fontWeights.medium,
+      lineHeight: lineHeights[14],
+      letterSpacing: letterSpacing[1],
+    },
+    semibold: {
+      fontFamily: fontFamilies.primary,
+      fontSize: fontSizes[12],
+      fontWeight: fontWeights.semibold,
+      lineHeight: lineHeights[14],
+      letterSpacing: letterSpacing[1],
+    },
   },
-  'label-large': {
-    fontFamily: fontFamilies.primary,
-    fontSize: fontSizes.base,
-    fontWeight: fontWeights.medium,
-    lineHeight: lineHeights.normal,
-    letterSpacing: letterSpacing.normal,
+  paragraph: {
+    regular: {
+      fontFamily: fontFamilies.primary,
+      fontSize: fontSizes[14],
+      fontWeight: fontWeights.regular,
+      lineHeight: lineHeights[16],
+      letterSpacing: letterSpacing[0],
+    },
+    medium: {
+      fontFamily: fontFamilies.primary,
+      fontSize: fontSizes[14],
+      fontWeight: fontWeights.medium,
+      lineHeight: lineHeights[16],
+      letterSpacing: letterSpacing[0],
+    },
+    semibold: {
+      fontFamily: fontFamilies.primary,
+      fontSize: fontSizes[14],
+      fontWeight: fontWeights.semibold,
+      lineHeight: lineHeights[16],
+      letterSpacing: letterSpacing[0],
+    },
   },
-  'label-medium': {
-    fontFamily: fontFamilies.primary,
-    fontSize: fontSizes.sm,
-    fontWeight: fontWeights.medium,
-    lineHeight: lineHeights.normal,
-    letterSpacing: letterSpacing.normal,
+  body: {
+    regular: {
+      fontFamily: fontFamilies.primary,
+      fontSize: fontSizes[16],
+      fontWeight: fontWeights.regular,
+      lineHeight: lineHeights[19],
+      letterSpacing: letterSpacing[0],
+    },
+    medium: {
+      fontFamily: fontFamilies.primary,
+      fontSize: fontSizes[16],
+      fontWeight: fontWeights.medium,
+      lineHeight: lineHeights[19],
+      letterSpacing: letterSpacing[0],
+    },
+    semibold: {
+      fontFamily: fontFamilies.primary,
+      fontSize: fontSizes[16],
+      fontWeight: fontWeights.semibold,
+      lineHeight: lineHeights[19],
+      letterSpacing: letterSpacing[0],
+    },
   },
-  'label-small': {
-    fontFamily: fontFamilies.primary,
-    fontSize: fontSizes.xs,
-    fontWeight: fontWeights.medium,
-    lineHeight: lineHeights.normal,
-    letterSpacing: letterSpacing.wide,
+  headingS: {
+    regular: {
+      fontFamily: fontFamilies.primary,
+      fontSize: fontSizes[20],
+      fontWeight: fontWeights.regular,
+      lineHeight: lineHeights[24],
+      letterSpacing: letterSpacing[0],
+    },
+    medium: {
+      fontFamily: fontFamilies.primary,
+      fontSize: fontSizes[20],
+      fontWeight: fontWeights.medium,
+      lineHeight: lineHeights[24],
+      letterSpacing: letterSpacing[0],
+    },
+    semibold: {
+      fontFamily: fontFamilies.primary,
+      fontSize: fontSizes[20],
+      fontWeight: fontWeights.semibold,
+      lineHeight: lineHeights[24],
+      letterSpacing: letterSpacing[0],
+    },
+  },
+  headingM: {
+    regular: {
+      fontFamily: fontFamilies.primary,
+      fontSize: fontSizes[24],
+      fontWeight: fontWeights.regular,
+      lineHeight: lineHeights[28],
+      letterSpacing: letterSpacing[1],
+    },
+    medium: {
+      fontFamily: fontFamilies.primary,
+      fontSize: fontSizes[24],
+      fontWeight: fontWeights.medium,
+      lineHeight: lineHeights[28],
+      letterSpacing: letterSpacing[1],
+    },
+    semibold: {
+      fontFamily: fontFamilies.primary,
+      fontSize: fontSizes[24],
+      fontWeight: fontWeights.semibold,
+      lineHeight: lineHeights[28],
+      letterSpacing: letterSpacing[1],
+    },
+  },
+  headingL: {
+    regular: {
+      fontFamily: fontFamilies.primary,
+      fontSize: fontSizes[28],
+      fontWeight: fontWeights.regular,
+      lineHeight: lineHeights[33],
+      letterSpacing: letterSpacing[1],
+    },
+    medium: {
+      fontFamily: fontFamilies.primary,
+      fontSize: fontSizes[28],
+      fontWeight: fontWeights.medium,
+      lineHeight: lineHeights[33],
+      letterSpacing: letterSpacing[1],
+    },
+    semibold: {
+      fontFamily: fontFamilies.primary,
+      fontSize: fontSizes[28],
+      fontWeight: fontWeights.semibold,
+      lineHeight: lineHeights[33],
+      letterSpacing: letterSpacing[1],
+    },
+  },
+  headingXL: {
+    regular: {
+      fontFamily: fontFamilies.primary,
+      fontSize: fontSizes[32],
+      fontWeight: fontWeights.regular,
+      lineHeight: lineHeights[38],
+      letterSpacing: letterSpacing[1],
+    },
+    medium: {
+      fontFamily: fontFamilies.primary,
+      fontSize: fontSizes[32],
+      fontWeight: fontWeights.medium,
+      lineHeight: lineHeights[38],
+      letterSpacing: letterSpacing[1],
+    },
+    semibold: {
+      fontFamily: fontFamilies.primary,
+      fontSize: fontSizes[32],
+      fontWeight: fontWeights.semibold,
+      lineHeight: lineHeights[38],
+      letterSpacing: letterSpacing[1],
+    },
+  },
+  displayS: {
+    regular: {
+      fontFamily: fontFamilies.primary,
+      fontSize: fontSizes[48],
+      fontWeight: fontWeights.regular,
+      lineHeight: lineHeights[56],
+      letterSpacing: letterSpacing[1],
+    },
+    medium: {
+      fontFamily: fontFamilies.primary,
+      fontSize: fontSizes[48],
+      fontWeight: fontWeights.medium,
+      lineHeight: lineHeights[56],
+      letterSpacing: letterSpacing[1],
+    },
+    semibold: {
+      fontFamily: fontFamilies.primary,
+      fontSize: fontSizes[48],
+      fontWeight: fontWeights.semibold,
+      lineHeight: lineHeights[56],
+      letterSpacing: letterSpacing[1],
+    },
+  },
+  displayM: {
+    regular: {
+      fontFamily: fontFamilies.primary,
+      fontSize: fontSizes[60],
+      fontWeight: fontWeights.regular,
+      lineHeight: lineHeights[72],
+      letterSpacing: letterSpacing[1],
+    },
+    medium: {
+      fontFamily: fontFamilies.primary,
+      fontSize: fontSizes[60],
+      fontWeight: fontWeights.medium,
+      lineHeight: lineHeights[72],
+      letterSpacing: letterSpacing[1],
+    },
+    semibold: {
+      fontFamily: fontFamilies.primary,
+      fontSize: fontSizes[60],
+      fontWeight: fontWeights.semibold,
+      lineHeight: lineHeights[72],
+      letterSpacing: letterSpacing[1],
+    },
+  },
+  displayL: {
+    regular: {
+      fontFamily: fontFamilies.primary,
+      fontSize: fontSizes[72],
+      fontWeight: fontWeights.regular,
+      lineHeight: lineHeights[86],
+      letterSpacing: letterSpacing[1],
+    },
   },
 } as const;
 
