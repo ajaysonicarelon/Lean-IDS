@@ -1,0 +1,32 @@
+{
+  "name": "@lean-ids/tokens",
+  "version": "1.0.0",
+  "description": "Design tokens for Lean IDS (Carelon & Elevance themes)",
+  "main": "dist/index.js",
+  "module": "dist/index.esm.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "rollup -c",
+    "dev": "rollup -c -w",
+    "extract-tokens": "ts-node scripts/extract-figma-tokens.ts"
+  },
+  "keywords": [
+    "design-tokens",
+    "tokens",
+    "theme"
+  ],
+  "author": "Ajay Soni <ajay@carelon.com>",
+  "license": "UNLICENSED",
+  "devDependencies": {
+    "@rollup/plugin-typescript": "^12.1.2",
+    "@types/node": "^22.10.5",
+    "rollup": "^4.31.0",
+    "ts-node": "^10.9.2",
+    "tslib": "^2.8.1",
+    "typescript": "^5.7.2"
+  },
+  "dependencies": {}
+}

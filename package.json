@@ -1,0 +1,33 @@
+{
+  "name": "@lean-ids/root",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Lean IDS - Intelligent Design System for Carelon and Elevance",
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "npm run dev --workspaces",
+    "build": "npm run build --workspaces",
+    "storybook": "npm run storybook -w @lean-ids/components",
+    "build-storybook": "npm run build-storybook -w @lean-ids/components",
+    "lint": "eslint packages --ext .ts,.tsx",
+    "format": "prettier --write \"packages/**/*.{ts,tsx,json,md}\"",
+    "clean": "rm -rf packages/*/dist packages/*/node_modules node_modules"
+  },
+  "keywords": [
+    "design-system",
+    "react",
+    "web-components",
+    "carelon",
+    "elevance",
+    "accessibility"
+  ],
+  "author": "Ajay Soni <ajay@carelon.com>",
+  "license": "UNLICENSED",
+  "devDependencies": {},
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  }
+}
