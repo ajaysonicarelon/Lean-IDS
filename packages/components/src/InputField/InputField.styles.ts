@@ -1,141 +1,156 @@
 /**
  * InputField styled components
+ * Based on Figma design system specifications
  */
 
 import styled, { css } from 'styled-components';
-import { InputSize, InputState } from './InputField.types';
+import { InputSize } from './InputField.types';
 
 interface StyledInputContainerProps {
   $fullWidth?: boolean;
 }
 
 export const InputContainer = styled.div<StyledInputContainerProps>`
-  display: inline-flex;
+  display: flex;
   flex-direction: column;
   gap: ${({ theme }) => theme.spacing[1]};
-  width: ${({ $fullWidth }) => ($fullWidth ? '100%' : 'auto')};
+  width: ${({ $fullWidth }) => ($fullWidth ? '100%' : '300px')};
   font-family: ${({ theme }) => theme.fonts.primary};
 `;
 
+export const LabelContainer = styled.div`
+  display: flex;
+  gap: 4px;
+  align-items: flex-start;
+`;
+
 interface StyledLabelProps {
-  $required?: boolean;
+  $size: InputSize;
   $disabled?: boolean;
 }
 
 export const Label = styled.label<StyledLabelProps>`
-  font-size: ${({ theme }) => theme.fontSizes.sm};
+  font-family: ${({ theme }) => theme.fonts.primary};
   font-weight: ${({ theme }) => theme.fontWeights.medium};
-  line-height: ${({ theme }) => theme.lineHeights.normal};
   color: ${({ theme, $disabled }) =>
-    $disabled ? theme.colors.semantic.text.disabled : theme.colors.semantic.text.primary};
+    $disabled ? theme.colors.palette.neutral[400] : theme.colors.palette.neutral[900]};
+  white-space: nowrap;
   
-  ${({ $required }) =>
-    $required &&
-    css`
-      &::after {
-        content: ' *';
-        color: ${({ theme }) => theme.colors.semantic.text.error};
-      }
-    `}
+  ${({ $size, theme }) => {
+    if ($size === 'large') {
+      return css`
+        font-size: ${theme.fontSizes[16]};
+        line-height: ${theme.lineHeights[19]};
+      `;
+    }
+    return css`
+      font-size: ${theme.fontSizes[14]};
+      line-height: ${theme.lineHeights[16]};
+    `;
+  }}
+`;
+
+export const FieldImportance = styled.span`
+  font-family: ${({ theme }) => theme.fonts.primary};
+  font-size: ${({ theme }) => theme.fontSizes[14]};
+  font-weight: ${({ theme }) => theme.fontWeights.regular};
+  line-height: ${({ theme }) => theme.lineHeights[16]};
+  color: ${({ theme }) => theme.colors.error[500]};
+  white-space: nowrap;
 `;
 
 interface StyledInputWrapperProps {
   $size: InputSize;
   $error?: boolean;
-  $success?: boolean;
   $disabled?: boolean;
-  $hasLeadingIcon?: boolean;
-  $hasTrailingIcon?: boolean;
+  $isFocused?: boolean;
 }
 
 const sizeStyles = {
   small: css`
     height: 32px;
-    padding: ${({ theme }) => `${theme.spacing[1]} ${theme.spacing[2]}`};
-    font-size: ${({ theme }) => theme.fontSizes.sm};
+    padding: ${({ theme }) => theme.spacing[2]};
+    gap: ${({ theme }) => theme.spacing[2]};
   `,
-  medium: css`
+  default: css`
     height: 40px;
-    padding: ${({ theme }) => `${theme.spacing[2]} ${theme.spacing[3]}`};
-    font-size: ${({ theme }) => theme.fontSizes.base};
+    padding: ${({ theme }) => theme.spacing[2]};
+    gap: ${({ theme }) => theme.spacing[2]};
   `,
   large: css`
-    height: 48px;
-    padding: ${({ theme }) => `${theme.spacing[3]} ${theme.spacing[4]}`};
-    font-size: ${({ theme }) => theme.fontSizes.lg};
+    height: 50px;
+    padding: ${({ theme }) => theme.spacing[2]};
+    gap: ${({ theme }) => theme.spacing[2]};
   `,
 };
 
 export const InputWrapper = styled.div<StyledInputWrapperProps>`
-  position: relative;
   display: flex;
   align-items: center;
-  background-color: ${({ theme }) => theme.colors.semantic.background.primary};
-  border: ${({ theme }) => theme.borderWidth[1]} solid
-    ${({ theme, $error, $success, $disabled }) => {
-      if ($disabled) return theme.colors.semantic.border.disabled;
-      if ($error) return theme.colors.semantic.border.error;
-      if ($success) return theme.colors.semantic.text.success;
-      return theme.colors.semantic.border.default;
-    }};
-  border-radius: ${({ theme }) => theme.borderRadius.md};
+  background-color: ${({ theme, $disabled }) =>
+    $disabled ? theme.colors.palette.neutral[100] : theme.colors.palette.neutral[50]};
+  border: 1px solid;
+  border-color: ${({ theme, $error, $disabled, $isFocused }) => {
+    if ($disabled) return theme.colors.palette.neutral[300];
+    if ($error && $isFocused) return theme.colors.palette.error[500];
+    if ($error) return theme.colors.palette.error[500];
+    if ($isFocused) return theme.colors.palette.primary[500];
+    return theme.colors.palette.neutral[400];
+  }};
+  border-radius: ${({ theme }) => theme.borderRadius.sm};
   transition: all 0.2s ease-in-out;
   
   ${({ $size }) => sizeStyles[$size]}
   
-  &:hover:not(:has(input:disabled)) {
-    border-color: ${({ theme, $error }) =>
-      $error ? theme.colors.semantic.border.error : theme.colors.semantic.border.hover};
-  }
-  
-  &:focus-within {
-    outline: none;
-    border-color: ${({ theme, $error }) =>
-      $error ? theme.colors.semantic.border.error : theme.colors.semantic.border.focus};
-    box-shadow: ${({ theme, $error }) =>
-      $error
-        ? `0 0 0 3px ${theme.colors.error[50]}`
-        : theme.shadows.focus};
-  }
-  
   ${({ $disabled }) =>
     $disabled &&
     css`
-      background-color: ${({ theme }) => theme.colors.semantic.background.disabled};
       cursor: not-allowed;
       opacity: 0.6;
     `}
   
-  ${({ $hasLeadingIcon, theme }) =>
-    $hasLeadingIcon &&
+  ${({ $error, $isFocused, theme }) =>
+    $error && $isFocused &&
     css`
-      padding-left: ${theme.spacing[8]};
-    `}
-  
-  ${({ $hasTrailingIcon, theme }) =>
-    $hasTrailingIcon &&
-    css`
-      padding-right: ${theme.spacing[8]};
+      background-color: ${theme.colors.palette.error[50]};
     `}
 `;
 
-export const StyledInput = styled.input`
+interface StyledInputProps {
+  $size: InputSize;
+}
+
+export const StyledInput = styled.input<StyledInputProps>`
   flex: 1;
   border: none;
   outline: none;
   background: transparent;
-  font-family: inherit;
-  font-size: inherit;
-  color: ${({ theme }) => theme.colors.semantic.text.primary};
+  font-family: ${({ theme }) => theme.fonts.primary};
+  font-weight: ${({ theme }) => theme.fontWeights.regular};
+  color: ${({ theme }) => theme.colors.palette.neutral[900]};
   padding: 0;
+  min-width: 0;
+  
+  ${({ $size, theme }) => {
+    if ($size === 'large') {
+      return css`
+        font-size: 18px;
+        line-height: normal;
+      `;
+    }
+    return css`
+      font-size: ${theme.fontSizes[14]};
+      line-height: ${$size === 'small' ? 'normal' : theme.lineHeights[16]};
+    `;
+  }}
   
   &::placeholder {
-    color: ${({ theme }) => theme.colors.semantic.text.secondary};
+    color: ${({ theme }) => theme.colors.palette.neutral[400]};
   }
   
   &:disabled {
     cursor: not-allowed;
-    color: ${({ theme }) => theme.colors.semantic.text.disabled};
+    color: ${({ theme }) => theme.colors.palette.neutral[500]};
   }
   
   /* Remove default number input spinners */
@@ -156,43 +171,26 @@ export const StyledInput = styled.input`
 `;
 
 interface IconWrapperProps {
-  $position: 'leading' | 'trailing';
   $size: InputSize;
 }
 
-const iconSizes = {
-  small: '16px',
-  medium: '20px',
-  large: '24px',
-};
-
 export const IconWrapper = styled.span<IconWrapperProps>`
-  position: absolute;
-  ${({ $position }) => ($position === 'leading' ? 'left' : 'right')}: ${({ theme }) => theme.spacing[2]};
   display: flex;
   align-items: center;
   justify-content: center;
-  color: ${({ theme }) => theme.colors.semantic.text.secondary};
-  pointer-events: none;
+  flex-shrink: 0;
+  color: ${({ theme }) => theme.colors.palette.neutral[600]};
+  
+  ${({ $size }) => {
+    const size = $size === 'large' ? '24px' : '16px';
+    return css`
+      width: ${size};
+      height: ${size};
+    `;
+  }}
   
   svg {
-    width: ${({ $size }) => iconSizes[$size]};
-    height: ${({ $size }) => iconSizes[$size]};
+    width: 100%;
+    height: 100%;
   }
-`;
-
-interface HelperTextProps {
-  $error?: boolean;
-  $success?: boolean;
-}
-
-export const HelperText = styled.span<HelperTextProps>`
-  font-size: ${({ theme }) => theme.fontSizes.xs};
-  line-height: ${({ theme }) => theme.lineHeights.normal};
-  color: ${({ theme, $error, $success }) => {
-    if ($error) return theme.colors.semantic.text.error;
-    if ($success) return theme.colors.semantic.text.success;
-    return theme.colors.semantic.text.secondary;
-  }};
-  margin-top: ${({ theme }) => theme.spacing[1]};
 `;

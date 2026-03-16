@@ -1,25 +1,28 @@
 /**
  * InputField Component
  * 
- * A fully accessible input field component with support for:
- * - Multiple input types (text, email, password, number, etc.)
- * - Three sizes (small, medium, large)
- * - Multiple states (default, hover, focused, disabled, error, success)
+ * A fully accessible input field component based on Figma design system with support for:
+ * - Multiple input types (text, email, password, number, search, etc.)
+ * - Three sizes (small, default, large)
+ * - Multiple states (default, active/focused, error, disabled)
  * - Leading and trailing icons
  * - Helper text and error messages
+ * - Field importance indicator (Required)
  * - Full WCAG 2.1 AA compliance
  */
 
-import React, { forwardRef, useId } from 'react';
+import React, { forwardRef, useId, useState } from 'react';
 import { InputFieldProps } from './InputField.types';
 import {
   InputContainer,
+  LabelContainer,
   Label,
   InputWrapper,
   StyledInput,
   IconWrapper,
-  HelperText,
 } from './InputField.styles';
+import { FieldImportance } from '../FieldImportance';
+import { HelpingText } from '../HelpingText';
 
 export const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
   (
@@ -27,13 +30,15 @@ export const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
       label,
       helperText,
       errorMessage,
-      successMessage,
       type = 'text',
-      size = 'medium',
+      size = 'default',
       required = false,
       disabled = false,
       error = false,
-      success = false,
+      showLabel = true,
+      showFieldImportance = false,
+      fieldImportanceVariant = 'mandatory',
+      showInlineText = true,
       leadingIcon,
       trailingIcon,
       placeholder,
@@ -56,11 +61,12 @@ export const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
     const inputId = providedId || generatedId;
     const helperTextId = `${inputId}-helper-text`;
     const labelId = `${inputId}-label`;
+    
+    const [isFocused, setIsFocused] = useState(false);
 
     // Determine which message to show
-    const displayMessage = errorMessage || successMessage || helperText;
+    const displayMessage = errorMessage || helperText;
     const hasError = error || !!errorMessage;
-    const hasSuccess = success || !!successMessage;
 
     // Compute ARIA attributes
     const ariaDescribedByValue = [
@@ -70,29 +76,46 @@ export const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
       .filter(Boolean)
       .join(' ') || undefined;
 
+    const handleFocus = (e: React.FocusEvent<HTMLInputElement>) => {
+      setIsFocused(true);
+      onFocus?.(e);
+    };
+
+    const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
+      setIsFocused(false);
+      onBlur?.(e);
+    };
+
+    // Determine helper text state
+    const helpingTextState = hasError ? 'error' : 'default';
+    const helpingTextSize = size === 'large' ? 'large' : 'default';
+
     return (
       <InputContainer $fullWidth={fullWidth} className={className}>
-        {label && (
-          <Label
-            htmlFor={inputId}
-            id={labelId}
-            $required={required}
-            $disabled={disabled}
-          >
-            {label}
-          </Label>
+        {showLabel && label && (
+          <LabelContainer>
+            <Label
+              htmlFor={inputId}
+              id={labelId}
+              $size={size}
+              $disabled={disabled}
+            >
+              {label}
+            </Label>
+            {showFieldImportance && (
+              <FieldImportance variant={fieldImportanceVariant} />
+            )}
+          </LabelContainer>
         )}
         
         <InputWrapper
           $size={size}
           $error={hasError}
-          $success={hasSuccess}
           $disabled={disabled}
-          $hasLeadingIcon={!!leadingIcon}
-          $hasTrailingIcon={!!trailingIcon}
+          $isFocused={isFocused}
         >
           {leadingIcon && (
-            <IconWrapper $position="leading" $size={size}>
+            <IconWrapper $size={size}>
               {leadingIcon}
             </IconWrapper>
           )}
@@ -106,8 +129,8 @@ export const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
             value={value}
             defaultValue={defaultValue}
             onChange={onChange}
-            onFocus={onFocus}
-            onBlur={onBlur}
+            onFocus={handleFocus}
+            onBlur={handleBlur}
             disabled={disabled}
             required={required}
             aria-label={ariaLabel || (label ? undefined : placeholder)}
@@ -115,25 +138,24 @@ export const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
             aria-describedby={ariaDescribedByValue}
             aria-invalid={hasError}
             aria-required={required}
+            $size={size}
             {...restProps}
           />
           
           {trailingIcon && (
-            <IconWrapper $position="trailing" $size={size}>
+            <IconWrapper $size={size}>
               {trailingIcon}
             </IconWrapper>
           )}
         </InputWrapper>
         
-        {displayMessage && (
-          <HelperText
-            id={helperTextId}
-            $error={hasError}
-            $success={hasSuccess}
-            role={hasError ? 'alert' : undefined}
-          >
-            {displayMessage}
-          </HelperText>
+        {showInlineText && displayMessage && (
+          <HelpingText
+            text={displayMessage}
+            state={helpingTextState}
+            size={helpingTextSize}
+            showIcon={true}
+          />
         )}
       </InputContainer>
     );

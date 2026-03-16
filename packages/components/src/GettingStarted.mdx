@@ -1,0 +1,560 @@
+import { Meta } from '@storybook/blocks';
+
+<Meta title="Introduction/Getting Started" />
+
+# Getting Started with Lean IDS
+
+This guide will help you install and set up Lean IDS in your React application.
+
+---
+
+## 📋 Prerequisites
+
+Before you begin, ensure you have:
+
+- **Node.js** >= 18.0.0
+- **npm** >= 9.0.0 or **yarn** >= 1.22.0
+- **React** >= 18.0.0
+- **React DOM** >= 18.0.0
+
+---
+
+## 📦 Installation
+
+### Step 1: Install the Package
+
+Install Lean IDS components and tokens in your project:
+
+```bash
+npm install @lean-ids/components @lean-ids/tokens
+```
+
+Or with yarn:
+
+```bash
+yarn add @lean-ids/components @lean-ids/tokens
+```
+
+### Step 2: Install Peer Dependencies
+
+Lean IDS requires React and styled-components:
+
+```bash
+npm install react react-dom styled-components
+```
+
+Or with yarn:
+
+```bash
+yarn add react react-dom styled-components
+```
+
+---
+
+## 🎨 Basic Setup
+
+### Step 1: Wrap Your App with ThemeProvider
+
+The `ThemeProvider` component provides theme context to all Lean IDS components.
+
+```tsx
+import React from 'react';
+import { ThemeProvider } from '@lean-ids/components';
+
+function App() {
+  return (
+    <ThemeProvider theme="carelon">
+      {/* Your app content */}
+    </ThemeProvider>
+  );
+}
+
+export default App;
+```
+
+### Step 2: Import and Use Components
+
+Import components from `@lean-ids/components`:
+
+```tsx
+import React, { useState } from 'react';
+import { 
+  ThemeProvider, 
+  Button, 
+  InputField, 
+  Checkbox 
+} from '@lean-ids/components';
+
+function MyForm() {
+  const [email, setEmail] = useState('');
+  const [agreed, setAgreed] = useState(false);
+
+  return (
+    <ThemeProvider theme="carelon">
+      <form>
+        <InputField
+          label="Email Address"
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder="Enter your email"
+        />
+        
+        <Checkbox
+          label="I agree to the terms and conditions"
+          checked={agreed}
+          onChange={(e) => setAgreed(e.target.checked)}
+        />
+        
+        <Button 
+          variant="primary" 
+          size="medium"
+          disabled={!agreed}
+        >
+          Submit
+        </Button>
+      </form>
+    </ThemeProvider>
+  );
+}
+
+export default MyForm;
+```
+
+---
+
+## 🎭 Theme Configuration
+
+### Available Themes
+
+Lean IDS supports multiple brand themes:
+
+- **carelon** - Carelon brand theme (default)
+- **elevance** - Elevance Health brand theme
+
+### Switching Themes
+
+```tsx
+import { ThemeProvider } from '@lean-ids/components';
+
+// Carelon theme
+<ThemeProvider theme="carelon">
+  <App />
+</ThemeProvider>
+
+// Elevance theme
+<ThemeProvider theme="elevance">
+  <App />
+</ThemeProvider>
+```
+
+### Custom Theme (Advanced)
+
+You can also provide a custom theme object:
+
+```tsx
+import { ThemeProvider } from '@lean-ids/components';
+import { carelonTheme } from '@lean-ids/tokens';
+
+const customTheme = {
+  ...carelonTheme,
+  colors: {
+    ...carelonTheme.colors,
+    primary: {
+      ...carelonTheme.colors.primary,
+      500: '#your-custom-color',
+    },
+  },
+};
+
+<ThemeProvider theme={customTheme}>
+  <App />
+</ThemeProvider>
+```
+
+---
+
+## 🧩 Component Usage Examples
+
+### Buttons
+
+```tsx
+import { Button } from '@lean-ids/components';
+
+// Primary button
+<Button variant="primary" size="medium">
+  Click Me
+</Button>
+
+// Outlined button
+<Button variant="outlined" size="large">
+  Secondary Action
+</Button>
+
+// Link button
+<Button variant="link" size="small">
+  Learn More
+</Button>
+
+// With icon
+<Button 
+  variant="primary" 
+  leadingIcon={<YourIcon />}
+>
+  Save Changes
+</Button>
+```
+
+### Form Inputs
+
+```tsx
+import { InputField, Checkbox, RadioButton, Toggle } from '@lean-ids/components';
+
+// Text input
+<InputField
+  label="Full Name"
+  type="text"
+  placeholder="Enter your name"
+  value={name}
+  onChange={(e) => setName(e.target.value)}
+/>
+
+// Email input with validation
+<InputField
+  label="Email"
+  type="email"
+  value={email}
+  onChange={(e) => setEmail(e.target.value)}
+  state={emailError ? 'error' : 'default'}
+  helperText={emailError || 'We will never share your email'}
+/>
+
+// Checkbox
+<Checkbox
+  label="Subscribe to newsletter"
+  checked={subscribed}
+  onChange={(e) => setSubscribed(e.target.checked)}
+/>
+
+// Radio buttons
+<RadioButton
+  label="Option 1"
+  name="options"
+  checked={selected === 'option1'}
+  onChange={() => setSelected('option1')}
+/>
+
+// Toggle
+<Toggle
+  label="Enable notifications"
+  checked={enabled}
+  onChange={(e) => setEnabled(e.target.checked)}
+/>
+```
+
+### Feedback Components
+
+```tsx
+import { AlertBanner, Toast, InlineMessage } from '@lean-ids/components';
+
+// Alert Banner
+<AlertBanner
+  type="warning"
+  style="default"
+  text="System Maintenance"
+  descriptionText="Scheduled maintenance on Sunday, 2AM-4AM EST"
+/>
+
+// Toast notification
+<Toast
+  type="success"
+  style="default"
+  text="Changes saved successfully"
+  onClose={() => setShowToast(false)}
+/>
+
+// Inline message
+<InlineMessage
+  type="error"
+  style="accentBorder"
+  text="Validation Error"
+  descriptionText="Please check the form fields and try again"
+  linkText="View details"
+  onLinkClick={() => console.log('Show details')}
+/>
+```
+
+### Chips
+
+```tsx
+import { Chip } from '@lean-ids/components';
+
+// Default chip
+<Chip label="React" variant="filled" size="medium" />
+
+// Removable chip
+<Chip
+  label="TypeScript"
+  variant="outlined"
+  size="small"
+  type="removable"
+  onRemove={() => console.log('Removed')}
+/>
+
+// With leading icon
+<Chip
+  label="Active"
+  variant="filled"
+  leadingIcon={<YourIcon />}
+/>
+```
+
+---
+
+## 📱 TypeScript Support
+
+Lean IDS is built with TypeScript and provides complete type definitions.
+
+### Importing Types
+
+```tsx
+import { 
+  ButtonProps, 
+  InputFieldProps, 
+  CheckboxProps 
+} from '@lean-ids/components';
+
+// Use types in your components
+const MyButton: React.FC<ButtonProps> = (props) => {
+  return <Button {...props} />;
+};
+```
+
+### Type-Safe Props
+
+All components have fully typed props with IntelliSense support:
+
+```tsx
+import { Button } from '@lean-ids/components';
+
+<Button
+  variant="primary" // TypeScript will suggest: 'primary' | 'outlined' | 'link' | 'success' | 'warning' | 'alert'
+  size="medium"     // TypeScript will suggest: 'xs' | 'small' | 'medium' | 'large' | 'xl'
+  disabled={false}  // TypeScript knows this is boolean
+  onClick={() => {}} // TypeScript knows the signature
+>
+  Click Me
+</Button>
+```
+
+---
+
+## ♿ Accessibility Best Practices
+
+### Always Provide Labels
+
+```tsx
+// ✅ Good - has label
+<InputField label="Email Address" type="email" />
+
+// ❌ Bad - no label
+<InputField type="email" />
+```
+
+### Use Semantic HTML
+
+```tsx
+// ✅ Good - button for actions
+<Button onClick={handleSubmit}>Submit</Button>
+
+// ❌ Bad - div with onClick
+<div onClick={handleSubmit}>Submit</div>
+```
+
+### Provide Alternative Text
+
+```tsx
+// ✅ Good - aria-label for icon-only buttons
+<Button 
+  leadingIcon={<CloseIcon />}
+  showLabel={false}
+  aria-label="Close dialog"
+/>
+```
+
+### Handle Keyboard Navigation
+
+All Lean IDS components support keyboard navigation by default:
+- **Tab** - Move focus
+- **Enter/Space** - Activate buttons and checkboxes
+- **Escape** - Close modals and dropdowns (when available)
+
+---
+
+## 🎨 Using Design Tokens
+
+Access design tokens directly for custom styling:
+
+```tsx
+import { carelonTheme } from '@lean-ids/tokens';
+
+const CustomComponent = styled.div`
+  color: ${carelonTheme.colors.primary[500]};
+  padding: ${carelonTheme.spacing[4]};
+  font-size: ${carelonTheme.fontSizes[16]};
+  border-radius: ${carelonTheme.borderRadius.md};
+`;
+```
+
+---
+
+## 🔧 Common Patterns
+
+### Form with Validation
+
+```tsx
+import { InputField, Button } from '@lean-ids/components';
+import { useState } from 'react';
+
+function LoginForm() {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [errors, setErrors] = useState({});
+
+  const validate = () => {
+    const newErrors = {};
+    if (!email) newErrors.email = 'Email is required';
+    if (!password) newErrors.password = 'Password is required';
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (validate()) {
+      // Submit form
+    }
+  };
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <InputField
+        label="Email"
+        type="email"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+        state={errors.email ? 'error' : 'default'}
+        helperText={errors.email}
+      />
+      
+      <InputField
+        label="Password"
+        type="password"
+        value={password}
+        onChange={(e) => setPassword(e.target.value)}
+        state={errors.password ? 'error' : 'default'}
+        helperText={errors.password}
+      />
+      
+      <Button type="submit" variant="primary">
+        Sign In
+      </Button>
+    </form>
+  );
+}
+```
+
+### Toast Notifications
+
+```tsx
+import { Toast } from '@lean-ids/components';
+import { useState } from 'react';
+
+function NotificationExample() {
+  const [toast, setToast] = useState(null);
+
+  const showSuccess = () => {
+    setToast({
+      type: 'success',
+      message: 'Operation completed successfully'
+    });
+    setTimeout(() => setToast(null), 3000);
+  };
+
+  return (
+    <>
+      <Button onClick={showSuccess}>Show Success</Button>
+      
+      {toast && (
+        <Toast
+          type={toast.type}
+          text={toast.message}
+          onClose={() => setToast(null)}
+        />
+      )}
+    </>
+  );
+}
+```
+
+---
+
+## 🐛 Troubleshooting
+
+### Styled Components Version Conflict
+
+If you see warnings about multiple styled-components versions:
+
+```bash
+npm dedupe styled-components
+```
+
+### Theme Not Applied
+
+Make sure `ThemeProvider` wraps all components:
+
+```tsx
+// ✅ Correct
+<ThemeProvider theme="carelon">
+  <Button>Click Me</Button>
+</ThemeProvider>
+
+// ❌ Wrong - Button outside ThemeProvider
+<Button>Click Me</Button>
+<ThemeProvider theme="carelon">
+  {/* other content */}
+</ThemeProvider>
+```
+
+### TypeScript Errors
+
+Ensure you have the correct TypeScript version:
+
+```bash
+npm install --save-dev typescript@^5.7.0
+```
+
+---
+
+## 📚 Next Steps
+
+Now that you have Lean IDS set up, explore:
+
+1. **Component Documentation** - Browse all available components in the sidebar
+2. **Design Tokens** - Learn about colors, spacing, and typography
+3. **Examples** - See real-world usage patterns
+4. **Accessibility** - Understand accessibility features
+
+---
+
+## 💡 Tips
+
+- Use the Storybook playground to experiment with components
+- Copy code examples directly from component documentation
+- Check the Props table for all available options
+- Test your components with keyboard navigation
+- Use the Accessibility addon to check compliance
+
+---
+
+**Happy building! 🚀**

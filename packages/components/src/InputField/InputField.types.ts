@@ -17,9 +17,9 @@ export type InputType =
   | 'datetime-local'
   | 'time';
 
-export type InputSize = 'small' | 'medium' | 'large';
+export type InputSize = 'small' | 'default' | 'large';
 
-export type InputState = 'default' | 'hover' | 'focused' | 'disabled' | 'error' | 'success';
+export type InputState = 'default' | 'active' | 'error' | 'disabled';
 
 export interface InputFieldProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'size'> {
   /**
@@ -50,7 +50,7 @@ export interface InputFieldProps extends Omit<InputHTMLAttributes<HTMLInputEleme
   
   /**
    * Input size
-   * @default 'medium'
+   * @default 'default'
    */
   size?: InputSize;
   
@@ -70,9 +70,28 @@ export interface InputFieldProps extends Omit<InputHTMLAttributes<HTMLInputEleme
   error?: boolean;
   
   /**
-   * Whether the field shows success state
+   * Whether to show the label
+   * @default true
    */
-  success?: boolean;
+  showLabel?: boolean;
+  
+  /**
+   * Whether to show field importance (Required indicator)
+   * @default false
+   */
+  showFieldImportance?: boolean;
+  
+  /**
+   * Field importance variant
+   * @default 'mandatory'
+   */
+  fieldImportanceVariant?: 'mandatory' | 'optional' | 'asterisk';
+  
+  /**
+   * Whether to show inline helping text
+   * @default true
+   */
+  showInlineText?: boolean;
   
   /**
    * Icon to display at the start of the input

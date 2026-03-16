@@ -37,6 +37,21 @@ The Input Field is a fundamental form component that allows users to enter and e
 - **Accessibility**: Ensure WCAG 2.1 AA compliance with proper ARIA labels and keyboard navigation
 - **Brand Consistency**: Maintain visual consistency across Carelon and Elevance themes
 
+## Usage
+
+\`\`\`tsx
+import { InputField } from '@lean-ids/components';
+
+<InputField
+  label="Email Address"
+  type="email"
+  placeholder="Enter your email"
+  value={email}
+  onChange={(e) => setEmail(e.target.value)}
+  helperText="We'll never share your email"
+/>
+\`\`\`
+
 ## When to Use
 
 ✅ **Use Input Field when:**
@@ -121,11 +136,48 @@ The Input Field is a fundamental form component that allows users to enter and e
     },
     size: {
       control: 'radio',
-      options: ['small', 'medium', 'large'],
+      options: ['small', 'default', 'large'],
       description: 'Input field size',
       table: {
-        type: { summary: 'small | medium | large' },
-        defaultValue: { summary: 'medium' },
+        type: { summary: 'small | default | large' },
+        defaultValue: { summary: 'default' },
+        category: 'Appearance',
+      },
+    },
+    showLabel: {
+      control: 'boolean',
+      description: 'Whether to show the label',
+      table: {
+        type: { summary: 'boolean' },
+        defaultValue: { summary: 'true' },
+        category: 'Appearance',
+      },
+    },
+    showFieldImportance: {
+      control: 'boolean',
+      description: 'Whether to show field importance (Required indicator)',
+      table: {
+        type: { summary: 'boolean' },
+        defaultValue: { summary: 'false' },
+        category: 'Appearance',
+      },
+    },
+    showInlineText: {
+      control: 'boolean',
+      description: 'Whether to show inline helping text',
+      table: {
+        type: { summary: 'boolean' },
+        defaultValue: { summary: 'true' },
+        category: 'Appearance',
+      },
+    },
+    fieldImportanceVariant: {
+      control: 'radio',
+      options: ['mandatory', 'optional', 'asterisk'],
+      description: 'Field importance variant',
+      table: {
+        type: { summary: 'mandatory | optional | asterisk' },
+        defaultValue: { summary: 'mandatory' },
         category: 'Appearance',
       },
     },
@@ -156,15 +208,6 @@ The Input Field is a fundamental form component that allows users to enter and e
         category: 'State',
       },
     },
-    success: {
-      control: 'boolean',
-      description: 'Whether the field shows success state',
-      table: {
-        type: { summary: 'boolean' },
-        defaultValue: { summary: 'false' },
-        category: 'State',
-      },
-    },
     fullWidth: {
       control: 'boolean',
       description: 'Whether the input takes full width of container',
@@ -172,6 +215,22 @@ The Input Field is a fundamental form component that allows users to enter and e
         type: { summary: 'boolean' },
         defaultValue: { summary: 'false' },
         category: 'Layout',
+      },
+    },
+    leadingIcon: {
+      control: false,
+      description: 'Icon element to display at the start of the input',
+      table: {
+        type: { summary: 'React.ReactNode' },
+        category: 'Content',
+      },
+    },
+    trailingIcon: {
+      control: false,
+      description: 'Icon element to display at the end of the input',
+      table: {
+        type: { summary: 'React.ReactNode' },
+        category: 'Content',
       },
     },
   },
@@ -183,16 +242,18 @@ type Story = StoryObj<typeof InputField>;
 // Default / Playground Story
 export const Playground: Story = {
   args: {
-    label: 'Email Address',
-    placeholder: 'Enter your email',
-    helperText: 'We will never share your email with anyone',
-    type: 'email',
-    size: 'medium',
+    label: 'Label',
+    placeholder: 'Placeholder',
+    helperText: 'Default helping message',
+    type: 'text',
+    size: 'default',
     required: false,
     disabled: false,
     error: false,
-    success: false,
     fullWidth: false,
+    showLabel: true,
+    showFieldImportance: false,
+    showInlineText: true,
   },
 };
 
@@ -206,9 +267,9 @@ export const Sizes: Story = {
         size="small"
       />
       <InputField
-        label="Medium Input (Default)"
-        placeholder="Medium size"
-        size="medium"
+        label="Default Input"
+        placeholder="Default size"
+        size="default"
       />
       <InputField
         label="Large Input"
@@ -243,14 +304,12 @@ export const States: Story = {
         label="Error State"
         placeholder="Enter text"
         error
-        errorMessage="This field is required"
+        errorMessage="Inline error text"
       />
       <InputField
-        label="Success State"
-        placeholder="Enter text"
-        success
-        successMessage="Looks good!"
-        value="valid@email.com"
+        label="Active/Focused State"
+        placeholder="Click to focus"
+        helperText="This shows focus styling when clicked"
       />
     </div>
   ),
@@ -349,20 +408,62 @@ export const RequiredFields: Story = {
         label="Full Name"
         placeholder="John Doe"
         required
-        helperText="Required field"
+        showFieldImportance
+        fieldImportanceVariant="mandatory"
+        helperText="This field is required"
       />
       <InputField
         label="Email Address"
         type="email"
         placeholder="email@example.com"
         required
+        showFieldImportance
+        fieldImportanceVariant="asterisk"
+      />
+      <InputField
+        label="Middle Name"
+        placeholder="Optional"
+        showFieldImportance
+        fieldImportanceVariant="optional"
+        helperText="This field is optional"
       />
     </div>
   ),
   parameters: {
     docs: {
       description: {
-        story: 'Required fields are indicated with an asterisk (*) next to the label.',
+        story: 'Field importance can be shown in three variants: (Required), * asterisk, or (Optional).',
+      },
+    },
+  },
+};
+
+export const HelpingTextStates: Story = {
+  render: () => (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '24px', width: '400px' }}>
+      <InputField
+        label="Default State"
+        placeholder="Enter text"
+        helperText="Default helping message with icon"
+      />
+      <InputField
+        label="Error State"
+        placeholder="Enter text"
+        error
+        errorMessage="This field has an error"
+      />
+      <InputField
+        label="Large Size with Helper"
+        placeholder="Enter text"
+        size="large"
+        helperText="Large size uses 14px font for helper text"
+      />
+    </div>
+  ),
+  parameters: {
+    docs: {
+      description: {
+        story: 'Helper text appears below the input with icons and supports different states (default, error) and sizes.',
       },
     },
   },
