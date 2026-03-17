@@ -1,5 +1,5 @@
 {
-  "name": "@lean-ids/tokens",
+  "name": "lean-ids-tokens",
   "version": "1.0.0",
   "description": "Design tokens for Lean IDS (Carelon & Elevance themes)",
   "main": "dist/index.js",
@@ -19,7 +19,13 @@
     "theme"
   ],
   "author": "Ajay Soni <ajay@carelon.com>",
-  "license": "UNLICENSED",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ajaysonicarelon/Lean-IDS.git",
+    "directory": "packages/tokens"
+  },
+  "homepage": "https://github.com/ajaysonicarelon/Lean-IDS#readme",
   "devDependencies": {
     "@rollup/plugin-typescript": "^12.1.2",
     "@types/node": "^22.10.5",

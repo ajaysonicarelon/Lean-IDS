@@ -1,5 +1,5 @@
 {
-  "name": "@lean-ids/components",
+  "name": "lean-ids-components",
   "version": "1.0.0",
   "description": "React components for Lean IDS design system",
   "main": "dist/index.js",
@@ -20,13 +20,19 @@
     "design-system"
   ],
   "author": "Ajay Soni <ajay@carelon.com>",
-  "license": "UNLICENSED",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ajaysonicarelon/Lean-IDS.git",
+    "directory": "packages/components"
+  },
+  "homepage": "https://github.com/ajaysonicarelon/Lean-IDS#readme",
   "peerDependencies": {
     "react": "^18.0.0",
     "react-dom": "^18.0.0"
   },
   "dependencies": {
-    "@lean-ids/tokens": "^1.0.0",
+    "lean-ids-tokens": "^1.0.0",
     "styled-components": "^6.1.15"
   },
   "devDependencies": {
