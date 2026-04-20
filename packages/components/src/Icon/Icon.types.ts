@@ -80,7 +80,6 @@ export const COMMON_ICONS = {
   Warning: 'Warning',
   Error: 'Error',
   CheckCircle: 'CheckCircle',
-  Cancel: 'Cancel',
   
   // UI Elements
   DragIndicator: 'DragIndicator',

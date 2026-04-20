@@ -9,8 +9,8 @@
   "scripts": {
     "dev": "npm run dev --workspaces",
     "build": "npm run build --workspaces",
-    "storybook": "npm run storybook -w @lean-ids/components",
-    "build-storybook": "npm run build-storybook -w @lean-ids/components",
+    "storybook": "npm run storybook -w lean-ids-components",
+    "build-storybook": "npm run build-storybook -w lean-ids-components",
     "lint": "eslint packages --ext .ts,.tsx",
     "format": "prettier --write \"packages/**/*.{ts,tsx,json,md}\"",
     "clean": "rm -rf packages/*/dist packages/*/node_modules node_modules"
