@@ -1,5 +1,6 @@
 /**
  * Typography tokens for Lean IDS
+ * Auto-generated from Figma design tokens
  */
 
 export const fontFamilies = {
@@ -7,45 +8,12 @@ export const fontFamilies = {
   monospace: '"Roboto Mono", "SF Mono", Monaco, "Cascadia Code", Consolas, "Courier New", monospace',
 } as const;
 
-export const fontSizes = {
-  10: '10px',
-  12: '12px',
-  14: '14px',
-  16: '16px',
-  20: '20px',
-  24: '24px',
-  28: '28px',
-  32: '32px',
-  48: '48px',
-  60: '60px',
-  72: '72px',
-} as const;
-
 export const fontWeights = {
+  light: 300,
   regular: 400,
   medium: 500,
   semibold: 600,
   bold: 700,
-} as const;
-
-export const lineHeights = {
-  12: '12px',
-  14: '14px',
-  16: '16px',
-  19: '19px',
-  24: '24px',
-  28: '28px',
-  33: '33px',
-  38: '38px',
-  56: '56px',
-  72: '72px',
-  86: '86px',
-} as const;
-
-export const letterSpacing = {
-  0: '0px',
-  1: '1px',
-  1.5: '1.5px',
 } as const;
 
 export interface TypographyStyle {
@@ -57,231 +25,462 @@ export interface TypographyStyle {
 }
 
 export const typography = {
-  code: {
-    regular: {
-      fontFamily: fontFamilies.monospace,
-      fontSize: fontSizes[10],
-      fontWeight: fontWeights.regular,
-      lineHeight: lineHeights[12],
-      letterSpacing: letterSpacing[1.5],
+  "code": {
+    "regular-10": {
+      "fontFamily": "{primitive.Roboto Mono}",
+      "fontSize": "10px",
+      "lineHeight": "12px",
+      "letterSpacing": "1.5px",
+      "fontWeight": 400
     },
+    "regular-12": {
+      "fontFamily": "{primitive.Roboto Mono}",
+      "fontSize": "12px",
+      "lineHeight": "14px",
+      "letterSpacing": "1.5px",
+      "fontWeight": 400
+    },
+    "regular-14": {
+      "fontFamily": "{primitive.Roboto Mono}",
+      "fontSize": "14px",
+      "lineHeight": "16px",
+      "letterSpacing": "1.5px",
+      "fontWeight": 400
+    },
+    "medium-10": {
+      "fontFamily": "{primitive.Roboto Mono}",
+      "fontSize": "10px",
+      "lineHeight": "12px",
+      "letterSpacing": "1.5px",
+      "fontWeight": 500
+    },
+    "medium-12": {
+      "fontFamily": "{primitive.Roboto Mono}",
+      "fontSize": "12px",
+      "lineHeight": "14px",
+      "letterSpacing": "1.5px",
+      "fontWeight": 500
+    },
+    "medium-14": {
+      "fontFamily": "{primitive.Roboto Mono}",
+      "fontSize": "14px",
+      "lineHeight": "16px",
+      "letterSpacing": "1.5px",
+      "fontWeight": 500
+    },
+    "regular-italic-10": {
+      "fontFamily": "{primitive.Roboto Mono}",
+      "fontSize": "10px",
+      "lineHeight": "12px",
+      "letterSpacing": "1.5px",
+      "fontWeight": 400
+    },
+    "regular-italic-12": {
+      "fontFamily": "{primitive.Roboto Mono}",
+      "fontSize": "12px",
+      "lineHeight": "14px",
+      "letterSpacing": "1.5px",
+      "fontWeight": 400
+    },
+    "regular-italic-14": {
+      "fontFamily": "{primitive.Roboto Mono}",
+      "fontSize": "14px",
+      "lineHeight": "16px",
+      "letterSpacing": "1.5px",
+      "fontWeight": 400
+    },
+    "medium-italic-10": {
+      "fontFamily": "{primitive.Roboto Mono}",
+      "fontSize": "10px",
+      "lineHeight": "12px",
+      "letterSpacing": "1.5px",
+      "fontWeight": 500
+    },
+    "medium-italic-12": {
+      "fontFamily": "{primitive.Roboto Mono}",
+      "fontSize": "12px",
+      "lineHeight": "14px",
+      "letterSpacing": "1.5px",
+      "fontWeight": 500
+    },
+    "medium-italic-14": {
+      "fontFamily": "{primitive.Roboto Mono}",
+      "fontSize": "14px",
+      "lineHeight": "16px",
+      "letterSpacing": "1.5px",
+      "fontWeight": 500
+    }
   },
-  caption: {
-    regular: {
-      fontFamily: fontFamilies.primary,
-      fontSize: fontSizes[12],
-      fontWeight: fontWeights.regular,
-      lineHeight: lineHeights[14],
-      letterSpacing: letterSpacing[1],
+  "caption": {
+    "light": {
+      "fontFamily": "{primitive.Elevance Sans}",
+      "fontSize": "12px",
+      "lineHeight": "14px",
+      "letterSpacing": "1px",
+      "fontWeight": 300
     },
-    medium: {
-      fontFamily: fontFamilies.primary,
-      fontSize: fontSizes[12],
-      fontWeight: fontWeights.medium,
-      lineHeight: lineHeights[14],
-      letterSpacing: letterSpacing[1],
+    "regular": {
+      "fontFamily": "{primitive.Elevance Sans}",
+      "fontSize": "12px",
+      "lineHeight": "14px",
+      "letterSpacing": "1px",
+      "fontWeight": 400
     },
-    semibold: {
-      fontFamily: fontFamilies.primary,
-      fontSize: fontSizes[12],
-      fontWeight: fontWeights.semibold,
-      lineHeight: lineHeights[14],
-      letterSpacing: letterSpacing[1],
+    "medium": {
+      "fontFamily": "{primitive.Elevance Sans}",
+      "fontSize": "12px",
+      "lineHeight": "14px",
+      "letterSpacing": "1px",
+      "fontWeight": 500
     },
+    "semibold": {
+      "fontFamily": "{primitive.Elevance Sans}",
+      "fontSize": "12px",
+      "lineHeight": "14px",
+      "letterSpacing": "1px",
+      "fontWeight": 600
+    },
+    "bold": {
+      "fontFamily": "{primitive.Elevance Sans}",
+      "fontSize": "12px",
+      "lineHeight": "14px",
+      "letterSpacing": "1px",
+      "fontWeight": 700
+    }
   },
-  paragraph: {
-    regular: {
-      fontFamily: fontFamilies.primary,
-      fontSize: fontSizes[14],
-      fontWeight: fontWeights.regular,
-      lineHeight: lineHeights[16],
-      letterSpacing: letterSpacing[0],
+  "paragraph": {
+    "light": {
+      "fontFamily": "{primitive.Elevance Sans}",
+      "fontSize": "14px",
+      "lineHeight": "16px",
+      "letterSpacing": "0px",
+      "fontWeight": 300
     },
-    medium: {
-      fontFamily: fontFamilies.primary,
-      fontSize: fontSizes[14],
-      fontWeight: fontWeights.medium,
-      lineHeight: lineHeights[16],
-      letterSpacing: letterSpacing[0],
+    "regular": {
+      "fontFamily": "{primitive.Elevance Sans}",
+      "fontSize": "14px",
+      "lineHeight": "16px",
+      "letterSpacing": "0px",
+      "fontWeight": 400
     },
-    semibold: {
-      fontFamily: fontFamilies.primary,
-      fontSize: fontSizes[14],
-      fontWeight: fontWeights.semibold,
-      lineHeight: lineHeights[16],
-      letterSpacing: letterSpacing[0],
+    "medium": {
+      "fontFamily": "{primitive.Elevance Sans}",
+      "fontSize": "14px",
+      "lineHeight": "16px",
+      "letterSpacing": "0px",
+      "fontWeight": 500
     },
+    "semibold": {
+      "fontFamily": "{primitive.Elevance Sans}",
+      "fontSize": "14px",
+      "lineHeight": "16px",
+      "letterSpacing": "0px",
+      "fontWeight": 600
+    },
+    "bold": {
+      "fontFamily": "{primitive.Elevance Sans}",
+      "fontSize": "14px",
+      "lineHeight": "16px",
+      "letterSpacing": "0px",
+      "fontWeight": 700
+    }
   },
-  body: {
-    regular: {
-      fontFamily: fontFamilies.primary,
-      fontSize: fontSizes[16],
-      fontWeight: fontWeights.regular,
-      lineHeight: lineHeights[19],
-      letterSpacing: letterSpacing[0],
+  "body": {
+    "light": {
+      "fontFamily": "{primitive.Elevance Sans}",
+      "fontSize": "16px",
+      "lineHeight": "19px",
+      "letterSpacing": "0px",
+      "fontWeight": 300
     },
-    medium: {
-      fontFamily: fontFamilies.primary,
-      fontSize: fontSizes[16],
-      fontWeight: fontWeights.medium,
-      lineHeight: lineHeights[19],
-      letterSpacing: letterSpacing[0],
+    "regular": {
+      "fontFamily": "{primitive.Elevance Sans}",
+      "fontSize": "16px",
+      "lineHeight": "19px",
+      "letterSpacing": "0px",
+      "fontWeight": 400
     },
-    semibold: {
-      fontFamily: fontFamilies.primary,
-      fontSize: fontSizes[16],
-      fontWeight: fontWeights.semibold,
-      lineHeight: lineHeights[19],
-      letterSpacing: letterSpacing[0],
+    "medium": {
+      "fontFamily": "{primitive.Elevance Sans}",
+      "fontSize": "16px",
+      "lineHeight": "19px",
+      "letterSpacing": "0px",
+      "fontWeight": 500
     },
+    "semibold": {
+      "fontFamily": "{primitive.Elevance Sans}",
+      "fontSize": "16px",
+      "lineHeight": "19px",
+      "letterSpacing": "0px",
+      "fontWeight": 600
+    },
+    "bold": {
+      "fontFamily": "{primitive.Elevance Sans}",
+      "fontSize": "16px",
+      "lineHeight": "19px",
+      "letterSpacing": "0px",
+      "fontWeight": 700
+    }
   },
-  headingS: {
-    regular: {
-      fontFamily: fontFamilies.primary,
-      fontSize: fontSizes[20],
-      fontWeight: fontWeights.regular,
-      lineHeight: lineHeights[24],
-      letterSpacing: letterSpacing[0],
+  "headingS": {
+    "light": {
+      "fontFamily": "{primitive.Elevance Sans}",
+      "fontSize": "20px",
+      "lineHeight": "24px",
+      "letterSpacing": "0px",
+      "fontWeight": 300
     },
-    medium: {
-      fontFamily: fontFamilies.primary,
-      fontSize: fontSizes[20],
-      fontWeight: fontWeights.medium,
-      lineHeight: lineHeights[24],
-      letterSpacing: letterSpacing[0],
+    "regular": {
+      "fontFamily": "{primitive.Elevance Sans}",
+      "fontSize": "20px",
+      "lineHeight": "24px",
+      "letterSpacing": "0px",
+      "fontWeight": 400
     },
-    semibold: {
-      fontFamily: fontFamilies.primary,
-      fontSize: fontSizes[20],
-      fontWeight: fontWeights.semibold,
-      lineHeight: lineHeights[24],
-      letterSpacing: letterSpacing[0],
+    "medium": {
+      "fontFamily": "{primitive.Elevance Sans}",
+      "fontSize": "20px",
+      "lineHeight": "24px",
+      "letterSpacing": "0px",
+      "fontWeight": 500
     },
+    "semibold": {
+      "fontFamily": "{primitive.Elevance Sans}",
+      "fontSize": "20px",
+      "lineHeight": "24px",
+      "letterSpacing": "0px",
+      "fontWeight": 600
+    },
+    "bold": {
+      "fontFamily": "{primitive.Elevance Sans}",
+      "fontSize": "20px",
+      "lineHeight": "24px",
+      "letterSpacing": "0px",
+      "fontWeight": 700
+    }
   },
-  headingM: {
-    regular: {
-      fontFamily: fontFamilies.primary,
-      fontSize: fontSizes[24],
-      fontWeight: fontWeights.regular,
-      lineHeight: lineHeights[28],
-      letterSpacing: letterSpacing[1],
+  "headingM": {
+    "light": {
+      "fontFamily": "{primitive.Elevance Sans}",
+      "fontSize": "24px",
+      "lineHeight": "28px",
+      "letterSpacing": "1px",
+      "fontWeight": 300
     },
-    medium: {
-      fontFamily: fontFamilies.primary,
-      fontSize: fontSizes[24],
-      fontWeight: fontWeights.medium,
-      lineHeight: lineHeights[28],
-      letterSpacing: letterSpacing[1],
+    "regular": {
+      "fontFamily": "{primitive.Elevance Sans}",
+      "fontSize": "24px",
+      "lineHeight": "28px",
+      "letterSpacing": "1px",
+      "fontWeight": 400
     },
-    semibold: {
-      fontFamily: fontFamilies.primary,
-      fontSize: fontSizes[24],
-      fontWeight: fontWeights.semibold,
-      lineHeight: lineHeights[28],
-      letterSpacing: letterSpacing[1],
+    "medium": {
+      "fontFamily": "{primitive.Elevance Sans}",
+      "fontSize": "24px",
+      "lineHeight": "28px",
+      "letterSpacing": "1px",
+      "fontWeight": 500
     },
+    "semibold": {
+      "fontFamily": "{primitive.Elevance Sans}",
+      "fontSize": "24px",
+      "lineHeight": "28px",
+      "letterSpacing": "1px",
+      "fontWeight": 600
+    },
+    "bold": {
+      "fontFamily": "{primitive.Elevance Sans}",
+      "fontSize": "24px",
+      "lineHeight": "28px",
+      "letterSpacing": "1px",
+      "fontWeight": 700
+    }
   },
-  headingL: {
-    regular: {
-      fontFamily: fontFamilies.primary,
-      fontSize: fontSizes[28],
-      fontWeight: fontWeights.regular,
-      lineHeight: lineHeights[33],
-      letterSpacing: letterSpacing[1],
+  "headingL": {
+    "light": {
+      "fontFamily": "{primitive.Elevance Sans}",
+      "fontSize": "28px",
+      "lineHeight": "33px",
+      "letterSpacing": "1px",
+      "fontWeight": 300
     },
-    medium: {
-      fontFamily: fontFamilies.primary,
-      fontSize: fontSizes[28],
-      fontWeight: fontWeights.medium,
-      lineHeight: lineHeights[33],
-      letterSpacing: letterSpacing[1],
+    "regular": {
+      "fontFamily": "{primitive.Elevance Sans}",
+      "fontSize": "28px",
+      "lineHeight": "33px",
+      "letterSpacing": "1px",
+      "fontWeight": 400
     },
-    semibold: {
-      fontFamily: fontFamilies.primary,
-      fontSize: fontSizes[28],
-      fontWeight: fontWeights.semibold,
-      lineHeight: lineHeights[33],
-      letterSpacing: letterSpacing[1],
+    "medium": {
+      "fontFamily": "{primitive.Elevance Sans}",
+      "fontSize": "28px",
+      "lineHeight": "33px",
+      "letterSpacing": "1px",
+      "fontWeight": 500
     },
+    "semibold": {
+      "fontFamily": "{primitive.Elevance Sans}",
+      "fontSize": "28px",
+      "lineHeight": "33px",
+      "letterSpacing": "1px",
+      "fontWeight": 600
+    },
+    "bold": {
+      "fontFamily": "{primitive.Elevance Sans}",
+      "fontSize": "28px",
+      "lineHeight": "33px",
+      "letterSpacing": "1px",
+      "fontWeight": 700
+    }
   },
-  headingXL: {
-    regular: {
-      fontFamily: fontFamilies.primary,
-      fontSize: fontSizes[32],
-      fontWeight: fontWeights.regular,
-      lineHeight: lineHeights[38],
-      letterSpacing: letterSpacing[1],
+  "headingXL": {
+    "light": {
+      "fontFamily": "{primitive.Elevance Sans}",
+      "fontSize": "32px",
+      "lineHeight": "38px",
+      "letterSpacing": "1px",
+      "fontWeight": 300
     },
-    medium: {
-      fontFamily: fontFamilies.primary,
-      fontSize: fontSizes[32],
-      fontWeight: fontWeights.medium,
-      lineHeight: lineHeights[38],
-      letterSpacing: letterSpacing[1],
+    "regular": {
+      "fontFamily": "{primitive.Elevance Sans}",
+      "fontSize": "32px",
+      "lineHeight": "38px",
+      "letterSpacing": "1px",
+      "fontWeight": 400
     },
-    semibold: {
-      fontFamily: fontFamilies.primary,
-      fontSize: fontSizes[32],
-      fontWeight: fontWeights.semibold,
-      lineHeight: lineHeights[38],
-      letterSpacing: letterSpacing[1],
+    "medium": {
+      "fontFamily": "{primitive.Elevance Sans}",
+      "fontSize": "32px",
+      "lineHeight": "38px",
+      "letterSpacing": "1px",
+      "fontWeight": 500
     },
+    "semibold": {
+      "fontFamily": "{primitive.Elevance Sans}",
+      "fontSize": "32px",
+      "lineHeight": "38px",
+      "letterSpacing": "1px",
+      "fontWeight": 600
+    },
+    "bold": {
+      "fontFamily": "{primitive.Elevance Sans}",
+      "fontSize": "32px",
+      "lineHeight": "38px",
+      "letterSpacing": "1px",
+      "fontWeight": 700
+    }
   },
-  displayS: {
-    regular: {
-      fontFamily: fontFamilies.primary,
-      fontSize: fontSizes[48],
-      fontWeight: fontWeights.regular,
-      lineHeight: lineHeights[56],
-      letterSpacing: letterSpacing[1],
+  "displayS": {
+    "light": {
+      "fontFamily": "{primitive.Elevance Sans}",
+      "fontSize": "48px",
+      "lineHeight": "56px",
+      "letterSpacing": "1px",
+      "fontWeight": 300
     },
-    medium: {
-      fontFamily: fontFamilies.primary,
-      fontSize: fontSizes[48],
-      fontWeight: fontWeights.medium,
-      lineHeight: lineHeights[56],
-      letterSpacing: letterSpacing[1],
+    "regular": {
+      "fontFamily": "{primitive.Elevance Sans}",
+      "fontSize": "48px",
+      "lineHeight": "56px",
+      "letterSpacing": "1px",
+      "fontWeight": 400
     },
-    semibold: {
-      fontFamily: fontFamilies.primary,
-      fontSize: fontSizes[48],
-      fontWeight: fontWeights.semibold,
-      lineHeight: lineHeights[56],
-      letterSpacing: letterSpacing[1],
+    "medium": {
+      "fontFamily": "{primitive.Elevance Sans}",
+      "fontSize": "48px",
+      "lineHeight": "56px",
+      "letterSpacing": "1px",
+      "fontWeight": 500
     },
+    "semibold": {
+      "fontFamily": "{primitive.Elevance Sans}",
+      "fontSize": "48px",
+      "lineHeight": "56px",
+      "letterSpacing": "1px",
+      "fontWeight": 600
+    },
+    "bold": {
+      "fontFamily": "{primitive.Elevance Sans}",
+      "fontSize": "48px",
+      "lineHeight": "56px",
+      "letterSpacing": "1px",
+      "fontWeight": 700
+    }
   },
-  displayM: {
-    regular: {
-      fontFamily: fontFamilies.primary,
-      fontSize: fontSizes[60],
-      fontWeight: fontWeights.regular,
-      lineHeight: lineHeights[72],
-      letterSpacing: letterSpacing[1],
+  "displayM": {
+    "light": {
+      "fontFamily": "{primitive.Elevance Sans}",
+      "fontSize": "60px",
+      "lineHeight": "72px",
+      "letterSpacing": "1px",
+      "fontWeight": 300
     },
-    medium: {
-      fontFamily: fontFamilies.primary,
-      fontSize: fontSizes[60],
-      fontWeight: fontWeights.medium,
-      lineHeight: lineHeights[72],
-      letterSpacing: letterSpacing[1],
+    "regular": {
+      "fontFamily": "{primitive.Elevance Sans}",
+      "fontSize": "60px",
+      "lineHeight": "72px",
+      "letterSpacing": "1px",
+      "fontWeight": 400
     },
-    semibold: {
-      fontFamily: fontFamilies.primary,
-      fontSize: fontSizes[60],
-      fontWeight: fontWeights.semibold,
-      lineHeight: lineHeights[72],
-      letterSpacing: letterSpacing[1],
+    "medium": {
+      "fontFamily": "{primitive.Elevance Sans}",
+      "fontSize": "60px",
+      "lineHeight": "72px",
+      "letterSpacing": "1px",
+      "fontWeight": 500
     },
+    "semibold": {
+      "fontFamily": "{primitive.Elevance Sans}",
+      "fontSize": "60px",
+      "lineHeight": "72px",
+      "letterSpacing": "1px",
+      "fontWeight": 600
+    },
+    "bold": {
+      "fontFamily": "{primitive.Elevance Sans}",
+      "fontSize": "60px",
+      "lineHeight": "72px",
+      "letterSpacing": "1px",
+      "fontWeight": 700
+    }
   },
-  displayL: {
-    regular: {
-      fontFamily: fontFamilies.primary,
-      fontSize: fontSizes[72],
-      fontWeight: fontWeights.regular,
-      lineHeight: lineHeights[86],
-      letterSpacing: letterSpacing[1],
+  "displayL": {
+    "light": {
+      "fontFamily": "{primitive.Elevance Sans}",
+      "fontSize": "72px",
+      "lineHeight": "86px",
+      "letterSpacing": "1px",
+      "fontWeight": 300
     },
-  },
+    "regular": {
+      "fontFamily": "{primitive.Elevance Sans}",
+      "fontSize": "72px",
+      "lineHeight": "86px",
+      "letterSpacing": "1px",
+      "fontWeight": 400
+    },
+    "medium": {
+      "fontFamily": "{primitive.Elevance Sans}",
+      "fontSize": "72px",
+      "lineHeight": "86px",
+      "letterSpacing": "1px",
+      "fontWeight": 500
+    },
+    "semibold": {
+      "fontFamily": "{primitive.Elevance Sans}",
+      "fontSize": "72px",
+      "lineHeight": "86px",
+      "letterSpacing": "1px",
+      "fontWeight": 600
+    },
+    "bold": {
+      "fontFamily": "{primitive.Elevance Sans}",
+      "fontSize": "72px",
+      "lineHeight": "86px",
+      "letterSpacing": "1px",
+      "fontWeight": 700
+    }
+  }
 } as const;
 
 export type TypographyKey = keyof typeof typography;

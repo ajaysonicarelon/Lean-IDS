@@ -8,19 +8,50 @@ import {
   elevanceColors,
   carelonSemanticColors,
   elevanceSemanticColors,
-  type ColorPalette,
+  type SemanticColorPalette,
   type SemanticColors,
-} from './colors';
+} from './semantic-colors';
 import { spacing } from './spacing';
-import { typography, fontFamilies, fontSizes, fontWeights, lineHeights } from './typography';
+import { typography, fontFamilies, fontWeights } from './typography';
 import { shadows } from './shadows';
 import { borderRadius, borderWidth } from './borders';
 import { breakpoints, mediaQueries } from './breakpoints';
 
+// Legacy support - map to new structure
+export const fontSizes = {
+  10: '10px',
+  12: '12px',
+  14: '14px',
+  16: '16px',
+  18: '18px',
+  20: '20px',
+  24: '24px',
+  28: '28px',
+  32: '32px',
+  48: '48px',
+  60: '60px',
+  72: '72px',
+} as const;
+
+export const lineHeights = {
+  12: '12px',
+  14: '14px',
+  16: '16px',
+  18: '18px',
+  19: '19px',
+  21: '21px',
+  24: '24px',
+  28: '28px',
+  32: '32px',
+  48: '48px',
+  60: '60px',
+  72: '72px',
+} as const;
+
 export interface Theme {
   name: string;
   colors: {
-    palette: ColorPalette;
+    palette: SemanticColorPalette;
     semantic: SemanticColors;
   };
   spacing: typeof spacing;
