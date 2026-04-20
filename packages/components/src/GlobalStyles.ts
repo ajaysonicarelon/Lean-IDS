@@ -21,7 +21,7 @@ export const GlobalStyles = createGlobalStyle`
     font-family: ${({ theme }) => theme.fonts.primary};
     color: ${({ theme }) => theme.colors.semantic.text.primary};
     background-color: ${({ theme }) => theme.colors.semantic.background.primary};
-    line-height: ${({ theme }) => theme.lineHeights.normal};
+    line-height: 1.5;
   }
 
   /* Focus visible styles for accessibility */

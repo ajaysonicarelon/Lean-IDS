@@ -55,7 +55,7 @@ export const FieldImportance = styled.span`
   font-size: ${({ theme }) => theme.fontSizes[14]};
   font-weight: ${({ theme }) => theme.fontWeights.regular};
   line-height: ${({ theme }) => theme.lineHeights[16]};
-  color: ${({ theme }) => theme.colors.error[500]};
+  color: ${({ theme }) => theme.colors.palette.error[500]};
   white-space: nowrap;
 `;
 
@@ -134,8 +134,8 @@ export const StyledInput = styled.input<StyledInputProps>`
   ${({ $size, theme }) => {
     if ($size === 'large') {
       return css`
-        font-size: 18px;
-        line-height: normal;
+        font-size: ${theme.fontSizes[16]};
+        line-height: ${theme.lineHeights[19]};
       `;
     }
     return css`

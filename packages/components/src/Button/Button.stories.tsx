@@ -4,7 +4,6 @@
 
 import type { Meta, StoryObj } from '@storybook/react';
 import { Button } from './Button';
-import React from 'react';
 
 // Sample icons
 const CheckIcon = () => (
@@ -39,10 +38,11 @@ An interactive control that triggers actions with clear visual feedback.
 
 ## Features
 
-- **Five Sizes**: XS, Small, Medium, Large, XL
-- **Three Variants**: Primary (filled), Outlined, Link
+- **Five Sizes**: XSmall, Small, Medium, Large, XLarge
+- **Two Main Variants**: Primary (filled), Secondary (outlined)
+- **Four Button Types**: Default, Safe, Warning, Alert
 - **Optional Icons**: Leading and trailing icons
-- **Multiple States**: Default, Hover, Focused, Disabled, Success, Warning, Alert
+- **Multiple States**: Active, Hover, Pressed, Focused, Disabled
 - **Fully Accessible**: WCAG 2.1 AA compliant with proper ARIA attributes
 
 ## Usage
@@ -52,6 +52,7 @@ import { Button } from '@lean-ids/components';
 
 <Button
   variant="primary"
+  buttonType="default"
   size="medium"
   onClick={() => console.log('Clicked')}
 >
@@ -74,21 +75,31 @@ import { Button } from '@lean-ids/components';
     },
     size: {
       control: 'radio',
-      options: ['xs', 'small', 'medium', 'large', 'xl'],
+      options: ['xsmall', 'small', 'medium', 'large', 'xlarge'],
       description: 'Button size',
       table: {
-        type: { summary: 'xs | small | medium | large | xl' },
+        type: { summary: 'xsmall | small | medium | large | xlarge' },
         defaultValue: { summary: 'medium' },
         category: 'Appearance',
       },
     },
     variant: {
       control: 'radio',
-      options: ['primary', 'outlined', 'link', 'success', 'warning', 'alert'],
+      options: ['primary', 'secondary', 'outlined', 'link'],
       description: 'Visual variant',
       table: {
-        type: { summary: 'primary | outlined | link | success | warning | alert' },
+        type: { summary: 'primary | secondary | outlined | link' },
         defaultValue: { summary: 'primary' },
+        category: 'Appearance',
+      },
+    },
+    buttonType: {
+      control: 'radio',
+      options: ['default', 'safe', 'warning', 'alert'],
+      description: 'Button type (semantic meaning)',
+      table: {
+        type: { summary: 'default | safe | warning | alert' },
+        defaultValue: { summary: 'default' },
         category: 'Appearance',
       },
     },
@@ -130,17 +141,17 @@ export const Playground: Story = {
 export const Sizes: Story = {
   render: () => (
     <div style={{ display: 'flex', gap: '16px', alignItems: 'center', flexWrap: 'wrap' }}>
-      <Button size="xs">Extra Small</Button>
+      <Button size="xsmall">Extra Small</Button>
       <Button size="small">Small</Button>
       <Button size="medium">Medium</Button>
       <Button size="large">Large</Button>
-      <Button size="xl">Extra Large</Button>
+      <Button size="xlarge">Extra Large</Button>
     </div>
   ),
   parameters: {
     docs: {
       description: {
-        story: 'Buttons are available in five sizes: xs, small, medium, large, and xl.',
+        story: 'Buttons are available in five sizes: xsmall, small, medium, large, and xlarge.',
       },
     },
   },
@@ -197,29 +208,48 @@ export const LinkVariant: Story = {
   },
 };
 
-// Variants - Success
-export const SuccessVariant: Story = {
+// Variants - Secondary
+export const SecondaryVariant: Story = {
   render: () => (
     <div style={{ display: 'flex', gap: '16px', alignItems: 'center', flexWrap: 'wrap' }}>
-      <Button variant="success">Success</Button>
-      <Button variant="success" disabled>Disabled</Button>
+      <Button variant="secondary">Secondary</Button>
+      <Button variant="secondary" disabled>Disabled</Button>
     </div>
   ),
   parameters: {
     docs: {
       description: {
-        story: 'Success buttons for positive actions and confirmations.',
+        story: 'Secondary buttons (outlined) for secondary actions.',
       },
     },
   },
 };
 
-// Variants - Warning
-export const WarningVariant: Story = {
+// Button Types - Safe
+export const SafeType: Story = {
   render: () => (
     <div style={{ display: 'flex', gap: '16px', alignItems: 'center', flexWrap: 'wrap' }}>
-      <Button variant="warning">Warning</Button>
-      <Button variant="warning" disabled>Disabled</Button>
+      <Button variant="primary" buttonType="safe">Safe Primary</Button>
+      <Button variant="secondary" buttonType="safe">Safe Secondary</Button>
+      <Button variant="primary" buttonType="safe" disabled>Disabled</Button>
+    </div>
+  ),
+  parameters: {
+    docs: {
+      description: {
+        story: 'Safe/Success buttons for positive actions and confirmations.',
+      },
+    },
+  },
+};
+
+// Button Types - Warning
+export const WarningType: Story = {
+  render: () => (
+    <div style={{ display: 'flex', gap: '16px', alignItems: 'center', flexWrap: 'wrap' }}>
+      <Button variant="primary" buttonType="warning">Warning Primary</Button>
+      <Button variant="secondary" buttonType="warning">Warning Secondary</Button>
+      <Button variant="primary" buttonType="warning" disabled>Disabled</Button>
     </div>
   ),
   parameters: {
@@ -231,12 +261,13 @@ export const WarningVariant: Story = {
   },
 };
 
-// Variants - Alert
-export const AlertVariant: Story = {
+// Button Types - Alert
+export const AlertType: Story = {
   render: () => (
     <div style={{ display: 'flex', gap: '16px', alignItems: 'center', flexWrap: 'wrap' }}>
-      <Button variant="alert">Alert</Button>
-      <Button variant="alert" disabled>Disabled</Button>
+      <Button variant="primary" buttonType="alert">Alert Primary</Button>
+      <Button variant="secondary" buttonType="alert">Alert Secondary</Button>
+      <Button variant="primary" buttonType="alert" disabled>Disabled</Button>
     </div>
   ),
   parameters: {
@@ -276,9 +307,9 @@ export const WithIcons: Story = {
 export const IconOnly: Story = {
   render: () => (
     <div style={{ display: 'flex', gap: '16px', alignItems: 'center', flexWrap: 'wrap' }}>
-      <Button leadingIcon={<CheckIcon />} showLabel={false} aria-label="Check" />
-      <Button leadingIcon={<CloseIcon />} showLabel={false} aria-label="Close" variant="outlined" />
-      <Button leadingIcon={<ArrowRightIcon />} showLabel={false} aria-label="Next" size="large" />
+      <Button leadingIcon={<CheckIcon />} showLabel={false} aria-label="Check">Icon</Button>
+      <Button leadingIcon={<CloseIcon />} showLabel={false} aria-label="Close" variant="outlined">Icon</Button>
+      <Button leadingIcon={<ArrowRightIcon />} showLabel={false} aria-label="Next" size="large">Icon</Button>
     </div>
   ),
   parameters: {
@@ -342,41 +373,40 @@ export const ButtonGroups: Story = {
 export const AllVariants: Story = {
   render: () => (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '32px', padding: '20px' }}>
-      {(['xs', 'small', 'medium', 'large', 'xl'] as const).map(size => (
+      {(['xsmall', 'small', 'medium', 'large', 'xlarge'] as const).map(size => (
         <div key={size}>
           <h4 style={{ marginBottom: '16px', textTransform: 'capitalize' }}>{size}</h4>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
             <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap', alignItems: 'center' }}>
-              <strong style={{ width: '100%', fontSize: '12px' }}>Primary:</strong>
+              <strong style={{ width: '100%', fontSize: '12px' }}>Primary Default:</strong>
               <Button size={size} leadingIcon={<CheckIcon />}>Button</Button>
               <Button size={size} leadingIcon={<CheckIcon />} trailingIcon={<CloseIcon />}>Button</Button>
               <Button size={size} disabled leadingIcon={<CheckIcon />}>Disabled</Button>
             </div>
             <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap', alignItems: 'center' }}>
-              <strong style={{ width: '100%', fontSize: '12px' }}>Outlined:</strong>
-              <Button size={size} variant="outlined" leadingIcon={<CheckIcon />}>Button</Button>
-              <Button size={size} variant="outlined" leadingIcon={<CheckIcon />} trailingIcon={<CloseIcon />}>Button</Button>
-              <Button size={size} variant="outlined" disabled leadingIcon={<CheckIcon />}>Disabled</Button>
+              <strong style={{ width: '100%', fontSize: '12px' }}>Primary Safe:</strong>
+              <Button size={size} buttonType="safe" leadingIcon={<CheckIcon />}>Safe</Button>
+              <Button size={size} buttonType="safe" disabled leadingIcon={<CheckIcon />}>Disabled</Button>
+            </div>
+            <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap', alignItems: 'center' }}>
+              <strong style={{ width: '100%', fontSize: '12px' }}>Primary Warning:</strong>
+              <Button size={size} buttonType="warning" leadingIcon={<CheckIcon />}>Warning</Button>
+              <Button size={size} buttonType="warning" disabled leadingIcon={<CheckIcon />}>Disabled</Button>
+            </div>
+            <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap', alignItems: 'center' }}>
+              <strong style={{ width: '100%', fontSize: '12px' }}>Primary Alert:</strong>
+              <Button size={size} buttonType="alert" leadingIcon={<CloseIcon />}>Alert</Button>
+              <Button size={size} buttonType="alert" disabled leadingIcon={<CloseIcon />}>Disabled</Button>
+            </div>
+            <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap', alignItems: 'center' }}>
+              <strong style={{ width: '100%', fontSize: '12px' }}>Secondary:</strong>
+              <Button size={size} variant="secondary" leadingIcon={<CheckIcon />}>Button</Button>
+              <Button size={size} variant="secondary" disabled leadingIcon={<CheckIcon />}>Disabled</Button>
             </div>
             <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap', alignItems: 'center' }}>
               <strong style={{ width: '100%', fontSize: '12px' }}>Link:</strong>
               <Button size={size} variant="link">Link Button</Button>
               <Button size={size} variant="link" disabled>Disabled</Button>
-            </div>
-            <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap', alignItems: 'center' }}>
-              <strong style={{ width: '100%', fontSize: '12px' }}>Success:</strong>
-              <Button size={size} variant="success" leadingIcon={<CheckIcon />}>Success</Button>
-              <Button size={size} variant="success" disabled leadingIcon={<CheckIcon />}>Disabled</Button>
-            </div>
-            <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap', alignItems: 'center' }}>
-              <strong style={{ width: '100%', fontSize: '12px' }}>Warning:</strong>
-              <Button size={size} variant="warning" leadingIcon={<CheckIcon />}>Warning</Button>
-              <Button size={size} variant="warning" disabled leadingIcon={<CheckIcon />}>Disabled</Button>
-            </div>
-            <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap', alignItems: 'center' }}>
-              <strong style={{ width: '100%', fontSize: '12px' }}>Alert:</strong>
-              <Button size={size} variant="alert" leadingIcon={<CloseIcon />}>Alert</Button>
-              <Button size={size} variant="alert" disabled leadingIcon={<CloseIcon />}>Disabled</Button>
             </div>
           </div>
         </div>
@@ -386,7 +416,7 @@ export const AllVariants: Story = {
   parameters: {
     docs: {
       description: {
-        story: 'Complete showcase of all button variants, sizes, and states.',
+        story: 'Complete showcase of all button variants, sizes, types, and states.',
       },
     },
   },

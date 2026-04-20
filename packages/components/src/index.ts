@@ -28,7 +28,7 @@ export { Chip, CloseIcon } from './Chip';
 export type { ChipProps, ChipSize, ChipVariant, ChipType } from './Chip';
 
 export { Button } from './Button';
-export type { ButtonProps, ButtonSize, ButtonVariant } from './Button';
+export type { ButtonProps, ButtonSize, ButtonVariant, ButtonType } from './Button';
 
 export { AlertBanner } from './AlertBanner';
 export type { AlertBannerProps, AlertBannerType, AlertBannerStyle } from './AlertBanner';
@@ -52,10 +52,53 @@ export { Breadcrumbs } from './Breadcrumbs';
 export type { BreadcrumbsProps, BreadcrumbItem } from './Breadcrumbs';
 
 export { TableHeader } from './TableHeader';
-export type { TableHeaderProps, SortDirection } from './TableHeader';
+export type { TableHeaderProps, SortDirection, TableHeaderVariant, TableHeaderSide } from './TableHeader';
 
 export { TableCell } from './TableCell';
 export type { TableCellProps } from './TableCell';
 
 export { Avatar } from './Avatar';
 export type { AvatarProps, AvatarSize, AvatarColor } from './Avatar';
+
+export { Textarea } from './Textarea';
+export type { TextareaProps } from './Textarea';
+
+export { Pagination } from './Pagination';
+export type { PaginationProps, PaginationVariant } from './Pagination';
+
+export { Icon, COMMON_ICONS } from './Icon';
+export type { IconProps, IconSize } from './Icon';
+
+export { TableSettings } from './TableSettings';
+export type { TableSettingsProps, ColumnConfig } from './TableSettings';
+export {
+  ArrowBackIcon,
+  ArrowForwardIcon,
+  ArrowDropDownIcon,
+  ArrowDropUpIcon,
+  ChevronLeftIcon,
+  ChevronRightIcon,
+  FirstPageIcon,
+  LastPageIcon,
+  AddIcon,
+  RemoveIcon,
+  EditIcon,
+  DeleteIcon,
+  SearchIcon,
+  FilterAltIcon,
+  DownloadIcon,
+  SettingsIcon,
+  CheckIcon,
+  LockIcon,
+  LockOpenIcon,
+  VisibilityIcon,
+  VisibilityOffIcon,
+  InfoIcon,
+  WarningIcon,
+  ErrorIcon,
+  CheckCircleIcon,
+  SortIcon,
+  DragIndicatorIcon,
+  MoreVertIcon,
+  MoreHorizIcon,
+} from './Icon';

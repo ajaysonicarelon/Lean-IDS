@@ -4,9 +4,11 @@
 
 import { ButtonHTMLAttributes, ReactNode } from 'react';
 
-export type ButtonSize = 'xs' | 'small' | 'medium' | 'large' | 'xl';
+export type ButtonSize = 'xsmall' | 'small' | 'medium' | 'large' | 'xlarge';
 
-export type ButtonVariant = 'primary' | 'outlined' | 'link' | 'success' | 'warning' | 'alert';
+export type ButtonVariant = 'primary' | 'secondary' | 'outlined' | 'link';
+
+export type ButtonType = 'default' | 'safe' | 'warning' | 'alert';
 
 export interface ButtonProps extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'type'> {
   /**
@@ -25,6 +27,12 @@ export interface ButtonProps extends Omit<ButtonHTMLAttributes<HTMLButtonElement
    * @default 'primary'
    */
   variant?: ButtonVariant;
+  
+  /**
+   * Button type (semantic meaning)
+   * @default 'default'
+   */
+  buttonType?: ButtonType;
   
   /**
    * Whether the button is disabled

@@ -24,7 +24,7 @@ export const StyledToast = styled.div<{
       if ($type === 'warning') {
         return `
           background-color: ${theme.colors.palette.warning[500]};
-          color: ${theme.colors.palette.warning[850]};
+          color: ${theme.colors.palette.warning[900]};
         `;
       }
       if ($type === 'success') {
@@ -51,8 +51,8 @@ export const StyledToast = styled.div<{
     if ($style === 'subdued') {
       if ($type === 'warning') {
         return `
-          background-color: ${theme.colors.palette.warning[150]};
-          color: ${theme.colors.palette.warning[850]};
+          background-color: ${theme.colors.palette.warning[100]};
+          color: ${theme.colors.palette.warning[900]};
         `;
       }
       if ($type === 'success') {

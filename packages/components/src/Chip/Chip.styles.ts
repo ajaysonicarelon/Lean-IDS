@@ -65,7 +65,7 @@ export const ChipContainer = styled.div<StyledChipProps>`
         case 'warning':
           return `
             background-color: ${theme.colors.palette.warning[500]};
-            color: ${theme.colors.palette.warning[850]};
+            color: ${theme.colors.palette.warning[900]};
             border: none;
           `;
         case 'error':
@@ -101,7 +101,7 @@ export const ChipContainer = styled.div<StyledChipProps>`
           `;
         case 'warning':
           return `
-            background-color: ${theme.colors.palette.warning[150]};
+            background-color: ${theme.colors.palette.warning[100]};
             color: ${theme.colors.palette.warning[700]};
             border: 1px solid ${theme.colors.palette.warning[700]};
           `;
@@ -121,8 +121,8 @@ export const ChipContainer = styled.div<StyledChipProps>`
         default:
           return `
             background-color: ${theme.colors.palette.primary[50]};
-            color: ${theme.colors.palette.primary[450]};
-            border: 1px solid ${theme.colors.palette.primary[450]};
+            color: ${theme.colors.palette.primary[400]};
+            border: 1px solid ${theme.colors.palette.primary[400]};
           `;
       }
     }

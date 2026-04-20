@@ -26,6 +26,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       children,
       size = 'medium',
       variant = 'primary',
+      buttonType = 'default',
       disabled = false,
       leadingIcon,
       trailingIcon,
@@ -42,6 +43,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       <StyledButton
         ref={ref}
         $size={size}
+        $buttonType={buttonType}
         $variant={variant}
         $disabled={disabled}
         $fullWidth={fullWidth}

@@ -82,7 +82,7 @@ const ColorSwatch: React.FC<{
 const ColorPaletteSection: React.FC<{
   title: string;
   description: string;
-  colors: Record<string, string>;
+  colors: any;
   prefix?: string;
 }> = ({ title, description, colors, prefix = '' }) => {
   return (
@@ -100,7 +100,7 @@ const ColorPaletteSection: React.FC<{
           <ColorSwatch
             key={key}
             name={prefix ? `${prefix}-${key}` : key}
-            value={value}
+            value={value as string}
           />
         ))}
       </div>
@@ -224,13 +224,6 @@ export const CarelonColors: Story = {
         prefix="info"
       />
 
-      <ColorPaletteSection
-        title="Link Colors"
-        description="Specific blue tone for hyperlinks and text links."
-        colors={carelonColors.link}
-        prefix="link"
-      />
-
       <h2 style={{ fontSize: '28px', fontWeight: 700, marginTop: '64px', marginBottom: '32px' }}>
         Secondary Colors
       </h2>
@@ -343,13 +336,6 @@ export const ElevanceColors: Story = {
         description="Blue tones for informational messages and helpful hints."
         colors={elevanceColors.info}
         prefix="info"
-      />
-
-      <ColorPaletteSection
-        title="Link Colors"
-        description="Specific blue tone for hyperlinks and text links."
-        colors={elevanceColors.link}
-        prefix="link"
       />
 
       <h2 style={{ fontSize: '28px', fontWeight: 700, marginTop: '64px', marginBottom: '32px' }}>

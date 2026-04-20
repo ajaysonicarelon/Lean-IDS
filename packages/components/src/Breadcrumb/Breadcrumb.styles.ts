@@ -21,6 +21,6 @@ export const StyledBreadcrumb = styled.span<StyledBreadcrumbProps>`
     color: ${({ $isActive, theme }) =>
       $isActive
         ? theme.colors.palette.primary[500]
-        : theme.colors.palette.primary[450]};
+        : theme.colors.palette.primary[400]};
   }
 `;

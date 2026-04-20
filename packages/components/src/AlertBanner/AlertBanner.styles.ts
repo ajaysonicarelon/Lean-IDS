@@ -23,7 +23,7 @@ export const StyledAlertBanner = styled.div<{
       if ($type === 'warning') {
         return `
           background-color: ${theme.colors.palette.warning[500]};
-          color: ${theme.colors.palette.warning[850]};
+          color: ${theme.colors.palette.warning[900]};
         `;
       }
       if ($type === 'success') {
@@ -50,8 +50,8 @@ export const StyledAlertBanner = styled.div<{
     if ($style === 'subdued') {
       if ($type === 'warning') {
         return `
-          background-color: ${theme.colors.palette.warning[150]};
-          color: ${theme.colors.palette.warning[850]};
+          background-color: ${theme.colors.palette.warning[100]};
+          color: ${theme.colors.palette.warning[900]};
         `;
       }
       if ($type === 'success') {
@@ -82,8 +82,8 @@ export const StyledAlertBanner = styled.div<{
 
       if ($type === 'warning') {
         borderColor = theme.colors.palette.warning[500];
-        backgroundColor = theme.colors.palette.warning[150];
-        textColor = theme.colors.palette.warning[850];
+        backgroundColor = theme.colors.palette.warning[100];
+        textColor = theme.colors.palette.warning[900];
       } else if ($type === 'success') {
         borderColor = theme.colors.palette.success[500];
         backgroundColor = theme.colors.palette.success[50];

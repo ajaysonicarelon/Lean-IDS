@@ -3,11 +3,12 @@
  */
 
 import styled from 'styled-components';
-import { ButtonSize, ButtonVariant } from './Button.types';
+import { ButtonSize, ButtonVariant, ButtonType } from './Button.types';
 
 interface StyledButtonProps {
   $size: ButtonSize;
   $variant: ButtonVariant;
+  $buttonType: ButtonType;
   $disabled?: boolean;
   $fullWidth?: boolean;
 }
@@ -36,56 +37,56 @@ export const StyledButton = styled.button<StyledButtonProps>`
   
   ${({ $size, theme }) => {
     switch ($size) {
-      case 'xs':
+      case 'xsmall':
         return `
-          gap: ${theme.spacing[1]};
-          padding: 4px ${theme.spacing[2]};
+          gap: ${theme.spacing[2]};
+          padding: ${theme.spacing[1]} ${theme.spacing[2]};
           font-size: ${theme.fontSizes[12]};
           line-height: ${theme.lineHeights[14]};
           border-radius: ${theme.borderRadius.sm};
-          min-height: 24px;
+          min-height: 27px;
         `;
       case 'small':
-        return `
-          gap: ${theme.spacing[1]};
-          padding: ${theme.spacing[1]} ${theme.spacing[2]};
-          font-size: ${theme.fontSizes[14]};
-          line-height: ${theme.lineHeights[16]};
-          border-radius: ${theme.borderRadius.sm};
-          min-height: 32px;
-        `;
-      case 'large':
-        return `
-          gap: ${theme.spacing[2]};
-          padding: ${theme.spacing[2]} ${theme.spacing[4]};
-          font-size: ${theme.fontSizes[16]};
-          line-height: ${theme.lineHeights[19]};
-          border-radius: ${theme.borderRadius.md};
-          min-height: 48px;
-        `;
-      case 'xl':
-        return `
-          gap: ${theme.spacing[2]};
-          padding: ${theme.spacing[3]} ${theme.spacing[5]};
-          font-size: ${theme.fontSizes[18]};
-          line-height: ${theme.lineHeights[21]};
-          border-radius: ${theme.borderRadius.md};
-          min-height: 56px;
-        `;
-      case 'medium':
-      default:
         return `
           gap: ${theme.spacing[2]};
           padding: ${theme.spacing[2]} ${theme.spacing[3]};
           font-size: ${theme.fontSizes[14]};
           line-height: ${theme.lineHeights[16]};
           border-radius: ${theme.borderRadius.sm};
-          min-height: 40px;
+          min-height: 35px;
+        `;
+      case 'large':
+        return `
+          gap: ${theme.spacing[2]};
+          padding: ${theme.spacing[3]} ${theme.spacing[4]};
+          font-size: ${theme.fontSizes[16]};
+          line-height: ${theme.lineHeights[19]};
+          border-radius: ${theme.borderRadius.sm};
+          min-height: 43px;
+        `;
+      case 'xlarge':
+        return `
+          gap: ${theme.spacing[2]};
+          padding: ${theme.spacing[3]} ${theme.spacing[5]};
+          font-size: ${theme.fontSizes[18]};
+          line-height: ${theme.lineHeights[21]};
+          border-radius: ${theme.borderRadius.sm};
+          min-height: 48px;
+        `;
+      case 'medium':
+      default:
+        return `
+          gap: ${theme.spacing[2]};
+          padding: ${theme.spacing[2]} 14px;
+          font-size: ${theme.fontSizes[16]};
+          line-height: ${theme.lineHeights[19]};
+          border-radius: ${theme.borderRadius.sm};
+          min-height: 39px;
         `;
     }
   }}
   
-  ${({ theme, $variant, $disabled }) => {
+  ${({ theme, $variant, $buttonType, $disabled }) => {
     // Primary variant
     if ($variant === 'primary') {
       if ($disabled) {
@@ -95,21 +96,161 @@ export const StyledButton = styled.button<StyledButtonProps>`
           pointer-events: none;
         `;
       }
+      
+      // Primary with different types
+      if ($buttonType === 'safe') {
+        return `
+          background-color: ${theme.colors.palette.success[400]};
+          color: ${theme.colors.palette.neutral[50]};
+          
+          &:hover {
+            background-color: ${theme.colors.palette.success[500]};
+          }
+          
+          &:active, &:focus {
+            background-color: ${theme.colors.palette.success[600]};
+          }
+        `;
+      }
+      
+      if ($buttonType === 'warning') {
+        return `
+          background-color: ${theme.colors.palette.warning[400]};
+          color: ${theme.colors.palette.neutral[50]};
+          
+          &:hover {
+            background-color: ${theme.colors.palette.warning[500]};
+          }
+          
+          &:active, &:focus {
+            background-color: ${theme.colors.palette.warning[600]};
+          }
+        `;
+      }
+      
+      if ($buttonType === 'alert') {
+        return `
+          background-color: ${theme.colors.palette.error[400]};
+          color: ${theme.colors.palette.neutral[50]};
+          
+          &:hover {
+            background-color: ${theme.colors.palette.error[500]};
+          }
+          
+          &:active, &:focus {
+            background-color: ${theme.colors.palette.error[600]};
+          }
+        `;
+      }
+      
+      // Default primary
       return `
-        background-color: ${theme.colors.palette.primary[500]};
+        background-color: ${theme.colors.palette.primary[400]};
         color: ${theme.colors.palette.neutral[50]};
         
         &:hover {
-          background-color: ${theme.colors.palette.primary[600]};
+          background-color: ${theme.colors.palette.primary[500]};
         }
         
-        &:active {
-          background-color: ${theme.colors.palette.primary[700]};
+        &:active, &:focus {
+          background-color: ${theme.colors.palette.primary[600]};
         }
       `;
     }
     
-    // Outlined variant
+    // Secondary variant
+    if ($variant === 'secondary') {
+      if ($disabled) {
+        return `
+          background-color: transparent;
+          color: ${theme.colors.palette.neutral[400]};
+          border: 1px solid ${theme.colors.palette.neutral[300]};
+          pointer-events: none;
+        `;
+      }
+      
+      // Secondary with different types
+      if ($buttonType === 'safe') {
+        return `
+          background-color: transparent;
+          color: ${theme.colors.palette.success[500]};
+          border: 1px solid ${theme.colors.palette.success[500]};
+          
+          &:hover {
+            background-color: ${theme.colors.palette.success[50]};
+            border-color: ${theme.colors.palette.success[600]};
+            color: ${theme.colors.palette.success[600]};
+          }
+          
+          &:active, &:focus {
+            background-color: ${theme.colors.palette.success[100]};
+            border-color: ${theme.colors.palette.success[700]};
+            color: ${theme.colors.palette.success[700]};
+          }
+        `;
+      }
+      
+      if ($buttonType === 'warning') {
+        return `
+          background-color: transparent;
+          color: ${theme.colors.palette.warning[600]};
+          border: 1px solid ${theme.colors.palette.warning[600]};
+          
+          &:hover {
+            background-color: ${theme.colors.palette.warning[50]};
+            border-color: ${theme.colors.palette.warning[700]};
+            color: ${theme.colors.palette.warning[700]};
+          }
+          
+          &:active, &:focus {
+            background-color: ${theme.colors.palette.warning[100]};
+            border-color: ${theme.colors.palette.warning[800]};
+            color: ${theme.colors.palette.warning[800]};
+          }
+        `;
+      }
+      
+      if ($buttonType === 'alert') {
+        return `
+          background-color: transparent;
+          color: ${theme.colors.palette.error[500]};
+          border: 1px solid ${theme.colors.palette.error[500]};
+          
+          &:hover {
+            background-color: ${theme.colors.palette.error[50]};
+            border-color: ${theme.colors.palette.error[600]};
+            color: ${theme.colors.palette.error[600]};
+          }
+          
+          &:active, &:focus {
+            background-color: ${theme.colors.palette.error[100]};
+            border-color: ${theme.colors.palette.error[700]};
+            color: ${theme.colors.palette.error[700]};
+          }
+        `;
+      }
+      
+      // Default secondary
+      return `
+        background-color: transparent;
+        color: ${theme.colors.palette.primary[500]};
+        border: 1px solid ${theme.colors.palette.primary[500]};
+        
+        &:hover {
+          background-color: ${theme.colors.palette.primary[50]};
+          border-color: ${theme.colors.palette.primary[600]};
+          color: ${theme.colors.palette.primary[600]};
+        }
+        
+        &:active, &:focus {
+          background-color: ${theme.colors.palette.primary[100]};
+          border-color: ${theme.colors.palette.primary[700]};
+          color: ${theme.colors.palette.primary[700]};
+        }
+      `;
+    }
+    
+    // Outlined variant (legacy support)
     if ($variant === 'outlined') {
       if ($disabled) {
         return `
@@ -164,75 +305,6 @@ export const StyledButton = styled.button<StyledButtonProps>`
         }
       `;
     }
-    
-    // Success variant
-    if ($variant === 'success') {
-      if ($disabled) {
-        return `
-          background-color: ${theme.colors.palette.neutral[300]};
-          color: ${theme.colors.palette.neutral[500]};
-          pointer-events: none;
-        `;
-      }
-      return `
-        background-color: ${theme.colors.palette.success[500]};
-        color: ${theme.colors.palette.neutral[50]};
-        
-        &:hover {
-          background-color: ${theme.colors.palette.success[600]};
-        }
-        
-        &:active {
-          background-color: ${theme.colors.palette.success[700]};
-        }
-      `;
-    }
-    
-    // Warning variant
-    if ($variant === 'warning') {
-      if ($disabled) {
-        return `
-          background-color: ${theme.colors.palette.neutral[300]};
-          color: ${theme.colors.palette.neutral[500]};
-          pointer-events: none;
-        `;
-      }
-      return `
-        background-color: ${theme.colors.palette.warning[500]};
-        color: ${theme.colors.palette.warning[850]};
-        
-        &:hover {
-          background-color: ${theme.colors.palette.warning[600]};
-        }
-        
-        &:active {
-          background-color: ${theme.colors.palette.warning[700]};
-        }
-      `;
-    }
-    
-    // Alert variant
-    if ($variant === 'alert') {
-      if ($disabled) {
-        return `
-          background-color: ${theme.colors.palette.neutral[300]};
-          color: ${theme.colors.palette.neutral[500]};
-          pointer-events: none;
-        `;
-      }
-      return `
-        background-color: ${theme.colors.palette.error[500]};
-        color: ${theme.colors.palette.neutral[50]};
-        
-        &:hover {
-          background-color: ${theme.colors.palette.error[600]};
-        }
-        
-        &:active {
-          background-color: ${theme.colors.palette.error[700]};
-        }
-      `;
-    }
   }}
 `;
 
@@ -244,10 +316,10 @@ export const IconWrapper = styled.span<{ $size: ButtonSize }>`
   
   ${({ $size }) => {
     switch ($size) {
-      case 'xs':
+      case 'xsmall':
         return `
-          width: 12px;
-          height: 12px;
+          width: 16px;
+          height: 16px;
         `;
       case 'small':
         return `
@@ -256,13 +328,13 @@ export const IconWrapper = styled.span<{ $size: ButtonSize }>`
         `;
       case 'large':
         return `
-          width: 20px;
-          height: 20px;
+          width: 16px;
+          height: 16px;
         `;
-      case 'xl':
+      case 'xlarge':
         return `
-          width: 24px;
-          height: 24px;
+          width: 16px;
+          height: 16px;
         `;
       case 'medium':
       default:

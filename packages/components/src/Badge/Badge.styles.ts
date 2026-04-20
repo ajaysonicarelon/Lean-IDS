@@ -23,7 +23,7 @@ const getBackgroundColor = (type: BadgeType, style: BadgeStyle, theme: any) => {
     const subduedMap = {
       info: theme.colors.palette.info[50],
       success: theme.colors.palette.success[50],
-      warning: theme.colors.palette.warning[150],
+      warning: theme.colors.palette.warning[100],
       error: theme.colors.palette.error[50],
       neutral: theme.colors.palette.neutral[50],
     };
@@ -86,7 +86,7 @@ export const StyledBadge = styled.span<StyledBadgeProps>`
   align-items: center;
   justify-content: center;
   gap: ${({ theme }) => theme.spacing[1]};
-  padding: ${({ theme }) => `${theme.spacing[0.5]} ${theme.spacing[1]}`};
+  padding: ${({ theme }) => `${theme.spacing[1]} ${theme.spacing[2]}`};
   border-radius: ${({ theme }) => theme.borderRadius.xs};
   background-color: ${({ $type, $style, theme }) => getBackgroundColor($type, $style, theme)};
   border: 1px solid ${({ $type, $style, theme }) => getBorderColor($type, $style, theme)};
