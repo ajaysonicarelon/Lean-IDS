@@ -1,2 +1,2 @@
 export { TableHeader } from './TableHeader';
-export type { TableHeaderProps, SortDirection } from './TableHeader.types';
+export type { TableHeaderProps, SortDirection, TableHeaderVariant, TableHeaderSide } from './TableHeader.types';

@@ -70,6 +70,10 @@ export const TableCell: React.FC<TableCellProps> = ({
   onDelete,
   align = 'left',
   className,
+  selected = false,
+  isFirstColumn = false,
+  locked = false,
+  leftOffset = 0,
 }) => {
   const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (onCheckChange) {
@@ -88,7 +92,15 @@ export const TableCell: React.FC<TableCellProps> = ({
   };
 
   return (
-    <StyledTableCell $align={align} className={className}>
+    <StyledTableCell 
+      $align={align} 
+      $selected={selected} 
+      $isFirst={isFirstColumn}
+      $locked={locked}
+      $leftOffset={leftOffset}
+      className={className}
+      data-locked={locked ? 'true' : undefined}
+    >
       <CellContent>
         {showCheckbox && (
           <CheckboxWrapper>

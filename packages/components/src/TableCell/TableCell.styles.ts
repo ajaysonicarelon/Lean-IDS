@@ -2,21 +2,46 @@ import styled from 'styled-components';
 
 interface StyledTableCellProps {
   $align?: 'left' | 'center' | 'right';
+  $selected?: boolean;
+  $isFirst?: boolean;
+  $locked?: boolean;
+  $leftOffset?: number;
 }
 
 export const StyledTableCell = styled.td<StyledTableCellProps>`
-  background-color: ${({ theme }) => theme.colors.palette.neutral[50]};
-  border-bottom: 1px solid ${({ theme }) => theme.colors.palette.neutral[200]};
-  padding: ${({ theme }) => `${theme.spacing[2]} ${theme.spacing[5]}`};
+  background-color: ${({ theme, $selected, $locked }) => 
+    $locked ? theme.colors.palette.primary[50] : $selected ? theme.colors.palette.primary[50] : theme.colors.palette.neutral[50]};
+  border-bottom: 1px solid ${({ theme }) => theme.colors.palette.neutral[300]};
+  border-left: ${({ theme, $selected, $isFirst }) => 
+    $selected && $isFirst ? `2px solid ${theme.colors.palette.primary[500]}` : 'none'};
+  padding: ${({ theme, $selected, $isFirst }) => 
+    $selected && $isFirst 
+      ? `${theme.spacing[3]} ${theme.spacing[7]} ${theme.spacing[3]} calc(${theme.spacing[7]} - 2px)` 
+      : `${theme.spacing[3]} ${theme.spacing[7]}`};
   height: 72px;
   text-align: ${({ $align }) => $align || 'left'};
   vertical-align: middle;
+  transition: background-color 0.2s ease, box-shadow 0.2s ease;
+  
+  ${({ $locked, $leftOffset, theme }) =>
+    $locked
+      ? `
+    position: sticky;
+    left: ${$leftOffset || 0}px;
+    z-index: 9;
+    
+    &.is-stuck {
+      background-color: ${theme.colors.palette.primary[50]};
+      box-shadow: 4px 0px 4px rgba(0, 0, 0, 0.05);
+    }
+  `
+      : ''}
 `;
 
 export const CellContent = styled.div`
   display: flex;
   align-items: center;
-  gap: ${({ theme }) => theme.spacing[4]};
+  gap: ${({ theme }) => theme.spacing[7]};
   flex-wrap: nowrap;
 `;
 
@@ -65,7 +90,7 @@ export const UserName = styled.div`
   font-size: ${({ theme }) => theme.fontSizes[14]};
   font-weight: ${({ theme }) => theme.fontWeights.semibold};
   line-height: 16px;
-  color: ${({ theme }) => theme.colors.palette.neutral[800]};
+  color: ${({ theme }) => theme.colors.palette.neutral[900]};
   white-space: nowrap;
 `;
 
@@ -75,7 +100,7 @@ export const UserRole = styled.div`
   font-weight: ${({ theme }) => theme.fontWeights.medium};
   line-height: 14px;
   letter-spacing: 1px;
-  color: ${({ theme }) => theme.colors.palette.neutral[500]};
+  color: ${({ theme }) => theme.colors.palette.neutral[600]};
   white-space: nowrap;
 `;
 
@@ -84,8 +109,8 @@ export const NumberText = styled.div`
   font-size: ${({ theme }) => theme.fontSizes[14]};
   font-weight: 400;
   line-height: 16px;
-  letter-spacing: 0.21px;
-  color: ${({ theme }) => theme.colors.palette.neutral[800]};
+  letter-spacing: 1.5px;
+  color: ${({ theme }) => theme.colors.palette.neutral[900]};
   white-space: nowrap;
   flex-shrink: 0;
 `;
@@ -99,7 +124,7 @@ export const DateText = styled.div`
   font-size: ${({ theme }) => theme.fontSizes[14]};
   font-weight: ${({ theme }) => theme.fontWeights.medium};
   line-height: 16px;
-  color: ${({ theme }) => theme.colors.palette.neutral[700]};
+  color: ${({ theme }) => theme.colors.palette.neutral[800]};
   white-space: nowrap;
   flex-shrink: 0;
 `;
@@ -109,7 +134,7 @@ export const RegularText = styled.div`
   font-size: ${({ theme }) => theme.fontSizes[14]};
   font-weight: ${({ theme }) => theme.fontWeights.medium};
   line-height: 16px;
-  color: ${({ theme }) => theme.colors.palette.neutral[700]};
+  color: ${({ theme }) => theme.colors.palette.neutral[800]};
   white-space: nowrap;
   flex-shrink: 0;
 `;

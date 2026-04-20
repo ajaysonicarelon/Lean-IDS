@@ -56,4 +56,12 @@ export interface TableCellProps {
   // Styling
   align?: 'left' | 'center' | 'right';
   className?: string;
+  
+  // Row state
+  selected?: boolean;
+  isFirstColumn?: boolean;
+  
+  // Locked column feature
+  locked?: boolean;
+  leftOffset?: number;
 }
