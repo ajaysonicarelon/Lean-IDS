@@ -9,8 +9,8 @@
     "dist"
   ],
   "scripts": {
-    "build": "rollup -c",
-    "dev": "rollup -c -w"
+    "build": "echo 'Utils package is empty - skipping build'",
+    "dev": "echo 'Utils package is empty - skipping dev'"
   },
   "keywords": [
     "utils",

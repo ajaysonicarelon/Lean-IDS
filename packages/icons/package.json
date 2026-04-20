@@ -9,8 +9,8 @@
     "dist"
   ],
   "scripts": {
-    "build": "rollup -c",
-    "dev": "rollup -c -w"
+    "build": "echo 'Icons package is empty - skipping build'",
+    "dev": "echo 'Icons package is empty - skipping dev'"
   },
   "keywords": [
     "icons",
