@@ -4,8 +4,8 @@
 
 **Package names have been changed to scoped packages to avoid access issues:**
 
-- ❌ Old: `@ajaysoni7832/lean-ids-tokens` → ✅ New: `@ajaysonicarelon/@ajaysoni7832/lean-ids-tokens`
-- ❌ Old: `@ajaysoni7832/lean-ids-components` → ✅ New: `@ajaysonicarelon/@ajaysoni7832/lean-ids-components`
+- ❌ Old: `lean-ids-tokens` → ✅ New: `@ajaysoni7832/lean-ids-tokens`
+- ❌ Old: `lean-ids-components` → ✅ New: `@ajaysoni7832/lean-ids-components`
 
 **Why?** Unscoped packages require ownership on NPM. Scoped packages are free for public use and avoid naming conflicts.
 
@@ -14,7 +14,7 @@
 ## 🔧 **Access Issue Resolution**
 
 ### **Problem:**
-Your dev got "access denied" when running `npm install @ajaysoni7832/lean-ids-tokens`
+Your dev got "access denied" when running `npm install lean-ids-tokens`
 
 ### **Root Cause:**
 1. Unscoped package names may already be taken by someone else
@@ -42,8 +42,8 @@ Your dev got "access denied" when running `npm install @ajaysoni7832/lean-ids-to
    Enter your npm credentials.
 
 2. **Verify your NPM username:**
-   - Your username should be: `ajaysonicarelon`
-   - Scoped packages will be: `@ajaysonicarelon/package-name`
+   - Your username should be: `ajaysoni7832`
+   - Scoped packages will be: `@ajaysoni7832/package-name`
 
 3. **First-time scoped package setup:**
    ```bash
@@ -102,12 +102,12 @@ npm publish --access public
 
 ```bash
 # Check on npm
-npm view @ajaysonicarelon/@ajaysoni7832/lean-ids-tokens
-npm view @ajaysonicarelon/@ajaysoni7832/lean-ids-components
+npm view @ajaysoni7832/lean-ids-tokens
+npm view @ajaysoni7832/lean-ids-components
 
 # Or visit:
-# https://www.npmjs.com/package/@ajaysonicarelon/@ajaysoni7832/lean-ids-tokens
-# https://www.npmjs.com/package/@ajaysonicarelon/@ajaysoni7832/lean-ids-components
+# https://www.npmjs.com/package/@ajaysoni7832/lean-ids-tokens
+# https://www.npmjs.com/package/@ajaysoni7832/lean-ids-components
 ```
 
 ---
