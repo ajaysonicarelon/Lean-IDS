@@ -1,0 +1,378 @@
+import { Meta } from '@storybook/blocks';
+
+<Meta title="1. Getting Started/Angular" />
+
+# Using Lean IDS in Angular
+
+## � Overview
+
+This guide shows Angular developers how to use the Lean IDS design system in their projects. The design system provides design tokens and component implementations for Angular.
+
+---
+
+## 🚀 Quick Start
+
+### **Step 1: Install Tokens Package**
+
+```bash
+npm install @ajaysonicarelon/lean-ids-tokens
+```
+
+**Note:** The `@ajaysonicarelon/lean-ids-components` package is React-based. For Angular, use the design tokens and copy component implementations from the repository.
+
+---
+
+## 🎨 Using Design Tokens
+
+### Import in TypeScript
+
+```typescript
+// app.component.ts
+import { colors, spacing, typography } from '@ajaysonicarelon/lean-ids-tokens';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.scss']
+})
+export class AppComponent {
+  primaryColor = colors.carelon.primary[500]; // #5009B5
+  spacing = spacing;
+}
+```
+
+### Use in SCSS with CSS Variables
+
+```scss
+// src/styles.scss (global styles)
+:root {
+  // Colors
+  --primary-500: #5009B5;
+  --primary-400: #6222BC;
+  --primary-300: #8553CB;
+  --primary-200: #CBB5E9;
+  --primary-100: #EFE6F8;
+  --primary-50: #F8F7FB;
+  
+  // Spacing
+  --spacing-12: 12px;
+  --spacing-16: 16px;
+  --spacing-24: 24px;
+  
+  // Typography
+  --font-primary: 'Inter', sans-serif;
+}
+
+// Use in components
+.button {
+  background-color: var(--primary-500);
+  padding: var(--spacing-12) var(--spacing-24);
+  font-family: var(--font-primary);
+}
+```
+
+---
+
+## 🧩 Using Angular Components
+
+### **Available Components**
+
+Angular implementations are available in the repository at `packages/angular-components/src/`:
+
+**Currently Available:**
+- ✅ **InputField** - Text input with validation, forms integration, and all input types
+- ✅ **Data Table** - Advanced table with freezing, sorting, selection, pagination
+
+**Coming Soon:**
+- Button, Checkbox, Radio Button, Toggle, Textarea, Select, and more
+
+### **How to Use Components**
+
+#### **Step 1: Copy the Component**
+
+Copy the component folder from the repository to your Angular project:
+
+```bash
+# Example: Copy InputField component
+cp -r packages/angular-components/src/input-field/ your-angular-app/src/app/components/
+```
+
+#### **Step 2: Import and Use**
+
+```typescript
+import { Component } from '@angular/core';
+import { InputFieldComponent } from './components/input-field';
+
+@Component({
+  selector: 'app-root',
+  standalone: true,
+  imports: [InputFieldComponent],
+  template: `
+    <lean-input-field
+      label="Email Address"
+      type="email"
+      [required]="true"
+      helpText="We'll never share your email"
+    ></lean-input-field>
+  `
+})
+export class AppComponent {}
+```
+
+### **Component-Specific Documentation**
+
+Each component has its own documentation:
+
+- **InputField:** See "Components → InputField → Angular Implementation"
+- **Data Table:** See `packages/angular-components/ANGULAR_TABLE_IMPLEMENTATION_GUIDE.md`
+
+Check each component's page in Storybook for Angular-specific usage examples.
+
+---
+
+## 🎨 Example Components
+
+### Button Component
+
+```typescript
+// button.component.ts
+import { Component, Input } from '@angular/core';
+import { CommonModule } from '@angular/common';
+
+@Component({
+  selector: 'app-button',
+  standalone: true,
+  imports: [CommonModule],
+  template: `
+    <button 
+      [class]="'btn btn-' + variant"
+      [disabled]="disabled">
+      <ng-content></ng-content>
+    </button>
+  `,
+  styles: [`
+    .btn {
+      font-family: var(--font-primary);
+      font-size: 14px;
+      font-weight: 600;
+      padding: var(--spacing-12) var(--spacing-24);
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    
+    .btn-primary {
+      background-color: var(--primary-500);
+      color: white;
+    }
+    
+    .btn-primary:hover {
+      background-color: var(--primary-600);
+    }
+    
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+  `]
+})
+export class ButtonComponent {
+  @Input() variant: 'primary' | 'secondary' = 'primary';
+  @Input() disabled = false;
+}
+```
+
+### Card Component
+
+```typescript
+// card.component.ts
+import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-card',
+  standalone: true,
+  template: `
+    <div class="card">
+      <ng-content></ng-content>
+    </div>
+  `,
+  styles: [`
+    .card {
+      background: white;
+      border: 1px solid var(--neutral-300);
+      border-radius: 8px;
+      padding: var(--spacing-24);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+  `]
+})
+export class CardComponent {}
+```
+
+---
+
+## 🔧 Theme Service (Advanced)
+
+Create a service to manage themes dynamically:
+
+```typescript
+// services/theme.service.ts
+import { Injectable } from '@angular/core';
+import { BehaviorSubject } from 'rxjs';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class ThemeService {
+  private currentTheme = new BehaviorSubject<'carelon' | 'elevance'>('carelon');
+  public theme$ = this.currentTheme.asObservable();
+
+  setTheme(themeName: 'carelon' | 'elevance') {
+    import('@ajaysonicarelon/lean-ids-tokens').then(({ colors }) => {
+      const theme = themeName === 'carelon' ? colors.carelon : colors.elevance;
+      this.applyTheme(theme);
+      this.currentTheme.next(themeName);
+    });
+  }
+
+  private applyTheme(theme: any) {
+    const root = document.documentElement;
+    Object.entries(theme.primary).forEach(([key, value]) => {
+      root.style.setProperty(`--primary-${key}`, value as string);
+    });
+  }
+}
+```
+
+**Usage:**
+
+```typescript
+// app.component.ts
+import { Component, OnInit } from '@angular/core';
+import { ThemeService } from './services/theme.service';
+
+@Component({
+  selector: 'app-root',
+  template: `
+    <button (click)="switchTheme('carelon')">Carelon Theme</button>
+    <button (click)="switchTheme('elevance')">Elevance Theme</button>
+  `
+})
+export class AppComponent implements OnInit {
+  constructor(private themeService: ThemeService) {}
+
+  ngOnInit() {
+    this.themeService.setTheme('carelon');
+  }
+
+  switchTheme(theme: 'carelon' | 'elevance') {
+    this.themeService.setTheme(theme);
+  }
+}
+```
+
+---
+
+## 📚 Resources
+
+### Documentation
+- **npm Package:** [@ajaysonicarelon/lean-ids-tokens](https://www.npmjs.com/package/@ajaysonicarelon/lean-ids-tokens)
+- **GitHub Repository:** [Lean-IDS](https://github.com/ajaysonicarelon/Lean-IDS)
+- **Angular Guide:** `ANGULAR_USAGE_GUIDE.md` in the repository
+- **Table Implementation:** `packages/angular-components/ANGULAR_TABLE_IMPLEMENTATION_GUIDE.md`
+
+### Compatibility
+- **Angular Versions:** 15, 16, 17, 18, 19
+- **TypeScript:** 4.8+
+- **RxJS:** 7.0+
+
+---
+
+## ✅ Quick Checklist
+
+- [ ] Install `@ajaysonicarelon/lean-ids-tokens` package
+- [ ] Setup CSS variables in global styles
+- [ ] Import tokens in TypeScript components
+- [ ] Copy Angular table implementation (if needed)
+- [ ] Create theme service (optional)
+- [ ] Build your components using tokens
+- [ ] Test with your data
+
+---
+
+## 🆘 Common Questions
+
+**Q: Can I use the React components in Angular?**  
+A: No, but we provide a complete Angular implementation guide with the same features.
+
+**Q: How do I get the data table?**  
+A: Follow the implementation guide in `packages/angular-components/ANGULAR_TABLE_IMPLEMENTATION_GUIDE.md`
+
+**Q: Can I customize the tokens?**  
+A: Yes! Import the tokens and override CSS variables or create your own theme.
+
+**Q: Does it work with Angular Material?**  
+A: Yes! You can use the tokens alongside Angular Material or replace Material components.
+
+---
+
+## 🎯 Complete Example
+
+```typescript
+// app.component.ts
+import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { colors, spacing } from '@ajaysonicarelon/lean-ids-tokens';
+
+@Component({
+  selector: 'app-root',
+  standalone: true,
+  imports: [CommonModule],
+  template: `
+    <div class="container">
+      <h1>Lean IDS Angular Demo</h1>
+      <div class="card">
+        <p>Primary Color: {{ primaryColor }}</p>
+        <p>Spacing: {{ spacing[16] }}px</p>
+        <button class="btn-primary">Click Me</button>
+      </div>
+    </div>
+  `,
+  styles: [`
+    .container {
+      padding: var(--spacing-24);
+    }
+    
+    .card {
+      background: white;
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+      padding: var(--spacing-24);
+      margin-top: var(--spacing-16);
+    }
+    
+    .btn-primary {
+      background-color: var(--primary-500);
+      color: white;
+      padding: var(--spacing-12) var(--spacing-24);
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+    
+    .btn-primary:hover {
+      opacity: 0.9;
+    }
+  `]
+})
+export class AppComponent {
+  primaryColor = colors.carelon.primary[500];
+  spacing = spacing;
+}
+```
+
+---
+
+**Happy coding with Lean IDS in Angular!** 🚀

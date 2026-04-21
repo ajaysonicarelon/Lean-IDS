@@ -11,10 +11,10 @@ This guide shows Angular developers how to use the Lean IDS design system in the
 ### **Step 1: Install Packages**
 
 ```bash
-npm install lean-ids-tokens@1.1.0
+npm install @ajaysonicarelon/lean-ids-tokens@1.1.0
 ```
 
-**Note:** The components package (`lean-ids-components`) is React-based. For Angular, use the tokens and follow the Angular implementation guide below.
+**Note:** The components package (`@ajaysonicarelon/lean-ids-components`) is React-based. For Angular, use the tokens and follow the Angular implementation guide below.
 
 ---
 
@@ -23,7 +23,7 @@ npm install lean-ids-tokens@1.1.0
 ### **1. Install Tokens Package**
 
 ```bash
-npm install lean-ids-tokens
+npm install @ajaysonicarelon/lean-ids-tokens
 ```
 
 ### **2. Import Tokens in Your Angular App**
@@ -32,7 +32,7 @@ npm install lean-ids-tokens
 
 ```typescript
 // app.component.ts or any component
-import { theme, colors, spacing, typography } from 'lean-ids-tokens';
+import { theme, colors, spacing, typography } from '@ajaysonicarelon/lean-ids-tokens';
 
 @Component({
   selector: 'app-root',
@@ -123,10 +123,10 @@ Create a script to auto-generate SCSS:
 
 ```typescript
 // scripts/generate-scss-tokens.ts
-import { colors, spacing, typography } from 'lean-ids-tokens';
+import { colors, spacing, typography } from '@ajaysonicarelon/lean-ids-tokens';
 import * as fs from 'fs';
 
-let scss = '// Auto-generated from lean-ids-tokens\n\n';
+let scss = '// Auto-generated from @ajaysonicarelon/lean-ids-tokens\n\n';
 
 // Colors
 scss += '// Colors\n';
@@ -188,7 +188,7 @@ From `packages/angular-components/ANGULAR_TABLE_IMPLEMENTATION_GUIDE.md`, copy:
 #### **3. Install Dependencies**
 
 ```bash
-npm install lean-ids-tokens
+npm install @ajaysonicarelon/lean-ids-tokens
 ```
 
 #### **4. Use in Your App**
@@ -332,7 +332,7 @@ export class CardComponent {}
 // services/theme.service.ts
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { theme as carelonTheme } from 'lean-ids-tokens';
+import { theme as carelonTheme } from '@ajaysonicarelon/lean-ids-tokens';
 
 @Injectable({
   providedIn: 'root'
@@ -343,7 +343,7 @@ export class ThemeService {
 
   setTheme(themeName: 'carelon' | 'elevance') {
     // Load theme dynamically
-    import('lean-ids-tokens').then(({ colors }) => {
+    import('@ajaysonicarelon/lean-ids-tokens').then(({ colors }) => {
       const theme = themeName === 'carelon' ? colors.carelon : colors.elevance;
       this.applyTheme(theme);
     });
@@ -430,7 +430,7 @@ your-angular-app/
 ### **1. Install**
 
 ```bash
-npm install lean-ids-tokens
+npm install @ajaysonicarelon/lean-ids-tokens
 ```
 
 ### **2. Setup Global Styles**
@@ -463,7 +463,7 @@ body {
 // app.component.ts
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { colors, spacing } from 'lean-ids-tokens';
+import { colors, spacing } from '@ajaysonicarelon/lean-ids-tokens';
 
 @Component({
   selector: 'app-root',
@@ -518,7 +518,7 @@ export class AppComponent {
 ## 📚 Resources
 
 ### **Documentation:**
-- **Tokens Package:** https://www.npmjs.com/package/lean-ids-tokens
+- **Tokens Package:** https://www.npmjs.com/package/@ajaysonicarelon/lean-ids-tokens
 - **Angular Implementation:** `packages/angular-components/ANGULAR_TABLE_IMPLEMENTATION_GUIDE.md`
 - **Table Template Guide:** `packages/components/src/Table/README_TABLE_TEMPLATE.md`
 
@@ -548,7 +548,7 @@ A: Yes! You can use the tokens alongside Angular Material or replace Material co
 
 ## ✅ Checklist for Angular Developers
 
-- [ ] Install `lean-ids-tokens` package
+- [ ] Install `@ajaysonicarelon/lean-ids-tokens` package
 - [ ] Setup CSS variables in global styles
 - [ ] Copy Angular table implementation (if needed)
 - [ ] Create theme service (optional)

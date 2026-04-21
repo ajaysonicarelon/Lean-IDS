@@ -1,21 +1,28 @@
 # NPM Publishing Guide - Lean IDS
 
-## ✅ GitHub Push Complete!
+## 🚨 **IMPORTANT: Package Names Updated to Scoped**
 
-All changes have been pushed to GitHub with proper commits:
-- **8 commits** created with detailed messages
-- **Repository:** https://github.com/ajaysonicarelon/Lean-IDS
-- **Branch:** main
+**Package names have been changed to scoped packages to avoid access issues:**
 
-### Commits Summary:
-1. ✅ Advanced data table with column freezing
-2. ✅ Pagination and Icon components  
-3. ✅ React table template for developers
-4. ✅ Angular 17 implementation
-5. ✅ Semantic tokens and design system
-6. ✅ Component refactoring for semantic tokens
-7. ✅ Comprehensive documentation
-8. ✅ Dependencies and version bump to 1.1.0
+- ❌ Old: `@ajaysonicarelon/lean-ids-tokens` → ✅ New: `@ajaysonicarelon/@ajaysonicarelon/lean-ids-tokens`
+- ❌ Old: `@ajaysonicarelon/lean-ids-components` → ✅ New: `@ajaysonicarelon/@ajaysonicarelon/lean-ids-components`
+
+**Why?** Unscoped packages require ownership on NPM. Scoped packages are free for public use and avoid naming conflicts.
+
+---
+
+## 🔧 **Access Issue Resolution**
+
+### **Problem:**
+Your dev got "access denied" when running `npm install @ajaysonicarelon/lean-ids-tokens`
+
+### **Root Cause:**
+1. Unscoped package names may already be taken by someone else
+2. NPM requires you to be the owner to publish unscoped packages
+3. Even if marked "public", unscoped packages have ownership restrictions
+
+### **Solution:**
+✅ **Use scoped packages** (already updated in package.json files)
 
 ---
 
@@ -34,9 +41,15 @@ All changes have been pushed to GitHub with proper commits:
    ```
    Enter your npm credentials.
 
-2. **Verify package names are available:**
-   - `lean-ids-components` (already published as 1.0.1)
-   - `lean-ids-tokens` (already published as 1.0.1)
+2. **Verify your NPM username:**
+   - Your username should be: `ajaysonicarelon`
+   - Scoped packages will be: `@ajaysonicarelon/package-name`
+
+3. **First-time scoped package setup:**
+   ```bash
+   # Make sure scoped packages are public (not private)
+   npm config set access public
+   ```
 
 ---
 
@@ -71,42 +84,37 @@ cat packages/components/package.json
 
 ### **Step 3: Publish to npm**
 
-#### **Option A: Publish Both Packages (Recommended)**
+**IMPORTANT:** Scoped packages require `--access public` flag!
 
 ```bash
 # Publish tokens first
 cd packages/tokens
-npm publish
+npm publish --access public
 
 # Publish components
 cd ../components
-npm publish
-```
-
-#### **Option B: Publish with Access Control (if scoped)**
-
-If you want to make them public:
-```bash
 npm publish --access public
 ```
+
+**Note:** The `--access public` flag is required for scoped packages to be publicly accessible.
 
 ### **Step 4: Verify Publication**
 
 ```bash
 # Check on npm
-npm view lean-ids-tokens
-npm view lean-ids-components
+npm view @ajaysonicarelon/@ajaysonicarelon/lean-ids-tokens
+npm view @ajaysonicarelon/@ajaysonicarelon/lean-ids-components
 
 # Or visit:
-# https://www.npmjs.com/package/lean-ids-tokens
-# https://www.npmjs.com/package/lean-ids-components
+# https://www.npmjs.com/package/@ajaysonicarelon/@ajaysonicarelon/lean-ids-tokens
+# https://www.npmjs.com/package/@ajaysonicarelon/@ajaysonicarelon/lean-ids-components
 ```
 
 ---
 
 ## 📋 What's Being Published
 
-### **lean-ids-tokens@1.1.0**
+### **@ajaysonicarelon/lean-ids-tokens@1.1.0**
 
 **New in 1.1.0:**
 - ✅ Semantic color tokens (primary, secondary, success, warning, error, info)
@@ -121,7 +129,7 @@ npm view lean-ids-components
 - `dist/index.esm.js` - ES Module bundle
 - `dist/index.d.ts` - TypeScript definitions
 
-### **lean-ids-components@1.1.0**
+### **@ajaysonicarelon/lean-ids-components@1.1.0**
 
 **New in 1.1.0:**
 - ✅ Advanced Data Table with column freezing (max 3)
@@ -147,11 +155,11 @@ npm view lean-ids-components
 **Solution:**
 ```bash
 # Check if package name is taken
-npm view lean-ids-components
+npm view @ajaysonicarelon/lean-ids-components
 
 # If taken, you need to use a scoped package
 # Update package.json:
-"name": "@your-username/lean-ids-components"
+"name": "@your-username/@ajaysonicarelon/lean-ids-components"
 
 # Then publish with:
 npm publish --access public
@@ -200,7 +208,7 @@ After publishing, verify:
 - [ ] Packages appear on npm registry
 - [ ] Version numbers are correct (1.1.0)
 - [ ] README displays correctly on npm
-- [ ] Installation works: `npm install lean-ids-components`
+- [ ] Installation works: `npm install @ajaysonicarelon/lean-ids-components`
 - [ ] TypeScript types are available
 - [ ] Dependencies resolve correctly
 
@@ -212,20 +220,20 @@ After publishing, verify:
 
 ```bash
 # Install both packages
-npm install lean-ids-tokens lean-ids-components
+npm install @ajaysonicarelon/lean-ids-tokens @ajaysonicarelon/lean-ids-components
 
 # Or with specific versions
-npm install lean-ids-tokens@1.1.0 lean-ids-components@1.1.0
+npm install @ajaysonicarelon/lean-ids-tokens@1.1.0 @ajaysonicarelon/lean-ids-components@1.1.0
 ```
 
 ### **Usage**
 
 ```typescript
 // Import tokens
-import { theme, colors, spacing } from 'lean-ids-tokens';
+import { theme, colors, spacing } from '@ajaysonicarelon/lean-ids-tokens';
 
 // Import components
-import { Button, DataTable, Pagination } from 'lean-ids-components';
+import { Button, DataTable, Pagination } from '@ajaysonicarelon/lean-ids-components';
 
 // Use in your app
 function App() {
@@ -271,8 +279,8 @@ git push --tags
 ## 📊 Package Stats
 
 ### **Current Versions:**
-- `lean-ids-tokens`: **1.1.0** (was 1.0.1)
-- `lean-ids-components`: **1.1.0** (was 1.0.1)
+- `@ajaysonicarelon/lean-ids-tokens`: **1.1.0** (was 1.0.1)
+- `@ajaysonicarelon/lean-ids-components`: **1.1.0** (was 1.0.1)
 
 ### **Bundle Sizes (estimated):**
 - Tokens: ~15KB (minified)
@@ -280,7 +288,7 @@ git push --tags
 
 ### **Dependencies:**
 - Tokens: 0 dependencies
-- Components: styled-components, lucide-react, lean-ids-tokens
+- Components: styled-components, lucide-react, @ajaysonicarelon/lean-ids-tokens
 
 ---
 

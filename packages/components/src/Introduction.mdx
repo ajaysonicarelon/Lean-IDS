@@ -1,6 +1,6 @@
 import { Meta } from '@storybook/blocks';
 
-<Meta title="Introduction/Welcome" />
+<Meta title="0. Introduction" />
 
 # Lean IDS - Intelligent Design System
 
@@ -12,7 +12,7 @@ Welcome to **Lean IDS**, a comprehensive design system built for Carelon and Ele
 
 Lean IDS is a modern design system that combines:
 
-- **React Components** - Production-ready, accessible UI components
+- **React & Angular Components** - Production-ready, accessible UI components for both frameworks
 - **Design Tokens** - Centralized design decisions (colors, spacing, typography)
 - **Documentation** - Comprehensive guides and examples
 - **Accessibility** - WCAG 2.1 AA compliant by default
@@ -122,13 +122,55 @@ Lean IDS is built with accessibility as a core principle:
 
 ## 🚀 Getting Started
 
-Ready to use Lean IDS in your project? Check out the [Getting Started](?path=/docs/introduction-getting-started--docs) guide to learn how to:
+Choose your framework to get started:
 
-1. Install the design system
-2. Set up the theme provider
-3. Import and use components
-4. Customize themes
-5. Best practices
+### For React Developers
+
+```bash
+npm install @ajaysonicarelon/lean-ids-components @ajaysonicarelon/lean-ids-tokens
+```
+
+```tsx
+import { ThemeProvider, Button, InputField } from '@ajaysonicarelon/lean-ids-components';
+import { theme } from '@ajaysonicarelon/lean-ids-tokens';
+
+function App() {
+  return (
+    <ThemeProvider theme={theme}>
+      <InputField label="Email" type="email" />
+      <Button variant="primary">Submit</Button>
+    </ThemeProvider>
+  );
+}
+```
+
+**📚 Full Guide:** See "Getting Started → React Guide" in the sidebar
+
+### For Angular Developers
+
+```bash
+npm install @ajaysonicarelon/lean-ids-tokens
+```
+
+```typescript
+import { Component } from '@angular/core';
+import { InputFieldComponent } from './components/input-field';
+
+@Component({
+  selector: 'app-root',
+  standalone: true,
+  imports: [InputFieldComponent],
+  template: `
+    <lean-input-field
+      label="Email"
+      type="email"
+    ></lean-input-field>
+  `
+})
+export class AppComponent {}
+```
+
+**📚 Full Guide:** See "Getting Started → Angular Guide" in the sidebar
 
 ---
 

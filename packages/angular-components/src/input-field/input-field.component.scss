@@ -1,0 +1,158 @@
+// Import design tokens as CSS variables
+:host {
+  display: block;
+  width: 100%;
+}
+
+.input-field-container {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+}
+
+// Label container
+.label-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 4px;
+}
+
+.input-label {
+  font-family: var(--font-primary, 'Inter', sans-serif);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 16px;
+  color: var(--neutral-1000, #000000);
+  margin: 0;
+  
+  .required-indicator {
+    color: var(--error-500, #DC2626);
+    margin-left: 2px;
+  }
+}
+
+.importance-label {
+  font-family: var(--font-primary, 'Inter', sans-serif);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 14px;
+  padding: 2px 8px;
+  border-radius: 4px;
+  
+  &.importance-required {
+    background-color: var(--error-100, #FEE2E2);
+    color: var(--error-700, #B91C1C);
+  }
+  
+  &.importance-recommended {
+    background-color: var(--warning-100, #FEF3C7);
+    color: var(--warning-700, #B45309);
+  }
+}
+
+// Input wrapper
+.input-wrapper {
+  position: relative;
+  width: 100%;
+  
+  &.is-focused {
+    .input-field {
+      border-color: var(--primary-500, #5009B5);
+      box-shadow: 0 0 0 3px rgba(80, 9, 181, 0.1);
+    }
+  }
+  
+  &.has-error {
+    .input-field {
+      border-color: var(--error-500, #DC2626);
+      
+      &:focus {
+        border-color: var(--error-500, #DC2626);
+        box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
+      }
+    }
+  }
+  
+  &.is-disabled {
+    .input-field {
+      background-color: var(--neutral-100, #F3F4F6);
+      cursor: not-allowed;
+      opacity: 0.6;
+    }
+  }
+}
+
+// Input field
+.input-field {
+  width: 100%;
+  height: 40px;
+  padding: 10px 12px;
+  font-family: var(--font-primary, 'Inter', sans-serif);
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 20px;
+  color: var(--neutral-1000, #000000);
+  background-color: #FFFFFF;
+  border: 1px solid var(--neutral-300, #D1D5DB);
+  border-radius: 8px;
+  outline: none;
+  transition: all 0.2s ease;
+  
+  &::placeholder {
+    color: var(--neutral-500, #6B7280);
+  }
+  
+  &:hover:not(:disabled) {
+    border-color: var(--neutral-400, #9CA3AF);
+  }
+  
+  &:focus {
+    border-color: var(--primary-500, #5009B5);
+    box-shadow: 0 0 0 3px rgba(80, 9, 181, 0.1);
+  }
+  
+  &:disabled {
+    background-color: var(--neutral-100, #F3F4F6);
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
+}
+
+// Error message
+.error-message {
+  font-family: var(--font-primary, 'Inter', sans-serif);
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 14px;
+  color: var(--error-700, #B91C1C);
+  margin-top: 4px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  
+  &::before {
+    content: '⚠';
+    font-size: 14px;
+  }
+}
+
+// Help text
+.help-text {
+  font-family: var(--font-primary, 'Inter', sans-serif);
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 14px;
+  color: var(--neutral-600, #4B5563);
+  margin-top: 4px;
+}
+
+// Responsive
+@media (max-width: 768px) {
+  .label-container {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+}

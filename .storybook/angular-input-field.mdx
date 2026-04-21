@@ -1,0 +1,436 @@
+import { Meta } from '@storybook/blocks';
+
+<Meta title="Components/InputField/Angular Implementation" />
+
+# InputField - Angular Implementation
+
+Complete Angular implementation of the InputField component matching the React design system.
+
+---
+
+## 📦 Installation
+
+```bash
+npm install @ajaysonicarelon/lean-ids-tokens
+```
+
+---
+
+## 📁 Component Files
+
+The Angular InputField component is available in the repository:
+
+**Location:** `packages/angular-components/src/input-field/`
+
+**Files:**
+- `input-field.component.ts` - Component logic
+- `input-field.component.html` - Template
+- `input-field.component.scss` - Styles
+- `README.md` - Full documentation
+
+---
+
+## 🚀 Quick Start
+
+### 1. Copy the Component
+
+Copy the `input-field` folder to your Angular project:
+
+```
+your-angular-app/src/app/components/input-field/
+├── input-field.component.ts
+├── input-field.component.html
+├── input-field.component.scss
+└── index.ts
+```
+
+### 2. Setup CSS Variables
+
+Add to your `src/styles.scss`:
+
+```scss
+:root {
+  --primary-500: #5009B5;
+  --primary-600: #400791;
+  --neutral-1000: #000000;
+  --neutral-600: #4B5563;
+  --neutral-500: #6B7280;
+  --neutral-400: #9CA3AF;
+  --neutral-300: #D1D5DB;
+  --neutral-100: #F3F4F6;
+  --error-500: #DC2626;
+  --error-700: #B91C1C;
+  --error-100: #FEE2E2;
+  --warning-700: #B45309;
+  --warning-100: #FEF3C7;
+  --font-primary: 'Inter', sans-serif;
+}
+```
+
+### 3. Use in Your App
+
+```typescript
+import { Component } from '@angular/core';
+import { InputFieldComponent } from './components/input-field';
+
+@Component({
+  selector: 'app-root',
+  standalone: true,
+  imports: [InputFieldComponent],
+  template: `
+    <lean-input-field
+      label="Email Address"
+      placeholder="Enter your email"
+      type="email"
+      [required]="true"
+      helpText="We'll never share your email"
+    ></lean-input-field>
+  `
+})
+export class AppComponent {}
+```
+
+---
+
+## 📊 API Reference
+
+### Inputs
+
+| Property | Type | Default | Description |
+|----------|------|---------|-------------|
+| `label` | `string` | `''` | Label text for the input |
+| `placeholder` | `string` | `''` | Placeholder text |
+| `type` | `'text' \| 'email' \| 'password' \| 'number' \| 'tel' \| 'url'` | `'text'` | Input type |
+| `disabled` | `boolean` | `false` | Whether the input is disabled |
+| `required` | `boolean` | `false` | Whether the input is required |
+| `error` | `string` | `''` | Error message to display |
+| `helpText` | `string` | `''` | Help text below input |
+| `importance` | `'required' \| 'optional' \| 'recommended'` | `'optional'` | Importance indicator |
+| `maxLength` | `number` | `undefined` | Maximum character length |
+| `minLength` | `number` | `undefined` | Minimum character length |
+| `pattern` | `string` | `undefined` | Validation pattern (regex) |
+| `autocomplete` | `string` | `undefined` | Autocomplete attribute |
+| `id` | `string` | `auto-generated` | Input ID |
+| `name` | `string` | `auto-generated` | Input name |
+
+### Outputs
+
+| Event | Type | Description |
+|-------|------|-------------|
+| `valueChange` | `EventEmitter<string>` | Emitted when value changes |
+| `blur` | `EventEmitter<FocusEvent>` | Emitted when input loses focus |
+| `focus` | `EventEmitter<FocusEvent>` | Emitted when input gains focus |
+
+---
+
+## 💡 Usage Examples
+
+### Basic Usage
+
+```typescript
+@Component({
+  template: `
+    <lean-input-field
+      label="Full Name"
+      placeholder="Enter your name"
+    ></lean-input-field>
+  `
+})
+```
+
+### With Reactive Forms
+
+```typescript
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { InputFieldComponent } from './components/input-field';
+
+@Component({
+  standalone: true,
+  imports: [ReactiveFormsModule, InputFieldComponent],
+  template: `
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+      <lean-input-field
+        label="Email"
+        formControlName="email"
+        type="email"
+        [required]="true"
+        [error]="getErrorMessage('email')"
+        helpText="We'll never share your email"
+      ></lean-input-field>
+      
+      <lean-input-field
+        label="Password"
+        formControlName="password"
+        type="password"
+        [required]="true"
+        [error]="getErrorMessage('password')"
+      ></lean-input-field>
+      
+      <button type="submit" [disabled]="form.invalid">Submit</button>
+    </form>
+  `
+})
+export class FormComponent {
+  form: FormGroup;
+
+  constructor(private fb: FormBuilder) {
+    this.form = this.fb.group({
+      email: ['', [Validators.required, Validators.email]],
+      password: ['', [Validators.required, Validators.minLength(8)]]
+    });
+  }
+
+  getErrorMessage(field: string): string {
+    const control = this.form.get(field);
+    if (control?.hasError('required')) {
+      return 'This field is required';
+    }
+    if (control?.hasError('email')) {
+      return 'Please enter a valid email';
+    }
+    if (control?.hasError('minlength')) {
+      return 'Password must be at least 8 characters';
+    }
+    return '';
+  }
+
+  onSubmit() {
+    if (this.form.valid) {
+      console.log(this.form.value);
+    }
+  }
+}
+```
+
+### With Template-Driven Forms
+
+```typescript
+import { FormsModule } from '@angular/forms';
+import { InputFieldComponent } from './components/input-field';
+
+@Component({
+  standalone: true,
+  imports: [FormsModule, InputFieldComponent],
+  template: `
+    <form #form="ngForm" (ngSubmit)="onSubmit()">
+      <lean-input-field
+        label="Username"
+        [(ngModel)]="username"
+        name="username"
+        [required]="true"
+        placeholder="Enter username"
+      ></lean-input-field>
+      
+      <button type="submit" [disabled]="form.invalid">Submit</button>
+    </form>
+  `
+})
+export class TemplateFormComponent {
+  username: string = '';
+
+  onSubmit() {
+    console.log('Username:', this.username);
+  }
+}
+```
+
+### With Importance Indicators
+
+```html
+<!-- Required field -->
+<lean-input-field
+  label="Full Name"
+  importance="required"
+  [required]="true"
+></lean-input-field>
+
+<!-- Recommended field -->
+<lean-input-field
+  label="Phone Number"
+  importance="recommended"
+  type="tel"
+></lean-input-field>
+
+<!-- Optional field -->
+<lean-input-field
+  label="Middle Name"
+  importance="optional"
+></lean-input-field>
+```
+
+### With Error Handling
+
+```typescript
+@Component({
+  template: `
+    <lean-input-field
+      label="Email"
+      type="email"
+      [error]="emailError"
+      (valueChange)="validateEmail($event)"
+    ></lean-input-field>
+  `
+})
+export class Component {
+  emailError: string = '';
+
+  validateEmail(value: string) {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!value) {
+      this.emailError = 'Email is required';
+    } else if (!emailRegex.test(value)) {
+      this.emailError = 'Please enter a valid email';
+    } else {
+      this.emailError = '';
+    }
+  }
+}
+```
+
+### With Help Text
+
+```html
+<lean-input-field
+  label="Password"
+  type="password"
+  helpText="Must be at least 8 characters with 1 number and 1 special character"
+  [minLength]="8"
+></lean-input-field>
+```
+
+### With Max Length
+
+```html
+<lean-input-field
+  label="Bio"
+  placeholder="Tell us about yourself"
+  [maxLength]="200"
+  helpText="Maximum 200 characters"
+></lean-input-field>
+```
+
+---
+
+## 🎨 Styling
+
+The component uses CSS variables from Lean IDS design tokens. All styles match the React version exactly.
+
+### Customization
+
+Override CSS variables in your global styles:
+
+```scss
+:root {
+  --primary-500: #5009B5;  // Focus border color
+  --error-500: #DC2626;    // Error border color
+  --neutral-300: #D1D5DB;  // Default border color
+  --font-primary: 'Inter', sans-serif;
+}
+```
+
+---
+
+## ♿ Accessibility
+
+The Angular component includes the same accessibility features as React:
+
+- ✅ **WCAG 2.1 AA Compliant**
+- ✅ **Keyboard Navigation** - Full keyboard support
+- ✅ **Screen Reader Support** - Proper ARIA labels
+- ✅ **Focus Management** - Clear focus indicators
+- ✅ **Error Announcements** - `role="alert"` for errors
+- ✅ **Label Association** - Proper label-input association
+
+### ARIA Attributes
+
+```html
+<input
+  [attr.aria-invalid]="hasError"
+  [attr.aria-describedby]="hasError ? uniqueId + '-error' : (showHelpText ? uniqueId + '-help' : null)"
+/>
+```
+
+---
+
+## 🔧 Features
+
+### Form Integration
+
+The component implements `ControlValueAccessor`, making it fully compatible with:
+- ✅ Reactive Forms (`FormControl`, `FormGroup`)
+- ✅ Template-Driven Forms (`ngModel`)
+- ✅ Custom validators
+- ✅ Form validation states
+
+### Validation Support
+
+- ✅ Required validation
+- ✅ Min/max length
+- ✅ Pattern matching (regex)
+- ✅ Custom error messages
+- ✅ Real-time validation feedback
+
+### Visual States
+
+- ✅ Default
+- ✅ Hover
+- ✅ Focus (with ring)
+- ✅ Disabled
+- ✅ Error
+- ✅ Success
+
+---
+
+## 📱 Browser Support
+
+- Chrome (latest)
+- Firefox (latest)
+- Safari (latest)
+- Edge (latest)
+
+---
+
+## 🔄 Angular Version Compatibility
+
+- Angular 15+
+- Angular 16+
+- Angular 17+
+- Angular 18+
+- Angular 19+
+
+---
+
+## 📚 Complete Documentation
+
+For full documentation, see:
+- `packages/angular-components/src/input-field/README.md`
+- `packages/angular-components/INPUT_FIELD_SUMMARY.md`
+
+---
+
+## 🆚 React vs Angular
+
+Both implementations provide identical:
+- ✅ Visual design
+- ✅ Functionality
+- ✅ Accessibility
+- ✅ Design tokens
+- ✅ API surface (adapted for each framework)
+
+**Choose based on your project's framework:**
+- **React:** Use `@lean-ids/components`
+- **Angular:** Copy from `packages/angular-components/src/input-field/`
+
+---
+
+## 🎯 Next Steps
+
+1. Copy the component to your Angular project
+2. Install `@ajaysonicarelon/lean-ids-tokens`
+3. Setup CSS variables
+4. Test with your forms
+5. Customize as needed
+
+---
+
+**Ready to use! Check the repository for the complete source code.** 🚀

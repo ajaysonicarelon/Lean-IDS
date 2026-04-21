@@ -1,0 +1,428 @@
+import { Meta } from '@storybook/blocks';
+
+<Meta title="1. Getting Started/React" />
+
+# Using Lean IDS in React
+
+## 📦 Installation
+
+Install both packages:
+
+```bash
+npm install @ajaysonicarelon/@ajaysonicarelon/lean-ids-components @ajaysonicarelon/@ajaysonicarelon/lean-ids-tokens
+```
+
+---
+
+## 🚀 Quick Start
+
+### Basic Setup
+
+```tsx
+import { ThemeProvider } from '@ajaysonicarelon/lean-ids-components';
+import { theme } from '@ajaysonicarelon/lean-ids-tokens';
+
+function App() {
+  return (
+    <ThemeProvider theme={theme}>
+      <YourApp />
+    </ThemeProvider>
+  );
+}
+```
+
+### Using Components
+
+```tsx
+import { Button, InputField, Checkbox } from '@ajaysonicarelon/lean-ids-components';
+
+function MyComponent() {
+  return (
+    <div>
+      <Button variant="primary">Click Me</Button>
+      <InputField 
+        label="Email" 
+        placeholder="Enter your email"
+        type="email"
+      />
+      <Checkbox label="I agree to terms" />
+    </div>
+  );
+}
+```
+
+---
+
+## 📊 Data Table
+
+### Complete Template Available
+
+We provide a production-ready data table template with all features:
+
+- ✅ Column freezing (max 3 columns)
+- ✅ Sorting (three-state: asc → desc → none)
+- ✅ Row selection (individual + bulk)
+- ✅ Column search with filtering
+- ✅ Pagination
+- ✅ Column visibility toggle
+- ✅ Settings modal
+
+### Quick Setup
+
+1. **Copy the template:**
+
+Find the complete implementation:
+- **Location:** `packages/components/src/Table/TableTemplate.tsx`
+- **Guide:** `packages/components/src/Table/README_TABLE_TEMPLATE.md`
+- **GitHub:** [View on GitHub](https://github.com/ajaysonicarelon/Lean-IDS/blob/main/packages/components/src/Table/TableTemplate.tsx)
+
+2. **Use in your app:**
+
+```tsx
+import { TableTemplate } from './components/TableTemplate';
+
+function App() {
+  const data = [
+    { id: '1', name: 'John Doe', email: 'john@example.com', status: 'Active' },
+    { id: '2', name: 'Jane Smith', email: 'jane@example.com', status: 'Inactive' },
+  ];
+
+  const columns = [
+    { id: 'checkbox', label: 'Select', visible: true, locked: true, order: 0 },
+    { id: 'id', label: 'ID', visible: true, locked: false, order: 1, sortable: true },
+    { id: 'name', label: 'Name', visible: true, locked: false, order: 2, sortable: true },
+    { id: 'email', label: 'Email', visible: true, locked: false, order: 3, sortable: true },
+    { id: 'status', label: 'Status', visible: true, locked: false, order: 4 },
+  ];
+
+  return (
+    <TableTemplate
+      data={data}
+      columns={columns}
+      enableFreezing={true}
+      maxFrozenColumns={3}
+      enableSorting={true}
+      enableSelection={true}
+      enablePagination={true}
+    />
+  );
+}
+```
+
+---
+
+## 🎨 Available Components
+
+### Form Components
+- **Button** - Primary, secondary, and text variants
+- **InputField** - Text input with label and validation
+- **Checkbox** - Checkbox with label
+- **RadioButton** - Radio button with label
+- **Toggle** - Toggle switch
+- **Textarea** - Multi-line text input
+
+### Display Components
+- **Badge** - Status badges
+- **Chip** - Removable tags
+- **Avatar** - User avatars
+- **AlertBanner** - Alert messages
+- **Toast** - Toast notifications
+- **InlineMessage** - Inline messages
+
+### Navigation
+- **Breadcrumbs** - Breadcrumb navigation
+- **Pagination** - Page navigation
+
+### Data Display
+- **TableHeader** - Table header cells
+- **TableCell** - Table data cells
+- **TableSettings** - Column settings modal
+
+### Icons
+- **Icon** - Lucide React icons
+
+---
+
+## 🎨 Using Design Tokens
+
+### Import Tokens
+
+```tsx
+import { colors, spacing, typography } from '@ajaysonicarelon/lean-ids-tokens';
+
+const MyComponent = () => {
+  return (
+    <div style={{
+      backgroundColor: colors.carelon.primary[500],
+      padding: `${spacing[16]}px`,
+      fontFamily: typography.fonts.primary
+    }}>
+      Styled with tokens
+    </div>
+  );
+};
+```
+
+### Styled Components
+
+```tsx
+import styled from 'styled-components';
+
+const StyledButton = styled.button`
+  background-color: ${({ theme }) => theme.colors.palette.primary[500]};
+  padding: ${({ theme }) => `${theme.spacing[12]}px ${theme.spacing[24]}px`};
+  font-family: ${({ theme }) => theme.fonts.primary};
+  border-radius: 8px;
+  border: none;
+  color: white;
+  cursor: pointer;
+  
+  &:hover {
+    background-color: ${({ theme }) => theme.colors.palette.primary[600]};
+  }
+`;
+```
+
+---
+
+## 🔧 Theme Customization
+
+### Using Carelon Theme
+
+```tsx
+import { ThemeProvider } from '@ajaysonicarelon/lean-ids-components';
+import { theme } from '@ajaysonicarelon/lean-ids-tokens';
+
+function App() {
+  return (
+    <ThemeProvider theme={theme}>
+      <YourApp />
+    </ThemeProvider>
+  );
+}
+```
+
+### Switching Themes
+
+```tsx
+import { ThemeProvider } from '@ajaysonicarelon/lean-ids-components';
+import { carelonTheme, elevanceTheme } from '@ajaysonicarelon/lean-ids-tokens';
+import { useState } from 'react';
+
+function App() {
+  const [currentTheme, setCurrentTheme] = useState(carelonTheme);
+
+  return (
+    <ThemeProvider theme={currentTheme}>
+      <button onClick={() => setCurrentTheme(carelonTheme)}>
+        Carelon Theme
+      </button>
+      <button onClick={() => setCurrentTheme(elevanceTheme)}>
+        Elevance Theme
+      </button>
+      <YourApp />
+    </ThemeProvider>
+  );
+}
+```
+
+---
+
+## 📚 Component Examples
+
+### Button
+
+```tsx
+import { Button } from '@ajaysonicarelon/lean-ids-components';
+
+<Button variant="primary" size="medium">
+  Primary Button
+</Button>
+
+<Button variant="secondary" size="small">
+  Secondary Button
+</Button>
+
+<Button variant="text" disabled>
+  Disabled Button
+</Button>
+```
+
+### Input Field
+
+```tsx
+import { InputField } from '@ajaysonicarelon/lean-ids-components';
+
+<InputField
+  label="Email Address"
+  placeholder="Enter your email"
+  type="email"
+  required
+  helpText="We'll never share your email"
+/>
+
+<InputField
+  label="Password"
+  type="password"
+  error="Password is required"
+/>
+```
+
+### Checkbox
+
+```tsx
+import { Checkbox } from '@ajaysonicarelon/lean-ids-components';
+
+<Checkbox
+  label="I agree to the terms and conditions"
+  checked={isChecked}
+  onChange={(e) => setIsChecked(e.target.checked)}
+/>
+
+<Checkbox
+  label="Subscribe to newsletter"
+  indeterminate={true}
+/>
+```
+
+### Badge
+
+```tsx
+import { Badge } from '@ajaysonicarelon/lean-ids-components';
+
+<Badge type="success">Active</Badge>
+<Badge type="warning">Pending</Badge>
+<Badge type="error">Failed</Badge>
+<Badge type="info">New</Badge>
+```
+
+### Chip
+
+```tsx
+import { Chip } from '@ajaysonicarelon/lean-ids-components';
+
+<Chip
+  label="React"
+  onRemove={() => console.log('Removed')}
+/>
+
+<Chip
+  label="TypeScript"
+  type="primary"
+/>
+```
+
+---
+
+## 🎯 TypeScript Support
+
+All components are fully typed with TypeScript:
+
+```tsx
+import { ButtonProps, InputFieldProps } from '@ajaysonicarelon/lean-ids-components';
+
+const MyButton: React.FC<ButtonProps> = (props) => {
+  return <Button {...props} />;
+};
+
+const MyInput: React.FC<InputFieldProps> = (props) => {
+  return <InputField {...props} />;
+};
+```
+
+---
+
+## 📦 Tree Shaking
+
+Import only what you need:
+
+```tsx
+// ✅ Good - Tree shakeable
+import { Button, InputField } from '@ajaysonicarelon/lean-ids-components';
+
+// ❌ Avoid - Imports everything
+import * as Components from '@ajaysonicarelon/lean-ids-components';
+```
+
+---
+
+## 📚 Resources
+
+### Documentation
+- **npm Package:** [@ajaysonicarelon/lean-ids-components](https://www.npmjs.com/package/@ajaysonicarelon/lean-ids-components)
+- **npm Tokens:** [@ajaysonicarelon/lean-ids-tokens](https://www.npmjs.com/package/@ajaysonicarelon/lean-ids-tokens)
+- **GitHub Repository:** [Lean-IDS](https://github.com/ajaysonicarelon/Lean-IDS)
+- **Table Template Guide:** `packages/components/src/Table/README_TABLE_TEMPLATE.md`
+
+### Requirements
+- **React:** 18.0.0 or higher
+- **TypeScript:** 4.8+ (optional)
+- **styled-components:** Peer dependency
+
+---
+
+## ✅ Quick Checklist
+
+- [ ] Install `@ajaysonicarelon/lean-ids-components` and `@ajaysonicarelon/lean-ids-tokens`
+- [ ] Wrap app with `ThemeProvider`
+- [ ] Import components as needed
+- [ ] Use design tokens for custom styling
+- [ ] Copy table template (if needed)
+- [ ] Build your UI!
+
+---
+
+## 🆘 Common Questions
+
+**Q: Do I need to install styled-components?**  
+A: Yes, it's a peer dependency. Install with: `npm install styled-components`
+
+**Q: Can I use this with Next.js?**  
+A: Yes! Works with Next.js 13+ (App Router and Pages Router)
+
+**Q: Can I customize component styles?**  
+A: Yes! All components accept className and style props, or use styled-components to extend them.
+
+**Q: Is SSR supported?**  
+A: Yes, components work with server-side rendering.
+
+---
+
+## 🎯 Complete Example
+
+```tsx
+import { ThemeProvider, Button, InputField, Badge } from '@ajaysonicarelon/lean-ids-components';
+import { theme } from '@ajaysonicarelon/lean-ids-tokens';
+import { useState } from 'react';
+
+function App() {
+  const [email, setEmail] = useState('');
+
+  return (
+    <ThemeProvider theme={theme}>
+      <div style={{ padding: '24px' }}>
+        <h1>Lean IDS React Demo</h1>
+        
+        <InputField
+          label="Email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder="Enter your email"
+        />
+        
+        <Button variant="primary" onClick={() => console.log(email)}>
+          Submit
+        </Button>
+        
+        <Badge type="success">Active</Badge>
+      </div>
+    </ThemeProvider>
+  );
+}
+
+export default App;
+```
+
+---
+
+**Happy coding with Lean IDS in React!** 🚀

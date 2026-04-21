@@ -1,0 +1,56 @@
+<div class="input-field-container">
+  <!-- Label with importance -->
+  <div class="label-container" *ngIf="label">
+    <label [for]="uniqueId" class="input-label">
+      {{ label }}
+      <span *ngIf="required" class="required-indicator">*</span>
+    </label>
+    <span *ngIf="importance !== 'optional'" 
+          class="importance-label" 
+          [ngClass]="importanceClass">
+      {{ importanceLabel }}
+    </span>
+  </div>
+
+  <!-- Input field -->
+  <div class="input-wrapper" [ngClass]="{
+    'has-error': hasError,
+    'is-focused': isFocused,
+    'is-disabled': disabled
+  }">
+    <input
+      [id]="uniqueId"
+      [name]="name || uniqueId"
+      [type]="type"
+      [placeholder]="placeholder"
+      [disabled]="disabled"
+      [required]="required"
+      [maxlength]="maxLength"
+      [minlength]="minLength"
+      [pattern]="pattern"
+      [autocomplete]="autocomplete"
+      [value]="value"
+      (input)="onInputChange($event)"
+      (blur)="onInputBlur($event)"
+      (focus)="onInputFocus($event)"
+      class="input-field"
+      [attr.aria-invalid]="hasError"
+      [attr.aria-describedby]="hasError ? uniqueId + '-error' : (showHelpText ? uniqueId + '-help' : null)"
+    />
+  </div>
+
+  <!-- Error message -->
+  <div *ngIf="hasError" 
+       [id]="uniqueId + '-error'" 
+       class="error-message"
+       role="alert">
+    {{ error }}
+  </div>
+
+  <!-- Help text -->
+  <div *ngIf="showHelpText" 
+       [id]="uniqueId + '-help'" 
+       class="help-text">
+    {{ helpText }}
+  </div>
+</div>
