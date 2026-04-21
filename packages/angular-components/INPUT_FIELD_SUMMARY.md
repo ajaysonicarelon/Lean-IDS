@@ -25,7 +25,7 @@ The Angular InputField component has been successfully created and is ready for 
 - ✅ **Template-Driven Forms** - Works with `ngModel`
 - ✅ **Validation** - Built-in error handling and display
 - ✅ **Accessibility** - ARIA attributes, keyboard navigation
-- ✅ **Design Tokens** - Uses CSS variables from `@ajaysonicarelon/lean-ids-tokens`
+- ✅ **Design Tokens** - Uses CSS variables from `@ajaysoni7832/lean-ids-tokens`
 
 ### **Input Types:**
 - ✅ text
@@ -71,7 +71,7 @@ your-angular-app/src/app/components/input-field/
 ### **2. Install Dependencies**
 
 ```bash
-npm install @ajaysonicarelon/lean-ids-tokens
+npm install @ajaysoni7832/lean-ids-tokens
 ```
 
 ### **3. Setup CSS Variables**

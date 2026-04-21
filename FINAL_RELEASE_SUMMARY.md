@@ -10,17 +10,17 @@
 
 ## 📦 Published Packages
 
-### **1. @ajaysonicarelon/lean-ids-tokens@1.1.0**
-- **npm:** https://www.npmjs.com/package/@ajaysonicarelon/lean-ids-tokens
+### **1. @ajaysoni7832/lean-ids-tokens@1.1.0**
+- **npm:** https://www.npmjs.com/package/@ajaysoni7832/lean-ids-tokens
 - **Size:** 17.6 KB
 - **Files:** 33
-- **Install:** `npm install @ajaysonicarelon/lean-ids-tokens`
+- **Install:** `npm install @ajaysoni7832/lean-ids-tokens`
 
-### **2. @ajaysonicarelon/lean-ids-components@1.1.0**
-- **npm:** https://www.npmjs.com/package/@ajaysonicarelon/lean-ids-components
+### **2. @ajaysoni7832/lean-ids-components@1.1.0**
+- **npm:** https://www.npmjs.com/package/@ajaysoni7832/lean-ids-components
 - **Size:** 87.4 KB
 - **Files:** 190
-- **Install:** `npm install @ajaysonicarelon/lean-ids-components`
+- **Install:** `npm install @ajaysoni7832/lean-ids-components`
 
 ---
 
@@ -55,15 +55,15 @@
 ## 📚 Documentation
 
 ### **For React Developers:**
-- **Installation:** `npm install @ajaysonicarelon/lean-ids-components @ajaysonicarelon/lean-ids-tokens`
+- **Installation:** `npm install @ajaysoni7832/lean-ids-components @ajaysoni7832/lean-ids-tokens`
 - **Template:** `packages/components/src/Table/README_TABLE_TEMPLATE.md`
-- **npm:** https://www.npmjs.com/package/@ajaysonicarelon/lean-ids-components
+- **npm:** https://www.npmjs.com/package/@ajaysoni7832/lean-ids-components
 
 ### **For Angular Developers:**
-- **Installation:** `npm install @ajaysonicarelon/lean-ids-tokens`
+- **Installation:** `npm install @ajaysoni7832/lean-ids-tokens`
 - **Usage Guide:** `ANGULAR_USAGE_GUIDE.md`
 - **Implementation:** `packages/angular-components/ANGULAR_TABLE_IMPLEMENTATION_GUIDE.md`
-- **npm:** https://www.npmjs.com/package/@ajaysonicarelon/lean-ids-tokens
+- **npm:** https://www.npmjs.com/package/@ajaysoni7832/lean-ids-tokens
 
 ### **Additional Docs:**
 - **npm Publishing:** `NPM_PUBLISHING_GUIDE.md`
@@ -75,8 +75,8 @@
 ## 🔗 Links
 
 ### **npm Registry:**
-- Tokens: https://www.npmjs.com/package/@ajaysonicarelon/lean-ids-tokens
-- Components: https://www.npmjs.com/package/@ajaysonicarelon/lean-ids-components
+- Tokens: https://www.npmjs.com/package/@ajaysoni7832/lean-ids-tokens
+- Components: https://www.npmjs.com/package/@ajaysoni7832/lean-ids-components
 
 ### **GitHub:**
 - Repository: https://github.com/ajaysonicarelon/Lean-IDS
@@ -136,12 +136,12 @@
 
 ### **React:**
 ```bash
-npm install @ajaysonicarelon/lean-ids-components @ajaysonicarelon/lean-ids-tokens
+npm install @ajaysoni7832/lean-ids-components @ajaysoni7832/lean-ids-tokens
 ```
 
 ```tsx
-import { Button, DataTable } from '@ajaysonicarelon/lean-ids-components';
-import { theme } from '@ajaysonicarelon/lean-ids-tokens';
+import { Button, DataTable } from '@ajaysoni7832/lean-ids-components';
+import { theme } from '@ajaysoni7832/lean-ids-tokens';
 
 function App() {
   return (
@@ -154,11 +154,11 @@ function App() {
 
 ### **Angular:**
 ```bash
-npm install @ajaysonicarelon/lean-ids-tokens
+npm install @ajaysoni7832/lean-ids-tokens
 ```
 
 ```typescript
-import { colors, spacing } from '@ajaysonicarelon/lean-ids-tokens';
+import { colors, spacing } from '@ajaysoni7832/lean-ids-tokens';
 
 @Component({
   selector: 'app-root',
@@ -176,11 +176,11 @@ export class AppComponent {
 ### **Local Testing:**
 ```bash
 # Test installation
-npm install @ajaysonicarelon/lean-ids-tokens @ajaysonicarelon/lean-ids-components
+npm install @ajaysoni7832/lean-ids-tokens @ajaysoni7832/lean-ids-components
 
 # Test imports
-node -e "console.log(require('@ajaysonicarelon/lean-ids-tokens'))"
-node -e "console.log(require('@ajaysonicarelon/lean-ids-components'))"
+node -e "console.log(require('@ajaysoni7832/lean-ids-tokens'))"
+node -e "console.log(require('@ajaysoni7832/lean-ids-components'))"
 ```
 
 ### **CI Status:**
@@ -194,14 +194,14 @@ node -e "console.log(require('@ajaysonicarelon/lean-ids-components'))"
 ## 🎓 For Developers
 
 ### **React Developers:**
-1. Install packages: `npm install @ajaysonicarelon/lean-ids-components @ajaysonicarelon/lean-ids-tokens`
+1. Install packages: `npm install @ajaysoni7832/lean-ids-components @ajaysoni7832/lean-ids-tokens`
 2. Copy table template from `packages/components/src/Table/TableTemplate.tsx`
 3. Customize data structure and columns
 4. Replace sample data with API data
 5. All features work out of the box!
 
 ### **Angular Developers:**
-1. Install tokens: `npm install @ajaysonicarelon/lean-ids-tokens`
+1. Install tokens: `npm install @ajaysoni7832/lean-ids-tokens`
 2. Follow `ANGULAR_USAGE_GUIDE.md`
 3. Copy table implementation from `packages/angular-components/ANGULAR_TABLE_IMPLEMENTATION_GUIDE.md`
 4. Use tokens in components
@@ -211,17 +211,17 @@ node -e "console.log(require('@ajaysonicarelon/lean-ids-components'))"
 
 ## 📈 Package Stats
 
-### **@ajaysonicarelon/lean-ids-tokens:**
+### **@ajaysoni7832/lean-ids-tokens:**
 - Version: 1.1.0
 - Size: 17.6 KB (gzipped)
 - Dependencies: 0
 - TypeScript: ✅
 - Tree-shakeable: ✅
 
-### **@ajaysonicarelon/lean-ids-components:**
+### **@ajaysoni7832/lean-ids-components:**
 - Version: 1.1.0
 - Size: 87.4 KB (gzipped)
-- Dependencies: styled-components, lucide-react, @ajaysonicarelon/lean-ids-tokens
+- Dependencies: styled-components, lucide-react, @ajaysoni7832/lean-ids-tokens
 - TypeScript: ✅
 - Tree-shakeable: ✅
 - React: 18+

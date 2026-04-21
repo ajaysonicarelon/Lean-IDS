@@ -253,7 +253,7 @@ npx ts-node scripts/parse-figma-tokens.ts
 
 ### **In React Components:**
 ```typescript
-import { carelonColors, spacing, typography, accessibilityColors } from '@ajaysonicarelon/lean-ids-tokens';
+import { carelonColors, spacing, typography, accessibilityColors } from '@ajaysoni7832/lean-ids-tokens';
 
 const Button = styled.button`
   background: ${carelonColors.primary['500']};
@@ -282,7 +282,7 @@ constructor(
 
 ### **In CSS (Coming Soon):**
 ```css
-@import '@ajaysonicarelon/lean-ids-tokens/dist/carelon.css';
+@import '@ajaysoni7832/lean-ids-tokens/dist/carelon.css';
 
 .button {
   background: var(--lean-color-primary-500);

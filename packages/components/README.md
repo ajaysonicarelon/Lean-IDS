@@ -2,13 +2,13 @@
 
 A comprehensive React component library for building consistent, accessible user interfaces. Part of the Lean Internal Design System (IDS).
 
-[![npm version](https://img.shields.io/npm/v/@ajaysonicarelon/lean-ids-components.svg)](https://www.npmjs.com/package/@ajaysonicarelon/lean-ids-components)
+[![npm version](https://img.shields.io/npm/v/@ajaysoni7832/lean-ids-components.svg)](https://www.npmjs.com/package/@ajaysoni7832/lean-ids-components)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
 ## 📦 Installation
 
 ```bash
-npm install @ajaysonicarelon/lean-ids-components @ajaysonicarelon/lean-ids-tokens styled-components
+npm install @ajaysoni7832/lean-ids-components @ajaysoni7832/lean-ids-tokens styled-components
 ```
 
 ## 🚀 Quick Start
@@ -18,8 +18,8 @@ npm install @ajaysonicarelon/lean-ids-components @ajaysonicarelon/lean-ids-token
 ```tsx
 import React from 'react';
 import { ThemeProvider } from 'styled-components';
-import { theme } from '@ajaysonicarelon/lean-ids-tokens';
-import { GlobalStyles } from '@ajaysonicarelon/lean-ids-components';
+import { theme } from '@ajaysoni7832/lean-ids-tokens';
+import { GlobalStyles } from '@ajaysoni7832/lean-ids-components';
 
 function App() {
   return (
@@ -34,7 +34,7 @@ function App() {
 ### 2. Import and use components
 
 ```tsx
-import { Button, Avatar, Badge, InputField } from '@ajaysonicarelon/lean-ids-components';
+import { Button, Avatar, Badge, InputField } from '@ajaysoni7832/lean-ids-components';
 
 function MyComponent() {
   return (
@@ -86,7 +86,7 @@ function MyComponent() {
 - Don't override styles with `!important`
 - Don't mix with other UI libraries
 - Don't hardcode colors/spacing
-- Don't forget to install `@ajaysonicarelon/lean-ids-tokens`
+- Don't forget to install `@ajaysoni7832/lean-ids-tokens`
 
 ## 📖 Documentation
 

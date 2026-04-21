@@ -9,7 +9,7 @@ import { Meta } from '@storybook/blocks';
 Install both packages:
 
 ```bash
-npm install @ajaysonicarelon/@ajaysonicarelon/lean-ids-components @ajaysonicarelon/@ajaysonicarelon/lean-ids-tokens
+npm install @ajaysonicarelon/@ajaysoni7832/lean-ids-components @ajaysonicarelon/@ajaysoni7832/lean-ids-tokens
 ```
 
 ---
@@ -19,8 +19,8 @@ npm install @ajaysonicarelon/@ajaysonicarelon/lean-ids-components @ajaysonicarel
 ### Basic Setup
 
 ```tsx
-import { ThemeProvider } from '@ajaysonicarelon/lean-ids-components';
-import { theme } from '@ajaysonicarelon/lean-ids-tokens';
+import { ThemeProvider } from '@ajaysoni7832/lean-ids-components';
+import { theme } from '@ajaysoni7832/lean-ids-tokens';
 
 function App() {
   return (
@@ -34,7 +34,7 @@ function App() {
 ### Using Components
 
 ```tsx
-import { Button, InputField, Checkbox } from '@ajaysonicarelon/lean-ids-components';
+import { Button, InputField, Checkbox } from '@ajaysoni7832/lean-ids-components';
 
 function MyComponent() {
   return (
@@ -148,7 +148,7 @@ function App() {
 ### Import Tokens
 
 ```tsx
-import { colors, spacing, typography } from '@ajaysonicarelon/lean-ids-tokens';
+import { colors, spacing, typography } from '@ajaysoni7832/lean-ids-tokens';
 
 const MyComponent = () => {
   return (
@@ -190,8 +190,8 @@ const StyledButton = styled.button`
 ### Using Carelon Theme
 
 ```tsx
-import { ThemeProvider } from '@ajaysonicarelon/lean-ids-components';
-import { theme } from '@ajaysonicarelon/lean-ids-tokens';
+import { ThemeProvider } from '@ajaysoni7832/lean-ids-components';
+import { theme } from '@ajaysoni7832/lean-ids-tokens';
 
 function App() {
   return (
@@ -205,8 +205,8 @@ function App() {
 ### Switching Themes
 
 ```tsx
-import { ThemeProvider } from '@ajaysonicarelon/lean-ids-components';
-import { carelonTheme, elevanceTheme } from '@ajaysonicarelon/lean-ids-tokens';
+import { ThemeProvider } from '@ajaysoni7832/lean-ids-components';
+import { carelonTheme, elevanceTheme } from '@ajaysoni7832/lean-ids-tokens';
 import { useState } from 'react';
 
 function App() {
@@ -233,7 +233,7 @@ function App() {
 ### Button
 
 ```tsx
-import { Button } from '@ajaysonicarelon/lean-ids-components';
+import { Button } from '@ajaysoni7832/lean-ids-components';
 
 <Button variant="primary" size="medium">
   Primary Button
@@ -251,7 +251,7 @@ import { Button } from '@ajaysonicarelon/lean-ids-components';
 ### Input Field
 
 ```tsx
-import { InputField } from '@ajaysonicarelon/lean-ids-components';
+import { InputField } from '@ajaysoni7832/lean-ids-components';
 
 <InputField
   label="Email Address"
@@ -271,7 +271,7 @@ import { InputField } from '@ajaysonicarelon/lean-ids-components';
 ### Checkbox
 
 ```tsx
-import { Checkbox } from '@ajaysonicarelon/lean-ids-components';
+import { Checkbox } from '@ajaysoni7832/lean-ids-components';
 
 <Checkbox
   label="I agree to the terms and conditions"
@@ -288,7 +288,7 @@ import { Checkbox } from '@ajaysonicarelon/lean-ids-components';
 ### Badge
 
 ```tsx
-import { Badge } from '@ajaysonicarelon/lean-ids-components';
+import { Badge } from '@ajaysoni7832/lean-ids-components';
 
 <Badge type="success">Active</Badge>
 <Badge type="warning">Pending</Badge>
@@ -299,7 +299,7 @@ import { Badge } from '@ajaysonicarelon/lean-ids-components';
 ### Chip
 
 ```tsx
-import { Chip } from '@ajaysonicarelon/lean-ids-components';
+import { Chip } from '@ajaysoni7832/lean-ids-components';
 
 <Chip
   label="React"
@@ -319,7 +319,7 @@ import { Chip } from '@ajaysonicarelon/lean-ids-components';
 All components are fully typed with TypeScript:
 
 ```tsx
-import { ButtonProps, InputFieldProps } from '@ajaysonicarelon/lean-ids-components';
+import { ButtonProps, InputFieldProps } from '@ajaysoni7832/lean-ids-components';
 
 const MyButton: React.FC<ButtonProps> = (props) => {
   return <Button {...props} />;
@@ -338,10 +338,10 @@ Import only what you need:
 
 ```tsx
 // ✅ Good - Tree shakeable
-import { Button, InputField } from '@ajaysonicarelon/lean-ids-components';
+import { Button, InputField } from '@ajaysoni7832/lean-ids-components';
 
 // ❌ Avoid - Imports everything
-import * as Components from '@ajaysonicarelon/lean-ids-components';
+import * as Components from '@ajaysoni7832/lean-ids-components';
 ```
 
 ---
@@ -349,8 +349,8 @@ import * as Components from '@ajaysonicarelon/lean-ids-components';
 ## 📚 Resources
 
 ### Documentation
-- **npm Package:** [@ajaysonicarelon/lean-ids-components](https://www.npmjs.com/package/@ajaysonicarelon/lean-ids-components)
-- **npm Tokens:** [@ajaysonicarelon/lean-ids-tokens](https://www.npmjs.com/package/@ajaysonicarelon/lean-ids-tokens)
+- **npm Package:** [@ajaysoni7832/lean-ids-components](https://www.npmjs.com/package/@ajaysoni7832/lean-ids-components)
+- **npm Tokens:** [@ajaysoni7832/lean-ids-tokens](https://www.npmjs.com/package/@ajaysoni7832/lean-ids-tokens)
 - **GitHub Repository:** [Lean-IDS](https://github.com/ajaysonicarelon/Lean-IDS)
 - **Table Template Guide:** `packages/components/src/Table/README_TABLE_TEMPLATE.md`
 
@@ -363,7 +363,7 @@ import * as Components from '@ajaysonicarelon/lean-ids-components';
 
 ## ✅ Quick Checklist
 
-- [ ] Install `@ajaysonicarelon/lean-ids-components` and `@ajaysonicarelon/lean-ids-tokens`
+- [ ] Install `@ajaysoni7832/lean-ids-components` and `@ajaysoni7832/lean-ids-tokens`
 - [ ] Wrap app with `ThemeProvider`
 - [ ] Import components as needed
 - [ ] Use design tokens for custom styling
@@ -391,8 +391,8 @@ A: Yes, components work with server-side rendering.
 ## 🎯 Complete Example
 
 ```tsx
-import { ThemeProvider, Button, InputField, Badge } from '@ajaysonicarelon/lean-ids-components';
-import { theme } from '@ajaysonicarelon/lean-ids-tokens';
+import { ThemeProvider, Button, InputField, Badge } from '@ajaysoni7832/lean-ids-components';
+import { theme } from '@ajaysoni7832/lean-ids-tokens';
 import { useState } from 'react';
 
 function App() {

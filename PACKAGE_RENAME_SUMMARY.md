@@ -10,8 +10,8 @@ All package references have been updated from unscoped to scoped format across t
 
 | Old Name (Unscoped) | New Name (Scoped) |
 |---------------------|-------------------|
-| `lean-ids-tokens` | `@ajaysonicarelon/lean-ids-tokens` |
-| `lean-ids-components` | `@ajaysonicarelon/lean-ids-components` |
+| `lean-ids-tokens` | `@ajaysoni7832/lean-ids-tokens` |
+| `lean-ids-components` | `@ajaysoni7832/lean-ids-components` |
 
 ---
 
@@ -57,13 +57,13 @@ import { Button } from 'lean-ids-components';
 
 ### **After:**
 ```bash
-npm install @ajaysonicarelon/lean-ids-tokens
-npm install @ajaysonicarelon/lean-ids-components
+npm install @ajaysoni7832/lean-ids-tokens
+npm install @ajaysoni7832/lean-ids-components
 ```
 
 ```typescript
-import { colors } from '@ajaysonicarelon/lean-ids-tokens';
-import { Button } from '@ajaysonicarelon/lean-ids-components';
+import { colors } from '@ajaysoni7832/lean-ids-tokens';
+import { Button } from '@ajaysoni7832/lean-ids-components';
 ```
 
 ---
@@ -142,13 +142,13 @@ npm publish --access public
 ### **4. Verify on NPM**
 
 ```bash
-npm view @ajaysonicarelon/lean-ids-tokens
-npm view @ajaysonicarelon/lean-ids-components
+npm view @ajaysoni7832/lean-ids-tokens
+npm view @ajaysoni7832/lean-ids-components
 ```
 
 Or visit:
-- https://www.npmjs.com/package/@ajaysonicarelon/lean-ids-tokens
-- https://www.npmjs.com/package/@ajaysonicarelon/lean-ids-components
+- https://www.npmjs.com/package/@ajaysoni7832/lean-ids-tokens
+- https://www.npmjs.com/package/@ajaysoni7832/lean-ids-components
 
 ---
 
@@ -166,12 +166,12 @@ npm install lean-ids-tokens
 npm install lean-ids-components
 
 NEW:
-npm install @ajaysonicarelon/lean-ids-tokens
-npm install @ajaysonicarelon/lean-ids-components
+npm install @ajaysoni7832/lean-ids-tokens
+npm install @ajaysoni7832/lean-ids-components
 
 Update your imports:
-- import { colors } from '@ajaysonicarelon/lean-ids-tokens';
-- import { Button } from '@ajaysonicarelon/lean-ids-components';
+- import { colors } from '@ajaysoni7832/lean-ids-tokens';
+- import { Button } from '@ajaysoni7832/lean-ids-components';
 
 All documentation has been updated. Check the guides for details.
 ```

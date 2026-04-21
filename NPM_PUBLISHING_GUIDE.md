@@ -4,8 +4,8 @@
 
 **Package names have been changed to scoped packages to avoid access issues:**
 
-- ❌ Old: `@ajaysonicarelon/lean-ids-tokens` → ✅ New: `@ajaysonicarelon/@ajaysonicarelon/lean-ids-tokens`
-- ❌ Old: `@ajaysonicarelon/lean-ids-components` → ✅ New: `@ajaysonicarelon/@ajaysonicarelon/lean-ids-components`
+- ❌ Old: `@ajaysoni7832/lean-ids-tokens` → ✅ New: `@ajaysonicarelon/@ajaysoni7832/lean-ids-tokens`
+- ❌ Old: `@ajaysoni7832/lean-ids-components` → ✅ New: `@ajaysonicarelon/@ajaysoni7832/lean-ids-components`
 
 **Why?** Unscoped packages require ownership on NPM. Scoped packages are free for public use and avoid naming conflicts.
 
@@ -14,7 +14,7 @@
 ## 🔧 **Access Issue Resolution**
 
 ### **Problem:**
-Your dev got "access denied" when running `npm install @ajaysonicarelon/lean-ids-tokens`
+Your dev got "access denied" when running `npm install @ajaysoni7832/lean-ids-tokens`
 
 ### **Root Cause:**
 1. Unscoped package names may already be taken by someone else
@@ -102,19 +102,19 @@ npm publish --access public
 
 ```bash
 # Check on npm
-npm view @ajaysonicarelon/@ajaysonicarelon/lean-ids-tokens
-npm view @ajaysonicarelon/@ajaysonicarelon/lean-ids-components
+npm view @ajaysonicarelon/@ajaysoni7832/lean-ids-tokens
+npm view @ajaysonicarelon/@ajaysoni7832/lean-ids-components
 
 # Or visit:
-# https://www.npmjs.com/package/@ajaysonicarelon/@ajaysonicarelon/lean-ids-tokens
-# https://www.npmjs.com/package/@ajaysonicarelon/@ajaysonicarelon/lean-ids-components
+# https://www.npmjs.com/package/@ajaysonicarelon/@ajaysoni7832/lean-ids-tokens
+# https://www.npmjs.com/package/@ajaysonicarelon/@ajaysoni7832/lean-ids-components
 ```
 
 ---
 
 ## 📋 What's Being Published
 
-### **@ajaysonicarelon/lean-ids-tokens@1.1.0**
+### **@ajaysoni7832/lean-ids-tokens@1.1.0**
 
 **New in 1.1.0:**
 - ✅ Semantic color tokens (primary, secondary, success, warning, error, info)
@@ -129,7 +129,7 @@ npm view @ajaysonicarelon/@ajaysonicarelon/lean-ids-components
 - `dist/index.esm.js` - ES Module bundle
 - `dist/index.d.ts` - TypeScript definitions
 
-### **@ajaysonicarelon/lean-ids-components@1.1.0**
+### **@ajaysoni7832/lean-ids-components@1.1.0**
 
 **New in 1.1.0:**
 - ✅ Advanced Data Table with column freezing (max 3)
@@ -155,11 +155,11 @@ npm view @ajaysonicarelon/@ajaysonicarelon/lean-ids-components
 **Solution:**
 ```bash
 # Check if package name is taken
-npm view @ajaysonicarelon/lean-ids-components
+npm view @ajaysoni7832/lean-ids-components
 
 # If taken, you need to use a scoped package
 # Update package.json:
-"name": "@your-username/@ajaysonicarelon/lean-ids-components"
+"name": "@your-username/@ajaysoni7832/lean-ids-components"
 
 # Then publish with:
 npm publish --access public
@@ -208,7 +208,7 @@ After publishing, verify:
 - [ ] Packages appear on npm registry
 - [ ] Version numbers are correct (1.1.0)
 - [ ] README displays correctly on npm
-- [ ] Installation works: `npm install @ajaysonicarelon/lean-ids-components`
+- [ ] Installation works: `npm install @ajaysoni7832/lean-ids-components`
 - [ ] TypeScript types are available
 - [ ] Dependencies resolve correctly
 
@@ -220,20 +220,20 @@ After publishing, verify:
 
 ```bash
 # Install both packages
-npm install @ajaysonicarelon/lean-ids-tokens @ajaysonicarelon/lean-ids-components
+npm install @ajaysoni7832/lean-ids-tokens @ajaysoni7832/lean-ids-components
 
 # Or with specific versions
-npm install @ajaysonicarelon/lean-ids-tokens@1.1.0 @ajaysonicarelon/lean-ids-components@1.1.0
+npm install @ajaysoni7832/lean-ids-tokens@1.1.0 @ajaysoni7832/lean-ids-components@1.1.0
 ```
 
 ### **Usage**
 
 ```typescript
 // Import tokens
-import { theme, colors, spacing } from '@ajaysonicarelon/lean-ids-tokens';
+import { theme, colors, spacing } from '@ajaysoni7832/lean-ids-tokens';
 
 // Import components
-import { Button, DataTable, Pagination } from '@ajaysonicarelon/lean-ids-components';
+import { Button, DataTable, Pagination } from '@ajaysoni7832/lean-ids-components';
 
 // Use in your app
 function App() {
@@ -279,8 +279,8 @@ git push --tags
 ## 📊 Package Stats
 
 ### **Current Versions:**
-- `@ajaysonicarelon/lean-ids-tokens`: **1.1.0** (was 1.0.1)
-- `@ajaysonicarelon/lean-ids-components`: **1.1.0** (was 1.0.1)
+- `@ajaysoni7832/lean-ids-tokens`: **1.1.0** (was 1.0.1)
+- `@ajaysoni7832/lean-ids-components`: **1.1.0** (was 1.0.1)
 
 ### **Bundle Sizes (estimated):**
 - Tokens: ~15KB (minified)
@@ -288,7 +288,7 @@ git push --tags
 
 ### **Dependencies:**
 - Tokens: 0 dependencies
-- Components: styled-components, lucide-react, @ajaysonicarelon/lean-ids-tokens
+- Components: styled-components, lucide-react, @ajaysoni7832/lean-ids-tokens
 
 ---
 

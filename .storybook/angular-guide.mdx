@@ -15,10 +15,10 @@ This guide shows Angular developers how to use the Lean IDS design system in the
 ### **Step 1: Install Tokens Package**
 
 ```bash
-npm install @ajaysonicarelon/lean-ids-tokens
+npm install @ajaysoni7832/lean-ids-tokens
 ```
 
-**Note:** The `@ajaysonicarelon/lean-ids-components` package is React-based. For Angular, use the design tokens and copy component implementations from the repository.
+**Note:** The `@ajaysoni7832/lean-ids-components` package is React-based. For Angular, use the design tokens and copy component implementations from the repository.
 
 ---
 
@@ -28,7 +28,7 @@ npm install @ajaysonicarelon/lean-ids-tokens
 
 ```typescript
 // app.component.ts
-import { colors, spacing, typography } from '@ajaysonicarelon/lean-ids-tokens';
+import { colors, spacing, typography } from '@ajaysoni7832/lean-ids-tokens';
 
 @Component({
   selector: 'app-root',
@@ -229,7 +229,7 @@ export class ThemeService {
   public theme$ = this.currentTheme.asObservable();
 
   setTheme(themeName: 'carelon' | 'elevance') {
-    import('@ajaysonicarelon/lean-ids-tokens').then(({ colors }) => {
+    import('@ajaysoni7832/lean-ids-tokens').then(({ colors }) => {
       const theme = themeName === 'carelon' ? colors.carelon : colors.elevance;
       this.applyTheme(theme);
       this.currentTheme.next(themeName);
@@ -277,7 +277,7 @@ export class AppComponent implements OnInit {
 ## 📚 Resources
 
 ### Documentation
-- **npm Package:** [@ajaysonicarelon/lean-ids-tokens](https://www.npmjs.com/package/@ajaysonicarelon/lean-ids-tokens)
+- **npm Package:** [@ajaysoni7832/lean-ids-tokens](https://www.npmjs.com/package/@ajaysoni7832/lean-ids-tokens)
 - **GitHub Repository:** [Lean-IDS](https://github.com/ajaysonicarelon/Lean-IDS)
 - **Angular Guide:** `ANGULAR_USAGE_GUIDE.md` in the repository
 - **Table Implementation:** `packages/angular-components/ANGULAR_TABLE_IMPLEMENTATION_GUIDE.md`
@@ -291,7 +291,7 @@ export class AppComponent implements OnInit {
 
 ## ✅ Quick Checklist
 
-- [ ] Install `@ajaysonicarelon/lean-ids-tokens` package
+- [ ] Install `@ajaysoni7832/lean-ids-tokens` package
 - [ ] Setup CSS variables in global styles
 - [ ] Import tokens in TypeScript components
 - [ ] Copy Angular table implementation (if needed)
@@ -323,7 +323,7 @@ A: Yes! You can use the tokens alongside Angular Material or replace Material co
 // app.component.ts
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { colors, spacing } from '@ajaysonicarelon/lean-ids-tokens';
+import { colors, spacing } from '@ajaysoni7832/lean-ids-tokens';
 
 @Component({
   selector: 'app-root',

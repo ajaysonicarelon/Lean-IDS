@@ -18,7 +18,7 @@ A fully-featured input field component for Angular applications, matching the Le
 ## Installation
 
 ```bash
-npm install @ajaysonicarelon/lean-ids-tokens
+npm install @ajaysoni7832/lean-ids-tokens
 ```
 
 ---
