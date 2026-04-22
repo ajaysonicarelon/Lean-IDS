@@ -131,12 +131,13 @@ npm install @ajaysoni7832/lean-ids-components @ajaysoni7832/lean-ids-tokens
 ```
 
 ```tsx
-import { ThemeProvider, Button, InputField } from '@ajaysoni7832/lean-ids-components';
+import { ThemeProvider, GlobalStyles, Button, InputField } from '@ajaysoni7832/lean-ids-components';
 import { theme } from '@ajaysoni7832/lean-ids-tokens';
 
 function App() {
   return (
     <ThemeProvider theme={theme}>
+      <GlobalStyles /> {/* Automatically loads Elevance Sans font */}
       <InputField label="Email" type="email" />
       <Button variant="primary">Submit</Button>
     </ThemeProvider>

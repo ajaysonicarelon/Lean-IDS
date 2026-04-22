@@ -5,6 +5,9 @@
 import { createGlobalStyle } from 'styled-components';
 
 export const GlobalStyles = createGlobalStyle`
+  /* Import Elevance Sans and Roboto Mono fonts */
+  @import url('@ajaysoni7832/lean-ids-tokens/dist/fonts.css');
+
   * {
     box-sizing: border-box;
     margin: 0;

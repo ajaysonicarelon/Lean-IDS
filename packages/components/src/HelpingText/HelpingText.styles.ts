@@ -8,7 +8,7 @@ import { HelpingTextState, HelpingTextSize } from './HelpingText.types';
 export const HelpingTextContainer = styled.div`
   display: flex;
   align-items: center;
-  gap: ${({ theme }) => theme.spacing[1]};
+  gap: ${({ theme }) => theme.spacing[4]}; /* 4px gap as per Figma */
 `;
 
 interface StyledIconProps {
@@ -26,13 +26,13 @@ export const IconWrapper = styled.span<StyledIconProps>`
   color: ${({ theme, $state }) => {
     switch ($state) {
       case 'error':
-        return theme.colors.palette.error[500];
+        return theme.colors.palette.error[500]; // #D2093C
       case 'warning':
-        return theme.colors.palette.warning[500];
+        return theme.colors.palette.warning[500]; // #FFBD11
       case 'info':
-        return theme.colors.palette.info[500];
+        return theme.colors.palette.info[500]; // #1666BE
       default:
-        return theme.colors.palette.neutral[600];
+        return theme.colors.palette.neutral[900]; // #222222
     }
   }};
   
@@ -71,13 +71,13 @@ export const TextContent = styled.p<StyledTextProps>`
   color: ${({ theme, $state }) => {
     switch ($state) {
       case 'error':
-        return theme.colors.palette.error[500];
+        return theme.colors.palette.error[500]; // #D2093C
       case 'warning':
-        return theme.colors.palette.warning[500];
+        return theme.colors.palette.warning[500]; // #FFBD11
       case 'info':
-        return theme.colors.palette.info[500];
+        return theme.colors.palette.info[500]; // #1666BE
       default:
-        return theme.colors.palette.neutral[800];
+        return theme.colors.palette.neutral[900]; // #222222
     }
   }};
 `;

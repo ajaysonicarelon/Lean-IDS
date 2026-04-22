@@ -10,7 +10,7 @@
     "dist"
   ],
   "scripts": {
-    "build": "rollup -c",
+    "build": "rollup -c && cp src/fonts.css dist/fonts.css",
     "dev": "rollup -c -w",
     "extract-tokens": "ts-node scripts/extract-figma-tokens.ts"
   },
