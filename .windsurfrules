@@ -63,6 +63,19 @@ import { Button } from '@mui/material'; // FORBIDDEN
 import { Input } from 'antd'; // FORBIDDEN
 ```
 
+## 🎨 STYLING RULES
+
+### NO GRADIENTS for Large Backgrounds
+**CRITICAL:** Do NOT use gradients for backgrounds, cards, or large sections.
+
+```tsx
+// ❌ WRONG
+background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+
+// ✅ CORRECT
+background: ${({ theme }) => theme.colors.palette.primary[600]};
+```
+
 ---
 
 ## 📋 DECISION LOGIC

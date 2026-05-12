@@ -26,6 +26,20 @@ const preview: Preview = {
         },
       ],
     },
+    options: {
+      storySort: {
+        order: [
+          'About',
+          ['Introduction', 'Team'],
+          'Getting Started',
+          ['Angular', 'React'],
+          'Components',
+          'Design Tokens',
+          'Templates',
+        ],
+        method: 'alphabetical',
+      },
+    },
   },
   globalTypes: {
     theme: {

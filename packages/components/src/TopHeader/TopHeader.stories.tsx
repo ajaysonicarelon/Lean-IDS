@@ -3,7 +3,7 @@ import { TopHeader } from './TopHeader';
 import { Icon } from '../Icon';
 
 const meta: Meta<typeof TopHeader> = {
-  title: 'Navigation/TopHeader',
+  title: 'Components/TopHeader',
   component: TopHeader,
   parameters: {
     layout: 'fullscreen',

@@ -3,7 +3,7 @@ import { SideNavigation } from './SideNavigation';
 import { Icon } from '../Icon';
 
 const meta: Meta<typeof SideNavigation> = {
-  title: 'Navigation/SideNavigation',
+  title: 'Components/SideNavigation',
   component: SideNavigation,
   parameters: {
     layout: 'fullscreen',

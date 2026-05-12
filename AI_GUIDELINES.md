@@ -288,6 +288,27 @@ function App() {
 }
 ```
 
+### **3. NO GRADIENTS for Large Backgrounds**
+
+**IMPORTANT:** Do NOT use gradients for large background areas or fills.
+
+```tsx
+// ❌ WRONG - No gradients for backgrounds
+const Container = styled.div`
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+`;
+
+// ✅ CORRECT - Use solid colors from theme
+const Container = styled.div`
+  background: ${({ theme }) => theme.colors.palette.primary[600]};
+`;
+```
+
+**When gradients are acceptable:**
+- Small decorative elements only
+- Icons or illustrations
+- NOT for page backgrounds, cards, or large sections
+
 ---
 
 ## ✅ CORRECT EXAMPLES

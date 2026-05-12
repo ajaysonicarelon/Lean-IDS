@@ -1,4 +1,4 @@
-# Lean IDS - Intelligent Design System
+# Lean IDS - Internal Design System
 
 A comprehensive design system for Carelon and Elevance, built with React, TypeScript, and Web Components.
 

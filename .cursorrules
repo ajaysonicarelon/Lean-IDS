@@ -264,6 +264,22 @@ import { theme } from '@lean-ids/tokens';
 </ThemeProvider>
 ```
 
+### 3. NO GRADIENTS for Large Backgrounds
+**CRITICAL:** Do NOT use gradients for large background areas.
+
+```tsx
+// ❌ WRONG - No gradients for backgrounds
+background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+
+// ✅ CORRECT - Use solid colors
+background: ${({ theme }) => theme.colors.palette.primary[600]};
+```
+
+**Gradients only acceptable for:**
+- Small decorative elements
+- Icons/illustrations
+- NOT for page backgrounds, cards, or large sections
+
 ---
 
 ## 📋 SIDEBAR BEHAVIOR RULES

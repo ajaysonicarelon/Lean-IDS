@@ -2,7 +2,7 @@
   "name": "@lean-ids/root",
   "version": "1.0.0",
   "private": true,
-  "description": "Lean IDS - Intelligent Design System for Carelon and Elevance",
+  "description": "Lean IDS - Internal Design System for Carelon and Elevance",
   "workspaces": [
     "packages/*"
   ],
