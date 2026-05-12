@@ -18,6 +18,12 @@
   ],
   "author": "Ajay Soni <ajay@carelon.com>",
   "license": "UNLICENSED",
+  "repository": {
+    "type": "git",
+    "url": "https://bitbucket.elevancehealth.com/scm/~am07832/lean-ids.git",
+    "directory": "packages/utils"
+  },
+  "homepage": "https://bitbucket.elevancehealth.com/projects/~AM07832/repos/lean-ids/browse",
   "devDependencies": {
     "@rollup/plugin-typescript": "^12.1.2",
     "rollup": "^4.31.0",

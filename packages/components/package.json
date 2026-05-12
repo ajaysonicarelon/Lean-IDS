@@ -24,10 +24,10 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/ajaysonicarelon/Lean-IDS.git",
+    "url": "https://bitbucket.elevancehealth.com/scm/~am07832/lean-ids.git",
     "directory": "packages/components"
   },
-  "homepage": "https://github.com/ajaysonicarelon/Lean-IDS#readme",
+  "homepage": "https://bitbucket.elevancehealth.com/projects/~AM07832/repos/lean-ids/browse",
   "peerDependencies": {
     "react": "^18.0.0",
     "react-dom": "^18.0.0"
