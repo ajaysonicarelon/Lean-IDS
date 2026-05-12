@@ -1,6 +1,6 @@
 {
   "name": "@ajaysoni7832/lean-ids-components",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "type": "module",
   "description": "React components for Lean IDS design system",
   "main": "dist/index.js",
@@ -33,15 +33,16 @@
     "react-dom": "^18.0.0"
   },
   "dependencies": {
+    "@ajaysoni7832/lean-ids-tokens": "^1.2.1",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
     "@mui/icons-material": "^9.0.0",
     "@mui/material": "^9.0.0",
-    "@ajaysoni7832/lean-ids-tokens": "^1.2.0",
     "styled-components": "^6.1.15"
   },
   "devDependencies": {
     "@rollup/plugin-typescript": "^12.1.2",
+    "@rollup/plugin-url": "^8.0.2",
     "@storybook/addon-a11y": "^8.5.3",
     "@storybook/addon-essentials": "^8.5.3",
     "@storybook/addon-interactions": "^8.5.3",

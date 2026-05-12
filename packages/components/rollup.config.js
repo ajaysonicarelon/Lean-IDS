@@ -1,4 +1,5 @@
 import typescript from '@rollup/plugin-typescript';
+import url from '@rollup/plugin-url';
 import { defineConfig } from 'rollup';
 
 export default defineConfig({
@@ -16,6 +17,11 @@ export default defineConfig({
     },
   ],
   plugins: [
+    url({
+      include: ['**/*.svg'],
+      limit: 0, // Always emit files
+      fileName: '[name][extname]',
+    }),
     typescript({
       tsconfig: './tsconfig.json',
       declaration: true,
@@ -27,5 +33,6 @@ export default defineConfig({
     'react-dom',
     'styled-components',
     '@lean-ids/tokens',
+    '@ajaysoni7832/lean-ids-tokens',
   ],
 });
