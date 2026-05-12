@@ -7,13 +7,13 @@ import {
   HeaderRightContent,
   SortIcon,
   CheckboxWrapper,
-  LockIcon,
   ResizeHandle,
   SearchInputWrapper,
   SearchInput,
   SearchActions,
 } from './TableHeader.styles';
 import { Checkbox } from '../Checkbox';
+import { Button } from '../Button';
 
 const ArrowDownIcon = () => (
   <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -183,10 +183,16 @@ export const TableHeader: React.FC<TableHeaderProps> = ({
                 <ArrowDownIcon />
               </SortIcon>
             )}
-            {showLockIcon && (
-              <LockIcon onClick={handleLockClick} aria-label="Toggle column lock">
-                <LockClosedIcon />
-              </LockIcon>
+            {locked !== undefined && onLockToggle && (
+              <Button
+                onClick={handleLockClick}
+                variant="secondary"
+                size="small"
+                showLabel={false}
+                leadingIcon={<LockClosedIcon />}
+              >
+                {locked ? 'Unlock' : 'Lock'}
+              </Button>
             )}
           </HeaderLeftContent>
           {showResizeHandle && (

@@ -1,5 +1,9 @@
 /**
- * Button styled components
+ * Button styled components - Matching Figma Design
+ * Variants: primary, secondary, tertiary
+ * Sizes: xsmall, small, medium, large, xlarge
+ * States: active, hover, pressed, focussed, disabled
+ * Types: default, safe, warning, alert
  */
 
 import styled from 'styled-components';
@@ -31,7 +35,7 @@ export const StyledButton = styled.button<StyledButtonProps>`
   }
   
   &:focus-visible {
-    outline: 2px solid ${({ theme }) => theme.colors.palette.primary[300]};
+    outline: 2px solid ${({ theme }) => theme.colors.semantic.focus.indicator};
     outline-offset: 2px;
   }
   
@@ -39,7 +43,7 @@ export const StyledButton = styled.button<StyledButtonProps>`
     switch ($size) {
       case 'xsmall':
         return `
-          gap: ${theme.spacing[2]};
+          gap: ${theme.spacing[3]};
           padding: ${theme.spacing[1]} ${theme.spacing[2]};
           font-size: ${theme.fontSizes[12]};
           line-height: ${theme.lineHeights[14]};
@@ -48,7 +52,7 @@ export const StyledButton = styled.button<StyledButtonProps>`
         `;
       case 'small':
         return `
-          gap: ${theme.spacing[2]};
+          gap: ${theme.spacing[3]};
           padding: ${theme.spacing[2]} ${theme.spacing[3]};
           font-size: ${theme.fontSizes[14]};
           line-height: ${theme.lineHeights[16]};
@@ -57,7 +61,7 @@ export const StyledButton = styled.button<StyledButtonProps>`
         `;
       case 'large':
         return `
-          gap: ${theme.spacing[2]};
+          gap: ${theme.spacing[3]};
           padding: ${theme.spacing[3]} ${theme.spacing[4]};
           font-size: ${theme.fontSizes[16]};
           line-height: ${theme.lineHeights[19]};
@@ -66,7 +70,7 @@ export const StyledButton = styled.button<StyledButtonProps>`
         `;
       case 'xlarge':
         return `
-          gap: ${theme.spacing[2]};
+          gap: ${theme.spacing[3]};
           padding: ${theme.spacing[3]} ${theme.spacing[5]};
           font-size: ${theme.fontSizes[18]};
           line-height: ${theme.lineHeights[21]};
@@ -76,8 +80,8 @@ export const StyledButton = styled.button<StyledButtonProps>`
       case 'medium':
       default:
         return `
-          gap: ${theme.spacing[2]};
-          padding: ${theme.spacing[2]} 14px;
+          gap: ${theme.spacing[3]};
+          padding: ${theme.spacing[4]} ${theme.spacing[6]};
           font-size: ${theme.fontSizes[16]};
           line-height: ${theme.lineHeights[19]};
           border-radius: ${theme.borderRadius.sm};
@@ -87,7 +91,7 @@ export const StyledButton = styled.button<StyledButtonProps>`
   }}
   
   ${({ theme, $variant, $buttonType, $disabled }) => {
-    // Primary variant
+    // PRIMARY VARIANT
     if ($variant === 'primary') {
       if ($disabled) {
         return `
@@ -97,32 +101,31 @@ export const StyledButton = styled.button<StyledButtonProps>`
         `;
       }
       
-      // Primary with different types
       if ($buttonType === 'safe') {
         return `
-          background-color: ${theme.colors.palette.success[400]};
+          background-color: ${theme.colors.palette.success[500]};
           color: ${theme.colors.palette.neutral[50]};
           
           &:hover {
-            background-color: ${theme.colors.palette.success[500]};
+            background-color: ${theme.colors.palette.success[300]};
           }
           
-          &:active, &:focus {
-            background-color: ${theme.colors.palette.success[600]};
+          &:active {
+            background-color: ${theme.colors.palette.success[400]};
           }
         `;
       }
       
       if ($buttonType === 'warning') {
         return `
-          background-color: ${theme.colors.palette.warning[400]};
+          background-color: ${theme.colors.palette.warning[700]};
           color: ${theme.colors.palette.neutral[50]};
           
           &:hover {
             background-color: ${theme.colors.palette.warning[500]};
           }
           
-          &:active, &:focus {
+          &:active {
             background-color: ${theme.colors.palette.warning[600]};
           }
         `;
@@ -130,15 +133,15 @@ export const StyledButton = styled.button<StyledButtonProps>`
       
       if ($buttonType === 'alert') {
         return `
-          background-color: ${theme.colors.palette.error[400]};
+          background-color: ${theme.colors.palette.error[500]};
           color: ${theme.colors.palette.neutral[50]};
           
           &:hover {
-            background-color: ${theme.colors.palette.error[500]};
+            background-color: ${theme.colors.palette.error[300]};
           }
           
-          &:active, &:focus {
-            background-color: ${theme.colors.palette.error[600]};
+          &:active {
+            background-color: ${theme.colors.palette.error[400]};
           }
         `;
       }
@@ -149,16 +152,16 @@ export const StyledButton = styled.button<StyledButtonProps>`
         color: ${theme.colors.palette.neutral[50]};
         
         &:hover {
-          background-color: ${theme.colors.palette.primary[500]};
+          background-color: ${theme.colors.palette.primary[300]};
         }
         
-        &:active, &:focus {
-          background-color: ${theme.colors.palette.primary[600]};
+        &:active {
+          background-color: ${theme.colors.palette.primary[400]};
         }
       `;
     }
     
-    // Secondary variant
+    // SECONDARY VARIANT
     if ($variant === 'secondary') {
       if ($disabled) {
         return `
@@ -169,7 +172,6 @@ export const StyledButton = styled.button<StyledButtonProps>`
         `;
       }
       
-      // Secondary with different types
       if ($buttonType === 'safe') {
         return `
           background-color: transparent;
@@ -177,15 +179,15 @@ export const StyledButton = styled.button<StyledButtonProps>`
           border: 1px solid ${theme.colors.palette.success[500]};
           
           &:hover {
-            background-color: ${theme.colors.palette.success[50]};
-            border-color: ${theme.colors.palette.success[600]};
-            color: ${theme.colors.palette.success[600]};
+            background-color: transparent;
+            border-color: ${theme.colors.palette.success[300]};
+            color: ${theme.colors.palette.success[300]};
           }
           
-          &:active, &:focus {
-            background-color: ${theme.colors.palette.success[100]};
-            border-color: ${theme.colors.palette.success[700]};
-            color: ${theme.colors.palette.success[700]};
+          &:active {
+            background-color: transparent;
+            border-color: ${theme.colors.palette.success[400]};
+            color: ${theme.colors.palette.success[400]};
           }
         `;
       }
@@ -193,19 +195,19 @@ export const StyledButton = styled.button<StyledButtonProps>`
       if ($buttonType === 'warning') {
         return `
           background-color: transparent;
-          color: ${theme.colors.palette.warning[600]};
-          border: 1px solid ${theme.colors.palette.warning[600]};
+          color: ${theme.colors.palette.warning[700]};
+          border: 1px solid ${theme.colors.palette.warning[700]};
           
           &:hover {
-            background-color: ${theme.colors.palette.warning[50]};
-            border-color: ${theme.colors.palette.warning[700]};
-            color: ${theme.colors.palette.warning[700]};
+            background-color: transparent;
+            border-color: ${theme.colors.palette.warning[500]};
+            color: ${theme.colors.palette.warning[500]};
           }
           
-          &:active, &:focus {
-            background-color: ${theme.colors.palette.warning[100]};
-            border-color: ${theme.colors.palette.warning[800]};
-            color: ${theme.colors.palette.warning[800]};
+          &:active {
+            background-color: transparent;
+            border-color: ${theme.colors.palette.warning[600]};
+            color: ${theme.colors.palette.warning[600]};
           }
         `;
       }
@@ -217,15 +219,15 @@ export const StyledButton = styled.button<StyledButtonProps>`
           border: 1px solid ${theme.colors.palette.error[500]};
           
           &:hover {
-            background-color: ${theme.colors.palette.error[50]};
-            border-color: ${theme.colors.palette.error[600]};
-            color: ${theme.colors.palette.error[600]};
+            background-color: transparent;
+            border-color: ${theme.colors.palette.error[300]};
+            color: ${theme.colors.palette.error[300]};
           }
           
-          &:active, &:focus {
-            background-color: ${theme.colors.palette.error[100]};
-            border-color: ${theme.colors.palette.error[700]};
-            color: ${theme.colors.palette.error[700]};
+          &:active {
+            background-color: transparent;
+            border-color: ${theme.colors.palette.error[400]};
+            color: ${theme.colors.palette.error[400]};
           }
         `;
       }
@@ -233,75 +235,102 @@ export const StyledButton = styled.button<StyledButtonProps>`
       // Default secondary
       return `
         background-color: transparent;
-        color: ${theme.colors.palette.primary[500]};
-        border: 1px solid ${theme.colors.palette.primary[500]};
+        color: ${theme.colors.palette.primary[400]};
+        border: 1px solid ${theme.colors.palette.primary[400]};
         
         &:hover {
-          background-color: ${theme.colors.palette.primary[50]};
-          border-color: ${theme.colors.palette.primary[600]};
-          color: ${theme.colors.palette.primary[600]};
+          background-color: transparent;
+          border-color: ${theme.colors.palette.primary[300]};
+          color: ${theme.colors.palette.primary[300]};
         }
         
-        &:active, &:focus {
-          background-color: ${theme.colors.palette.primary[100]};
-          border-color: ${theme.colors.palette.primary[700]};
-          color: ${theme.colors.palette.primary[700]};
+        &:active {
+          background-color: transparent;
+          border-color: ${theme.colors.palette.primary[400]};
+          color: ${theme.colors.palette.primary[400]};
         }
       `;
     }
     
-    // Outlined variant (legacy support)
-    if ($variant === 'outlined') {
+    // TERTIARY VARIANT (Figma Design)
+    if ($variant === 'tertiary') {
       if ($disabled) {
         return `
           background-color: transparent;
           color: ${theme.colors.palette.neutral[400]};
-          border: 1px solid ${theme.colors.palette.neutral[300]};
+          border: none;
           pointer-events: none;
         `;
       }
-      return `
-        background-color: transparent;
-        color: ${theme.colors.palette.primary[500]};
-        border: 1px solid ${theme.colors.palette.primary[500]};
-        
-        &:hover {
-          background-color: ${theme.colors.palette.primary[50]};
-          border-color: ${theme.colors.palette.primary[600]};
-          color: ${theme.colors.palette.primary[600]};
-        }
-        
-        &:active {
-          background-color: ${theme.colors.palette.primary[100]};
-          border-color: ${theme.colors.palette.primary[700]};
-          color: ${theme.colors.palette.primary[700]};
-        }
-      `;
-    }
-    
-    // Link variant
-    if ($variant === 'link') {
-      if ($disabled) {
+      
+      if ($buttonType === 'safe') {
         return `
           background-color: transparent;
-          color: ${theme.colors.palette.neutral[400]};
-          text-decoration: none;
-          pointer-events: none;
+          color: ${theme.colors.palette.success[500]};
+          border: none;
+          
+          &:hover {
+            background-color: transparent;
+            color: ${theme.colors.palette.success[300]};
+          }
+          
+          &:active {
+            background-color: transparent;
+            color: ${theme.colors.palette.success[400]};
+          }
         `;
       }
+      
+      if ($buttonType === 'warning') {
+        return `
+          background-color: transparent;
+          color: ${theme.colors.palette.warning[700]};
+          border: none;
+          
+          &:hover {
+            background-color: transparent;
+            color: ${theme.colors.palette.warning[500]};
+          }
+          
+          &:active {
+            background-color: transparent;
+            color: ${theme.colors.palette.warning[600]};
+          }
+        `;
+      }
+      
+      if ($buttonType === 'alert') {
+        return `
+          background-color: transparent;
+          color: ${theme.colors.palette.error[500]};
+          border: none;
+          
+          &:hover {
+            background-color: transparent;
+            color: ${theme.colors.palette.error[300]};
+          }
+          
+          &:active {
+            background-color: transparent;
+            color: ${theme.colors.palette.error[400]};
+          }
+        `;
+      }
+      
+      // Default tertiary
       return `
         background-color: transparent;
-        color: ${theme.colors.palette.primary[500]};
-        text-decoration: underline;
-        padding: 0;
-        min-height: auto;
+        color: ${theme.colors.palette.primary[400]};
+        border: none;
         
         &:hover {
-          color: ${theme.colors.palette.primary[600]};
+          background-color: transparent;
+          color: ${theme.colors.palette.primary[300]};
         }
         
         &:active {
-          color: ${theme.colors.palette.primary[700]};
+          background-color: transparent;
+          color: ${theme.colors.palette.primary[400]};
         }
       `;
     }

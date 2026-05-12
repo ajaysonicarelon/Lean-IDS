@@ -5,19 +5,17 @@ import {
   Modal,
   ModalHeader,
   ModalTitle,
-  CloseButton,
   ModalBody,
   ColumnList,
   ColumnItem,
   DragHandle,
   ColumnLabel,
-  IconButton,
   ModalFooter,
-  Button,
 } from './TableSettings.styles';
 import { Icon } from '../Icon';
 import { Checkbox } from '../Checkbox';
 import { InlineMessage } from '../InlineMessage';
+import { Button } from '../Button';
 
 export const TableSettings: React.FC<TableSettingsProps> = ({
   isOpen,
@@ -127,9 +125,15 @@ export const TableSettings: React.FC<TableSettingsProps> = ({
       <Modal className={className}>
         <ModalHeader>
           <ModalTitle>Table Settings</ModalTitle>
-          <CloseButton onClick={handleCancel} aria-label="Close">
-            <Icon name="Close" size="small" />
-          </CloseButton>
+          <Button 
+            onClick={handleCancel} 
+            variant="secondary" 
+            size="small"
+            showLabel={false}
+            leadingIcon={<Icon name="Close" size="small" />}
+          >
+            Close
+          </Button>
         </ModalHeader>
 
         <ModalBody>
@@ -169,28 +173,29 @@ export const TableSettings: React.FC<TableSettingsProps> = ({
 
                 <ColumnLabel>{column.label}</ColumnLabel>
 
-                <IconButton
+                <Button
                   onClick={() => handleLockToggle(column.id)}
-                  title={column.locked ? 'Unlock column' : 'Lock column'}
-                  style={{
-                    opacity: !column.locked && localColumns.filter(col => col.locked && col.id !== 'checkbox').length >= 3 ? 0.4 : 1,
-                    cursor: !column.locked && localColumns.filter(col => col.locked && col.id !== 'checkbox').length >= 3 ? 'not-allowed' : 'pointer',
-                    pointerEvents: 'auto'
-                  }}
+                  variant="secondary"
+                  size="small"
+                  showLabel={false}
+                  leadingIcon={
+                    <Icon
+                      name={column.locked ? 'Lock' : 'LockOpen'}
+                      size="small"
+                    />
+                  }
+                  disabled={!column.locked && localColumns.filter(col => col.locked && col.id !== 'checkbox').length >= 3}
                 >
-                  <Icon
-                    name={column.locked ? 'Lock' : 'LockOpen'}
-                    size="small"
-                  />
-                </IconButton>
+                  {column.locked ? 'Unlock' : 'Lock'}
+                </Button>
               </ColumnItem>
             ))}
           </ColumnList>
         </ModalBody>
 
         <ModalFooter>
-          <Button onClick={handleCancel}>Cancel</Button>
-          <Button $variant="primary" onClick={handleSave}>
+          <Button onClick={handleCancel} variant="secondary">Cancel</Button>
+          <Button variant="primary" onClick={handleSave}>
             Apply Changes
           </Button>
         </ModalFooter>

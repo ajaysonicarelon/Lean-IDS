@@ -41,7 +41,7 @@ export const StyledToast = styled.div<{
       }
       if ($type === 'info') {
         return `
-          background-color: ${theme.colors.palette.info[500]};
+          background-color: ${theme.colors.palette.secondary.pantone[500]};
           color: ${theme.colors.palette.neutral[50]};
         `;
       }
@@ -69,8 +69,8 @@ export const StyledToast = styled.div<{
       }
       if ($type === 'info') {
         return `
-          background-color: ${theme.colors.palette.info[50]};
-          color: ${theme.colors.palette.info[600]};
+          background-color: ${theme.colors.palette.secondary.pantone[50]};
+          color: ${theme.colors.palette.secondary.pantone[600]};
         `;
       }
     }
@@ -100,33 +100,6 @@ export const ActionsContainer = styled.div`
   align-items: center;
   gap: ${({ theme }) => theme.spacing[2]};
   flex-shrink: 0;
-`;
-
-export const ActionButton = styled.button`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: ${({ theme }) => theme.spacing[1]};
-  padding: ${({ theme }) => `${theme.spacing[1]} ${theme.spacing[2]}`};
-  border-radius: ${({ theme }) => theme.borderRadius.sm};
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  font-family: ${({ theme }) => theme.fonts.primary};
-  font-size: ${({ theme }) => theme.fontSizes[16]};
-  font-weight: ${({ theme }) => theme.fontWeights.semibold};
-  line-height: ${({ theme }) => theme.lineHeights[19]};
-  color: inherit;
-  white-space: nowrap;
-  transition: opacity 0.2s;
-
-  &:hover {
-    opacity: 0.8;
-  }
-
-  &:active {
-    opacity: 0.6;
-  }
 `;
 
 export const IconWrapper = styled.span`

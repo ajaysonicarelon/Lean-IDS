@@ -39,7 +39,7 @@ An interactive control that triggers actions with clear visual feedback.
 ## Features
 
 - **Five Sizes**: XSmall, Small, Medium, Large, XLarge
-- **Two Main Variants**: Primary (filled), Secondary (outlined)
+- **Three Variants**: Primary (filled), Secondary (outlined), Tertiary (text)
 - **Four Button Types**: Default, Safe, Warning, Alert
 - **Optional Icons**: Leading and trailing icons
 - **Multiple States**: Active, Hover, Pressed, Focused, Disabled
@@ -85,10 +85,10 @@ import { Button } from '@lean-ids/components';
     },
     variant: {
       control: 'radio',
-      options: ['primary', 'secondary', 'outlined', 'link'],
+      options: ['primary', 'secondary', 'tertiary'],
       description: 'Visual variant',
       table: {
-        type: { summary: 'primary | secondary | outlined | link' },
+        type: { summary: 'primary | secondary | tertiary' },
         defaultValue: { summary: 'primary' },
         category: 'Appearance',
       },
@@ -174,40 +174,6 @@ export const PrimaryVariant: Story = {
   },
 };
 
-// Variants - Outlined
-export const OutlinedVariant: Story = {
-  render: () => (
-    <div style={{ display: 'flex', gap: '16px', alignItems: 'center', flexWrap: 'wrap' }}>
-      <Button variant="outlined">Outlined</Button>
-      <Button variant="outlined" disabled>Disabled</Button>
-    </div>
-  ),
-  parameters: {
-    docs: {
-      description: {
-        story: 'Outlined buttons for secondary actions.',
-      },
-    },
-  },
-};
-
-// Variants - Link
-export const LinkVariant: Story = {
-  render: () => (
-    <div style={{ display: 'flex', gap: '16px', alignItems: 'center', flexWrap: 'wrap' }}>
-      <Button variant="link">Link Button</Button>
-      <Button variant="link" disabled>Disabled</Button>
-    </div>
-  ),
-  parameters: {
-    docs: {
-      description: {
-        story: 'Link buttons for tertiary actions.',
-      },
-    },
-  },
-};
-
 // Variants - Secondary
 export const SecondaryVariant: Story = {
   render: () => (
@@ -224,6 +190,24 @@ export const SecondaryVariant: Story = {
     },
   },
 };
+
+// Variants - Tertiary
+export const TertiaryVariant: Story = {
+  render: () => (
+    <div style={{ display: 'flex', gap: '16px', alignItems: 'center', flexWrap: 'wrap' }}>
+      <Button variant="tertiary">Tertiary</Button>
+      <Button variant="tertiary" disabled>Disabled</Button>
+    </div>
+  ),
+  parameters: {
+    docs: {
+      description: {
+        story: 'Tertiary buttons (text-only) for tertiary actions.',
+      },
+    },
+  },
+};
+
 
 // Button Types - Safe
 export const SafeType: Story = {
@@ -289,8 +273,8 @@ export const WithIcons: Story = {
         <Button leadingIcon={<CheckIcon />} trailingIcon={<CloseIcon />}>Both Icons</Button>
       </div>
       <div style={{ display: 'flex', gap: '16px', alignItems: 'center', flexWrap: 'wrap' }}>
-        <Button variant="outlined" leadingIcon={<CheckIcon />}>Outlined with Icon</Button>
-        <Button variant="link" trailingIcon={<ArrowRightIcon />}>Link with Icon</Button>
+        <Button variant="secondary" leadingIcon={<CheckIcon />}>Secondary with Icon</Button>
+        <Button variant="tertiary" trailingIcon={<ArrowRightIcon />}>Tertiary with Icon</Button>
       </div>
     </div>
   ),
@@ -308,7 +292,7 @@ export const IconOnly: Story = {
   render: () => (
     <div style={{ display: 'flex', gap: '16px', alignItems: 'center', flexWrap: 'wrap' }}>
       <Button leadingIcon={<CheckIcon />} showLabel={false} aria-label="Check">Icon</Button>
-      <Button leadingIcon={<CloseIcon />} showLabel={false} aria-label="Close" variant="outlined">Icon</Button>
+      <Button leadingIcon={<CloseIcon />} showLabel={false} aria-label="Close" variant="secondary">Icon</Button>
       <Button leadingIcon={<ArrowRightIcon />} showLabel={false} aria-label="Next" size="large">Icon</Button>
     </div>
   ),
@@ -326,8 +310,8 @@ export const FullWidth: Story = {
   render: () => (
     <div style={{ width: '400px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
       <Button fullWidth>Full Width Primary</Button>
-      <Button fullWidth variant="outlined">Full Width Outlined</Button>
-      <Button fullWidth variant="link">Full Width Link</Button>
+      <Button fullWidth variant="secondary">Full Width Secondary</Button>
+      <Button fullWidth variant="tertiary">Full Width Tertiary</Button>
     </div>
   ),
   parameters: {
@@ -347,15 +331,15 @@ export const ButtonGroups: Story = {
         <h4 style={{ marginBottom: '12px' }}>Horizontal Group</h4>
         <div style={{ display: 'flex', gap: '12px' }}>
           <Button>Save</Button>
-          <Button variant="outlined">Cancel</Button>
+          <Button variant="secondary">Cancel</Button>
         </div>
       </div>
       <div>
         <h4 style={{ marginBottom: '12px' }}>Vertical Group</h4>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', width: '200px' }}>
           <Button fullWidth>Primary Action</Button>
-          <Button fullWidth variant="outlined">Secondary Action</Button>
-          <Button fullWidth variant="link">Tertiary Action</Button>
+          <Button fullWidth variant="secondary">Secondary Action</Button>
+          <Button fullWidth variant="tertiary">Tertiary Action</Button>
         </div>
       </div>
     </div>
@@ -404,9 +388,9 @@ export const AllVariants: Story = {
               <Button size={size} variant="secondary" disabled leadingIcon={<CheckIcon />}>Disabled</Button>
             </div>
             <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap', alignItems: 'center' }}>
-              <strong style={{ width: '100%', fontSize: '12px' }}>Link:</strong>
-              <Button size={size} variant="link">Link Button</Button>
-              <Button size={size} variant="link" disabled>Disabled</Button>
+              <strong style={{ width: '100%', fontSize: '12px' }}>Tertiary:</strong>
+              <Button size={size} variant="tertiary">Tertiary Button</Button>
+              <Button size={size} variant="tertiary" disabled>Disabled</Button>
             </div>
           </div>
         </div>

@@ -115,30 +115,6 @@ export const ColumnLabel = styled.span`
   color: ${({ theme }) => theme.colors.palette.neutral[1000]};
 `;
 
-export const IconButton = styled.button`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 24px;
-  height: 24px;
-  border: none;
-  background: transparent;
-  cursor: pointer;
-  color: ${({ theme }) => theme.colors.palette.neutral[600]};
-  border-radius: ${({ theme }) => theme.borderRadius.sm};
-  transition: all 0.2s;
-  
-  &:hover {
-    background-color: ${({ theme }) => theme.colors.palette.neutral[200]};
-    color: ${({ theme }) => theme.colors.palette.neutral[1000]};
-  }
-  
-  &:disabled {
-    opacity: 0.4;
-    cursor: not-allowed;
-  }
-`;
-
 export const ModalFooter = styled.div`
   display: flex;
   align-items: center;
@@ -146,30 +122,4 @@ export const ModalFooter = styled.div`
   gap: ${({ theme }) => theme.spacing[5]};
   padding: ${({ theme }) => theme.spacing[7]};
   border-top: 1px solid ${({ theme }) => theme.colors.palette.neutral[300]};
-`;
-
-export const Button = styled.button<{ $variant?: 'primary' | 'secondary' }>`
-  padding: ${({ theme }) => `${theme.spacing[3]} ${theme.spacing[7]}`};
-  font-family: 'Elevance Sans', sans-serif;
-  font-size: 14px;
-  font-weight: 600;
-  line-height: 16px;
-  border-radius: ${({ theme }) => theme.borderRadius.sm};
-  border: ${({ $variant, theme }) =>
-    $variant === 'primary' ? 'none' : `1px solid ${theme.colors.palette.neutral[500]}`};
-  background-color: ${({ $variant, theme }) =>
-    $variant === 'primary' ? theme.colors.palette.primary[500] : theme.colors.palette.neutral[50]};
-  color: ${({ $variant, theme }) =>
-    $variant === 'primary' ? theme.colors.palette.neutral[50] : theme.colors.palette.neutral[1000]};
-  cursor: pointer;
-  transition: all 0.2s;
-  
-  &:hover {
-    background-color: ${({ $variant, theme }) =>
-      $variant === 'primary' ? theme.colors.palette.primary[600] : theme.colors.palette.neutral[100]};
-  }
-  
-  &:active {
-    transform: scale(0.98);
-  }
 `;

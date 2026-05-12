@@ -101,34 +101,9 @@ export const SortIcon = styled.span<{ $direction: 'asc' | 'desc' | 'none' }>`
 `;
 
 export const CheckboxWrapper = styled.div`
-  display: inline-flex;
+  display: flex;
   align-items: center;
   justify-content: center;
-`;
-
-export const LockIcon = styled.button`
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 16px;
-  height: 16px;
-  padding: 0;
-  border: none;
-  background: transparent;
-  color: ${({ theme }) => theme.colors.palette.neutral[600]};
-  cursor: pointer;
-  transition: color 0.2s ease-in-out;
-  flex-shrink: 0;
-
-  &:hover {
-    color: ${({ theme }) => theme.colors.palette.primary[500]};
-  }
-
-  svg {
-    width: 100%;
-    height: 100%;
-    fill: currentColor;
-  }
 `;
 
 export const ResizeHandle = styled.div`
@@ -179,7 +154,7 @@ export const SearchInput = styled.input`
   }
 
   &:focus {
-    border-color: ${({ theme }) => theme.colors.palette.primary[500]};
+    border-color: ${({ theme }) => theme.colors.semantic.focus.input};
   }
 `;
 

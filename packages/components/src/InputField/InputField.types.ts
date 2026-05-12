@@ -4,6 +4,7 @@
  */
 
 import { InputHTMLAttributes } from 'react';
+import { HelpingTextState } from '../HelpingText/HelpingText.types';
 
 export type InputType = 
   | 'text'
@@ -17,9 +18,9 @@ export type InputType =
   | 'datetime-local'
   | 'time';
 
-export type InputSize = 'small' | 'default' | 'large';
+export type InputSize = 'xsmall' | 'small' | 'default' | 'large';
 
-export type InputState = 'default' | 'active' | 'error' | 'disabled';
+export type InputState = 'active' | 'focused' | 'error' | 'disabled' | 'filled' | 'non-editable';
 
 export interface InputFieldProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'size'> {
   /**
@@ -33,14 +34,11 @@ export interface InputFieldProps extends Omit<InputHTMLAttributes<HTMLInputEleme
   helperText?: string;
   
   /**
-   * Error message (overrides helperText when present)
+   * State of the helper text (controls icon and color)
+   * @default 'default'
+   * Options: 'default' | 'info' | 'warning' | 'error'
    */
-  errorMessage?: string;
-  
-  /**
-   * Success message
-   */
-  successMessage?: string;
+  helperTextState?: HelpingTextState;
   
   /**
    * Input type
@@ -63,6 +61,11 @@ export interface InputFieldProps extends Omit<InputHTMLAttributes<HTMLInputEleme
    * Whether the field is disabled
    */
   disabled?: boolean;
+  
+  /**
+   * Whether the field is read-only (non-editable)
+   */
+  readOnly?: boolean;
   
   /**
    * Whether the field has an error

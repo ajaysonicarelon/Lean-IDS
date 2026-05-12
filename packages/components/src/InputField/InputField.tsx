@@ -29,15 +29,16 @@ export const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
     {
       label,
       helperText,
-      errorMessage,
+      helperTextState = 'default',
       type = 'text',
       size = 'default',
       required = false,
       disabled = false,
+      readOnly = false,
       error = false,
       showLabel = true,
       showFieldImportance = false,
-      fieldImportanceVariant = 'mandatory',
+      fieldImportanceVariant = 'asterisk',
       showInlineText = true,
       leadingIcon,
       trailingIcon,
@@ -64,9 +65,9 @@ export const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
     
     const [isFocused, setIsFocused] = useState(false);
 
-    // Determine which message to show
-    const displayMessage = errorMessage || helperText;
-    const hasError = error || !!errorMessage;
+    // Use helperText directly
+    const displayMessage = helperText;
+    const hasError = error;
 
     // Compute ARIA attributes
     const ariaDescribedByValue = [
@@ -86,8 +87,8 @@ export const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
       onBlur?.(e);
     };
 
-    // Determine helper text state
-    const helpingTextState = hasError ? 'error' : 'default';
+    // Determine helper text state from prop
+    const finalHelpingTextState = helperTextState;
     const helpingTextSize = size === 'large' ? 'large' : 'default';
 
     return (
@@ -112,7 +113,9 @@ export const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
           $size={size}
           $error={hasError}
           $disabled={disabled}
+          $readOnly={readOnly}
           $isFocused={isFocused}
+          $filled={!!value}
         >
           {leadingIcon && (
             <IconWrapper $size={size}>
@@ -132,6 +135,7 @@ export const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
             onFocus={handleFocus}
             onBlur={handleBlur}
             disabled={disabled}
+            readOnly={readOnly}
             required={required}
             aria-label={ariaLabel || (label ? undefined : placeholder)}
             aria-labelledby={label ? labelId : undefined}
@@ -152,7 +156,7 @@ export const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
         {showInlineText && displayMessage && (
           <HelpingText
             text={displayMessage}
-            state={helpingTextState}
+            state={finalHelpingTextState}
             size={helpingTextSize}
             showIcon={true}
           />

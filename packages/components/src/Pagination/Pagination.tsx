@@ -9,12 +9,11 @@ import {
   Label,
   Dropdown,
   PaginatorContainer,
-  PageButton,
-  NavButton,
   Ellipsis,
   RightSection,
   GoToPageInput,
 } from './Pagination.styles';
+import { Button } from '../Button';
 
 const ChevronLeftIcon = () => (
   <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -132,50 +131,62 @@ export const Pagination: React.FC<PaginationProps> = ({
       </LeftSection>
 
       <PaginatorContainer>
-        <NavButton
+        <Button
           onClick={() => onPageChange(1)}
           disabled={currentPage === 1}
-          aria-label="First page"
+          variant="secondary"
+          size="small"
+          showLabel={false}
+          leadingIcon={<FirstPageIcon />}
         >
-          <FirstPageIcon />
-        </NavButton>
-        <NavButton
+          First
+        </Button>
+        <Button
           onClick={() => onPageChange(currentPage - 1)}
           disabled={currentPage === 1}
-          aria-label="Previous page"
+          variant="secondary"
+          size="small"
+          showLabel={false}
+          leadingIcon={<ChevronLeftIcon />}
         >
-          <ChevronLeftIcon />
-        </NavButton>
+          Previous
+        </Button>
 
         {getPageNumbers().map((page, index) =>
           typeof page === 'number' ? (
-            <PageButton
+            <Button
               key={`page-${page}`}
-              $active={page === currentPage}
-              $variant={variant}
               onClick={() => onPageChange(page)}
+              variant={page === currentPage ? 'primary' : 'secondary'}
+              size="small"
             >
               {page}
-            </PageButton>
+            </Button>
           ) : (
             <Ellipsis key={`ellipsis-${index}`}>...</Ellipsis>
           )
         )}
 
-        <NavButton
+        <Button
           onClick={() => onPageChange(currentPage + 1)}
           disabled={currentPage === totalPages}
-          aria-label="Next page"
+          variant="secondary"
+          size="small"
+          showLabel={false}
+          leadingIcon={<ChevronRightIcon />}
         >
-          <ChevronRightIcon />
-        </NavButton>
-        <NavButton
+          Next
+        </Button>
+        <Button
           onClick={() => onPageChange(totalPages)}
           disabled={currentPage === totalPages}
-          aria-label="Last page"
+          variant="secondary"
+          size="small"
+          showLabel={false}
+          leadingIcon={<LastPageIcon />}
         >
-          <LastPageIcon />
-        </NavButton>
+          Last
+        </Button>
       </PaginatorContainer>
 
       <RightSection>

@@ -153,6 +153,13 @@ export const ChipContainer = styled.div<StyledChipProps>`
       }
     }}
   }
+  
+  &:focus-visible {
+    ${({ $clickable, theme }) => $clickable && `
+      outline: 2px solid ${theme.colors.semantic.focus.indicator};
+      outline-offset: 2px;
+    `}
+  }
 `;
 
 export const ChipLabel = styled.span`

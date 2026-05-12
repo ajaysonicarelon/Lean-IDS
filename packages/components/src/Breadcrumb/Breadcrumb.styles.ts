@@ -16,11 +16,17 @@ export const StyledBreadcrumb = styled.span<StyledBreadcrumbProps>`
   cursor: ${({ $isActive }) => ($isActive ? 'default' : 'pointer')};
   text-decoration: none;
   transition: color 0.2s ease-in-out;
+  border-radius: 2px;
 
   &:hover {
     color: ${({ $isActive, theme }) =>
       $isActive
         ? theme.colors.palette.primary[500]
         : theme.colors.palette.primary[400]};
+  }
+
+  &:focus-visible {
+    outline: 2px solid ${({ theme }) => theme.colors.semantic.focus.indicator};
+    outline-offset: 2px;
   }
 `;

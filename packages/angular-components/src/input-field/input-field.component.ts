@@ -21,9 +21,10 @@ export class InputFieldComponent implements ControlValueAccessor {
   @Input() placeholder: string = '';
   @Input() type: 'text' | 'email' | 'password' | 'number' | 'tel' | 'url' = 'text';
   @Input() disabled: boolean = false;
+  @Input() readOnly: boolean = false;
   @Input() required: boolean = false;
-  @Input() error: string = '';
-  @Input() helpText: string = '';
+  @Input() helperText: string = '';
+  @Input() helperTextState: 'default' | 'info' | 'warning' | 'error' = 'default';
   @Input() importance: 'required' | 'optional' | 'recommended' = 'optional';
   @Input() maxLength?: number;
   @Input() minLength?: number;
@@ -84,11 +85,28 @@ export class InputFieldComponent implements ControlValueAccessor {
   }
 
   get hasError(): boolean {
-    return !!this.error;
+    return this.helperTextState === 'error';
   }
 
   get showHelpText(): boolean {
-    return !!this.helpText && !this.hasError;
+    return !!this.helperText;
+  }
+
+  get helperTextIcon(): string {
+    switch (this.helperTextState) {
+      case 'error':
+        return 'error';
+      case 'warning':
+        return 'warning';
+      case 'info':
+        return 'info';
+      default:
+        return 'info';
+    }
+  }
+
+  get helperTextClass(): string {
+    return `helper-text-${this.helperTextState}`;
   }
 
   get importanceLabel(): string {

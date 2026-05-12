@@ -28,7 +28,7 @@ export const StyledInlineMessage = styled.div<{
       if ($type === 'success') {
         return `
           background-color: ${theme.colors.palette.success[50]};
-          color: ${theme.colors.palette.success[600]};
+          color: ${theme.colors.palette.success[700]};
         `;
       }
       if ($type === 'error') {
@@ -39,8 +39,8 @@ export const StyledInlineMessage = styled.div<{
       }
       if ($type === 'info') {
         return `
-          background-color: ${theme.colors.palette.info[50]};
-          color: ${theme.colors.palette.info[600]};
+          background-color: ${theme.colors.palette.secondary.pantone[50]};
+          color: ${theme.colors.palette.secondary.pantone[700]};
         `;
       }
     }
@@ -56,17 +56,17 @@ export const StyledInlineMessage = styled.div<{
         backgroundColor = theme.colors.palette.warning[100];
         textColor = theme.colors.palette.warning[900];
       } else if ($type === 'success') {
-        borderColor = theme.colors.palette.success[500];
+        borderColor = theme.colors.palette.success[600];
         backgroundColor = theme.colors.palette.success[50];
-        textColor = theme.colors.palette.success[600];
+        textColor = theme.colors.palette.success[800];
       } else if ($type === 'error') {
         borderColor = theme.colors.palette.error[500];
         backgroundColor = theme.colors.palette.error[50];
         textColor = theme.colors.palette.error[600];
       } else if ($type === 'info') {
-        borderColor = theme.colors.palette.info[500];
-        backgroundColor = theme.colors.palette.info[50];
-        textColor = theme.colors.palette.info[600];
+        borderColor = theme.colors.palette.secondary.pantone[500];
+        backgroundColor = theme.colors.palette.secondary.pantone[50];
+        textColor = theme.colors.palette.secondary.pantone[700];
       }
 
       return `
@@ -131,61 +131,11 @@ export const ActionsRow = styled.div`
   padding-top: ${({ theme }) => theme.spacing[1]};
 `;
 
-export const Link = styled.button`
-  background: none;
-  border: none;
-  padding: 0;
-  cursor: pointer;
-  font-family: ${({ theme }) => theme.fonts.primary};
-  font-size: 15px;
-  font-weight: ${({ theme }) => theme.fontWeights.semibold};
-  line-height: 16px;
-  letter-spacing: -0.05px;
-  color: ${({ theme }) => theme.colors.palette.secondary.blue[500]};
-  text-decoration: none;
-  transition: opacity 0.2s;
-
-  &:hover {
-    opacity: 0.8;
-  }
-
-  &:active {
-    opacity: 0.6;
-  }
-`;
-
 export const ActionsContainer = styled.div`
   display: flex;
   align-items: flex-start;
   gap: ${({ theme }) => theme.spacing[2]};
   flex-shrink: 0;
-`;
-
-export const ActionButton = styled.button`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: ${({ theme }) => theme.spacing[1]};
-  padding: ${({ theme }) => `${theme.spacing[1]} ${theme.spacing[2]}`};
-  border-radius: ${({ theme }) => theme.borderRadius.sm};
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  font-family: ${({ theme }) => theme.fonts.primary};
-  font-size: ${({ theme }) => theme.fontSizes[16]};
-  font-weight: ${({ theme }) => theme.fontWeights.semibold};
-  line-height: ${({ theme }) => theme.lineHeights[19]};
-  color: inherit;
-  white-space: nowrap;
-  transition: opacity 0.2s;
-
-  &:hover {
-    opacity: 0.8;
-  }
-
-  &:active {
-    opacity: 0.6;
-  }
 `;
 
 export const CloseIconWrapper = styled.span`

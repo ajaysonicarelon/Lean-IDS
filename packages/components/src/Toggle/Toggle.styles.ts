@@ -32,6 +32,10 @@ export const ToggleTrack = styled.div<StyledToggleTrackProps>`
   cursor: ${({ $disabled }) => ($disabled ? 'not-allowed' : 'pointer')};
   flex-shrink: 0;
   
+  ${HiddenToggleInput}:focus-visible + & {
+    box-shadow: 0 0 0 2px ${({ theme }) => theme.colors.semantic.focus.indicator};
+  }
+  
   ${({ theme, $checked, $disabled }) => {
     if ($disabled && $checked) {
       return `background-color: ${theme.colors.palette.primary[200]};`;

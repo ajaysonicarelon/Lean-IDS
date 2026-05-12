@@ -159,8 +159,8 @@ export const elevanceColors: SemanticColorPalette = generateSemanticPalette(rawE
  */
 export interface SemanticColors {
   text: {
-    primary: string;
-    secondary: string;
+    primary: string;       // All text (paragraphs, headings, headlines) - gray-900
+    secondary: string;     // Muted, caption, tertiary text - gray-700
     disabled: string;
     inverse: string;
     error: string;
@@ -168,7 +168,7 @@ export interface SemanticColors {
     warning: string;
   };
   background: {
-    primary: string;
+    primary: string;       // primary-50 (theme-specific: Carelon/Elevance)
     secondary: string;
     tertiary: string;
     inverse: string;
@@ -187,70 +187,92 @@ export interface SemanticColors {
     active: string;
     disabled: string;
   };
+  focus: {
+    /** 
+     * Keyboard navigation focus indicator for all interactive elements
+     * Used for: buttons, links, breadcrumbs, checkboxes, toggles, icons, etc.
+     * Standard: turquoise-400 (#1AC2C1)
+     */
+    indicator: string;
+    /** 
+     * Input field focus border color
+     * Uses the same turquoise-400 as all other focus indicators for consistency
+     * Used for: text inputs, textareas, selects, date pickers, etc.
+     */
+    input: string;
+  };
 }
 
 // Semantic color mapping for Carelon
 export const carelonSemanticColors: SemanticColors = {
   text: {
-    primary: carelonColors.neutral[900],
-    secondary: carelonColors.neutral[600],
-    disabled: carelonColors.neutral[400],
-    inverse: carelonColors.neutral[50],
+    primary: carelonColors.neutral[900],      // gray-900 for all text (paragraphs, headings, headlines)
+    secondary: carelonColors.neutral[700],    // gray-700 for muted, caption, tertiary text
+    disabled: carelonColors.neutral[400],     // gray-400 for disabled text
+    inverse: carelonColors.neutral[50],       // gray-50 for text on dark backgrounds
     error: carelonColors.error[600],
     success: carelonColors.success[600],
     warning: carelonColors.warning[700],
   },
   background: {
-    primary: carelonColors.neutral[50],
-    secondary: carelonColors.neutral[100],
-    tertiary: carelonColors.neutral[200],
-    inverse: carelonColors.neutral[900],
-    disabled: carelonColors.neutral[200],
+    primary: carelonColors.primary[50],       // primary-50 changes per theme (Carelon/Elevance)
+    secondary: carelonColors.neutral[50],     // gray-50 for cards, panels, sidebars
+    tertiary: carelonColors.neutral[200],     // gray-200 for nested sections
+    inverse: carelonColors.neutral[900],      // gray-900 for dark backgrounds
+    disabled: carelonColors.neutral[200],     // gray-200 for disabled backgrounds
   },
   border: {
-    default: carelonColors.neutral[300],
-    hover: carelonColors.neutral[400],
+    default: carelonColors.neutral[300],      // gray-300 for default borders
+    hover: carelonColors.neutral[400],        // gray-400 for hover borders
     focus: carelonColors.primary[500],
     error: carelonColors.error[500],
-    disabled: carelonColors.neutral[200],
+    disabled: carelonColors.neutral[200],     // gray-200 for disabled borders
   },
   interactive: {
     default: carelonColors.primary[500],
     hover: carelonColors.primary[600],
     active: carelonColors.primary[700],
-    disabled: carelonColors.neutral[300],
+    disabled: carelonColors.neutral[300],     // gray-300 for disabled interactive
+  },
+  focus: {
+    indicator: carelonColors.secondary.turquoise[400], // Keyboard navigation focus - turquoise-400
+    input: carelonColors.secondary.turquoise[400], // Input field focus - turquoise-400 (same as all other focus indicators)
   },
 };
 
 // Semantic color mapping for Elevance
 export const elevanceSemanticColors: SemanticColors = {
   text: {
-    primary: elevanceColors.neutral[900],
-    secondary: elevanceColors.neutral[600],
-    disabled: elevanceColors.neutral[400],
-    inverse: elevanceColors.neutral[50],
+    primary: elevanceColors.neutral[900],     // gray-900 for all text (paragraphs, headings, headlines)
+    secondary: elevanceColors.neutral[700],   // gray-700 for muted, caption, tertiary text
+    disabled: elevanceColors.neutral[400],    // gray-400 for disabled text
+    inverse: elevanceColors.neutral[50],      // gray-50 for text on dark backgrounds
     error: elevanceColors.error[600],
     success: elevanceColors.success[600],
     warning: elevanceColors.warning[700],
   },
   background: {
-    primary: elevanceColors.neutral[50],
-    secondary: elevanceColors.neutral[100],
-    tertiary: elevanceColors.neutral[200],
-    inverse: elevanceColors.neutral[900],
-    disabled: elevanceColors.neutral[200],
+    primary: elevanceColors.primary[50],      // primary-50 changes per theme (Carelon/Elevance)
+    secondary: elevanceColors.neutral[50],    // gray-50 for cards, panels, sidebars
+    tertiary: elevanceColors.neutral[200],    // gray-200 for nested sections
+    inverse: elevanceColors.neutral[900],     // gray-900 for dark backgrounds
+    disabled: elevanceColors.neutral[200],    // gray-200 for disabled backgrounds
   },
   border: {
-    default: elevanceColors.neutral[300],
-    hover: elevanceColors.neutral[400],
+    default: elevanceColors.neutral[300],     // gray-300 for default borders
+    hover: elevanceColors.neutral[400],       // gray-400 for hover borders
     focus: elevanceColors.primary[500],
     error: elevanceColors.error[500],
-    disabled: elevanceColors.neutral[200],
+    disabled: elevanceColors.neutral[200],    // gray-200 for disabled borders
   },
   interactive: {
     default: elevanceColors.primary[500],
     hover: elevanceColors.primary[600],
     active: elevanceColors.primary[700],
-    disabled: elevanceColors.neutral[300],
+    disabled: elevanceColors.neutral[300],    // gray-300 for disabled interactive
+  },
+  focus: {
+    indicator: elevanceColors.secondary.turquoise[400], // Keyboard navigation focus - turquoise-400
+    input: elevanceColors.secondary.turquoise[400], // Input field focus - turquoise-400 (same as all other focus indicators)
   },
 };

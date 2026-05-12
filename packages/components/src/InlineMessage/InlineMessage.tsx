@@ -10,16 +10,15 @@ import { InlineMessageProps } from './InlineMessage.types';
 import {
   StyledInlineMessage,
   ContentWrapper,
-  IconWrapper,
   ContentContainer,
+  IconWrapper,
   TitleText,
   DescriptionText,
   ActionsRow,
-  Link,
   ActionsContainer,
-  ActionButton,
   CloseIconWrapper,
 } from './InlineMessage.styles';
+import { Button } from '../Button';
 
 // Default icons
 const WarningIcon = () => (
@@ -145,9 +144,22 @@ export const InlineMessage = forwardRef<HTMLDivElement, InlineMessageProps>(
             
             {link && (
               <ActionsRow>
-                <Link onClick={onLinkClick} type="button">
+                <Button 
+                  onClick={onLinkClick} 
+                  variant="tertiary" 
+                  size="small"
+                  buttonType={type === 'success' ? 'safe' : type === 'warning' ? 'warning' : type === 'error' ? 'alert' : 'default'}
+                  style={{
+                    color: style === 'subdued' || style === 'accentBorder' ? (
+                      type === 'success' ? 'var(--color-success-700)' :
+                      type === 'warning' ? 'var(--color-warning-800)' :
+                      type === 'error' ? 'var(--color-error-700)' :
+                      'var(--color-pantone-700)'
+                    ) : undefined
+                  }}
+                >
                   {linkText}
-                </Link>
+                </Button>
               </ActionsRow>
             )}
           </ContentContainer>
@@ -155,9 +167,22 @@ export const InlineMessage = forwardRef<HTMLDivElement, InlineMessageProps>(
 
         <ActionsContainer>
           {action && (
-            <ActionButton onClick={onActionClick} type="button">
+            <Button 
+              onClick={onActionClick} 
+              variant="tertiary" 
+              size="small"
+              buttonType={type === 'success' ? 'safe' : type === 'warning' ? 'warning' : type === 'error' ? 'alert' : 'default'}
+              style={{
+                color: style === 'subdued' || style === 'accentBorder' ? (
+                  type === 'success' ? 'var(--color-success-700)' :
+                  type === 'warning' ? 'var(--color-warning-800)' :
+                  type === 'error' ? 'var(--color-error-700)' :
+                  'var(--color-pantone-700)'
+                ) : undefined
+              }}
+            >
               {buttonText}
-            </ActionButton>
+            </Button>
           )}
           {showTrailingIcon && (
             <CloseIconWrapper

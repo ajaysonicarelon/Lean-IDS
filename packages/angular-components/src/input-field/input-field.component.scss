@@ -59,7 +59,7 @@
   
   &.is-focused {
     .input-field {
-      border-color: var(--primary-500, #5009B5);
+      border-color: var(--focus-input, var(--primary-500, #5009B5));
       box-shadow: 0 0 0 3px rgba(80, 9, 181, 0.1);
     }
   }
@@ -109,7 +109,7 @@
   }
   
   &:focus {
-    border-color: var(--primary-500, #5009B5);
+    border-color: var(--focus-input, var(--primary-500, #5009B5));
     box-shadow: 0 0 0 3px rgba(80, 9, 181, 0.1);
   }
   

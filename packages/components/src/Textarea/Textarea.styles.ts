@@ -59,7 +59,7 @@ export const TextareaWrapper = styled.div<StyledTextareaWrapperProps>`
     if ($disabled) return theme.colors.palette.neutral[300];
     if ($error && $isFocused) return theme.colors.palette.error[500];
     if ($error) return theme.colors.palette.error[500];
-    if ($isFocused) return theme.colors.palette.neutral[900];
+    if ($isFocused) return theme.colors.semantic.focus.input;
     if ($hasValue) return theme.colors.palette.neutral[900];
     return theme.colors.palette.neutral[500];
   }};

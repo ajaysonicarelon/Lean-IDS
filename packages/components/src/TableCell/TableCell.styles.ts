@@ -146,31 +146,3 @@ export const ActionsWrapper = styled.div`
   margin-left: auto;
   flex-shrink: 0;
 `;
-
-export const IconButton = styled.button`
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 24px;
-  height: 24px;
-  padding: 0;
-  border: none;
-  background: transparent;
-  color: ${({ theme }) => theme.colors.palette.neutral[600]};
-  cursor: pointer;
-  transition: color 0.2s ease-in-out;
-
-  &:hover {
-    color: ${({ theme }) => theme.colors.palette.primary[500]};
-  }
-
-  &:active {
-    color: ${({ theme }) => theme.colors.palette.primary[600]};
-  }
-
-  svg {
-    width: 100%;
-    height: 100%;
-    fill: currentColor;
-  }
-`;

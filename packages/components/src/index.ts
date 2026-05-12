@@ -48,6 +48,12 @@ export type { BreadcrumbProps } from './Breadcrumb';
 export { BreadcrumbSeparator } from './BreadcrumbSeparator';
 export type { BreadcrumbSeparatorProps, SeparatorVariant } from './BreadcrumbSeparator';
 
+export { PageHeader } from './PageHeader';
+export type { PageHeaderProps } from './PageHeader';
+
+export { PageLayout } from './PageLayout';
+export type { PageLayoutProps, PageLayoutVariant } from './PageLayout';
+
 export { Breadcrumbs } from './Breadcrumbs';
 export type { BreadcrumbsProps, BreadcrumbItem } from './Breadcrumbs';
 
@@ -71,6 +77,21 @@ export type { IconProps, IconSize } from './Icon';
 
 export { TableSettings } from './TableSettings';
 export type { TableSettingsProps, ColumnConfig } from './TableSettings';
+
+export { MenuItem } from './MenuItem';
+export type { MenuItemProps, MenuItemBorder, MenuItemMode, MenuItemState } from './MenuItem';
+
+export { Brand } from './Brand';
+export type { BrandProps, BrandVariant, BrandName, BrandMode } from './Brand';
+
+export { SideNavigation } from './SideNavigation';
+export type { SideNavigationProps, SideNavigationState, NavigationGroup, NavigationItem, UserProfile } from './SideNavigation';
+
+export { TopHeader } from './TopHeader';
+export type { TopHeaderProps, TopHeaderMode, TopHeaderMenuItem } from './TopHeader';
+
+export { Footer } from './Footer';
+export type { FooterProps } from './Footer';
 export {
   ArrowBackIcon,
   ArrowForwardIcon,

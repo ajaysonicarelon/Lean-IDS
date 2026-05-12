@@ -18,6 +18,14 @@ const StyledIconWrapper = styled.span<{ $size: string; $color?: string; $clickab
   height: ${({ $size }) => $size};
   color: ${({ $color }) => $color || 'currentColor'};
   cursor: ${({ $clickable }) => ($clickable ? 'pointer' : 'inherit')};
+  border-radius: 4px;
+  
+  &:focus-visible {
+    ${({ $clickable, theme }) => $clickable && `
+      outline: 2px solid ${theme.colors.semantic.focus.indicator};
+      outline-offset: 2px;
+    `}
+  }
   
   svg {
     width: 100%;

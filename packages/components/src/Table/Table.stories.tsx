@@ -5,6 +5,7 @@ import { TableCell } from '../TableCell';
 import { Pagination } from '../Pagination';
 import { Icon } from '../Icon';
 import { TableSettings, ColumnConfig } from '../TableSettings';
+import { Button } from '../Button';
 import styled from 'styled-components';
 
 const StyledTable = styled.table`
@@ -112,24 +113,6 @@ const TableActions = styled.div`
   gap: 20px;
 `;
 
-const ActionButton = styled.button`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 40px;
-  height: 40px;
-  border: none;
-  background: transparent;
-  cursor: pointer;
-  color: #6c6c6c;
-  transition: all 0.2s;
-  
-  &:hover {
-    color: #222;
-    background-color: #f5f5f5;
-    border-radius: 4px;
-  }
-`;
 
 const Dropdown = styled.select`
   padding: 8px 32px 8px 12px;
@@ -446,15 +429,34 @@ export const CompleteExample: Story = {
                 <option value="product">Product</option>
                 <option value="design">Design</option>
               </Dropdown>
-              <ActionButton title="Download">
-                <Icon name="Download" size="medium" />
-              </ActionButton>
-              <ActionButton title="Filter">
-                <Icon name="FilterAlt" size="medium" />
-              </ActionButton>
-              <ActionButton title="Settings" onClick={() => setSettingsOpen(true)}>
-                <Icon name="Settings" size="medium" />
-              </ActionButton>
+              <Button 
+                variant="secondary" 
+                size="medium"
+                showLabel={false}
+                leadingIcon={<Icon name="Download" size="medium" />}
+                aria-label="Download"
+              >
+                Download
+              </Button>
+              <Button 
+                variant="secondary" 
+                size="medium"
+                showLabel={false}
+                leadingIcon={<Icon name="FilterAlt" size="medium" />}
+                aria-label="Filter"
+              >
+                Filter
+              </Button>
+              <Button 
+                variant="secondary" 
+                size="medium"
+                showLabel={false}
+                leadingIcon={<Icon name="Settings" size="medium" />}
+                onClick={() => setSettingsOpen(true)}
+                aria-label="Settings"
+              >
+                Settings
+              </Button>
             </TableActions>
           </TableHeading>
 

@@ -12,9 +12,9 @@ import {
   MessageContainer,
   MessageText,
   ActionsContainer,
-  ActionButton,
   IconWrapper,
 } from './Toast.styles';
+import { Button } from '../Button';
 
 // Default icons
 const WarningIcon = () => (
@@ -135,9 +135,23 @@ export const Toast = forwardRef<HTMLDivElement, ToastProps>(
 
         <ActionsContainer>
           {action && (
-            <ActionButton onClick={onActionClick} type="button">
+            <Button 
+              onClick={onActionClick} 
+              variant="tertiary" 
+              size="small"
+              buttonType={type === 'success' ? 'safe' : type === 'warning' ? 'warning' : type === 'error' ? 'alert' : 'default'}
+              style={{
+                color: style === 'default' ? 'var(--color-neutral-50)' : (
+                  type === 'success' ? 'var(--color-success-600)' :
+                  type === 'warning' ? 'var(--color-warning-900)' :
+                  type === 'error' ? 'var(--color-error-600)' :
+                  'var(--color-pantone-600)'
+                ),
+                '--hover-bg': style === 'default' ? 'transparent' : undefined
+              } as React.CSSProperties}
+            >
               {buttonText}
-            </ActionButton>
+            </Button>
           )}
           {showTrailIcon && (
             <IconWrapper

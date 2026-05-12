@@ -28,20 +28,51 @@ A fully accessible input field component designed for the Lean IDS design system
 
 ## About
 
-The Input Field is a fundamental form component that allows users to enter and edit text-based information. It provides a consistent, accessible interface for data collection across all applications.
+The Input Field is a fundamental form component that allows users to enter and edit text-based information. It provides a consistent, accessible interface for data collection across all applications with **6 distinct states** to handle every user interaction scenario.
 
 ## Purpose
 
-- **Data Collection**: Enable users to input various types of information (text, email, password, numbers, etc.)
-- **User Interaction**: Provide clear feedback through states (hover, focus, error, success)
+- **Data Collection**: Enable users to input various types of information (text, email, password, numbers, dates, etc.)
+- **State Management**: Provide clear visual feedback through 6 states (Active, Focused, Error, Disabled, Filled, Non-editable)
 - **Accessibility**: Ensure WCAG 2.1 AA compliance with proper ARIA labels and keyboard navigation
 - **Brand Consistency**: Maintain visual consistency across Carelon and Elevance themes
+- **User Guidance**: Help users understand field requirements and validation status
+
+## 6 Input States
+
+1. **Active** - Default empty state, awaiting user input
+2. **Focused** - User is actively typing (primary border color)
+3. **Error** - Validation failed (red border and error message)
+4. **Disabled** - Field cannot be edited (grayed out)
+5. **Filled** - Contains user-entered value (white background)
+6. **Non-editable** - System/locked data (primary-50 background, read-only)
+
+> 💡 **See the "All States" story below for detailed documentation on when and how to use each state.**
+
+## Component Architecture
+
+InputField uses the **HelpingText** component internally to display helper messages, errors, and warnings. HelpingText is a standalone, reusable component that can be used independently.
+
+### Component Relationship:
+\`\`\`
+InputField
+├── Label
+├── FieldImportance (asterisk)
+├── InputWrapper
+│   ├── LeadingIcon (optional)
+│   ├── Input
+│   └── TrailingIcon (optional)
+└── HelpingText (standalone component)
+    ├── Icon (based on state)
+    └── Text
+\`\`\`
 
 ## Usage
 
 \`\`\`tsx
 import { InputField } from '@lean-ids/components';
 
+// Default helping text (gray)
 <InputField
   label="Email Address"
   type="email"
@@ -49,6 +80,39 @@ import { InputField } from '@lean-ids/components';
   value={email}
   onChange={(e) => setEmail(e.target.value)}
   helperText="We'll never share your email"
+  helperTextState="default"  // Optional, 'default' is the default value
+/>
+
+// Info helping text (blue icon)
+<InputField
+  label="Password"
+  type="password"
+  helperText="Password must be at least 8 characters"
+  helperTextState="info"
+/>
+
+// Warning helping text (yellow/orange icon)
+<InputField
+  label="Username"
+  helperText="This field will be locked after submission"
+  helperTextState="warning"
+/>
+
+// Error helping text (red icon)
+<InputField
+  label="Email"
+  helperText="Invalid email format"
+  helperTextState="error"
+/>
+
+// You can also use HelpingText as a standalone component
+import { HelpingText } from '@lean-ids/components';
+
+<HelpingText 
+  text="This is a standalone helping message"
+  state="info"
+  size="default"
+  showIcon={true}
 />
 \`\`\`
 
@@ -108,20 +172,14 @@ import { InputField } from '@lean-ids/components';
         category: 'Content',
       },
     },
-    errorMessage: {
-      control: 'text',
-      description: 'Error message (overrides helperText when present)',
+    helperTextState: {
+      control: 'select',
+      options: ['default', 'info', 'warning', 'error'],
+      description: 'State of the helper text (controls icon and color)',
       table: {
-        type: { summary: 'string' },
-        category: 'Validation',
-      },
-    },
-    successMessage: {
-      control: 'text',
-      description: 'Success message shown for valid input',
-      table: {
-        type: { summary: 'string' },
-        category: 'Validation',
+        type: { summary: "'default' | 'info' | 'warning' | 'error'" },
+        defaultValue: { summary: "'default'" },
+        category: 'Content',
       },
     },
     type: {
@@ -245,6 +303,7 @@ export const Playground: Story = {
     label: 'Label',
     placeholder: 'Placeholder',
     helperText: 'Default helping message',
+    helperTextState: 'default',
     type: 'text',
     size: 'default',
     required: false,
@@ -303,8 +362,8 @@ export const States: Story = {
       <InputField
         label="Error State"
         placeholder="Enter text"
-        error
-        errorMessage="Inline error text"
+        helperText="Inline error text"
+        helperTextState="error"
       />
       <InputField
         label="Active/Focused State"
@@ -449,8 +508,8 @@ export const HelpingTextStates: Story = {
       <InputField
         label="Error State"
         placeholder="Enter text"
-        error
-        errorMessage="This field has an error"
+        helperText="This field has an error"
+        helperTextState="error"
       />
       <InputField
         label="Large Size with Helper"
@@ -597,6 +656,310 @@ export const BestPractices: Story = {
   },
 };
 
+// All 6 States from Figma
+export const AllStates: Story = {
+  render: () => (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '24px', width: '400px' }}>
+      <div>
+        <h3 style={{ marginBottom: '12px', fontSize: '14px', fontWeight: 600 }}>1. Active (Default)</h3>
+        <InputField
+          label="Label"
+          placeholder="Placeholder"
+          helperText="Default helping message"
+          showFieldImportance
+        />
+      </div>
+      
+      <div>
+        <h3 style={{ marginBottom: '12px', fontSize: '14px', fontWeight: 600 }}>2. Focused</h3>
+        <InputField
+          label="Label"
+          placeholder="Placeholder"
+          helperText="Default helping message"
+          showFieldImportance
+          autoFocus
+        />
+      </div>
+      
+      <div>
+        <h3 style={{ marginBottom: '12px', fontSize: '14px', fontWeight: 600 }}>3. Error</h3>
+        <InputField
+          label="Label"
+          placeholder="Placeholder"
+          helperText="Error helping message"
+          helperTextState="error"
+          showFieldImportance
+        />
+      </div>
+      
+      <div>
+        <h3 style={{ marginBottom: '12px', fontSize: '14px', fontWeight: 600 }}>4. Disabled</h3>
+        <InputField
+          label="Label"
+          placeholder="Placeholder"
+          disabled
+          helperText="Default helping message"
+          showFieldImportance
+        />
+      </div>
+      
+      <div>
+        <h3 style={{ marginBottom: '12px', fontSize: '14px', fontWeight: 600 }}>5. Filled</h3>
+        <InputField
+          label="Label"
+          value="Filled value"
+          helperText="Default helping message"
+          showFieldImportance
+        />
+      </div>
+      
+      <div>
+        <h3 style={{ marginBottom: '12px', fontSize: '14px', fontWeight: 600 }}>6. Non-editable (Read-only)</h3>
+        <InputField
+          label="Label"
+          value="System-filled value"
+          readOnly
+          helperText="Default helping message"
+          showFieldImportance
+        />
+      </div>
+    </div>
+  ),
+  parameters: {
+    docs: {
+      description: {
+        story: `
+## All 6 Input Field States
+
+### 1. **Active (Default State)**
+**Purpose:** Initial state when the input is empty and awaiting user interaction.
+
+**Visual Characteristics:**
+- Background: White (neutral-50)
+- Border: Gray (neutral-400)
+- Helping text: Gray with default icon
+- Label: Black (neutral-900)
+
+**When to Use:**
+- Default state for all new, empty input fields
+- User hasn't interacted with the field yet
+- No validation has occurred
+
+---
+
+### 2. **Focused State**
+**Purpose:** Indicates the input is currently selected and ready for user input.
+
+**Visual Characteristics:**
+- Background: White (neutral-50)
+- Border: **Primary-500** (brand blue) - Input fields use primary color for focus
+- Helping text: Remains gray (default state)
+- Label: Black (neutral-900)
+
+**When to Use:**
+- User clicks or tabs into the input field
+- Input has keyboard focus
+- User is actively typing
+
+**Behavior:**
+- Border changes to primary color to show focus
+- Helping text does NOT change color (stays gray)
+- Only visual change is the border color
+
+**Accessibility:**
+- Input fields use primary color for focus (different from other interactive elements)
+- Other components (buttons, links, icons, breadcrumbs) use turquoise-400 for keyboard navigation
+- Meets WCAG 2.1 AA contrast requirements
+
+---
+
+### 3. **Error State**
+**Purpose:** Indicates validation failure or incorrect input.
+
+**Visual Characteristics:**
+- Background: White (neutral-50), or light red (error-50) when focused
+- Border: Red (error-500)
+- Helping text: Red with error icon
+- Label: Black (neutral-900)
+
+**When to Use:**
+- Form validation fails (e.g., invalid email format)
+- Required field is empty on submit
+- Input doesn't match expected pattern
+- Server-side validation error
+
+**Best Practices:**
+- Always provide clear, actionable error messages
+- Show errors after user interaction (on blur or submit)
+- Use live validation for complex fields (email, password)
+
+---
+
+### 4. **Disabled State**
+**Purpose:** Indicates the field cannot be interacted with.
+
+**Visual Characteristics:**
+- Background: Light gray (neutral-100)
+- Border: Gray (neutral-300)
+- Helping text: Gray (muted)
+- Label: Gray (neutral-500)
+- Cursor: not-allowed
+- Opacity: 0.6
+
+**When to Use:**
+- Field is not applicable in current context
+- User lacks permission to edit
+- Conditional fields that depend on other selections
+- During form submission (temporarily)
+
+**Accessibility:**
+- Properly announced to screen readers as disabled
+- Not included in tab order
+
+---
+
+### 5. **Filled State**
+**Purpose:** Shows the input has a user-entered value.
+
+**Visual Characteristics:**
+- Background: White (neutral-50) - same as active
+- Border: Gray (neutral-400)
+- Text: Medium weight (500) for better readability
+- Helping text: Gray with default icon
+
+**When to Use:**
+- User has entered a value
+- Form is pre-populated with user data
+- Editing existing information
+
+**Typography:**
+- Large size: Uses primitive/body/medium (16px, weight 500)
+- Small/Default size: Uses primitive/paragraph/medium (14px, weight 500)
+- Placeholder: Regular weight (400)
+
+---
+
+### 6. **Non-editable (Read-only) State**
+**Purpose:** Displays system-filled or locked data that users cannot modify.
+
+**Visual Characteristics:**
+- Background: Light blue (primary-50) - distinguishes from editable fields
+- Border: Gray (neutral-300)
+- Text: Medium weight (500)
+- Helping text: Gray with default icon
+- Cursor: default (not text cursor)
+- Opacity: 0.8
+
+**When to Use:**
+- System-generated values (ID, timestamps, calculated fields)
+- Data from external sources that shouldn't be modified
+- Reference information in forms
+- Locked fields after certain workflow stages
+
+**Accessibility:**
+- Announced as read-only to screen readers
+- Still included in tab order for screen reader users
+- Value can be selected and copied
+
+---
+
+## State Comparison Table
+
+| State | Background | Border | Text Weight | Helping Text Color | Editable | Use Case |
+|-------|------------|--------|-------------|-------------------|----------|----------|
+| Active | White | Gray | Medium (500) | Gray | ✅ Yes | Empty field, awaiting input |
+| Focused | White | Primary | Medium (500) | Gray | ✅ Yes | User is typing |
+| Error | White/Red-50 | Red | Medium (500) | Red | ✅ Yes | Validation failed |
+| Disabled | Gray-100 | Gray | Medium (500) | Gray | ❌ No | Not applicable/No permission |
+| Filled | White | Gray | Medium (500) | Gray | ✅ Yes | Has user-entered value |
+| Non-editable | Primary-50 | Gray | Medium (500) | Gray | ❌ No | System/locked data |
+
+---
+
+## Implementation Guidelines
+
+### For Developers:
+\`\`\`tsx
+// Active/Default
+<InputField label="Email" placeholder="Enter email" />
+
+// Focused (automatic on click/tab)
+<InputField label="Email" placeholder="Enter email" autoFocus />
+
+// Error
+<InputField 
+  label="Email" 
+  helperText="Invalid email format"
+  helperTextState="error"
+/>
+
+// Disabled
+<InputField label="Email" disabled />
+
+// Filled
+<InputField label="Email" value="user@example.com" />
+
+// Non-editable
+<InputField 
+  label="User ID" 
+  value="USR-12345" 
+  readOnly 
+  helperText="System-generated ID"
+/>
+\`\`\`
+
+### For Designers:
+- Use **Active** for all new form fields
+- Show **Focused** state in prototypes for interactive demos
+- Always design **Error** states with clear messages
+- Use **Disabled** sparingly - hide fields if possible
+- **Filled** state should look clean and readable
+- **Non-editable** fields should be visually distinct (primary-50 background)
+        `,
+      },
+    },
+  },
+};
+
+// All Sizes including xsmall
+export const AllSizes: Story = {
+  render: () => (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '24px', width: '400px' }}>
+      <InputField
+        label="Extra Small (28px)"
+        placeholder="xsmall size"
+        size="xsmall"
+        helperText="Height: 28px"
+      />
+      <InputField
+        label="Small (32px)"
+        placeholder="small size"
+        size="small"
+        helperText="Height: 32px"
+      />
+      <InputField
+        label="Default (40px)"
+        placeholder="default size"
+        size="default"
+        helperText="Height: 40px"
+      />
+      <InputField
+        label="Large (50px)"
+        placeholder="large size"
+        size="large"
+        helperText="Height: 50px"
+      />
+    </div>
+  ),
+  parameters: {
+    docs: {
+      description: {
+        story: 'Input fields are available in four sizes matching Figma design: xsmall (28px), small (32px), default (40px), and large (50px).',
+      },
+    },
+  },
+};
+
 // Accessibility Story
 export const AccessibilityDemo: Story = {
   render: () => (
@@ -616,8 +979,8 @@ export const AccessibilityDemo: Story = {
       <InputField
         label="Error with Announcement"
         placeholder="Enter text"
-        error
-        errorMessage="This error is announced to screen readers"
+        helperText="This error is announced to screen readers"
+        helperTextState="error"
       />
     </div>
   ),

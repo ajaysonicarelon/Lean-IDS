@@ -6,7 +6,7 @@ import { ButtonHTMLAttributes, ReactNode } from 'react';
 
 export type ButtonSize = 'xsmall' | 'small' | 'medium' | 'large' | 'xlarge';
 
-export type ButtonVariant = 'primary' | 'secondary' | 'outlined' | 'link';
+export type ButtonVariant = 'primary' | 'secondary' | 'tertiary';
 
 export type ButtonType = 'default' | 'safe' | 'warning' | 'alert';
 

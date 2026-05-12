@@ -44,6 +44,10 @@ export const StyledCheckbox = styled.div<StyledCheckboxProps>`
   transition: all 0.2s ease-in-out;
   cursor: ${({ $disabled }) => ($disabled ? 'not-allowed' : 'pointer')};
   
+  ${HiddenCheckbox}:focus-visible + & {
+    box-shadow: 0 0 0 2px ${({ theme }) => theme.colors.semantic.focus.indicator};
+  }
+  
   ${({ $size }) => {
     const size = $size === 'large' ? '24px' : '16px';
     return `

@@ -15,7 +15,6 @@ import {
   DateText,
   RegularText,
   ActionsWrapper,
-  IconButton,
 } from './TableCell.styles';
 import { Checkbox } from '../Checkbox';
 import { Badge } from '../Badge';
@@ -148,7 +147,7 @@ export const TableCell: React.FC<TableCellProps> = ({
 
         {showButton && (
           <Button
-            variant="outlined"
+            variant="secondary"
             size="small"
             onClick={onButtonClick}
           >
@@ -159,14 +158,26 @@ export const TableCell: React.FC<TableCellProps> = ({
         {(showEditAction || showDeleteAction) && (
           <ActionsWrapper>
             {showEditAction && (
-              <IconButton onClick={onEdit} aria-label="Edit">
-                <EditIcon />
-              </IconButton>
+              <Button 
+                onClick={onEdit} 
+                variant="secondary" 
+                size="small"
+                showLabel={false}
+                leadingIcon={<EditIcon />}
+              >
+                Edit
+              </Button>
             )}
             {showDeleteAction && (
-              <IconButton onClick={onDelete} aria-label="Delete">
-                <DeleteIcon />
-              </IconButton>
+              <Button 
+                onClick={onDelete} 
+                variant="secondary" 
+                size="small"
+                showLabel={false}
+                leadingIcon={<DeleteIcon />}
+              >
+                Delete
+              </Button>
             )}
           </ActionsWrapper>
         )}

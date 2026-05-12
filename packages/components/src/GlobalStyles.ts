@@ -22,7 +22,7 @@ export const GlobalStyles = createGlobalStyle`
 
   body {
     font-family: ${({ theme }) => theme.fonts.primary};
-    color: ${({ theme }) => theme.colors.semantic.text.primary};
+    color: ${({ theme }) => theme.colors.semantic.text.primary}; /* gray-900 - default for custom text */
     background-color: ${({ theme }) => theme.colors.semantic.background.primary};
     line-height: 1.5;
   }

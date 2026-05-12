@@ -45,6 +45,10 @@ export const StyledRadio = styled.div<StyledRadioProps>`
   cursor: ${({ $disabled }) => ($disabled ? 'not-allowed' : 'pointer')};
   position: relative;
   
+  ${HiddenRadioInput}:focus-visible + & {
+    box-shadow: 0 0 0 2px ${({ theme }) => theme.colors.semantic.focus.indicator};
+  }
+  
   ${({ $size }) => {
     const size = $size === 'large' ? '24px' : '16px';
     return `

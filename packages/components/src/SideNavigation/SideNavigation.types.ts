@@ -1,0 +1,51 @@
+export type SideNavigationState = 'expanded' | 'collapsed';
+
+export interface NavigationGroup {
+  /** Group title */
+  title?: string;
+  /** Menu items in this group */
+  items: NavigationItem[];
+}
+
+export interface NavigationItem {
+  /** Unique identifier */
+  id: string;
+  /** Display label */
+  label: string;
+  /** Icon component (24px for side nav) */
+  icon?: React.ReactNode;
+  /** Whether this item is active */
+  active?: boolean;
+  /** Whether to show notification indicator */
+  showIndicator?: boolean;
+  /** Click handler */
+  onClick?: () => void;
+}
+
+export interface UserProfile {
+  /** User's initials */
+  initials: string;
+  /** User's full name */
+  name: string;
+  /** Employee ID or subtitle */
+  subtitle: string;
+  /** Avatar image URL (optional) */
+  avatarUrl?: string;
+}
+
+export interface SideNavigationProps {
+  /** Expanded or collapsed state */
+  state?: SideNavigationState;
+  /** Navigation groups */
+  groups?: NavigationGroup[];
+  /** User profile information */
+  user?: UserProfile;
+  /** Additional CSS class */
+  className?: string;
+  /** Custom content (overrides default groups) */
+  children?: React.ReactNode;
+  /** Callback when pin state changes */
+  onPinChange?: (isPinned: boolean) => void;
+  /** Whether sidebar is pinned (locked in expanded state) */
+  isPinned?: boolean;
+}
