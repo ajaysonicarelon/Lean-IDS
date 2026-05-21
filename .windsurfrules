@@ -76,6 +76,25 @@ background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
 background: ${({ theme }) => theme.colors.palette.primary[600]};
 ```
 
+### ALWAYS USE MODAL AND DRAWER COMPONENTS
+**CRITICAL:** NEVER create custom modal or drawer components.
+
+```tsx
+// ✅ CORRECT - Use Lean IDS Modal
+import { Modal } from '@lean-ids/components';
+<Modal isOpen={isOpen} onClose={onClose} title="Dialog">{content}</Modal>
+
+// ✅ CORRECT - Use Lean IDS Drawer
+import { Drawer } from '@lean-ids/components';
+<Drawer isOpen={isOpen} onClose={onClose} title="Panel">{content}</Drawer>
+
+// ❌ WRONG - Custom implementation
+const CustomModal = () => <div className="modal">...</div>;
+
+// ❌ WRONG - External library
+import Modal from 'react-modal';
+```
+
 ---
 
 ## 📋 DECISION LOGIC

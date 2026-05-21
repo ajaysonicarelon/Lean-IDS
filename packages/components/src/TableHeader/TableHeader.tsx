@@ -13,7 +13,6 @@ import {
   SearchActions,
 } from './TableHeader.styles';
 import { Checkbox } from '../Checkbox';
-import { Button } from '../Button';
 
 const ArrowDownIcon = () => (
   <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -120,7 +119,6 @@ export const TableHeader: React.FC<TableHeaderProps> = ({
     };
   }, [isResizing, onResize]);
 
-  const showLockIcon = (variant === 'locked' || variant === 'resizeable-locked') && onLockToggle;
   const showResizeHandle = (variant === 'resizeable' || variant === 'resizeable-locked') && resizable;
   const isSearchVariant = variant === 'search';
 
@@ -183,16 +181,29 @@ export const TableHeader: React.FC<TableHeaderProps> = ({
                 <ArrowDownIcon />
               </SortIcon>
             )}
-            {locked !== undefined && onLockToggle && (
-              <Button
+            {locked && onLockToggle && (
+              <button
                 onClick={handleLockClick}
-                variant="secondary"
-                size="small"
-                showLabel={false}
-                leadingIcon={<LockClosedIcon />}
+                style={{
+                  background: 'none',
+                  border: 'none',
+                  padding: 0,
+                  margin: '0 0 0 8px',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  width: '16px',
+                  height: '16px',
+                  color: '#A5B4FC',
+                  transition: 'color 0.2s',
+                }}
+                onMouseEnter={(e) => e.currentTarget.style.color = '#818CF8'}
+                onMouseLeave={(e) => e.currentTarget.style.color = '#A5B4FC'}
+                title="Unlock column"
               >
-                {locked ? 'Unlock' : 'Lock'}
-              </Button>
+                <LockClosedIcon />
+              </button>
             )}
           </HeaderLeftContent>
           {showResizeHandle && (

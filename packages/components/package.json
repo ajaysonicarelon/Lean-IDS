@@ -1,6 +1,6 @@
 {
   "name": "@ajaysoni7832/lean-ids-components",
-  "version": "1.2.1",
+  "version": "1.3.0",
   "type": "module",
   "description": "React components for Lean IDS design system",
   "main": "dist/index.js",
@@ -29,8 +29,16 @@
   },
   "homepage": "https://bitbucket.elevancehealth.com/projects/~AM07832/repos/lean-ids/browse",
   "peerDependencies": {
-    "react": "^18.0.0",
-    "react-dom": "^18.0.0"
+    "react": ">=16.8.0 <20.0.0",
+    "react-dom": ">=16.8.0 <20.0.0"
+  },
+  "peerDependenciesMeta": {
+    "react": {
+      "optional": false
+    },
+    "react-dom": {
+      "optional": false
+    }
   },
   "dependencies": {
     "@ajaysoni7832/lean-ids-tokens": "^1.2.1",

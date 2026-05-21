@@ -1,22 +1,27 @@
 # Lean IDS - Internal Design System
 
-A comprehensive design system for Carelon and Elevance, built with React, TypeScript, and Web Components.
+A comprehensive design system for Carelon and Elevance, built with React, Angular, TypeScript, and Web Components.
+
+**Multi-Framework Support**: React 16.8+ to 19.x | Angular 15+ to 19.x
 
 ## 🎨 Features
 
+- **Multi-Framework Support**: React (16.8-19.x) and Angular (15-19.x)
 - **Dual-Brand Theming**: Support for Carelon and Elevance brand themes
 - **Accessibility First**: WCAG 2.1 AA compliant components
 - **TypeScript**: Full type safety and IntelliSense support
-- **Web Components**: Framework-agnostic core with React wrappers
+- **Web Components**: Framework-agnostic core with React & Angular wrappers
 - **Storybook**: Interactive documentation and component playground
 - **Design Tokens**: Centralized design tokens extracted from Figma
+- **Wide Version Support**: No peer dependency conflicts (±3 versions)
 
 ## 📦 Packages
 
 This monorepo contains the following packages:
 
-- `@lean-ids/tokens` - Design tokens (colors, spacing, typography, etc.)
-- `@lean-ids/components` - React component library
+- `@ajaysoni7832/lean-ids-tokens` - Design tokens (colors, spacing, typography, etc.)
+- `@ajaysoni7832/lean-ids-components` - React component library (React 16.8-19.x)
+- `@ajaysoni7832/lean-ids-angular` - Angular component library (Angular 15-19.x)
 - `@lean-ids/icons` - Icon system
 - `@lean-ids/utils` - Shared utilities
 
@@ -24,9 +29,17 @@ This monorepo contains the following packages:
 
 ### Installation
 
+#### React Projects (16.8+ to 19.x)
 ```bash
-npm install @lean-ids/components @lean-ids/tokens
+npm install @ajaysoni7832/lean-ids-components @ajaysoni7832/lean-ids-tokens
 ```
+
+#### Angular Projects (15+ to 19.x)
+```bash
+npm install @ajaysoni7832/lean-ids-angular @ajaysoni7832/lean-ids-tokens
+```
+
+**No `--legacy-peer-deps` required!** Works with all supported versions.
 
 ### Usage
 

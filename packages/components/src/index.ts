@@ -78,6 +78,12 @@ export type { IconProps, IconSize } from './Icon';
 export { TableSettings } from './TableSettings';
 export type { TableSettingsProps, ColumnConfig } from './TableSettings';
 
+export { Table } from './Table';
+export type { TableProps, TableColumn, TableAction } from './Table';
+
+export { TableToolbar } from './Table';
+export type { TableToolbarProps } from './Table';
+
 export { MenuItem } from './MenuItem';
 export type { MenuItemProps, MenuItemBorder, MenuItemMode, MenuItemState } from './MenuItem';
 
@@ -92,6 +98,36 @@ export type { TopHeaderProps, TopHeaderMode, TopHeaderMenuItem } from './TopHead
 
 export { Footer } from './Footer';
 export type { FooterProps } from './Footer';
+
+export { Modal } from './Modal';
+export type { ModalProps } from './Modal';
+
+export { Drawer } from './Drawer';
+export type { DrawerProps } from './Drawer';
+
+export { Select } from './Select';
+export type { SelectProps, SelectOption } from './Select';
+
+export { Tabs } from './Tabs';
+export type { TabsProps, TabItem } from './Tabs';
+
+export { MetricCard } from './MetricCard';
+export type { MetricCardProps, MetricData } from './MetricCard';
+
+export { DataVisualizationCard } from './DataVisualizationCard';
+export type { DataVisualizationCardProps } from './DataVisualizationCard';
+
+export { ChartLegend } from './ChartLegend';
+export type { ChartLegendProps } from './ChartLegend';
+
+export { Tooltip, ChartTooltip } from './Tooltip';
+export type { TooltipProps, TooltipVariant, TooltipPosition, ChartTooltipProps } from './Tooltip';
+
+export { DonutChart } from './DonutChart';
+export type { DonutChartProps, DonutChartData } from './DonutChart';
+
+export { BarChart } from './BarChart';
+export type { BarChartProps, BarChartData, BarChartOrientation, BarMetric } from './BarChart';
 export {
   ArrowBackIcon,
   ArrowForwardIcon,

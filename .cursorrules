@@ -99,6 +99,11 @@ import { Card } from '@lean-ids/components';
 - TopHeader
 - Breadcrumb
 
+### Overlay Components:
+- **Modal** (for popups, dialogs, alerts)
+- **Drawer** (for side panels, filters, forms)
+- Tooltip
+
 ---
 
 ## 🎨 PAGE TEMPLATES GUIDELINES
@@ -279,6 +284,49 @@ background: ${({ theme }) => theme.colors.palette.primary[600]};
 - Small decorative elements
 - Icons/illustrations
 - NOT for page backgrounds, cards, or large sections
+
+### 4. ALWAYS USE MODAL AND DRAWER COMPONENTS
+**CRITICAL:** NEVER create custom modal or drawer components.
+
+```tsx
+// ✅ CORRECT - Use Lean IDS Modal
+import { Modal } from '@lean-ids/components';
+
+<Modal
+  isOpen={isOpen}
+  onClose={onClose}
+  title="My Dialog"
+>
+  {content}
+</Modal>
+
+// ✅ CORRECT - Use Lean IDS Drawer
+import { Drawer } from '@lean-ids/components';
+
+<Drawer
+  isOpen={isOpen}
+  onClose={onClose}
+  title="Side Panel"
+  position="right"
+>
+  {content}
+</Drawer>
+
+// ❌ WRONG - Custom modal implementation
+const CustomModal = () => (
+  <div className="modal-overlay">...</div>
+);
+
+// ❌ WRONG - External modal library
+import Modal from 'react-modal';
+import { Drawer } from '@mui/material';
+```
+
+**ENFORCEMENT:**
+- For ANY popup/dialog → Use `Modal` from `@lean-ids/components`
+- For ANY side panel → Use `Drawer` from `@lean-ids/components`
+- NEVER create custom overlay components
+- NEVER use external modal/drawer libraries
 
 ---
 

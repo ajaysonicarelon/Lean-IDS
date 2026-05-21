@@ -45,6 +45,67 @@ import { Button } from '@radix-ui/react';
 
 ---
 
+## 🚨 CRITICAL RULE #2: MODAL & DRAWER COMPONENTS
+
+### **ALWAYS USE LEAN IDS MODAL AND DRAWER COMPONENTS**
+
+**For ANY popup, dialog, or overlay:**
+```tsx
+// ✅ CORRECT - Use Lean IDS Modal
+import { Modal } from '@lean-ids/components';
+
+<Modal
+  isOpen={isOpen}
+  onClose={onClose}
+  title="My Dialog"
+>
+  {content}
+</Modal>
+```
+
+**For ANY side panel or drawer:**
+```tsx
+// ✅ CORRECT - Use Lean IDS Drawer
+import { Drawer } from '@lean-ids/components';
+
+<Drawer
+  isOpen={isOpen}
+  onClose={onClose}
+  title="Side Panel"
+  position="right"
+>
+  {content}
+</Drawer>
+```
+
+### ❌ NEVER CREATE CUSTOM MODALS OR DRAWERS:
+
+```tsx
+// ❌ WRONG - Custom modal implementation
+const CustomModal = () => (
+  <div className="modal-overlay">
+    <div className="modal-content">...</div>
+  </div>
+);
+
+// ❌ WRONG - Custom drawer implementation
+const CustomDrawer = () => (
+  <div className="drawer-panel">...</div>
+);
+
+// ❌ WRONG - Using external modal libraries
+import Modal from 'react-modal';
+import { Drawer } from '@mui/material';
+```
+
+### **ENFORCEMENT:**
+- **ALWAYS** use `Modal` from `@lean-ids/components` for popups
+- **ALWAYS** use `Drawer` from `@lean-ids/components` for side panels
+- **NEVER** create custom overlay components
+- **NEVER** use external modal/drawer libraries
+
+---
+
 ## 🎯 DECISION TREE
 
 ### When User Asks to Create UI:
