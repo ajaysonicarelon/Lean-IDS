@@ -31,8 +31,10 @@ export default defineConfig({
   external: [
     'react',
     'react-dom',
+    'react/jsx-runtime',
     'styled-components',
     '@lean-ids/tokens',
     '@ajaysoni7832/lean-ids-tokens',
+    '@mui/icons-material',
   ],
 });
