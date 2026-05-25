@@ -3,7 +3,7 @@
  */
 
 import 'styled-components';
-import { Theme } from '@ajaysoni7832/lean-ids-tokens';
+import type { Theme } from '../../tokens/src/theme';
 
 declare module 'styled-components' {
   export interface DefaultTheme extends Theme {}
