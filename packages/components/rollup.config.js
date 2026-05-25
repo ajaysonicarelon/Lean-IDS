@@ -29,6 +29,7 @@ export default defineConfig({
       compilerOptions: {
         types: ['styled-components'],
       },
+      exclude: ['../../tokens/**/*'],
     }),
   ],
   external: [
