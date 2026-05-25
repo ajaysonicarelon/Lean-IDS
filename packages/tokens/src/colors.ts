@@ -14,27 +14,22 @@ export interface ColorScale {
   700: string;
   800: string;
   900: string;
+  [key: string]: string; // Allow additional string keys like "primary-900"
 }
 
 export interface FeedbackColors {
-  red: ColorScale;
-  green: ColorScale;
-  yellow: ColorScale;
-  blue: ColorScale;
+  [key: string]: string; // Flexible feedback colors
 }
 
 export interface SecondaryColors {
-  cyan: ColorScale;
-  turquoise: ColorScale;
-  terracotta: ColorScale;
-  pantone: ColorScale;
+  [key: string]: string; // Flexible secondary colors
 }
 
 export interface ColorPalette {
-  primary: ColorScale;
-  neutral: Partial<ColorScale> & { 1000?: string };
-  feedback: FeedbackColors;
-  secondary: SecondaryColors;
+  primary: Record<string, string>;
+  neutral: Record<string, string>;
+  feedback: Record<string, string>;
+  secondary: Record<string, string>;
 }
 
 // Carelon Brand Colors
