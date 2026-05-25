@@ -28,8 +28,9 @@ export default defineConfig({
       declarationDir: './dist',
       compilerOptions: {
         types: ['styled-components'],
+        declarationMap: false,
       },
-      exclude: ['../../tokens/**/*'],
+      exclude: ['../../tokens/**/*', '**/*.d.ts'],
     }),
   ],
   external: [
