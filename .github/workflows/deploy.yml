@@ -33,11 +33,10 @@ jobs:
       - name: Install dependencies
         run: npm ci --legacy-peer-deps
 
-      - name: Build tokens package first
-        run: npm run build -w @ajaysoni7832/lean-ids-tokens
-
-      - name: Build all packages
-        run: npm run build
+      - name: Build packages
+        run: |
+          npm run build -w @ajaysoni7832/lean-ids-tokens
+          npm run build -w @ajaysoni7832/lean-ids-components
 
       - name: Build Storybook
         run: npm run build-storybook
