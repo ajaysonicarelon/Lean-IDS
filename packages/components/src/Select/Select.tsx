@@ -198,6 +198,7 @@ export const Select: React.FC<SelectProps> = ({
           disabled={disabled}
           error={error}
           size={size}
+          fullWidth={true}
           leadingIcon={showLeadingIcon ? <Icon name="Search" size="small" /> : undefined}
           trailingIcon={
             showTrailingIcon ? (
@@ -222,6 +223,7 @@ export const Select: React.FC<SelectProps> = ({
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search..."
               size="small"
+              fullWidth={true}
               leadingIcon={<Icon name="Search" size="small" />}
               autoFocus
             />

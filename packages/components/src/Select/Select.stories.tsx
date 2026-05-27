@@ -46,7 +46,7 @@ const SelectWrapper = (args: any) => {
   const [value, setValue] = useState(args.value);
 
   return (
-    <div style={{ width: '300px' }}>
+    <div style={{ width: '100%', maxWidth: '400px' }}>
       <Select {...args} value={value} onChange={setValue} />
     </div>
   );
@@ -98,7 +98,7 @@ export const Multiple: Story = {
     const [value, setValue] = useState<string[]>([]);
     
     return (
-      <div style={{ width: '300px' }}>
+      <div style={{ width: '100%', maxWidth: '400px' }}>
         <Select
           label="Favorite Fruits"
           placeholder="Select fruits"
@@ -121,7 +121,7 @@ export const MultipleSearchable: Story = {
     const [value, setValue] = useState<string[]>([]);
     
     return (
-      <div style={{ width: '300px' }}>
+      <div style={{ width: '100%', maxWidth: '400px' }}>
         <Select
           label="Countries"
           placeholder="Search and select"
@@ -246,7 +246,7 @@ export const LongList: Story = {
     }));
     
     return (
-      <div style={{ width: '300px' }}>
+      <div style={{ width: '100%', maxWidth: '400px' }}>
         <Select
           label="Options"
           placeholder="Search options..."

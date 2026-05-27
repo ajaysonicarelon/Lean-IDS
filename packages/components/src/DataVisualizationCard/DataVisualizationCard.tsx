@@ -1,24 +1,25 @@
 /**
  * DataVisualizationCard Component
  * 
- * A universal container for all data visualizations (bar graphs, line graphs, pie charts, donuts, maps, etc.)
- * Based on Figma design: node-id=5543-4296
+ * A reusable card wrapper for data visualizations (charts, graphs, etc.)
  * 
- * IMPORTANT GUIDELINE:
- * When implementing ANY data visualization (charts, graphs, maps, etc.), ALWAYS use this container.
- * Do NOT create custom containers for visualizations. This ensures consistency across all data viz.
+ * Features:
+ * - Title with optional info icon
+ * - Time range selector with Select component
+ * - Default options: Last 7 days, Last 30 days, Last 6 months, Last 365 days, Custom range
+ * - Custom date range picker (from/to dates)
+ * - Clean card design with border and padding
  * 
  * Usage:
- * - Wrap any chart/graph component inside this container
- * - Provides consistent header, title, info icon, and dropdown
- * - Handles responsive sizing and spacing
- * - Maintains design system consistency
+ * Wrap any chart component inside this container for consistent styling
  */
 
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Icon } from '../Icon';
 import { Tooltip } from '../Tooltip';
+import { Select } from '../Select';
+import { InputField } from '../InputField';
 import { DataVisualizationCardProps } from './DataVisualizationCard.types';
 
 // ============================================================================
@@ -31,7 +32,7 @@ const CardContainer = styled.div`
   gap: 16px;
   padding: 16px;
   background: #FFFFFF;
-  border: 1px solid #D5D5D5; // gray-400
+  border: 1px solid #D5D5D5;
   border-radius: 6px;
   overflow: hidden;
   width: 100%;
@@ -42,6 +43,7 @@ const Header = styled.div`
   align-items: center;
   justify-content: space-between;
   width: 100%;
+  gap: 16px;
 `;
 
 const TitleContainer = styled.div`
@@ -55,7 +57,7 @@ const Title = styled.h3`
   font-size: 20px;
   font-weight: 600;
   line-height: 24px;
-  color: #222222; // gray-900
+  color: #222222;
   margin: 0;
   white-space: nowrap;
 `;
@@ -69,7 +71,7 @@ const InfoIconButton = styled.button`
   background: transparent;
   border: none;
   cursor: pointer;
-  color: #909090; // gray-600
+  color: #909090;
   padding: 0;
   
   &:hover {
@@ -77,33 +79,97 @@ const InfoIconButton = styled.button`
   }
 `;
 
-const DropdownButton = styled.button`
+const TimeRangeContainer = styled.div`
+  width: fit-content;
+  max-width: 180px;
+  flex-shrink: 0;
+  
+  /* Override Select component's internal width */
+  & > div,
+  & > div > div,
+  & input,
+  & button {
+    width: 100% !important;
+    max-width: 180px !important;
+  }
+  
+  /* Force the wrapper to hug content */
+  & > div:first-child {
+    width: fit-content !important;
+    min-width: 150px !important;
+  }
+`;
+
+const CustomDateRangeOverlay = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-  padding: 8px;
-  height: 32px;
-  min-width: 118px;
+  justify-content: center;
+  z-index: 1000;
+`;
+
+const CustomDateRangeModal = styled.div`
   background: #FFFFFF;
-  border: 1px solid #222222; // gray-900
+  border-radius: 8px;
+  padding: 24px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  min-width: 400px;
+`;
+
+const ModalTitle = styled.h4`
+  font-family: 'Elevance Sans', sans-serif;
+  font-size: 18px;
+  font-weight: 600;
+  color: #222222;
+  margin: 0 0 16px 0;
+`;
+
+const DateInputsContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 16px;
+`;
+
+const DateInputRow = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+`;
+
+const ModalActions = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+`;
+
+const Button = styled.button<{ $variant?: 'primary' | 'secondary' }>`
+  padding: 8px 16px;
   border-radius: 4px;
   font-family: 'Elevance Sans', sans-serif;
   font-size: 14px;
   font-weight: 500;
-  line-height: 16px;
-  color: #222222;
   cursor: pointer;
-  white-space: nowrap;
+  border: 1px solid ${({ $variant }) => $variant === 'primary' ? '#6222BC' : '#D5D5D5'};
+  background: ${({ $variant }) => $variant === 'primary' ? '#6222BC' : '#FFFFFF'};
+  color: ${({ $variant }) => $variant === 'primary' ? '#FFFFFF' : '#222222'};
   
   &:hover {
-    border-color: #464646;
+    background: ${({ $variant }) => $variant === 'primary' ? '#4E1A96' : '#F8F8F8'};
   }
-  
-  &:focus {
-    outline: 2px solid #6222BC;
-    outline-offset: 2px;
-  }
+`;
+
+const DateLabel = styled.span`
+  font-family: 'Elevance Sans', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  color: #222222;
+  white-space: nowrap;
 `;
 
 const VisualizationArea = styled.div<{ $height?: string | number }>`
@@ -111,12 +177,9 @@ const VisualizationArea = styled.div<{ $height?: string | number }>`
   height: ${({ $height }) => {
     if (typeof $height === 'number') return `${$height}px`;
     if ($height) return $height;
-    return '246px'; // Default height from Figma
+    return 'auto';
   }};
   position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
 `;
 
 // ============================================================================
@@ -128,15 +191,18 @@ export const DataVisualizationCard: React.FC<DataVisualizationCardProps> = ({
   showInfoIcon = true,
   onInfoClick,
   infoTooltipContent,
-  showDropdown = true,
-  dropdownValue = 'Last 7 days',
-  dropdownOptions = ['Last 7 days', 'Last 30 days', 'Last 90 days', 'Last year'],
-  onDropdownChange,
+  showTimeRange = true,
+  timeRangeValue = 'Last 7 days',
+  onTimeRangeChange,
+  onCustomDateRange,
   children,
   height,
   className,
 }) => {
-  const [isDropdownOpen, setIsDropdownOpen] = React.useState(false);
+  const [selectedTimeRange, setSelectedTimeRange] = useState(timeRangeValue);
+  const [showCustomDatePicker, setShowCustomDatePicker] = useState(false);
+  const [fromDate, setFromDate] = useState('');
+  const [toDate, setToDate] = useState('');
   const [infoTooltip, setInfoTooltip] = useState<{
     visible: boolean;
     x: number;
@@ -147,26 +213,33 @@ export const DataVisualizationCard: React.FC<DataVisualizationCardProps> = ({
     y: 0,
   });
 
-  const handleDropdownClick = () => {
-    if (onDropdownChange) {
-      setIsDropdownOpen(!isDropdownOpen);
-    }
-  };
+  const timeRangeOptions = [
+    { value: 'Last 7 days', label: 'Last 7 days' },
+    { value: 'Last 30 days', label: 'Last 30 days' },
+    { value: 'Last 6 months', label: 'Last 6 months' },
+    { value: 'Last 365 days', label: 'Last 365 days' },
+    { value: 'Custom range', label: 'Custom range' },
+  ];
 
-  const handleOptionSelect = (option: string) => {
-    if (onDropdownChange) {
-      onDropdownChange(option);
+  const handleTimeRangeChange = (value: string | string[]) => {
+    const selectedValue = Array.isArray(value) ? value[0] : value;
+    setSelectedTimeRange(selectedValue);
+    
+    if (selectedValue === 'Custom range') {
+      setShowCustomDatePicker(true);
+    } else {
+      setShowCustomDatePicker(false);
+      if (onTimeRangeChange) {
+        onTimeRangeChange(selectedValue);
+      }
     }
-    setIsDropdownOpen(false);
   };
 
   const handleInfoIconClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-    // Call user's onClick handler if provided
     if (onInfoClick) {
       onInfoClick();
     }
     
-    // Toggle tooltip
     if (infoTooltipContent) {
       const rect = event.currentTarget.getBoundingClientRect();
       setInfoTooltip((prev) => ({
@@ -185,13 +258,17 @@ export const DataVisualizationCard: React.FC<DataVisualizationCardProps> = ({
     });
   };
 
-  // Close tooltip when clicking outside
   React.useEffect(() => {
     if (infoTooltip.visible) {
       document.addEventListener('click', handleClickOutside);
       return () => document.removeEventListener('click', handleClickOutside);
     }
   }, [infoTooltip.visible]);
+
+  // Update when external value changes
+  React.useEffect(() => {
+    setSelectedTimeRange(timeRangeValue);
+  }, [timeRangeValue]);
 
   return (
     <CardContainer className={className}>
@@ -213,64 +290,67 @@ export const DataVisualizationCard: React.FC<DataVisualizationCardProps> = ({
           )}
         </TitleContainer>
 
-        {/* Dropdown */}
-        {showDropdown && (
-          <div style={{ position: 'relative' }}>
-            <DropdownButton onClick={handleDropdownClick} aria-label="Select time period">
-              <span>{dropdownValue}</span>
-              <Icon name="ExpandMore" size="small" />
-            </DropdownButton>
-            
-            {/* Simple dropdown menu (can be enhanced with a proper Dropdown component) */}
-            {isDropdownOpen && (
-              <div
-                style={{
-                  position: 'absolute',
-                  top: '36px',
-                  right: 0,
-                  background: '#FFFFFF',
-                  border: '1px solid #D5D5D5',
-                  borderRadius: '4px',
-                  boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
-                  zIndex: 1000,
-                  minWidth: '150px',
-                }}
-              >
-                {dropdownOptions.map((option, index) => (
-                  <button
-                    key={index}
-                    onClick={() => handleOptionSelect(option)}
-                    style={{
-                      display: 'block',
-                      width: '100%',
-                      padding: '8px 12px',
-                      background: option === dropdownValue ? '#F8F7FB' : 'transparent',
-                      border: 'none',
-                      textAlign: 'left',
-                      cursor: 'pointer',
-                      fontFamily: 'Elevance Sans, sans-serif',
-                      fontSize: '14px',
-                      color: '#222222',
-                    }}
-                    onMouseEnter={(e) => {
-                      if (option !== dropdownValue) {
-                        e.currentTarget.style.background = '#F8F8F8';
-                      }
-                    }}
-                    onMouseLeave={(e) => {
-                      if (option !== dropdownValue) {
-                        e.currentTarget.style.background = 'transparent';
-                      }
-                    }}
-                  >
-                    {option}
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
+        {/* Time Range Selector */}
+        {showTimeRange && (
+          <TimeRangeContainer>
+            <Select
+              label=""
+              options={timeRangeOptions}
+              value={selectedTimeRange}
+              onChange={handleTimeRangeChange}
+              placeholder="Select time range"
+              helperText=""
+              size="small"
+              showLeadingIcon={false}
+            />
+          </TimeRangeContainer>
         )}
       </Header>
+
+      {/* Custom Date Range Picker Overlay */}
+      {showCustomDatePicker && (
+        <CustomDateRangeOverlay onClick={() => setShowCustomDatePicker(false)}>
+          <CustomDateRangeModal onClick={(e) => e.stopPropagation()}>
+            <ModalTitle>Select Custom Date Range</ModalTitle>
+            <DateInputsContainer>
+              <DateInputRow>
+                <DateLabel>From:</DateLabel>
+                <InputField
+                  type="date"
+                  value={fromDate}
+                  onChange={(e) => setFromDate(e.target.value)}
+                  size="small"
+                />
+              </DateInputRow>
+              <DateInputRow>
+                <DateLabel>To:</DateLabel>
+                <InputField
+                  type="date"
+                  value={toDate}
+                  onChange={(e) => setToDate(e.target.value)}
+                  size="small"
+                />
+              </DateInputRow>
+            </DateInputsContainer>
+            <ModalActions>
+              <Button $variant="secondary" onClick={() => setShowCustomDatePicker(false)}>
+                Cancel
+              </Button>
+              <Button 
+                $variant="primary" 
+                onClick={() => {
+                  if (fromDate && toDate && onCustomDateRange) {
+                    onCustomDateRange(fromDate, toDate);
+                  }
+                  setShowCustomDatePicker(false);
+                }}
+              >
+                Apply
+              </Button>
+            </ModalActions>
+          </CustomDateRangeModal>
+        </CustomDateRangeOverlay>
+      )}
 
       {/* Visualization Area */}
       <VisualizationArea $height={height}>

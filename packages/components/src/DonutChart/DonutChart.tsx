@@ -266,10 +266,13 @@ export const DonutChart: React.FC<DonutChartProps> = ({
     }
   }, [infoTooltip.visible]);
 
-  // Filter active data
+  // Keep all data but set inactive metrics to 0 value for smooth transitions
   const activeData = data
-    .map((item: typeof data[0], index: number) => ({ ...item, originalIndex: index }))
-    .filter((_item: typeof data[0] & { originalIndex: number }, index: number) => activeMetrics.has(index));
+    .map((item: typeof data[0], index: number) => ({ 
+      ...item, 
+      originalIndex: index,
+      value: activeMetrics.has(index) ? item.value : 0
+    }));
 
   const segments = calculateDonutSegments(activeData, size);
   const center = size / 2;
@@ -311,19 +314,41 @@ export const DonutChart: React.FC<DonutChartProps> = ({
         {/* Donut Chart */}
         <DonutContainer ref={svgContainerRef}>
           <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
-            {segments.map((segment, index) => (
-              <path
-                key={index}
-                d={describeArc(center, center, segment.radius, segment.startAngle, segment.endAngle)}
-                fill="none"
-                stroke={segment.color}
-                strokeWidth={segment.strokeWidth}
-                strokeLinecap="butt"
-                onMouseMove={(e) => handleSegmentHover(e, segment)}
-                onMouseLeave={handleSegmentLeave}
-                style={{ cursor: 'pointer' }}
-              />
-            ))}
+            {segments.map((segment, index) => {
+              const radius = segment.radius;
+              const circumference = 2 * Math.PI * radius;
+              const arcLength = (segment.percentage * circumference);
+              const dashArray = `${arcLength} ${circumference}`;
+              
+              // Calculate rotation to position this segment
+              let totalAngleBefore = -90; // Start from top
+              for (let i = 0; i < index; i++) {
+                totalAngleBefore += (segments[i].percentage * 360);
+              }
+              
+              return (
+                <circle
+                  key={index}
+                  cx={center}
+                  cy={center}
+                  r={radius}
+                  fill="none"
+                  stroke={segment.color}
+                  strokeWidth={segment.strokeWidth}
+                  strokeDasharray={dashArray}
+                  strokeDashoffset={0}
+                  strokeLinecap="butt"
+                  transform={`rotate(${totalAngleBefore} ${center} ${center})`}
+                  onMouseMove={(e) => handleSegmentHover(e, segment)}
+                  onMouseLeave={handleSegmentLeave}
+                  style={{ 
+                    cursor: 'pointer',
+                    transition: 'stroke-dasharray 0.5s cubic-bezier(0.4, 0, 0.2, 1), transform 0.5s cubic-bezier(0.4, 0, 0.2, 1)',
+                    willChange: 'stroke-dasharray, transform'
+                  }}
+                />
+              );
+            })}
           </svg>
           
           {/* Center Value */}

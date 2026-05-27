@@ -1,28 +1,41 @@
-/**
- * DataVisualizationCard component types
- */
-
 export interface DataVisualizationCardProps {
   /** Title of the visualization */
   title?: string;
+  
   /** Show info icon next to title */
   showInfoIcon?: boolean;
-  /** Info icon click handler */
+  
+  /** Callback when info icon is clicked */
   onInfoClick?: () => void;
-  /** Tooltip content to show on info icon hover */
+  
+  /** Tooltip content for info icon */
   infoTooltipContent?: string;
-  /** Show dropdown for time period/filter selection */
-  showDropdown?: boolean;
-  /** Dropdown value */
-  dropdownValue?: string;
-  /** Dropdown options */
-  dropdownOptions?: string[];
-  /** Dropdown change handler */
-  onDropdownChange?: (value: string) => void;
-  /** Visualization content (chart, graph, etc.) */
+  
+  /** Show time range selector */
+  showTimeRange?: boolean;
+  
+  /** Currently selected time range value */
+  timeRangeValue?: string;
+  
+  /** Callback when time range changes */
+  onTimeRangeChange?: (value: string) => void;
+  
+  /** Callback when custom date range is selected */
+  onCustomDateRange?: (fromDate: string, toDate: string) => void;
+  
+  /** Chart content to display */
   children: React.ReactNode;
-  /** Custom height for visualization area */
+  
+  /** Height of the visualization area */
   height?: string | number;
-  /** Custom className */
+  
+  /** Additional CSS class */
   className?: string;
 }
+
+export type TimeRangeOption = 
+  | 'Last 7 days'
+  | 'Last 30 days'
+  | 'Last 6 months'
+  | 'Last 365 days'
+  | 'Custom range';

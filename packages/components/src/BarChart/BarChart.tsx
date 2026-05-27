@@ -184,6 +184,8 @@ const BarSegment = styled.div<{ $color: string; $height: number }>`
   background: ${({ $color }) => $color};
   border-radius: 2px;
   flex-shrink: 0;
+  transition: height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: height;
 `;
 
 // Horizontal Bar Components (matching Figma design)
@@ -284,6 +286,8 @@ const HorizontalBarSegment = styled.div<{ $color: string; $width: number }>`
   background: ${({ $color }) => $color};
   border-radius: 2px;
   flex-shrink: 0;
+  transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: width;
 `;
 
 const HorizontalXAxisContainer = styled.div`
@@ -476,16 +480,15 @@ export const BarChart: React.FC<BarChartProps> = ({
     });
   };
 
-  // Filter data to only show active metrics
-  const filteredData = data.map(item => ({
-    ...item,
-    metrics: item.metrics.filter(m => activeMetrics.has(m.name))
-  }));
+  // Don't filter data - keep all metrics but render with 0 height when inactive
+  const filteredData = data;
 
   // Calculate max value for scaling (only from active metrics)
   const maxValue = Math.max(
-    ...filteredData.map(item => 
-      item.metrics.reduce((sum, metric) => sum + metric.value, 0)
+    ...data.map(item => 
+      item.metrics
+        .filter(m => activeMetrics.has(m.name))
+        .reduce((sum, metric) => sum + metric.value, 0)
     ),
     1 // Minimum value to avoid division by zero
   );
@@ -618,7 +621,9 @@ export const BarChart: React.FC<BarChartProps> = ({
 
               {/* Vertical Bars */}
               {filteredData.map((item, index) => {
-                const totalValue = item.metrics.reduce((sum, m) => sum + m.value, 0);
+                const totalValue = item.metrics
+                  .filter(m => activeMetrics.has(m.name))
+                  .reduce((sum, m) => sum + m.value, 0);
                 const barHeight = (totalValue / maxValue) * (height - 30);
 
                 return (
@@ -629,7 +634,8 @@ export const BarChart: React.FC<BarChartProps> = ({
                     onMouseLeave={handleBarLeave}
                   >
                     {item.metrics.map((metric, metricIndex) => {
-                      const segmentHeight = (metric.value / maxValue) * (height - 30);
+                      const isActive = activeMetrics.has(metric.name);
+                      const segmentHeight = isActive ? (metric.value / maxValue) * (height - 30) : 0;
                       return (
                         <BarSegment
                           key={metricIndex}
@@ -675,7 +681,9 @@ export const BarChart: React.FC<BarChartProps> = ({
             {/* Horizontal Bars Container */}
             <HorizontalBarsContainer>
               {filteredData.map((item, index) => {
-                const totalValue = item.metrics.reduce((sum, m) => sum + m.value, 0);
+                const totalValue = item.metrics
+                  .filter(m => activeMetrics.has(m.name))
+                  .reduce((sum, m) => sum + m.value, 0);
                 const barWidthPercent = totalValue > 0 ? (totalValue / maxValue) * 100 : 0;
 
                 return (
@@ -686,7 +694,8 @@ export const BarChart: React.FC<BarChartProps> = ({
                       onMouseLeave={handleBarLeave}
                     >
                       {item.metrics.map((metric, metricIndex) => {
-                        const segmentWidthPercent = totalValue > 0 ? (metric.value / totalValue) * 100 : 0;
+                        const isActive = activeMetrics.has(metric.name);
+                        const segmentWidthPercent = isActive && totalValue > 0 ? (metric.value / totalValue) * 100 : 0;
                         return (
                           <HorizontalBarSegment
                             key={metricIndex}

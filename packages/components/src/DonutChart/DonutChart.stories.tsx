@@ -9,7 +9,7 @@ const meta: Meta<typeof DonutChart> = {
     layout: 'padded',
     docs: {
       description: {
-        component: 'Donut chart visualization component for displaying 2-6 metrics with optional center KPI. Always use within DataVisualizationCard container. Based on Figma design.',
+        component: 'Donut chart visualization component for displaying 2-6 metrics with optional center KPI. Can be used standalone or wrapped in a card container. Based on Figma design.',
       },
     },
   },
@@ -195,50 +195,36 @@ export const CustomSize: Story = {
 
 /**
  * Interactive - Click legends to toggle metrics
+ * This story demonstrates the smooth circular animation when toggling segments
  */
 export const Interactive: Story = {
-  args: {
-    title: 'Interactive Chart (Click Legends)',
-    showInfoIcon: true,
-    data: fiveMetricsData,
-    centerValue: '$3m',
-    showCenterValue: true,
-    layout: 'vertical',
-  },
-};
-
-/**
- * In DataVisualizationCard - Recommended usage
- */
-export const InDataVisualizationCard: Story = {
   render: () => (
-    <DataVisualizationCard
-      title="Revenue Distribution"
-      showInfoIcon={true}
-      showDropdown={true}
-      dropdownValue="Last 7 days"
-    >
+    <div style={{ width: '400px' }}>
       <DonutChart
-        data={fourMetricsData}
+        title="Interactive Chart (Click Legends)"
+        showInfoIcon={true}
+        data={fiveMetricsData}
         centerValue="$3m"
         showCenterValue={true}
         layout="vertical"
       />
-    </DataVisualizationCard>
+    </div>
   ),
 };
 
 /**
- * Dashboard example with multiple donut charts
+ * Donut Chart in Card Container (Example)
+ * Shows how to wrap the chart in DataVisualizationCard with Select component and date ranges
  */
-export const DashboardExample: Story = {
+export const InCard: Story = {
   render: () => (
-    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '16px', maxWidth: '1200px' }}>
+    <div style={{ width: '500px' }}>
       <DataVisualizationCard
-        title="Revenue by Product"
+        title="Revenue Distribution"
         showInfoIcon={true}
-        showDropdown={true}
-        dropdownValue="Last 7 days"
+        infoTooltipContent="Revenue breakdown by product category"
+        showTimeRange={true}
+        timeRangeValue="Last 7 days"
       >
         <DonutChart
           data={fourMetricsData}
@@ -247,108 +233,6 @@ export const DashboardExample: Story = {
           layout="vertical"
         />
       </DataVisualizationCard>
-      
-      <DataVisualizationCard
-        title="Market Share"
-        showInfoIcon={true}
-        showDropdown={true}
-        dropdownValue="Last 30 days"
-      >
-        <DonutChart
-          data={threeMetricsData}
-          centerValue="45%"
-          showCenterValue={true}
-          layout="vertical"
-        />
-      </DataVisualizationCard>
-      
-      <DataVisualizationCard
-        title="Regional Distribution"
-        showInfoIcon={true}
-        showDropdown={true}
-        dropdownValue="Last 90 days"
-      >
-        <DonutChart
-          data={fiveMetricsData}
-          centerValue="$8.5m"
-          showCenterValue={true}
-          layout="vertical"
-        />
-      </DataVisualizationCard>
-      
-      <DataVisualizationCard
-        title="Category Breakdown"
-        showInfoIcon={true}
-        showDropdown={true}
-        dropdownValue="Last year"
-      >
-        <DonutChart
-          data={sixMetricsData}
-          centerValue="100%"
-          showCenterValue={true}
-          layout="vertical"
-        />
-      </DataVisualizationCard>
-    </div>
-  ),
-};
-
-/**
- * Real-world example - Sales data
- */
-export const RealWorldSalesData: Story = {
-  render: () => (
-    <DataVisualizationCard
-      title="Sales by Region"
-      showInfoIcon={true}
-      showDropdown={true}
-      dropdownValue="Q1 2024"
-    >
-      <DonutChart
-        data={[
-          { label: 'North America', value: 12500000, color: '#6222BC' },
-          { label: 'Europe', value: 8300000, color: '#E3725F' },
-          { label: 'Asia Pacific', value: 6700000, color: '#1AC2C1' },
-          { label: 'Latin America', value: 3200000, color: '#F5C563' },
-          { label: 'Middle East', value: 2100000, color: '#3E71C2' },
-        ]}
-        centerValue="$32.8M"
-        showCenterValue={true}
-        layout="vertical"
-      />
-    </DataVisualizationCard>
-  ),
-};
-
-/**
- * Vertical vs Horizontal comparison
- */
-export const LayoutComparison: Story = {
-  render: () => (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
-      <div>
-        <h3 style={{ marginBottom: '16px' }}>Vertical Layout</h3>
-        <DataVisualizationCard title="Revenue Distribution">
-          <DonutChart
-            data={fourMetricsData}
-            centerValue="$3m"
-            showCenterValue={true}
-            layout="vertical"
-          />
-        </DataVisualizationCard>
-      </div>
-      
-      <div>
-        <h3 style={{ marginBottom: '16px' }}>Horizontal Layout</h3>
-        <DataVisualizationCard title="Revenue Distribution">
-          <DonutChart
-            data={fourMetricsData}
-            centerValue="$3m"
-            showCenterValue={true}
-            layout="horizontal"
-          />
-        </DataVisualizationCard>
-      </div>
     </div>
   ),
 };

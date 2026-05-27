@@ -140,7 +140,8 @@ export const WithoutGrid: Story = {
 };
 
 /**
- * Inside DataVisualizationCard (recommended)
+ * Bar Chart in Card Container (Example)
+ * Shows how to wrap the chart in DataVisualizationCard with Select component and date ranges
  */
 export const InCard: Story = {
   render: () => (
@@ -149,8 +150,8 @@ export const InCard: Story = {
         title="Claims by Status"
         showInfoIcon={true}
         infoTooltipContent="Monthly breakdown of claims by approval status"
-        showDropdown={true}
-        dropdownValue="Last 6 months"
+        showTimeRange={true}
+        timeRangeValue="Last 6 months"
       >
         <BarChart
           data={stackedClaimData}

@@ -115,7 +115,7 @@ export { MetricCard } from './MetricCard';
 export type { MetricCardProps, MetricData } from './MetricCard';
 
 export { DataVisualizationCard } from './DataVisualizationCard';
-export type { DataVisualizationCardProps } from './DataVisualizationCard';
+export type { DataVisualizationCardProps, TimeRangeOption } from './DataVisualizationCard';
 
 export { ChartLegend } from './ChartLegend';
 export type { ChartLegendProps } from './ChartLegend';
