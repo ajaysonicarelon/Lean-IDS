@@ -75,16 +75,16 @@ letterSpacing: '${style.letterSpacing}'`;
         }}
       >
         <div>
-          <strong>Size:</strong> {style.fontSize}
+          <strong>Size:</strong> {style?.fontSize || 'N/A'}
         </div>
         <div>
-          <strong>Weight:</strong> {style.fontWeight}
+          <strong>Weight:</strong> {style?.fontWeight || 'N/A'}
         </div>
         <div>
-          <strong>Line Height:</strong> {style.lineHeight}
+          <strong>Line Height:</strong> {style?.lineHeight || 'N/A'}
         </div>
         <div>
-          <strong>Letter Spacing:</strong> {style.letterSpacing}
+          <strong>Letter Spacing:</strong> {style?.letterSpacing || 'N/A'}
         </div>
       </div>
     </div>
@@ -312,7 +312,7 @@ export const AllTypographyStyles: Story = {
       />
       <TypographyExample
         name="Code / Regular"
-        style={typography.code.regular}
+        style={typography.code['regular-14']}
         sampleText="const greeting = 'Hello, World!';"
       />
 
