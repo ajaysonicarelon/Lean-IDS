@@ -23,14 +23,17 @@ import {
 } from './MenuItem.styles';
 
 export const MenuItem: React.FC<MenuItemProps> = ({
+  aligned = 'horizontal',
   border = 'bottom',
   iconM,
   iconS,
   mode = 'dark',
+  nestedMenu = false,
   showIcon = true,
   showIndicator = false,
   showLabel = true,
   state = 'inactive',
+  type = 'single',
   label = 'Menu Item',
   onClick,
   className,
@@ -41,9 +44,11 @@ export const MenuItem: React.FC<MenuItemProps> = ({
   return (
     <MenuItemContainer className={className}>
       <StyledMenuItem
+        $aligned={aligned}
         $border={border}
         $mode={mode}
         $state={state}
+        $type={type}
         onClick={onClick}
         role="button"
         tabIndex={0}
@@ -57,6 +62,7 @@ export const MenuItem: React.FC<MenuItemProps> = ({
         
         {showLabel && (
           <MenuItemLabel
+            $aligned={aligned}
             $border={border}
             $state={state}
             $mode={mode}
@@ -64,10 +70,17 @@ export const MenuItem: React.FC<MenuItemProps> = ({
             {label}
           </MenuItemLabel>
         )}
+
+        {nestedMenu && type === 'single' && aligned === 'horizontal' && (
+          <IconWrapper $mode={mode}>
+            {/* Arrow icon for nested menu - only visible in expanded state */}
+            {border === 'bottom' ? '▼' : '▶'}
+          </IconWrapper>
+        )}
       </StyledMenuItem>
       
       {showIndicator && state === 'inactive' && (
-        <NotificationIndicator $mode={mode} $border={border} />
+        <NotificationIndicator $mode={mode} $border={border} $aligned={aligned} />
       )}
     </MenuItemContainer>
   );

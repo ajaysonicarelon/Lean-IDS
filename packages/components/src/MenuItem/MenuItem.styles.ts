@@ -1,10 +1,12 @@
 import styled, { css } from 'styled-components';
-import { MenuItemBorder, MenuItemMode, MenuItemState } from './MenuItem.types';
+import { MenuItemBorder, MenuItemMode, MenuItemState, MenuItemAligned, MenuItemType } from './MenuItem.types';
 
 interface StyledMenuItemProps {
+  $aligned: MenuItemAligned;
   $border: MenuItemBorder;
   $mode: MenuItemMode;
   $state: MenuItemState;
+  $type: MenuItemType;
 }
 
 export const StyledMenuItem = styled.div<StyledMenuItemProps>`
@@ -14,16 +16,28 @@ export const StyledMenuItem = styled.div<StyledMenuItemProps>`
   overflow: hidden;
   cursor: pointer;
   transition: all 0.2s ease;
+  position: relative;
 
-  ${({ $border, $state, $mode, theme }) => {
-    // Base padding based on border type
-    const basePadding = $border === 'left' 
-      ? `padding: ${theme.spacing[7]};`
-      : `padding: ${theme.spacing[4]} ${theme.spacing[5]}; justify-content: center;`;
+  ${({ $aligned, $border, $state, $mode, theme }) => {
+    const isVertical = $aligned === 'vertical';
+    
+    // Flex direction based on alignment
+    const flexDirection = isVertical ? 'flex-direction: column;' : '';
+    
+    // Base padding based on border type and alignment
+    const basePadding = isVertical
+      ? `padding: ${theme.spacing[2]} ${theme.spacing[2]};`
+      : $border === 'left' 
+        ? `padding: ${theme.spacing[7]};`
+        : `padding: ${theme.spacing[4]} ${theme.spacing[5]}; justify-content: center;`;
+
+    // Border radius
+    const borderRadius = `border-radius: ${theme.borderRadius.sm};`;
 
     // Inactive state
     if ($state === 'inactive') {
       return css`
+        ${flexDirection}
         ${basePadding}
         background-color: transparent;
         
@@ -31,6 +45,7 @@ export const StyledMenuItem = styled.div<StyledMenuItemProps>`
           background-color: ${$mode === 'dark' 
             ? 'rgba(255, 255, 255, 0.05)' 
             : 'rgba(199, 199, 199, 0.05)'};
+          ${borderRadius}
         }
       `;
     }
@@ -49,7 +64,9 @@ export const StyledMenuItem = styled.div<StyledMenuItemProps>`
       : `border-bottom: 3px solid ${borderColor};`;
 
     return css`
+      ${flexDirection}
       ${basePadding}
+      ${borderRadius}
       background-color: ${backgroundColor};
       ${borderStyle}
     `;
@@ -83,6 +100,7 @@ export const IconWrapper = styled.div<IconWrapperProps>`
 `;
 
 interface MenuItemLabelProps {
+  $aligned: MenuItemAligned;
   $border: MenuItemBorder;
   $state: MenuItemState;
   $mode: MenuItemMode;
@@ -95,19 +113,25 @@ export const MenuItemLabel = styled.div<MenuItemLabelProps>`
   flex-shrink: 0;
   white-space: nowrap;
 
-  ${({ $border, $state, $mode, theme }) => {
+  ${({ $aligned, $border, $state, $mode, theme }) => {
     const isActive = $state === 'active';
     const isDark = $mode === 'dark';
     const isLeft = $border === 'left';
+    const isVertical = $aligned === 'vertical';
 
-    // Font size based on border type
-    const fontSize = isLeft 
-      ? theme.fontSizes.body 
-      : theme.fontSizes.paragraph;
+    // Font size based on alignment and border type
+    // Vertical: 12px (caption), Horizontal with left border: 16px (body), Horizontal with bottom border: 14px (paragraph)
+    const fontSize = isVertical 
+      ? theme.fontSizes[12]
+      : isLeft 
+        ? theme.fontSizes[16]
+        : theme.fontSizes[14];
     
-    const lineHeight = isLeft
-      ? theme.lineHeights.body
-      : theme.lineHeights.paragraph;
+    const lineHeight = isVertical
+      ? theme.lineHeights[14]
+      : isLeft
+        ? theme.lineHeights[19]
+        : theme.lineHeights[16];
 
     // Font weight based on state
     const fontWeight = isActive 
@@ -132,6 +156,7 @@ export const MenuItemLabel = styled.div<MenuItemLabelProps>`
 interface NotificationIndicatorProps {
   $mode: MenuItemMode;
   $border: MenuItemBorder;
+  $aligned: MenuItemAligned;
 }
 
 export const NotificationIndicator = styled.div<NotificationIndicatorProps>`
@@ -141,7 +166,14 @@ export const NotificationIndicator = styled.div<NotificationIndicatorProps>`
   border-radius: 50%;
   background-color: ${({ theme }) => theme.colors.palette.error[500]};
   
-  ${({ $border }) => {
+  ${({ $border, $aligned }) => {
+    // For vertical alignment (collapsed state), position at top-right
+    if ($aligned === 'vertical') {
+      return css`
+        right: 0;
+        top: 0;
+      `;
+    }
     // For top header (horizontal), position above the text
     if ($border === 'bottom') {
       return css`
@@ -149,7 +181,7 @@ export const NotificationIndicator = styled.div<NotificationIndicatorProps>`
         top: 8px;
       `;
     }
-    // For side nav (vertical), position on the right side
+    // For side nav horizontal (expanded), position on the right side
     return css`
       right: 16px;
       top: 15px;

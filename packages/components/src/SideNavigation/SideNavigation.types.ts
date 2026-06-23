@@ -20,6 +20,8 @@ export interface NavigationItem {
   showIndicator?: boolean;
   /** Click handler */
   onClick?: () => void;
+  /** Nested menu items (submenu) */
+  children?: NavigationItem[];
 }
 
 export interface UserProfile {
@@ -34,8 +36,6 @@ export interface UserProfile {
 }
 
 export interface SideNavigationProps {
-  /** Expanded or collapsed state */
-  state?: SideNavigationState;
   /** Navigation groups */
   groups?: NavigationGroup[];
   /** User profile information */

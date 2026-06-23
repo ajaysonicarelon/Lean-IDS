@@ -87,6 +87,9 @@ export type { TableToolbarProps } from './Table';
 export { MenuItem } from './MenuItem';
 export type { MenuItemProps, MenuItemBorder, MenuItemMode, MenuItemState } from './MenuItem';
 
+export { NestedMenuOverlay } from './NestedMenuOverlay';
+export type { NestedMenuOverlayProps, NestedMenuItem } from './NestedMenuOverlay';
+
 export { Brand } from './Brand';
 export type { BrandProps, BrandVariant, BrandName, BrandMode } from './Brand';
 
@@ -128,6 +131,10 @@ export type { DonutChartProps, DonutChartData } from './DonutChart';
 
 export { BarChart } from './BarChart';
 export type { BarChartProps, BarChartData, BarChartOrientation, BarMetric } from './BarChart';
+
+export { Typography } from './Typography';
+export type { TypographyProps, TypographyVariant, TypographyWeight, TypographyCodeSize, TypographyAlign, TypographyElement } from './Typography';
+
 export {
   ArrowBackIcon,
   ArrowForwardIcon,

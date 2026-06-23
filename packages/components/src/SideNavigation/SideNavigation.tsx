@@ -1,20 +1,26 @@
 /**
  * SideNavigation Component
  * 
- * A vertical navigation sidebar that can be expanded or collapsed.
- * Contains brand logo, navigation groups, and user profile.
+ * A vertical navigation sidebar that starts collapsed (60px) and expands on hover (236px).
+ * 
+ * Behavior:
+ * - Default: Collapsed (60px width) - shows vertical menu items with icons and truncated labels
+ * - On Hover: Temporarily expands to 236px - shows horizontal menu items with full labels and group titles
+ * - Pin Button: Appears on right of brand logo when expanded (visible on hover)
+ * - Pinned: Locks sidebar at 236px width, content adjusts accordingly
  * 
  * Features:
- * - Expandable/collapsible states
- * - Multiple navigation groups with titles
+ * - Multiple navigation groups with titles (visible in expanded state)
+ * - Vertical menu items in collapsed state with icons and labels
  * - Active state indicators
  * - Notification badges
- * - User profile section with avatar
+ * - Group dividers
+ * - User profile section with 48px avatar
  * - Smooth transitions
  */
 
 import React from 'react';
-import { SideNavigationProps, SideNavigationState } from './SideNavigation.types';
+import { SideNavigationProps, SideNavigationState, NavigationItem } from './SideNavigation.types';
 import {
   StyledSideNavigation,
   NavigationContent,
@@ -32,9 +38,10 @@ import {
 import { Brand } from '../Brand';
 import { MenuItem } from '../MenuItem';
 import { Avatar } from '../Avatar';
+import { NestedMenuOverlay } from '../NestedMenuOverlay';
+import type { NestedMenuItem } from '../NestedMenuOverlay';
 
 export const SideNavigation: React.FC<SideNavigationProps> = ({
-  state = 'expanded',
   groups = [],
   user,
   className,
@@ -44,22 +51,21 @@ export const SideNavigation: React.FC<SideNavigationProps> = ({
 }) => {
   const [isHovered, setIsHovered] = React.useState(false);
   const [internalIsPinned, setInternalIsPinned] = React.useState(false);
+  const [nestedMenuState, setNestedMenuState] = React.useState<{
+    items: NestedMenuItem[];
+    position: { top: number; left: number };
+  } | null>(null);
   
   // Use external isPinned if provided, otherwise use internal state
   const isPinned = externalIsPinned !== undefined ? externalIsPinned : internalIsPinned;
   
   // Determine effective state based on hover and pin
+  // Always starts collapsed, expands on hover or when pinned
   const getEffectiveState = (): SideNavigationState => {
-    if (isPinned) {
-      return 'expanded'; // Always expanded when pinned
+    if (isPinned || isHovered) {
+      return 'expanded';
     }
-    
-    // Toggle on hover: collapsed becomes expanded, expanded becomes collapsed
-    if (isHovered) {
-      return state === 'collapsed' ? 'expanded' : 'collapsed';
-    }
-    
-    return state;
+    return 'collapsed';
   };
   
   const effectiveState = getEffectiveState();
@@ -69,6 +75,92 @@ export const SideNavigation: React.FC<SideNavigationProps> = ({
     setInternalIsPinned(newPinnedState);
     onPinChange?.(newPinnedState);
   };
+
+  // Convert NavigationItem to NestedMenuItem format
+  const convertToNestedMenuItem = (item: NavigationItem): NestedMenuItem => ({
+    id: item.id,
+    label: item.label,
+    active: item.active,
+    onClick: item.onClick,
+    children: item.children?.map(convertToNestedMenuItem),
+  });
+
+  // Track if sidebar is currently animating
+  const [isAnimating, setIsAnimating] = React.useState(false);
+  const hoverTimeoutRef = React.useRef<NodeJS.Timeout | null>(null);
+  const prevHoveredRef = React.useRef(isHovered);
+
+  // Handle sidebar hover state changes
+  React.useEffect(() => {
+    // Only animate if hover state actually changed and not pinned
+    if (!isPinned && prevHoveredRef.current !== isHovered) {
+      setIsAnimating(true);
+      
+      // Close nested menu when sidebar starts collapsing
+      if (!isHovered) {
+        setNestedMenuState(null);
+      }
+      
+      const timer = setTimeout(() => {
+        setIsAnimating(false);
+      }, 300); // Match transition duration from styles (0.3s)
+      
+      prevHoveredRef.current = isHovered;
+      return () => clearTimeout(timer);
+    }
+    
+    prevHoveredRef.current = isHovered;
+    return undefined;
+  }, [isHovered, isPinned]);
+
+  // Handle menu item hover to show nested menu
+  const handleMenuItemHover = (item: NavigationItem, event: React.MouseEvent<HTMLDivElement>) => {
+    // Clear any existing timeout
+    if (hoverTimeoutRef.current) {
+      clearTimeout(hoverTimeoutRef.current);
+    }
+
+    // Allow nested menus during expansion (isHovered=true), only block during collapse (isHovered=false)
+    const shouldBlock = isAnimating && !isHovered;
+
+    if (item.children && item.children.length > 0 && !shouldBlock) {
+      // Capture rect BEFORE timeout (event.currentTarget becomes null after timeout)
+      const rect = event.currentTarget.getBoundingClientRect();
+      const childrenItems = item.children;
+      
+      // Calculate position based on expanded sidebar width (236px) to prevent overlap
+      const expandedSidebarWidth = 236;
+      
+      // Add 100ms delay before showing nested menu (reduced for better responsiveness)
+      hoverTimeoutRef.current = setTimeout(() => {
+        setNestedMenuState({
+          items: childrenItems.map(convertToNestedMenuItem),
+          position: {
+            top: rect.top,
+            left: expandedSidebarWidth, // No gap - directly adjacent to sidebar
+          },
+        });
+      }, 100);
+    }
+  };
+
+  const handleMenuItemLeave = () => {
+    // Clear hover timeout if mouse leaves before delay completes
+    if (hoverTimeoutRef.current) {
+      clearTimeout(hoverTimeoutRef.current);
+      hoverTimeoutRef.current = null;
+    }
+    // Don't close immediately - let the overlay handle its own mouse leave
+  };
+
+  // Cleanup timeout on unmount
+  React.useEffect(() => {
+    return () => {
+      if (hoverTimeoutRef.current) {
+        clearTimeout(hoverTimeoutRef.current);
+      }
+    };
+  }, []);
 
   return (
     <StyledSideNavigation
@@ -118,18 +210,24 @@ export const SideNavigation: React.FC<SideNavigationProps> = ({
                 
                 <MenuItemsContainer>
                   {group.items.map((item) => (
-                    <MenuItem
+                    <div
                       key={item.id}
-                      border="left"
-                      mode="dark"
-                      state={item.active ? 'active' : 'inactive'}
-                      label={item.label}
-                      iconM={item.icon}
-                      showIcon={true}
-                      showLabel={true}
-                      showIndicator={item.showIndicator}
-                      onClick={item.onClick}
-                    />
+                      onMouseEnter={(e) => handleMenuItemHover(item, e)}
+                      onMouseLeave={handleMenuItemLeave}
+                    >
+                      <MenuItem
+                        border="left"
+                        mode="dark"
+                        state={item.active ? 'active' : 'inactive'}
+                        label={item.label}
+                        iconM={item.icon}
+                        showIcon={true}
+                        showLabel={true}
+                        showIndicator={item.showIndicator}
+                        nestedMenu={!!item.children && item.children.length > 0}
+                        onClick={item.onClick}
+                      />
+                    </div>
                   ))}
                 </MenuItemsContainer>
 
@@ -139,31 +237,56 @@ export const SideNavigation: React.FC<SideNavigationProps> = ({
           </NavigationGroups>
         )}
 
-        {/* Collapsed state - show only icons */}
+        {/* Collapsed state - show vertical menu items with icons and labels */}
         {effectiveState === 'collapsed' && (
           <NavigationGroups>
-            {groups.flatMap(group => group.items).map((item) => (
-              <MenuItem
-                key={item.id}
-                border="left"
-                mode="dark"
-                state={item.active ? 'active' : 'inactive'}
-                iconM={item.icon}
-                showIcon={true}
-                showLabel={false}
-                showIndicator={item.showIndicator}
-                onClick={item.onClick}
-              />
+            {groups.map((group, groupIndex) => (
+              <React.Fragment key={groupIndex}>
+                <MenuItemsContainer>
+                  {group.items.map((item) => (
+                    <div
+                      key={item.id}
+                      onMouseEnter={(e) => handleMenuItemHover(item, e)}
+                      onMouseLeave={handleMenuItemLeave}
+                    >
+                      <MenuItem
+                        aligned="vertical"
+                        border="left"
+                        mode="dark"
+                        state={item.active ? 'active' : 'inactive'}
+                        label={item.label}
+                        iconM={item.icon}
+                        showIcon={true}
+                        showLabel={true}
+                        showIndicator={item.showIndicator}
+                        nestedMenu={!!item.children && item.children.length > 0}
+                        onClick={item.onClick}
+                      />
+                    </div>
+                  ))}
+                </MenuItemsContainer>
+
+                {groupIndex < groups.length - 1 && <Divider />}
+              </React.Fragment>
             ))}
           </NavigationGroups>
         )}
       </NavigationContent>
 
+      {/* Nested Menu Overlay */}
+      {nestedMenuState && (
+        <NestedMenuOverlay
+          items={nestedMenuState.items}
+          position={nestedMenuState.position}
+          onClose={() => setNestedMenuState(null)}
+        />
+      )}
+
       {/* User Profile */}
       {user && (
         <UserProfileContainer $state={effectiveState}>
           <Avatar
-            size={effectiveState === 'collapsed' ? 'small' : 'medium'}
+            size="medium"
             initials={user.initials}
             src={user.avatarUrl}
             alt={user.name}

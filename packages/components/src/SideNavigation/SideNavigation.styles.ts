@@ -16,9 +16,9 @@ export const StyledSideNavigation = styled.nav<StyledSideNavigationProps>`
   width: ${({ $state }) => $state === 'collapsed' ? '60px' : '236px'};
   height: 100vh;
   background-color: ${({ theme }) => theme.colors.palette.primary[800]};
-  padding: 39px 0;
+  padding: 39px ${({ $state, theme }) => $state === 'collapsed' ? theme.spacing[1] : theme.spacing[2]};
   overflow: hidden;
-  transition: width 0.3s ease;
+  transition: width 0.3s ease, padding 0.3s ease;
   z-index: 99;
 `;
 
@@ -27,7 +27,31 @@ export const NavigationContent = styled.div`
   flex-direction: column;
   gap: 46px;
   width: 100%;
-  flex-shrink: 0;
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  
+  /* Custom scrollbar styling */
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+  
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  
+  &::-webkit-scrollbar-thumb {
+    background-color: rgba(255, 255, 255, 0.2);
+    border-radius: 3px;
+  }
+  
+  &::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(255, 255, 255, 0.3);
+  }
+  
+  /* Firefox scrollbar */
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
 `;
 
 interface BrandContainerProps {
@@ -80,9 +104,10 @@ export const MenuItemsContainer = styled.div`
 
 export const UserProfileContainer = styled.div<{ $state: SideNavigationState }>`
   display: flex;
-  align-items: flex-start;
+  align-items: ${({ $state }) => $state === 'collapsed' ? 'center' : 'flex-start'};
+  justify-content: ${({ $state }) => $state === 'collapsed' ? 'center' : 'flex-start'};
   gap: ${({ theme }) => theme.spacing[5]};
-  padding: 0 ${({ theme }) => theme.spacing[7]};
+  padding: ${({ $state, theme }) => $state === 'collapsed' ? '0' : `0 ${theme.spacing[7]}`};
   width: 100%;
   flex-shrink: 0;
 `;

@@ -26,6 +26,12 @@ const preview: Preview = {
         },
       ],
     },
+    docs: {
+      story: {
+        inline: true,
+        iframeHeight: 400,
+      },
+    },
     options: {
       storySort: {
         order: [
