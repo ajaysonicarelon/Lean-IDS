@@ -44,6 +44,7 @@ export interface PageLayoutProps {
     userInitials?: string;
     userAvatarUrl?: string;
     showLogo?: boolean; // Only for topbar-only variant
+    onAvatarClick?: () => void; // Click handler for user avatar
   };
   
   /**
@@ -54,6 +55,11 @@ export interface PageLayoutProps {
     user?: UserProfile;
     isPinned?: boolean; // Whether sidebar is pinned
     onPinChange?: (isPinned: boolean) => void; // Callback when pin state changes
+    expandMode?: 'hover' | 'button' | 'both'; // Expand/collapse mode
+    toggleButtonPosition?: 'top' | 'bottom'; // Position of toggle button
+    toggleButtonOffset?: number; // Vertical offset for toggle button (in pixels)
+    toggleButtonSize?: 'small' | 'large'; // Size of toggle button
+    toggleButtonIcon?: ReactNode; // Custom icon for toggle button
   };
   
   /**
@@ -64,6 +70,7 @@ export interface PageLayoutProps {
     version?: string;
     feedbackText?: string;
     feedbackUrl?: string;
+    onFeedbackClick?: () => void; // Click handler for feedback link
   };
   
   /**

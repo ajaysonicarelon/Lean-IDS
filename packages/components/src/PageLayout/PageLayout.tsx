@@ -6,6 +6,7 @@ import {
   PageLayoutWithSideBarPinned,
   PageLayoutWithBoth,
   PageLayoutWithBothPinned,
+  MainContentWrapper,
   PageContent,
   BreadcrumbsContainer,
   BreadcrumbSeparator,
@@ -75,47 +76,88 @@ export const PageLayout: React.FC<PageLayoutProps> = ({
         version={footer?.version || '1.0'}
         feedbackText={footer?.feedbackText || 'Send us a Feedback here'}
         feedbackUrl={footer?.feedbackUrl || '#'}
+        onFeedbackClick={footer?.onFeedbackClick}
       />
     );
   };
 
+  const hasSidebar = variant === 'sidebar-only' || variant === 'topbar-sidebar';
+
   return (
     <Container className={className}>
-      {/* Top Header - for topbar-only and topbar-sidebar */}
-      {(variant === 'topbar-only' || variant === 'topbar-sidebar') && topHeader && (
-        <TopHeader
-          mode={variant === 'topbar-only' ? 'dark' : 'light'}
-          appName={topHeader.appName}
-          menuItems={topHeader.menuItems}
-          userInitials={topHeader.userInitials}
-          userAvatarUrl={topHeader.userAvatarUrl}
-          showLogo={variant === 'topbar-only' && topHeader.showLogo !== false}
-          showAppName={!!topHeader.appName}
-          showMenuItems={!!topHeader.menuItems && topHeader.menuItems.length > 0}
-          showAvatar={!!topHeader.userInitials}
-        />
-      )}
-
       {/* Side Navigation - for sidebar-only and topbar-sidebar */}
-      {(variant === 'sidebar-only' || variant === 'topbar-sidebar') && sideNav && (
+      {hasSidebar && sideNav && (
         <SideNavigation
-          state="collapsed"
           groups={sideNav.groups}
           user={sideNav.user}
           isPinned={sidebarPinned}
           onPinChange={handlePinChange}
+          expandMode={sideNav.expandMode}
+          toggleButtonPosition={sideNav.toggleButtonPosition}
+          toggleButtonOffset={sideNav.toggleButtonOffset}
+          toggleButtonSize={sideNav.toggleButtonSize}
+          toggleButtonIcon={sideNav.toggleButtonIcon}
         />
       )}
 
-      {/* Main Content */}
-      <PageContent>
-        {renderBreadcrumbs()}
-        <PageHeader title={pageTitle} description={pageDescription} />
-        {children}
-      </PageContent>
+      {/* Main Content Wrapper - wraps header, content, and footer when sidebar is present */}
+      {hasSidebar ? (
+        <MainContentWrapper>
+          {/* Top Header - for topbar-sidebar */}
+          {variant === 'topbar-sidebar' && topHeader && (
+            <TopHeader
+              mode="light"
+              appName={topHeader.appName}
+              menuItems={topHeader.menuItems}
+              userInitials={topHeader.userInitials}
+              userAvatarUrl={topHeader.userAvatarUrl}
+              showLogo={false}
+              showAppName={!!topHeader.appName}
+              showMenuItems={!!topHeader.menuItems && topHeader.menuItems.length > 0}
+              showAvatar={!!topHeader.userInitials}
+              onAvatarClick={topHeader.onAvatarClick}
+            />
+          )}
 
-      {/* Footer */}
-      {renderFooter()}
+          {/* Main Content */}
+          <PageContent>
+            {renderBreadcrumbs()}
+            <PageHeader title={pageTitle} description={pageDescription} />
+            {children}
+          </PageContent>
+
+          {/* Footer */}
+          {renderFooter()}
+        </MainContentWrapper>
+      ) : (
+        <>
+          {/* Top Header - for topbar-only */}
+          {variant === 'topbar-only' && topHeader && (
+            <TopHeader
+              mode="dark"
+              appName={topHeader.appName}
+              menuItems={topHeader.menuItems}
+              userInitials={topHeader.userInitials}
+              userAvatarUrl={topHeader.userAvatarUrl}
+              showLogo={topHeader.showLogo !== false}
+              showAppName={!!topHeader.appName}
+              showMenuItems={!!topHeader.menuItems && topHeader.menuItems.length > 0}
+              showAvatar={!!topHeader.userInitials}
+              onAvatarClick={topHeader.onAvatarClick}
+            />
+          )}
+
+          {/* Main Content */}
+          <PageContent>
+            {renderBreadcrumbs()}
+            <PageHeader title={pageTitle} description={pageDescription} />
+            {children}
+          </PageContent>
+
+          {/* Footer */}
+          {renderFooter()}
+        </>
+      )}
     </Container>
   );
 };

@@ -26,8 +26,16 @@ export const Footer: React.FC<FooterProps> = ({
   version = '1.0',
   feedbackUrl = '#',
   feedbackText = 'Send us a Feedback here',
+  onFeedbackClick,
   className,
 }) => {
+  const handleFeedbackClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    if (onFeedbackClick) {
+      e.preventDefault();
+      onFeedbackClick();
+    }
+  };
+
   return (
     <StyledFooter className={className} role="contentinfo">
       <LastUpdated>
@@ -40,7 +48,12 @@ export const Footer: React.FC<FooterProps> = ({
       
       <FeedbackSection>
         Facing any issues?{' '}
-        <FeedbackLink href={feedbackUrl} target="_blank" rel="noopener noreferrer">
+        <FeedbackLink 
+          href={feedbackUrl} 
+          target="_blank" 
+          rel="noopener noreferrer"
+          onClick={handleFeedbackClick}
+        >
           {feedbackText}
         </FeedbackLink>
       </FeedbackSection>

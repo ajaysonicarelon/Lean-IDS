@@ -24,6 +24,7 @@ export const Default: Story = {
     version: '1.0',
     feedbackUrl: '#',
     feedbackText: 'Send us a Feedback here',
+    onFeedbackClick: () => alert('Feedback link clicked!'),
   },
 };
 

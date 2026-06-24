@@ -38,12 +38,15 @@ export const TopHeader: React.FC<TopHeaderProps> = ({
   menuItems = [],
   userInitials = 'AS',
   userAvatarUrl,
+  leftOffset,
+  onAvatarClick,
   className,
   children,
 }) => {
   return (
     <StyledTopHeader
       $mode={mode}
+      $leftOffset={leftOffset}
       className={className}
       role="banner"
     >
@@ -86,6 +89,7 @@ export const TopHeader: React.FC<TopHeaderProps> = ({
             initials={userInitials}
             src={userAvatarUrl}
             alt="User avatar"
+            onClick={onAvatarClick}
           />
         )}
       </ActionSection>

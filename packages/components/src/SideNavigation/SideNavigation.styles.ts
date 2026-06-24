@@ -6,20 +6,19 @@ interface StyledSideNavigationProps {
 }
 
 export const StyledSideNavigation = styled.nav<StyledSideNavigationProps>`
-  position: fixed;
+  position: sticky;
   top: 0;
-  left: 0;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   align-items: ${({ $state }) => $state === 'collapsed' ? 'center' : 'flex-start'};
   width: ${({ $state }) => $state === 'collapsed' ? '60px' : '236px'};
-  height: 100vh;
+  height: 100vh; /* Fixed viewport height - sidebar doesn't grow with content */
   background-color: ${({ theme }) => theme.colors.palette.primary[800]};
-  padding: 39px ${({ $state, theme }) => $state === 'collapsed' ? theme.spacing[1] : theme.spacing[2]};
-  overflow: hidden;
+  padding: 16px ${({ $state, theme }) => $state === 'collapsed' ? theme.spacing[1] : theme.spacing[2]};
+  overflow: visible; /* Changed from hidden to visible so toggle button can overlap */
   transition: width 0.3s ease, padding 0.3s ease;
-  z-index: 99;
+  flex-shrink: 0;
 `;
 
 export const NavigationContent = styled.div`
@@ -29,7 +28,7 @@ export const NavigationContent = styled.div`
   width: 100%;
   flex: 1;
   overflow-y: auto;
-  overflow-x: hidden;
+  overflow-x: hidden; /* Prevent content from overflowing horizontally */
   
   /* Custom scrollbar styling */
   &::-webkit-scrollbar {
@@ -183,6 +182,69 @@ export const PinButton = styled.button<PinButtonProps>`
   svg {
     width: 18px;
     height: 18px;
+    flex-shrink: 0;
+  }
+`;
+
+interface ToggleButtonProps {
+  $position: 'top' | 'bottom';
+  $offset: number;
+  $size: 'small' | 'large';
+}
+
+export const ToggleButton = styled.button<ToggleButtonProps>`
+  position: absolute;
+  
+  /* Position: half inside, half outside sidebar - aligned with brand logo vertically */
+  ${({ $position, $offset, $size }) => {
+    const buttonSize = $size === 'small' ? 24 : 32;
+    const halfSize = buttonSize / 2;
+    
+    if ($position === 'top') {
+      // Align with brand logo (logo is at ~16px top padding + logo height/2)
+      // Default offset is calculated to center with logo
+      return `
+        top: ${$offset}px;
+        right: -${halfSize}px; /* Half outside */
+      `;
+    } else {
+      return `
+        bottom: ${$offset}px;
+        right: -${halfSize}px; /* Half outside */
+      `;
+    }
+  }}
+  
+  /* Size variants - small: 24px, large: 32px */
+  width: ${({ $size }) => $size === 'small' ? '24px' : '32px'};
+  height: ${({ $size }) => $size === 'small' ? '24px' : '32px'};
+  
+  border-radius: 50%;
+  background-color: ${({ theme }) => theme.colors.palette.neutral[50]}; /* White background */
+  border: 2px solid ${({ theme }) => theme.colors.palette.neutral[300]};
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  z-index: 102;
+  
+  &:hover {
+    background-color: ${({ theme }) => theme.colors.palette.neutral[100]};
+    border-color: ${({ theme }) => theme.colors.palette.primary[600]};
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    transform: scale(1.05);
+  }
+  
+  &:active {
+    transform: scale(0.95);
+  }
+  
+  svg {
+    width: ${({ $size }) => $size === 'small' ? '16px' : '20px'};
+    height: ${({ $size }) => $size === 'small' ? '16px' : '20px'};
+    color: ${({ theme }) => theme.colors.palette.primary[600]}; /* Primary color icon */
     flex-shrink: 0;
   }
 `;

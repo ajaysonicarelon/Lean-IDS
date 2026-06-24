@@ -31,6 +31,10 @@ export interface MenuItemProps {
   label?: string;
   /** Click handler */
   onClick?: () => void;
+  /** Mouse enter handler */
+  onMouseEnter?: (event: React.MouseEvent<HTMLDivElement>) => void;
+  /** Mouse leave handler */
+  onMouseLeave?: (event: React.MouseEvent<HTMLDivElement>) => void;
   /** Additional CSS class */
   className?: string;
 }

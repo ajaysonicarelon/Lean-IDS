@@ -9,4 +9,6 @@ export interface AvatarProps {
   initials?: string;
   disabled?: boolean;
   className?: string;
+  /** Click handler for avatar */
+  onClick?: () => void;
 }

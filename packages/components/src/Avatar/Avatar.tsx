@@ -9,6 +9,7 @@ export const Avatar: React.FC<AvatarProps> = ({
   alt = 'Avatar',
   initials = 'AA',
   disabled = false,
+  onClick,
   className,
 }) => {
   const displayInitials = initials.slice(0, 2).toUpperCase();
@@ -21,6 +22,8 @@ export const Avatar: React.FC<AvatarProps> = ({
       className={className}
       role="img"
       aria-label={alt}
+      onClick={onClick && !disabled ? onClick : undefined}
+      style={{ cursor: onClick && !disabled ? 'pointer' : 'default' }}
     >
       {src ? (
         <AvatarImage src={src} alt={alt} />

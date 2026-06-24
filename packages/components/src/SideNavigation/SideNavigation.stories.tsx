@@ -9,20 +9,36 @@ const meta: Meta<typeof SideNavigation> = {
     layout: 'fullscreen',
     docs: {
       description: {
-        component: `A vertical navigation sidebar that starts collapsed (60px) and expands on hover (236px).
+        component: `A vertical navigation sidebar with flexible expand/collapse behavior.
 
-**Behavior:**
-- **Default State:** Collapsed (60px width) - shows only icons
-- **On Hover:** Temporarily expands to 236px - shows icons and labels
-- **Pin Button:** Appears on the right side of brand logo when expanded (visible on hover)
-- **Pinned State:** Locks sidebar at 236px width, content adjusts accordingly
+**Dimensions:**
+- **Collapsed:** 60px width - shows only icons
+- **Expanded:** 236px width - shows icons, labels, and group titles
+- **Height:** 100vh (fixed viewport height)
+
+**Positioning:**
+- Uses \`position: sticky\` with \`top: 0\`
+- Stays at viewport height while content scrolls
+- Consistent height across all content lengths
+
+**Expand Modes:**
+- **hover** (default): Expands on mouse hover
+- **button**: Expands only via toggle button click
+- **both**: Expands on hover OR button click
 
 **Features:**
-- Multiple navigation groups with titles
-- Active state indicators
-- Notification badges
-- User profile section with avatar
+- Multiple navigation groups with titles (visible when expanded)
+- Active state indicators & notification badges
+- **Pin Button:** Locks sidebar in expanded state (visible on hover, right of logo)
+- **Toggle Button:** Circular button on right edge for manual expand/collapse
+  - Sizes: small (24px) or large (32px, default)
+  - Positions: top or bottom with adjustable offset
+  - Custom icon support
+  - Half inside/half outside sidebar
+- User profile section with avatar & click handler
+- Mouse enter/leave events on menu items
 - Smooth transitions
+- Scrollable content area within fixed viewport height
 
 ## Usage
 

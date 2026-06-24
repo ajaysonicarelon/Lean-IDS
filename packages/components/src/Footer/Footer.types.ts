@@ -7,6 +7,8 @@ export interface FooterProps {
   feedbackUrl?: string;
   /** Feedback link text */
   feedbackText?: string;
+  /** Click handler for feedback link */
+  onFeedbackClick?: () => void;
   /** Additional CSS class */
   className?: string;
 }

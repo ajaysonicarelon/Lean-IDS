@@ -21,6 +21,101 @@ const meta: Meta<typeof PageLayout> = {
 
 Three vanilla page templates for building consistent layouts in Lean IDS applications.
 
+## 🚨 CRITICAL: How to Use PageLayout Correctly
+
+**PageLayout MUST be the root component of your application!** It uses fixed positioning for headers and navigation.
+
+### ✅ CORRECT Usage:
+
+\`\`\`tsx
+// In your App.tsx or main layout file
+import { PageLayout } from '@ajaysoni7832/lean-ids-components';
+
+function App() {
+  return (
+    <PageLayout
+      variant="topbar-sidebar"
+      pageTitle="Dashboard"
+      pageDescription="Your dashboard description"
+      breadcrumbs={[
+        { label: 'Home', href: '/', isActive: false },
+        { label: 'Dashboard', isActive: true },
+      ]}
+      topHeader={{
+        appName: 'Product Name',
+        menuItems: [
+          { id: '1', label: 'Help', icon: <HelpIcon />, active: false },
+          { id: '2', label: 'Notifications', icon: <BellIcon />, showIndicator: true },
+        ],
+        userInitials: 'AS',
+      }}
+      sideNav={{
+        groups: [
+          {
+            items: [
+              { id: '1', label: 'Home', icon: <HomeIcon />, active: false },
+              { id: '2', label: 'Dashboard', icon: <DashIcon />, active: true },
+              { id: '3', label: 'Settings', icon: <SettingsIcon />, active: false },
+            ],
+          },
+        ],
+        user: {
+          initials: 'AS',
+          name: 'Ajay Soni',
+          subtitle: 'Employee ID',
+        },
+      }}
+    >
+      {/* Your page content here */}
+      <YourPageContent />
+    </PageLayout>
+  );
+}
+\`\`\`
+
+### ❌ INCORRECT Usage (Causes Overlap):
+
+\`\`\`tsx
+// DON'T DO THIS!
+function App() {
+  return (
+    <div className="app-wrapper">  {/* ❌ Extra wrapper causes issues */}
+      <PageLayout variant="topbar-sidebar" {...props}>
+        <YourPageContent />
+      </PageLayout>
+    </div>
+  );
+}
+
+// DON'T DO THIS EITHER!
+function App() {
+  return (
+    <>
+      <CustomHeader />  {/* ❌ Don't add your own headers */}
+      <PageLayout variant="topbar-sidebar" {...props}>
+        <YourPageContent />
+      </PageLayout>
+    </>
+  );
+}
+\`\`\`
+
+### 📋 Key Points:
+
+1. **PageLayout should be at the root** - Don't wrap it in divs or containers
+2. **No custom CSS on body/html** - PageLayout handles all positioning
+3. **Use children prop** - Pass your page content as children
+4. **Fixed positioning** - TopHeader and SideNav are position: fixed
+5. **Automatic spacing** - Content area has proper margins for headers/nav
+6. **Z-index layering** - Sidebar (101) > TopBar (100) for proper expansion
+
+### 🎯 How It Works (topbar-sidebar variant):
+
+- **SideNavigation**: \`position: fixed\`, \`left: 0\`, \`z-index: 101\`, width: 60px (collapsed) or 236px (pinned)
+- **TopHeader**: \`position: fixed\`, \`top: 0\`, \`left: 60px\` (or 236px when pinned), \`z-index: 100\`
+- **Main content**: \`margin-left: 60px\` (or 236px), \`padding-top: 64px\`
+- **Sidebar expansion**: Hovers over TopBar due to higher z-index
+
 ## Variants
 
 ### 1. Top Bar Only
@@ -49,12 +144,24 @@ When using **both navigations** (topbar-sidebar):
 - ✅ Top bar has NO brand logo (logo is in sidebar)
 - ✅ Sidebar is COLLAPSED (60px wide, icons only)
 - ✅ Product name stays in top bar
+- ✅ Sidebar appears ABOVE top bar when expanding (z-index: 101)
+- ✅ TopBar starts after sidebar (left offset: 60px or 236px)
 
 ## Grid & Spacing
 - **Padding:** 24px horizontal, 16px vertical
 - **Gaps:** 16px between sections
 - **Top Bar:** 78px (dark), 64px (light)
 - **Side Nav:** 236px (expanded), 60px (collapsed)
+
+## Troubleshooting
+
+| Problem | Cause | Solution |
+|---------|-------|----------|
+| Headers overlapping | PageLayout wrapped in container | Make PageLayout the root component |
+| Content hidden | Custom body/html CSS | Remove custom margins/padding from body |
+| Sidebar not expanding | Wrong variant | Use \`variant="topbar-sidebar"\` or \`"sidebar-only"\` |
+| TopBar over sidebar | Old version | Update to v1.5.0+ with z-index fix |
+| Sidebar not hovering over TopBar | Z-index issue | Ensure using v1.5.0+ (sidebar z-index: 101) |
         `,
       },
     },
@@ -151,7 +258,6 @@ export const SideBarOnly: Story = {
       { label: 'Services', isActive: true },
     ],
     sideNav: {
-      expanded: true,
       groups: [
         {
           title: 'MAIN MENU',
@@ -321,6 +427,206 @@ export const CustomContentLayout: Story = {
           <h3 style={{ marginTop: 0 }}>Card 3</h3>
           <p>Content for card 3</p>
         </div>
+      </div>
+    ),
+  },
+};
+
+/**
+ * **NEW FEATURES DEMO** - Test all the new interactive features!
+ * 
+ * **What's New:**
+ * 1. Click handlers on feedback link, avatars, and user profiles
+ * 2. SideNav expand modes: hover, button, or both
+ * 3. Toggle button positioning (top/bottom with offset)
+ * 4. Custom logo support with alignment and padding
+ * 5. Flex-based layout (no fixed positioning)
+ */
+export const InteractiveFeaturesDemo: Story = {
+  args: {
+    variant: 'topbar-sidebar',
+    pageTitle: 'New Features Demo',
+    pageDescription: 'Test all the new interactive features',
+    breadcrumbs: [
+      { label: 'Home', href: '/', isActive: false },
+      { label: 'Features', isActive: true },
+    ],
+    topHeader: {
+      appName: 'Product Name',
+      menuItems: [
+        { id: '1', label: 'Help', icon: <IconPlaceholder />, active: false },
+        { id: '2', label: 'Notifications', icon: <IconPlaceholder />, showIndicator: true },
+      ],
+      userInitials: 'AS',
+      onAvatarClick: () => alert('TopHeader Avatar clicked! 🎉'),
+    },
+    sideNav: {
+      groups: [
+        {
+          title: 'MAIN MENU',
+          items: [
+            { id: '1', label: 'Dashboard', icon: <IconPlaceholder />, active: true },
+            { id: '2', label: 'Analytics', icon: <IconPlaceholder />, active: false },
+            { id: '3', label: 'Reports', icon: <IconPlaceholder />, active: false },
+          ],
+        },
+      ],
+      user: {
+        initials: 'AS',
+        name: 'Ajay Soni',
+        subtitle: 'Employee ID',
+        onClick: () => alert('User Profile clicked! 👤'),
+      },
+      expandMode: 'both', // Try: 'hover', 'button', or 'both'
+      toggleButtonPosition: 'top', // Try: 'top' or 'bottom'
+      toggleButtonOffset: 24, // Aligned with brand logo center
+      toggleButtonSize: 'large', // Try: 'small' or 'large'
+    },
+    footer: {
+      lastUpdated: 'Sept 23, 2024',
+      version: '1.0',
+      feedbackText: 'Send us a Feedback here',
+      feedbackUrl: '#',
+      onFeedbackClick: () => alert('Feedback link clicked! 💬'),
+    },
+    children: (
+      <div style={{ padding: '24px', backgroundColor: 'white', borderRadius: '8px' }}>
+        <h3 style={{ marginTop: 0 }}>🎯 Test the New Features:</h3>
+        <ul>
+          <li><strong>Click the feedback link</strong> in the footer</li>
+          <li><strong>Click the user avatar</strong> in the top header</li>
+          <li><strong>Click the user profile</strong> at the bottom of the sidebar</li>
+          <li><strong>Try the toggle button</strong> on the right edge of sidebar</li>
+          <li><strong>Hover over the sidebar</strong> to expand (if expandMode includes 'hover')</li>
+        </ul>
+        
+        <h4>Current Settings:</h4>
+        <ul>
+          <li>Expand Mode: <code>both</code> (hover + button)</li>
+          <li>Toggle Button Position: <code>top</code></li>
+          <li>Toggle Button Offset: <code>24px</code> (aligned with logo)</li>
+          <li>Toggle Button Size: <code>large</code> (32px)</li>
+        </ul>
+        
+        <p><em>💡 Tip: Use Storybook Controls panel to change these settings!</em></p>
+      </div>
+    ),
+  },
+};
+
+/**
+ * **BUTTON-ONLY EXPAND MODE** - Sidebar expands only via toggle button
+ */
+export const ButtonExpandMode: Story = {
+  args: {
+    variant: 'sidebar-only',
+    pageTitle: 'Button Expand Mode',
+    pageDescription: 'Sidebar expands only when clicking the toggle button',
+    breadcrumbs: [
+      { label: 'Home', href: '/', isActive: false },
+      { label: 'Button Mode', isActive: true },
+    ],
+    sideNav: {
+      groups: [
+        {
+          items: [
+            { id: '1', label: 'Home', icon: <IconPlaceholder />, active: true },
+            { id: '2', label: 'Settings', icon: <IconPlaceholder />, active: false },
+          ],
+        },
+      ],
+      user: {
+        initials: 'AS',
+        name: 'Ajay Soni',
+        subtitle: 'Employee ID',
+      },
+      expandMode: 'button', // Only button, no hover
+      toggleButtonPosition: 'top',
+      toggleButtonOffset: 100,
+    },
+    children: (
+      <div style={{ padding: '24px', backgroundColor: 'white', borderRadius: '8px' }}>
+        <h3>Button-Only Mode</h3>
+        <p>The sidebar will NOT expand on hover. Click the toggle button to expand/collapse.</p>
+      </div>
+    ),
+  },
+};
+
+/**
+ * **SMALL TOGGLE BUTTON** - Smaller button size (24px)
+ */
+export const SmallToggleButton: Story = {
+  args: {
+    variant: 'sidebar-only',
+    pageTitle: 'Small Toggle Button',
+    pageDescription: 'Toggle button with small size (24px)',
+    breadcrumbs: [
+      { label: 'Home', href: '/', isActive: false },
+      { label: 'Small Button', isActive: true },
+    ],
+    sideNav: {
+      groups: [
+        {
+          items: [
+            { id: '1', label: 'Home', icon: <IconPlaceholder />, active: true },
+            { id: '2', label: 'Settings', icon: <IconPlaceholder />, active: false },
+          ],
+        },
+      ],
+      user: {
+        initials: 'AS',
+        name: 'Ajay Soni',
+        subtitle: 'Employee ID',
+      },
+      expandMode: 'both',
+      toggleButtonPosition: 'top',
+      toggleButtonOffset: 24,
+      toggleButtonSize: 'small', // Small button (32px)
+    },
+    children: (
+      <div style={{ padding: '24px', backgroundColor: 'white', borderRadius: '8px' }}>
+        <h3>Small Toggle Button (24px)</h3>
+        <p>The toggle button is smaller and more subtle. Icon size is 16px.</p>
+      </div>
+    ),
+  },
+};
+
+/**
+ * **TOGGLE BUTTON AT BOTTOM** - Button positioned at bottom of sidebar
+ */
+export const ToggleButtonBottom: Story = {
+  args: {
+    variant: 'sidebar-only',
+    pageTitle: 'Toggle Button Bottom',
+    pageDescription: 'Toggle button positioned at the bottom',
+    breadcrumbs: [
+      { label: 'Home', href: '/', isActive: false },
+      { label: 'Bottom Button', isActive: true },
+    ],
+    sideNav: {
+      groups: [
+        {
+          items: [
+            { id: '1', label: 'Home', icon: <IconPlaceholder />, active: true },
+            { id: '2', label: 'Settings', icon: <IconPlaceholder />, active: false },
+          ],
+        },
+      ],
+      user: {
+        initials: 'AS',
+        name: 'Ajay Soni',
+        subtitle: 'Employee ID',
+      },
+      expandMode: 'both',
+      toggleButtonPosition: 'bottom', // Button at bottom
+      toggleButtonOffset: 100, // 100px from bottom
+    },
+    children: (
+      <div style={{ padding: '24px', backgroundColor: 'white', borderRadius: '8px' }}>
+        <h3>Bottom Toggle Button</h3>
+        <p>The toggle button is positioned at the bottom of the sidebar.</p>
       </div>
     ),
   },

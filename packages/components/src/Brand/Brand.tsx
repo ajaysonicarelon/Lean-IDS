@@ -30,6 +30,9 @@ export const Brand: React.FC<BrandProps> = ({
   mode = 'dark',
   className,
   alt,
+  customLogoUrl,
+  logoAlignment = 'left',
+  logoPadding,
 }) => {
   const theme = useTheme();
   
@@ -55,6 +58,9 @@ export const Brand: React.FC<BrandProps> = ({
 
   const BrandSvg = getBrandSvg();
   const defaultAlt = alt || `${brandName.charAt(0).toUpperCase() + brandName.slice(1)} ${variant === 'logo' ? 'Logo' : 'Symbol'}`;
+  
+  // Use custom logo if provided, otherwise use default brand logo
+  const logoSrc = customLogoUrl || BrandSvg;
 
   return (
     <StyledBrand
@@ -62,8 +68,12 @@ export const Brand: React.FC<BrandProps> = ({
       className={className}
       role="img"
       aria-label={defaultAlt}
+      style={{
+        textAlign: logoAlignment,
+        padding: logoPadding,
+      }}
     >
-      <img src={BrandSvg} alt={defaultAlt} />
+      <img src={logoSrc} alt={defaultAlt} />
     </StyledBrand>
   );
 };

@@ -33,6 +33,8 @@ export interface UserProfile {
   subtitle: string;
   /** Avatar image URL (optional) */
   avatarUrl?: string;
+  /** Click handler for user profile */
+  onClick?: () => void;
 }
 
 export interface SideNavigationProps {
@@ -48,4 +50,14 @@ export interface SideNavigationProps {
   onPinChange?: (isPinned: boolean) => void;
   /** Whether sidebar is pinned (locked in expanded state) */
   isPinned?: boolean;
+  /** Expand/collapse mode - 'hover', 'button', or 'both' */
+  expandMode?: 'hover' | 'button' | 'both';
+  /** Position of toggle button - 'top' or 'bottom' */
+  toggleButtonPosition?: 'top' | 'bottom';
+  /** Vertical offset for toggle button (in pixels) */
+  toggleButtonOffset?: number;
+  /** Size of toggle button - 'small' or 'large' */
+  toggleButtonSize?: 'small' | 'large';
+  /** Custom icon for toggle button (collapsed state) */
+  toggleButtonIcon?: React.ReactNode;
 }

@@ -1,22 +1,37 @@
 /**
  * SideNavigation Component
  * 
- * A vertical navigation sidebar that starts collapsed (60px) and expands on hover (236px).
+ * A vertical navigation sidebar with flexible expand/collapse behavior.
  * 
- * Behavior:
- * - Default: Collapsed (60px width) - shows vertical menu items with icons and truncated labels
- * - On Hover: Temporarily expands to 236px - shows horizontal menu items with full labels and group titles
- * - Pin Button: Appears on right of brand logo when expanded (visible on hover)
- * - Pinned: Locks sidebar at 236px width, content adjusts accordingly
+ * **Dimensions:**
+ * - Collapsed: 60px width
+ * - Expanded: 236px width
+ * - Height: 100vh (fixed viewport height)
  * 
- * Features:
- * - Multiple navigation groups with titles (visible in expanded state)
- * - Vertical menu items in collapsed state with icons and labels
- * - Active state indicators
- * - Notification badges
- * - Group dividers
- * - User profile section with 48px avatar
+ * **Positioning:**
+ * - Uses `position: sticky` with `top: 0`
+ * - Stays fixed at viewport height while content scrolls
+ * - Consistent height across all content lengths
+ * 
+ * **Expand Modes:**
+ * - `hover`: Expands on mouse hover (default)
+ * - `button`: Expands only via toggle button click
+ * - `both`: Expands on hover OR button click
+ * 
+ * **Features:**
+ * - Multiple navigation groups with titles (visible when expanded)
+ * - Active state indicators & notification badges
+ * - Pin button: Locks sidebar in expanded state (visible on hover)
+ * - Toggle button: Circular button on right edge for manual expand/collapse
+ *   - Sizes: small (24px) or large (32px)
+ *   - Positions: top or bottom with adjustable offset
+ *   - Custom icon support
+ *   - Half inside/half outside sidebar for easy access
+ * - User profile section with avatar
+ * - Click handlers for user profile
+ * - Mouse enter/leave events on menu items
  * - Smooth transitions
+ * - Scrollable content area within fixed viewport height
  */
 
 import React from 'react';
@@ -34,6 +49,7 @@ import {
   UserSubtitle,
   Divider,
   PinButton,
+  ToggleButton,
 } from './SideNavigation.styles';
 import { Brand } from '../Brand';
 import { MenuItem } from '../MenuItem';
@@ -48,8 +64,14 @@ export const SideNavigation: React.FC<SideNavigationProps> = ({
   children,
   onPinChange,
   isPinned: externalIsPinned,
+  expandMode = 'hover',
+  toggleButtonPosition = 'top',
+  toggleButtonOffset = 24, // Default: align with brand logo center
+  toggleButtonSize = 'large',
+  toggleButtonIcon,
 }) => {
   const [isHovered, setIsHovered] = React.useState(false);
+  const [isExpanded, setIsExpanded] = React.useState(false);
   const [internalIsPinned, setInternalIsPinned] = React.useState(false);
   const [nestedMenuState, setNestedMenuState] = React.useState<{
     items: NestedMenuItem[];
@@ -59,13 +81,17 @@ export const SideNavigation: React.FC<SideNavigationProps> = ({
   // Use external isPinned if provided, otherwise use internal state
   const isPinned = externalIsPinned !== undefined ? externalIsPinned : internalIsPinned;
   
-  // Determine effective state based on hover and pin
-  // Always starts collapsed, expands on hover or when pinned
+  // Determine effective state based on expand mode, hover, button, and pin
   const getEffectiveState = (): SideNavigationState => {
-    if (isPinned || isHovered) {
-      return 'expanded';
+    if (isPinned) return 'expanded';
+    
+    if (expandMode === 'hover') {
+      return isHovered ? 'expanded' : 'collapsed';
+    } else if (expandMode === 'button') {
+      return isExpanded ? 'expanded' : 'collapsed';
+    } else { // 'both'
+      return (isHovered || isExpanded) ? 'expanded' : 'collapsed';
     }
-    return 'collapsed';
   };
   
   const effectiveState = getEffectiveState();
@@ -74,6 +100,10 @@ export const SideNavigation: React.FC<SideNavigationProps> = ({
     const newPinnedState = !isPinned;
     setInternalIsPinned(newPinnedState);
     onPinChange?.(newPinnedState);
+  };
+
+  const handleToggleClick = () => {
+    setIsExpanded(!isExpanded);
   };
 
   // Convert NavigationItem to NestedMenuItem format
@@ -162,14 +192,42 @@ export const SideNavigation: React.FC<SideNavigationProps> = ({
     };
   }, []);
 
+  const shouldEnableHover = expandMode === 'hover' || expandMode === 'both';
+
   return (
     <StyledSideNavigation
       $state={effectiveState}
       className={className}
       aria-label="Side navigation"
-      onMouseEnter={() => !isPinned && setIsHovered(true)}
-      onMouseLeave={() => !isPinned && setIsHovered(false)}
+      onMouseEnter={() => !isPinned && shouldEnableHover && setIsHovered(true)}
+      onMouseLeave={() => !isPinned && shouldEnableHover && setIsHovered(false)}
     >
+      {/* Toggle Button - Positioned absolutely relative to sidebar, outside scrollable content */}
+      {(expandMode === 'button' || expandMode === 'both') && !isPinned && (
+        <ToggleButton
+          $position={toggleButtonPosition}
+          $offset={toggleButtonOffset}
+          $size={toggleButtonSize}
+          onClick={handleToggleClick}
+          aria-label={isExpanded ? 'Collapse sidebar' : 'Expand sidebar'}
+          title={isExpanded ? 'Collapse sidebar' : 'Expand sidebar'}
+        >
+          {toggleButtonIcon ? (
+            toggleButtonIcon
+          ) : (
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              {isExpanded ? (
+                // Chevron left (collapse)
+                <path d="M15 18l-6-6 6-6" />
+              ) : (
+                // Chevron right (expand)
+                <path d="M9 18l6-6-6-6" />
+              )}
+            </svg>
+          )}
+        </ToggleButton>
+      )}
+
       <NavigationContent>
         {/* Brand Logo and Pin Button */}
         <BrandContainer $state={effectiveState}>
@@ -284,12 +342,17 @@ export const SideNavigation: React.FC<SideNavigationProps> = ({
 
       {/* User Profile */}
       {user && (
-        <UserProfileContainer $state={effectiveState}>
+        <UserProfileContainer 
+          $state={effectiveState}
+          onClick={user.onClick}
+          style={{ cursor: user.onClick ? 'pointer' : 'default' }}
+        >
           <Avatar
             size="medium"
             initials={user.initials}
             src={user.avatarUrl}
             alt={user.name}
+            onClick={user.onClick}
           />
           
           {effectiveState === 'expanded' && (

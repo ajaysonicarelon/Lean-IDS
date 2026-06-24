@@ -13,4 +13,10 @@ export interface BrandProps {
   className?: string;
   /** Alt text for accessibility */
   alt?: string;
+  /** Custom logo image URL (overrides default brand logos) */
+  customLogoUrl?: string;
+  /** Logo alignment - left, center, or right */
+  logoAlignment?: 'left' | 'center' | 'right';
+  /** Logo padding (in pixels or CSS value) */
+  logoPadding?: string;
 }

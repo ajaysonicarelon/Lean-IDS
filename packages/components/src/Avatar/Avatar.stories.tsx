@@ -219,3 +219,19 @@ export const SmallSize: Story = {
     initials: 'SM',
   },
 };
+
+export const Clickable: Story = {
+  args: {
+    size: 'medium',
+    color: 'purple',
+    initials: 'AS',
+    onClick: () => alert('Avatar clicked!'),
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Avatar with onClick handler. Notice the pointer cursor on hover.',
+      },
+    },
+  },
+};

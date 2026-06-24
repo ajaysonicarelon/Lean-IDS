@@ -3,31 +3,38 @@ import styled from 'styled-components';
 export const PageLayoutContainer = styled.div`
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
+  height: 100vh; /* Fixed viewport height - no page scrolling */
+  overflow: hidden; /* Prevent page-level scrolling */
   background-color: ${({ theme }) => theme.colors.semantic.background.primary};
   position: relative;
 `;
 
-export const PageLayoutWithTopBar = styled(PageLayoutContainer)`
-  padding-top: 64px; // Top header height
-`;
+// Flex-based layout - no fixed positioning
+export const PageLayoutWithTopBar = styled(PageLayoutContainer)``;
 
 export const PageLayoutWithSideBar = styled(PageLayoutContainer)`
-  margin-left: 60px; // Side nav width (collapsed) - use margin for fixed sidebar
+  flex-direction: row;
 `;
 
 export const PageLayoutWithSideBarPinned = styled(PageLayoutContainer)`
-  margin-left: 236px; // Side nav width (pinned/expanded) - use margin for fixed sidebar
+  flex-direction: row;
 `;
 
 export const PageLayoutWithBoth = styled(PageLayoutContainer)`
-  padding-top: 64px; // Light top header height
-  margin-left: 60px; // Side nav width (collapsed) - use margin for fixed sidebar
+  flex-direction: row;
 `;
 
 export const PageLayoutWithBothPinned = styled(PageLayoutContainer)`
-  padding-top: 64px; // Light top header height
-  margin-left: 236px; // Side nav width (pinned/expanded) - use margin for fixed sidebar
+  flex-direction: row;
+`;
+
+// Wrapper for main content when sidebar is present
+export const MainContentWrapper = styled.div`
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0; // Prevents flex item from overflowing
+  overflow: hidden; // Prevent wrapper from scrolling
 `;
 
 export const PageContent = styled.main`
@@ -36,6 +43,8 @@ export const PageContent = styled.main`
   flex-direction: column;
   padding: ${({ theme }) => theme.spacing[7]} ${({ theme }) => theme.spacing[10]}; // 16px 24px
   gap: ${({ theme }) => theme.spacing[7]}; // 16px
+  overflow-y: auto; // Content area scrolls independently
+  overflow-x: hidden; // Prevent horizontal scroll
 `;
 
 export const BreadcrumbsContainer = styled.nav`

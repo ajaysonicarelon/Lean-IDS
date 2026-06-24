@@ -40,4 +40,8 @@ export interface TopHeaderProps {
   className?: string;
   /** Custom content (overrides default menu items) */
   children?: React.ReactNode;
+  /** Left offset in pixels (used when sidebar is present) */
+  leftOffset?: number;
+  /** Click handler for user avatar */
+  onAvatarClick?: () => void;
 }

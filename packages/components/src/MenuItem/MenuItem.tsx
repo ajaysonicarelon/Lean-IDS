@@ -36,13 +36,19 @@ export const MenuItem: React.FC<MenuItemProps> = ({
   type = 'single',
   label = 'Menu Item',
   onClick,
+  onMouseEnter,
+  onMouseLeave,
   className,
 }) => {
   // Use appropriate icon based on border type
   const icon = border === 'left' ? iconM : iconS;
 
   return (
-    <MenuItemContainer className={className}>
+    <MenuItemContainer 
+      className={className}
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
+    >
       <StyledMenuItem
         $aligned={aligned}
         $border={border}
