@@ -1,0 +1,529 @@
+# Lean IDS - AI Assistant Rules
+# This file provides guidelines for AI coding assistants (Cursor, Windsurf, Cline, etc.)
+
+## 🚨 CRITICAL RULES - MUST FOLLOW
+
+### 1. LIBRARY USAGE - STRICT ENFORCEMENT
+**RULE: Use ONLY Lean IDS components. NO external UI libraries allowed.**
+
+#### ✅ ALLOWED:
+- Import from `@lean-ids/components`
+- Import from `@lean-ids/tokens`
+- Import from `@lean-ids/icons`
+- Use existing libraries already in package.json (React, styled-components, etc.)
+
+#### ❌ FORBIDDEN:
+- Material-UI (MUI)
+- Ant Design
+- Chakra UI
+- Bootstrap
+- Tailwind UI components
+- Shadcn/ui
+- Radix UI
+- Mantine
+- Any other external UI component library
+
+#### 🔄 OVERRIDE RULE:
+If user explicitly says "use only Lean IDS" or "replace with Lean IDS":
+- Remove existing external UI library imports
+- Replace with equivalent Lean IDS components
+- Update package.json to remove unused dependencies
+
+#### 💡 EXAMPLES:
+
+**❌ WRONG:**
+```tsx
+import { Button } from '@mui/material';
+import { Input } from 'antd';
+```
+
+**✅ CORRECT:**
+```tsx
+import { Button, Input } from '@lean-ids/components';
+```
+
+**❌ WRONG (Fresh Project):**
+```tsx
+// User creates new component
+import { Card } from '@chakra-ui/react';
+```
+
+**✅ CORRECT (Fresh Project):**
+```tsx
+// User creates new component
+import { Card } from '@lean-ids/components';
+```
+
+---
+
+## 📦 AVAILABLE LEAN IDS COMPONENTS
+
+### Core Components:
+- Button
+- Input
+- Checkbox
+- Radio
+- Select
+- TextArea
+- Toggle/Switch
+- Avatar
+- Badge
+- Brand
+- Card
+- Chip
+- Divider
+- Icon
+- Link
+- MenuItem
+- Tooltip
+
+### Layout Components:
+- PageLayout (3 variants: topbar-only, sidebar-only, topbar-sidebar)
+- TopHeader
+- SideNavigation
+- Footer
+- PageHeader
+- Breadcrumb
+
+### Form Components:
+- Input
+- TextArea
+- Select
+- Checkbox
+- Radio
+- Toggle
+
+### Navigation Components:
+- MenuItem
+- SideNavigation
+- TopHeader
+- Breadcrumb
+
+### Overlay Components:
+- **Modal** (for popups, dialogs, alerts)
+- **Drawer** (for side panels, filters, forms)
+- Tooltip
+
+---
+
+## 🎨 PAGE TEMPLATES GUIDELINES
+
+### Template 1: Top Bar Only
+```tsx
+<PageLayout
+  variant="topbar-only"
+  pageTitle="Page Title"
+  pageDescription="Optional description"
+  breadcrumbs={[...]}
+  topHeader={{
+    appName: "App Name",
+    showLogo: true,
+    menuItems: [...],
+    userInitials: "AB",
+    userAvatarUrl: "..."
+  }}
+  footer={{
+    lastUpdated: "...",
+    version: "...",
+    feedbackText: "...",
+    feedbackUrl: "..."
+  }}
+>
+  {/* Content */}
+</PageLayout>
+```
+
+### Template 2: Sidebar Only
+```tsx
+<PageLayout
+  variant="sidebar-only"
+  pageTitle="Page Title"
+  breadcrumbs={[...]}
+  sideNav={{
+    groups: [...],
+    user: {...},
+    isPinned: false,
+    onPinChange: (pinned) => {...}
+  }}
+>
+  {/* Content */}
+</PageLayout>
+```
+
+### Template 3: Top Bar + Sidebar
+```tsx
+<PageLayout
+  variant="topbar-sidebar"
+  pageTitle="Page Title"
+  breadcrumbs={[...]}
+  topHeader={{
+    appName: "App Name",
+    menuItems: [...],
+    userInitials: "AB"
+  }}
+  sideNav={{
+    groups: [...],
+    user: {...},
+    isPinned: false,
+    onPinChange: (pinned) => {...}
+  }}
+>
+  {/* Content */}
+</PageLayout>
+```
+
+---
+
+## 🎯 COMPONENT USAGE GUIDELINES
+
+### 1. Buttons
+```tsx
+import { Button } from '@lean-ids/components';
+
+<Button
+  variant="primary" | "secondary" | "tertiary"
+  size="small" | "medium" | "large"
+  disabled={false}
+  onClick={handleClick}
+>
+  Button Text
+</Button>
+```
+
+### 2. Inputs
+```tsx
+import { Input } from '@lean-ids/components';
+
+<Input
+  label="Label"
+  placeholder="Placeholder"
+  value={value}
+  onChange={handleChange}
+  error="Error message"
+  helperText="Helper text"
+/>
+```
+
+### 3. Navigation
+```tsx
+import { SideNavigation } from '@lean-ids/components';
+
+<SideNavigation
+  state="collapsed" // Always collapsed by default
+  groups={[
+    {
+      title: "Group Title",
+      items: [
+        {
+          id: "1",
+          label: "Item",
+          icon: <Icon />,
+          active: true,
+          onClick: () => {}
+        }
+      ]
+    }
+  ]}
+  user={{
+    name: "User Name",
+    subtitle: "user@email.com",
+    initials: "UN",
+    avatarUrl: "..."
+  }}
+  isPinned={false}
+  onPinChange={(pinned) => console.log(pinned)}
+/>
+```
+
+---
+
+## 🎨 STYLING GUIDELINES
+
+### 1. Use Lean IDS Tokens
+```tsx
+import { theme } from '@lean-ids/tokens';
+
+// ✅ CORRECT
+const StyledDiv = styled.div`
+  color: ${({ theme }) => theme.colors.semantic.text.primary};
+  padding: ${({ theme }) => theme.spacing[4]};
+  font-family: ${({ theme }) => theme.fonts.primary};
+`;
+
+// ❌ WRONG
+const StyledDiv = styled.div`
+  color: #333333;
+  padding: 16px;
+  font-family: 'Arial';
+`;
+```
+
+### 2. Theme Provider
+Always wrap app with ThemeProvider:
+```tsx
+import { ThemeProvider } from 'styled-components';
+import { theme } from '@lean-ids/tokens';
+
+<ThemeProvider theme={theme}>
+  <App />
+</ThemeProvider>
+```
+
+### 3. NO GRADIENTS for Large Backgrounds
+**CRITICAL:** Do NOT use gradients for large background areas.
+
+```tsx
+// ❌ WRONG - No gradients for backgrounds
+background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+
+// ✅ CORRECT - Use solid colors
+background: ${({ theme }) => theme.colors.palette.primary[600]};
+```
+
+**Gradients only acceptable for:**
+- Small decorative elements
+- Icons/illustrations
+- NOT for page backgrounds, cards, or large sections
+
+### 4. ALWAYS USE MODAL AND DRAWER COMPONENTS
+**CRITICAL:** NEVER create custom modal or drawer components.
+
+```tsx
+// ✅ CORRECT - Use Lean IDS Modal
+import { Modal } from '@lean-ids/components';
+
+<Modal
+  isOpen={isOpen}
+  onClose={onClose}
+  title="My Dialog"
+>
+  {content}
+</Modal>
+
+// ✅ CORRECT - Use Lean IDS Drawer
+import { Drawer } from '@lean-ids/components';
+
+<Drawer
+  isOpen={isOpen}
+  onClose={onClose}
+  title="Side Panel"
+  position="right"
+>
+  {content}
+</Drawer>
+
+// ❌ WRONG - Custom modal implementation
+const CustomModal = () => (
+  <div className="modal-overlay">...</div>
+);
+
+// ❌ WRONG - External modal library
+import Modal from 'react-modal';
+import { Drawer } from '@mui/material';
+```
+
+**ENFORCEMENT:**
+- For ANY popup/dialog → Use `Modal` from `@lean-ids/components`
+- For ANY side panel → Use `Drawer` from `@lean-ids/components`
+- NEVER create custom overlay components
+- NEVER use external modal/drawer libraries
+
+---
+
+## 📋 SIDEBAR BEHAVIOR RULES
+
+### Current Implementation:
+1. **Default State:** Always collapsed (60px)
+2. **Hover:** Expands temporarily to 236px
+3. **Pin Button:** 
+   - Located on right side of brand logo
+   - Hidden by default, visible on hover
+   - Only shown when sidebar is expanded
+   - When pinned: sidebar locks at 236px, content adjusts
+4. **Content Width:** Auto-adjusts based on pin state
+
+### Code Pattern:
+```tsx
+const [isPinned, setIsPinned] = useState(false);
+
+<PageLayout
+  variant="topbar-sidebar"
+  sideNav={{
+    groups: [...],
+    isPinned: isPinned,
+    onPinChange: (pinned) => setIsPinned(pinned)
+  }}
+>
+```
+
+---
+
+## 🚫 WHAT NOT TO DO
+
+### 1. Don't Install New UI Libraries
+```bash
+# ❌ FORBIDDEN
+npm install @mui/material
+npm install antd
+npm install chakra-ui
+```
+
+### 2. Don't Import External Components
+```tsx
+// ❌ FORBIDDEN
+import { Button } from '@mui/material';
+import { Input } from 'antd';
+import { Card } from '@chakra-ui/react';
+```
+
+### 3. Don't Create Custom Components When Lean IDS Has Them
+```tsx
+// ❌ WRONG - Creating custom button when Lean IDS has one
+const CustomButton = styled.button`...`;
+
+// ✅ CORRECT - Use Lean IDS Button
+import { Button } from '@lean-ids/components';
+```
+
+### 4. Don't Use Inline Styles
+```tsx
+// ❌ WRONG
+<div style={{ color: '#333', padding: '16px' }}>
+
+// ✅ CORRECT
+import styled from 'styled-components';
+const StyledDiv = styled.div`
+  color: ${({ theme }) => theme.colors.semantic.text.primary};
+  padding: ${({ theme }) => theme.spacing[4]};
+`;
+```
+
+---
+
+## ✅ DECISION TREE FOR AI
+
+### When User Asks to Create a Component:
+
+1. **Check:** Does Lean IDS have this component?
+   - YES → Use `@lean-ids/components`
+   - NO → Ask user if they want to create a custom component
+
+2. **Check:** Is this a fresh project?
+   - YES → Use ONLY Lean IDS
+   - NO → Check if external library exists
+
+3. **Check:** Does user say "use only Lean IDS"?
+   - YES → Replace all external components with Lean IDS
+   - NO → Continue with existing setup
+
+4. **Check:** Is external library already in use?
+   - YES → Can continue using it (unless user says otherwise)
+   - NO → Use Lean IDS
+
+### Example Decision Flow:
+
+**Scenario 1: Fresh Project**
+```
+User: "Create a login form"
+AI: Uses Button, Input from @lean-ids/components ✅
+```
+
+**Scenario 2: Existing Project with MUI**
+```
+User: "Add a new button"
+AI: Can use existing MUI Button (already in project) ✅
+```
+
+**Scenario 3: User Wants Lean IDS Only**
+```
+User: "Replace everything with Lean IDS"
+AI: Replaces all MUI/Ant Design with @lean-ids/components ✅
+```
+
+**Scenario 4: Component Doesn't Exist**
+```
+User: "Create a date picker"
+AI: "Lean IDS doesn't have a DatePicker. Would you like me to:
+     1. Create a custom one using Lean IDS styling
+     2. Use an external library (react-datepicker)
+     3. Wait for Lean IDS to add it"
+```
+
+---
+
+## 📚 IMPORT PATTERNS
+
+### Correct Import Structure:
+```tsx
+// Components
+import { 
+  Button, 
+  Input, 
+  Card,
+  PageLayout,
+  SideNavigation 
+} from '@lean-ids/components';
+
+// Tokens
+import { theme } from '@lean-ids/tokens';
+
+// Icons (if available)
+import { IconName } from '@lean-ids/icons';
+
+// Styled Components
+import styled from 'styled-components';
+
+// React
+import React, { useState, useEffect } from 'react';
+```
+
+---
+
+## 🎯 QUALITY CHECKLIST
+
+Before suggesting code, verify:
+- [ ] All UI components are from `@lean-ids/components`
+- [ ] No external UI library imports (unless pre-existing)
+- [ ] Using theme tokens for colors, spacing, fonts
+- [ ] Following PageLayout templates for layouts
+- [ ] Sidebar behavior matches current implementation
+- [ ] TypeScript types are correct
+- [ ] Accessibility attributes included (aria-label, etc.)
+- [ ] Responsive design considered
+
+---
+
+## 📞 WHEN TO ASK USER
+
+Ask user for clarification when:
+1. Component doesn't exist in Lean IDS
+2. Unsure if they want to override existing library
+3. Multiple valid approaches exist
+4. Breaking changes would occur
+
+---
+
+## 🎓 LEARNING RESOURCES
+
+Refer to these files in the project:
+- `/packages/components/src/` - All available components
+- `/packages/tokens/src/` - Design tokens
+- `PAGE_TEMPLATES_UPDATES.md` - Layout guidelines
+- `SIDEBAR_COLLAPSED_ONLY.md` - Sidebar behavior
+- `PIN_BUTTON_FINAL.md` - Pin button implementation
+
+---
+
+## 🚀 SUMMARY
+
+**Golden Rule:** When in doubt, use Lean IDS. If it doesn't exist, ask the user.
+
+**Priority Order:**
+1. Lean IDS components (ALWAYS FIRST)
+2. Existing project libraries (if already present)
+3. Custom components (only if Lean IDS doesn't have it)
+4. External libraries (LAST RESORT, ask user first)
+
+---
+
+**Remember:** The goal is to maintain consistency across the design system by using Lean IDS components exclusively for all new development.

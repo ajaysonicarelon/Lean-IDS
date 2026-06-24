@@ -1,0 +1,109 @@
+# Lean IDS - Windsurf AI Rules
+# Guidelines for Windsurf AI Assistant
+
+## 🚨 CRITICAL: LIBRARY USAGE POLICY
+
+### STRICT RULE: USE ONLY LEAN IDS COMPONENTS
+**NO external UI component libraries allowed in fresh projects.**
+
+Import ONLY from:
+- `@lean-ids/components`
+- `@lean-ids/tokens`
+- `@lean-ids/icons`
+
+### FORBIDDEN IMPORTS:
+❌ Material-UI (@mui/material)
+❌ Ant Design (antd)
+❌ Chakra UI
+❌ Bootstrap
+❌ Tailwind UI
+❌ Shadcn/ui
+❌ Radix UI
+❌ Mantine
+❌ Any other UI library
+
+### EXCEPTION:
+✅ If library already exists in package.json, can continue using
+✅ If user explicitly says "use only Lean IDS", replace all external components
+
+---
+
+## 📦 LEAN IDS COMPONENTS AVAILABLE
+
+Button, Input, Checkbox, Radio, Select, TextArea, Toggle, Avatar, Badge, Brand, Card, Chip, Divider, Icon, Link, MenuItem, Tooltip, PageLayout, TopHeader, SideNavigation, Footer, PageHeader, Breadcrumb
+
+---
+
+## 🎯 PAGE LAYOUT TEMPLATES
+
+### 3 Variants:
+1. **topbar-only** - Top header only
+2. **sidebar-only** - Sidebar only (always collapsed by default)
+3. **topbar-sidebar** - Both top header and sidebar
+
+### Sidebar Behavior:
+- Default: Collapsed (60px)
+- Hover: Expands to 236px temporarily
+- Pin: Locks at 236px, content adjusts
+- Pin button: Right of brand logo, visible on hover only
+
+---
+
+## ✅ CORRECT USAGE
+
+```tsx
+import { Button, Input, PageLayout } from '@lean-ids/components';
+import { theme } from '@lean-ids/tokens';
+```
+
+## ❌ INCORRECT USAGE
+
+```tsx
+import { Button } from '@mui/material'; // FORBIDDEN
+import { Input } from 'antd'; // FORBIDDEN
+```
+
+## 🎨 STYLING RULES
+
+### NO GRADIENTS for Large Backgrounds
+**CRITICAL:** Do NOT use gradients for backgrounds, cards, or large sections.
+
+```tsx
+// ❌ WRONG
+background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+
+// ✅ CORRECT
+background: ${({ theme }) => theme.colors.palette.primary[600]};
+```
+
+### ALWAYS USE MODAL AND DRAWER COMPONENTS
+**CRITICAL:** NEVER create custom modal or drawer components.
+
+```tsx
+// ✅ CORRECT - Use Lean IDS Modal
+import { Modal } from '@lean-ids/components';
+<Modal isOpen={isOpen} onClose={onClose} title="Dialog">{content}</Modal>
+
+// ✅ CORRECT - Use Lean IDS Drawer
+import { Drawer } from '@lean-ids/components';
+<Drawer isOpen={isOpen} onClose={onClose} title="Panel">{content}</Drawer>
+
+// ❌ WRONG - Custom implementation
+const CustomModal = () => <div className="modal">...</div>;
+
+// ❌ WRONG - External library
+import Modal from 'react-modal';
+```
+
+---
+
+## 📋 DECISION LOGIC
+
+1. Fresh project? → Use ONLY Lean IDS
+2. User says "use only Lean IDS"? → Replace all external components
+3. External library exists? → Can use (unless user says otherwise)
+4. Component doesn't exist in Lean IDS? → Ask user
+
+---
+
+For complete guidelines, see `.cursorrules` file.
