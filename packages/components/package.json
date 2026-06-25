@@ -1,6 +1,6 @@
 {
   "name": "@ajaysoni7832/lean-ids-components",
-  "version": "1.6.0",
+  "version": "1.6.1",
   "type": "module",
   "description": "React components for Lean IDS design system",
   "main": "dist/index.js",
