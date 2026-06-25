@@ -60,4 +60,10 @@ export interface SideNavigationProps {
   toggleButtonSize?: 'small' | 'large';
   /** Custom icon for toggle button (collapsed state) */
   toggleButtonIcon?: React.ReactNode;
+  /** Custom logo URL */
+  customLogoUrl?: string;
+  /** Logo alignment - 'left', 'center', or 'right' */
+  logoAlignment?: 'left' | 'center' | 'right';
+  /** Custom padding for logo (CSS padding value) */
+  logoPadding?: string;
 }

@@ -142,6 +142,43 @@ const navigationGroups = [
     },
     onPinChange: {
       description: 'Callback when pin state changes',
+      action: 'pinChanged',
+    },
+    expandMode: {
+      control: 'select',
+      options: ['hover', 'button', 'both'],
+      description: 'How the sidebar expands: hover (default), button only, or both',
+    },
+    toggleButtonPosition: {
+      control: 'select',
+      options: ['top', 'bottom'],
+      description: 'Position of the toggle button',
+    },
+    toggleButtonOffset: {
+      control: 'number',
+      description: 'Offset from the position (in pixels)',
+    },
+    toggleButtonSize: {
+      control: 'select',
+      options: ['small', 'large'],
+      description: 'Size of the toggle button: small (24px) or large (32px)',
+    },
+    toggleButtonIcon: {
+      description: 'Custom icon component for toggle button',
+      control: false,
+    },
+    customLogoUrl: {
+      control: 'text',
+      description: 'URL for custom logo image',
+    },
+    logoAlignment: {
+      control: 'select',
+      options: ['left', 'center', 'right'],
+      description: 'Alignment of the logo',
+    },
+    logoPadding: {
+      control: 'text',
+      description: 'Custom padding for the logo (CSS padding value)',
     },
     className: {
       description: 'Additional CSS class',
@@ -221,11 +258,26 @@ export const Default: Story = {
         story: 'Default collapsed sidebar. Hover to expand temporarily, or click the pin button to lock it in expanded state.',
       },
       story: {
-        inline: false,
-        iframeHeight: 600,
+        inline: true,
+        iframeHeight: 700,
       },
       source: {
-        code: `import { SideNavigation, Icon } from '@lean-ids/components';
+        transform: (_code: string, storyContext: any) => {
+          const { args } = storyContext;
+          const props = [];
+          
+          if (args.isPinned) props.push('isPinned={true}');
+          if (args.expandMode && args.expandMode !== 'hover') props.push(`expandMode="${args.expandMode}"`);
+          if (args.toggleButtonPosition) props.push(`toggleButtonPosition="${args.toggleButtonPosition}"`);
+          if (args.toggleButtonOffset) props.push(`toggleButtonOffset={${args.toggleButtonOffset}}`);
+          if (args.toggleButtonSize && args.toggleButtonSize !== 'large') props.push(`toggleButtonSize="${args.toggleButtonSize}"`);
+          if (args.customLogoUrl) props.push(`customLogoUrl="${args.customLogoUrl}"`);
+          if (args.logoAlignment && args.logoAlignment !== 'left') props.push(`logoAlignment="${args.logoAlignment}"`);
+          if (args.logoPadding) props.push(`logoPadding="${args.logoPadding}"`);
+          
+          const propsString = props.length > 0 ? '\n  ' + props.join('\n  ') + '\n' : '';
+          
+          return `import { SideNavigation, Icon } from '@lean-ids/components';
 
 const navigationGroups = [
   {
@@ -252,7 +304,11 @@ const userProfile = {
   subtitle: 'Employee ID',
 };
 
-<SideNavigation groups={navigationGroups} user={userProfile} />`,
+<SideNavigation 
+  groups={navigationGroups} 
+  user={userProfile}${propsString}
+/>`;
+        },
       },
     },
   },
@@ -829,17 +885,25 @@ export const CompleteExample: Story = {
         ],
       },
     ],
-    user: sampleUser,
+    user: {
+      ...sampleUser,
+      onClick: () => console.log('User profile clicked'),
+    },
+    expandMode: 'both',
+    toggleButtonPosition: 'top',
+    toggleButtonSize: 'large',
+    customLogoUrl: undefined,
+    logoAlignment: 'center',
   },
   parameters: {
     layout: 'fullscreen',
     docs: {
       description: {
-        story: 'Complete example showing all features: multiple groups, active states, notification indicators, and user profile.',
+        story: 'Complete example showing ALL features: multiple groups, active states, notification indicators, user profile with click handler, expand modes (hover + button), toggle button, custom logo support, and mouse events.',
       },
       story: {
-        inline: false,
-        iframeHeight: 600,
+        inline: true,
+        iframeHeight: 700,
       },
       source: {
         code: `import { SideNavigation, Icon } from '@lean-ids/components';
@@ -859,6 +923,8 @@ function App() {
           icon: <Icon name="Home" size="medium" />,
           active: activeId === 'overview',
           onClick: () => setActiveId('overview'),
+          onMouseEnter: () => console.log('Hovered: Overview'),
+          onMouseLeave: () => console.log('Left: Overview'),
         },
         {
           id: 'analytics',
@@ -886,6 +952,14 @@ function App() {
           icon: <Icon name="Visibility" size="medium" />,
           active: activeId === 'media',
           onClick: () => setActiveId('media'),
+        },
+        {
+          id: 'comments',
+          label: 'Comments',
+          icon: <Icon name="Info" size="medium" />,
+          showIndicator: true,
+          active: activeId === 'comments',
+          onClick: () => setActiveId('comments'),
         },
       ],
     },
@@ -915,6 +989,7 @@ function App() {
     name: 'Ajay Soni',
     subtitle: 'Employee ID',
     avatarUrl: 'https://example.com/avatar.jpg', // Optional
+    onClick: () => console.log('User profile clicked!'),
   };
 
   return (
@@ -923,6 +998,19 @@ function App() {
       user={userProfile}
       isPinned={isPinned}
       onPinChange={(pinned) => setIsPinned(pinned)}
+      
+      // Expand mode: 'hover', 'button', or 'both'
+      expandMode="both"
+      
+      // Toggle button configuration
+      toggleButtonPosition="top"
+      toggleButtonSize="large"
+      toggleButtonOffset={24}
+      
+      // Custom logo (optional)
+      customLogoUrl="/path/to/your/logo.png"
+      logoAlignment="center"
+      logoPadding="16px"
     />
   );
 }`,
