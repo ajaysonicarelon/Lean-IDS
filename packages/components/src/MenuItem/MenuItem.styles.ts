@@ -7,12 +7,14 @@ interface StyledMenuItemProps {
   $mode: MenuItemMode;
   $state: MenuItemState;
   $type: MenuItemType;
+  $label?: string; // Label text to determine alignment
 }
 
 export const StyledMenuItem = styled.div<StyledMenuItemProps>`
   display: flex;
-  align-items: center;
+  /* align-items removed - allows text alignment to work independently */
   gap: ${({ theme }) => theme.spacing[4]};
+  width: 100%; /* Constrain width for text truncation */
   overflow: hidden;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -104,14 +106,27 @@ interface MenuItemLabelProps {
   $border: MenuItemBorder;
   $state: MenuItemState;
   $mode: MenuItemMode;
+  $label?: string; // Label text to determine alignment based on length
 }
 
 export const MenuItemLabel = styled.div<MenuItemLabelProps>`
   display: flex;
   flex-direction: column;
   justify-content: center;
-  flex-shrink: 0;
+  flex: 1;
+  min-width: 0; /* Important for text truncation to work */
   white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  
+  /* Dynamic text alignment: center for short labels (≤7 chars), left for longer labels */
+  text-align: ${({ $aligned, $label }) => {
+    const isVertical = $aligned === 'vertical';
+    if (!isVertical) return 'left'; // Horizontal always left-aligned
+    
+    const labelLength = $label?.length || 0;
+    return labelLength > 7 ? 'left' : 'center';
+  }};
 
   ${({ $aligned, $border, $state, $mode, theme }) => {
     const isActive = $state === 'active';

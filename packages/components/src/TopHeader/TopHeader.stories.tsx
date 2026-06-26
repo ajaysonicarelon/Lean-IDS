@@ -109,6 +109,58 @@ const menuItems = [
       options: ['dark', 'light'],
       description: 'Color mode',
     },
+    appName: {
+      control: 'text',
+      description: 'Application name',
+    },
+    showLogo: {
+      control: 'boolean',
+      description: 'Whether to show brand logo',
+    },
+    showAppName: {
+      control: 'boolean',
+      description: 'Whether to show app name',
+    },
+    showDivider: {
+      control: 'boolean',
+      description: 'Whether to show divider between logo and app name',
+    },
+    showMenuItems: {
+      control: 'boolean',
+      description: 'Whether to show menu items',
+    },
+    showAvatar: {
+      control: 'boolean',
+      description: 'Whether to show user avatar',
+    },
+    menuItems: {
+      control: 'object',
+      description: 'Navigation menu items',
+    },
+    userInitials: {
+      control: 'text',
+      description: 'User initials for avatar',
+    },
+    userAvatarUrl: {
+      control: 'text',
+      description: 'User avatar image URL',
+    },
+    customLogoUrl: {
+      control: 'text',
+      description: 'Custom logo URL',
+    },
+    leftOffset: {
+      control: 'number',
+      description: 'Left offset in pixels (used when sidebar is present)',
+    },
+    onAvatarClick: {
+      description: 'Click handler for user avatar',
+      action: 'avatarClicked',
+    },
+    className: {
+      control: 'text',
+      description: 'Additional CSS class',
+    },
   },
 };
 
@@ -146,14 +198,32 @@ export const DarkMode: Story = {
     layout: 'fullscreen',
     docs: {
       description: {
-        story: 'Default dark mode header with all features enabled.',
+        story: 'Default dark mode header with all features enabled. Use controls to customize the header.',
       },
       story: {
-        inline: false,
+        inline: true,
         iframeHeight: 200,
       },
       source: {
-        code: `import { TopHeader, Icon } from '@lean-ids/components';
+        transform: (_code: string, storyContext: any) => {
+          const { args } = storyContext;
+          const props = [];
+          
+          if (args.mode && args.mode !== 'dark') props.push(`mode="${args.mode}"`);
+          if (args.appName) props.push(`appName="${args.appName}"`);
+          if (args.showLogo === false) props.push('showLogo={false}');
+          if (args.showAppName === false) props.push('showAppName={false}');
+          if (args.showDivider === false) props.push('showDivider={false}');
+          if (args.showMenuItems === false) props.push('showMenuItems={false}');
+          if (args.showAvatar === false) props.push('showAvatar={false}');
+          if (args.userInitials) props.push(`userInitials="${args.userInitials}"`);
+          if (args.userAvatarUrl) props.push(`userAvatarUrl="${args.userAvatarUrl}"`);
+          if (args.customLogoUrl) props.push(`customLogoUrl="${args.customLogoUrl}"`);
+          if (args.leftOffset) props.push(`leftOffset={${args.leftOffset}}`);
+          
+          const propsString = props.length > 0 ? '\n  ' + props.join('\n  ') + '\n' : '';
+          
+          return `import { TopHeader, Icon } from '@lean-ids/components';
 
 const menuItems = [
   {
@@ -170,17 +240,9 @@ const menuItems = [
   },
 ];
 
-<TopHeader
-  mode="dark"
-  appName="Product Name"
-  showLogo={true}
-  showAppName={true}
-  showDivider={true}
-  showMenuItems={true}
-  showAvatar={true}
-  menuItems={menuItems}
-  userInitials="AS"
-/>`,
+<TopHeader${propsString}  menuItems={menuItems}
+/>`;
+        },
       },
     },
   },

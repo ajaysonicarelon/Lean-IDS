@@ -19,6 +19,7 @@ export const StyledSideNavigation = styled.nav<StyledSideNavigationProps>`
   overflow: visible; /* Changed from hidden to visible so toggle button can overlap */
   transition: width 0.3s ease, padding 0.3s ease;
   flex-shrink: 0;
+  z-index: 101; /* Above TopHeader (100) so sidebar and toggle button appear on top */
 `;
 
 export const NavigationContent = styled.div`
@@ -27,8 +28,19 @@ export const NavigationContent = styled.div`
   gap: 46px;
   width: 100%;
   flex: 1;
+  overflow: visible; /* No overflow here - logo and user profile stay fixed */
+  min-height: 0; /* Important for flex children to scroll properly */
+`;
+
+export const ScrollableMenuArea = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 46px;
+  width: 100%;
+  flex: 1;
   overflow-y: auto;
-  overflow-x: hidden; /* Prevent content from overflowing horizontally */
+  overflow-x: hidden;
+  min-height: 0; /* Important for flex scrolling */
   
   /* Custom scrollbar styling */
   &::-webkit-scrollbar {
@@ -99,6 +111,10 @@ export const MenuItemsContainer = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
+`;
+
+export const MenuItemWrapper = styled.div`
+  width: 100%; /* Critical for text truncation to work */
 `;
 
 export const UserProfileContainer = styled.div<{ $state: SideNavigationState }>`

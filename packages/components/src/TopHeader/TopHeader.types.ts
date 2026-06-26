@@ -44,4 +44,6 @@ export interface TopHeaderProps {
   leftOffset?: number;
   /** Click handler for user avatar */
   onAvatarClick?: () => void;
+  /** Custom logo URL */
+  customLogoUrl?: string;
 }

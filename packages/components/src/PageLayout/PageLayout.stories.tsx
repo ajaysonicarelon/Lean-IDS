@@ -323,7 +323,7 @@ export const TopBarAndSideBar: Story = {
     ],
     topHeader: {
       appName: 'Product Name',
-      // NO logo in this variant!
+      showLogo: true, // Show brand logo in top header
       menuItems: [
         { id: '1', label: 'Help', icon: <IconPlaceholder />, active: false },
         { id: '2', label: 'Notifications', icon: <IconPlaceholder />, showIndicator: true },
@@ -408,6 +408,7 @@ export const CustomContentLayout: Story = {
         name: 'Ajay Soni',
         subtitle: 'Employee ID',
       },
+      showLabelsWhenCollapsed: true, // Show labels in collapsed state
     },
     children: (
       <div style={{ 
@@ -541,8 +542,8 @@ export const ButtonExpandMode: Story = {
         subtitle: 'Employee ID',
       },
       expandMode: 'button', // Only button, no hover
-      toggleButtonPosition: 'top',
-      toggleButtonOffset: 100,
+      toggleButtonPosition: 'top', // Position at top
+      toggleButtonOffset: 24, // Aligned with brand logo center
     },
     children: (
       <div style={{ padding: '24px', backgroundColor: 'white', borderRadius: '8px' }}>
@@ -593,41 +594,3 @@ export const SmallToggleButton: Story = {
   },
 };
 
-/**
- * **TOGGLE BUTTON AT BOTTOM** - Button positioned at bottom of sidebar
- */
-export const ToggleButtonBottom: Story = {
-  args: {
-    variant: 'sidebar-only',
-    pageTitle: 'Toggle Button Bottom',
-    pageDescription: 'Toggle button positioned at the bottom',
-    breadcrumbs: [
-      { label: 'Home', href: '/', isActive: false },
-      { label: 'Bottom Button', isActive: true },
-    ],
-    sideNav: {
-      groups: [
-        {
-          items: [
-            { id: '1', label: 'Home', icon: <IconPlaceholder />, active: true },
-            { id: '2', label: 'Settings', icon: <IconPlaceholder />, active: false },
-          ],
-        },
-      ],
-      user: {
-        initials: 'AS',
-        name: 'Ajay Soni',
-        subtitle: 'Employee ID',
-      },
-      expandMode: 'both',
-      toggleButtonPosition: 'bottom', // Button at bottom
-      toggleButtonOffset: 100, // 100px from bottom
-    },
-    children: (
-      <div style={{ padding: '24px', backgroundColor: 'white', borderRadius: '8px' }}>
-        <h3>Bottom Toggle Button</h3>
-        <p>The toggle button is positioned at the bottom of the sidebar.</p>
-      </div>
-    ),
-  },
-};

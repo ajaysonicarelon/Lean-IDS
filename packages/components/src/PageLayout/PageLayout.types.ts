@@ -45,6 +45,7 @@ export interface PageLayoutProps {
     userAvatarUrl?: string;
     showLogo?: boolean; // Only for topbar-only variant
     onAvatarClick?: () => void; // Click handler for user avatar
+    customLogoUrl?: string; // Custom logo URL
   };
   
   /**
@@ -60,6 +61,10 @@ export interface PageLayoutProps {
     toggleButtonOffset?: number; // Vertical offset for toggle button (in pixels)
     toggleButtonSize?: 'small' | 'large'; // Size of toggle button
     toggleButtonIcon?: ReactNode; // Custom icon for toggle button
+    customLogoUrl?: string; // Custom logo URL
+    logoAlignment?: 'left' | 'center' | 'right'; // Logo alignment
+    logoPadding?: string; // Custom padding for logo (CSS padding value)
+    showLabelsWhenCollapsed?: boolean; // Whether to show menu item labels when sidebar is collapsed
   };
   
   /**

@@ -40,6 +40,7 @@ export const TopHeader: React.FC<TopHeaderProps> = ({
   userAvatarUrl,
   leftOffset,
   onAvatarClick,
+  customLogoUrl,
   className,
   children,
 }) => {
@@ -56,6 +57,7 @@ export const TopHeader: React.FC<TopHeaderProps> = ({
           <Brand 
             variant="logo"
             mode={mode}
+            customLogoUrl={customLogoUrl}
           />
         )}
         {showDivider && <Divider $mode={mode} />}

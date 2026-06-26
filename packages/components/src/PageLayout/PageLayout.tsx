@@ -97,6 +97,10 @@ export const PageLayout: React.FC<PageLayoutProps> = ({
           toggleButtonOffset={sideNav.toggleButtonOffset}
           toggleButtonSize={sideNav.toggleButtonSize}
           toggleButtonIcon={sideNav.toggleButtonIcon}
+          customLogoUrl={sideNav.customLogoUrl}
+          logoAlignment={sideNav.logoAlignment}
+          logoPadding={sideNav.logoPadding}
+          showLabelsWhenCollapsed={sideNav.showLabelsWhenCollapsed}
         />
       )}
 
@@ -116,6 +120,7 @@ export const PageLayout: React.FC<PageLayoutProps> = ({
               showMenuItems={!!topHeader.menuItems && topHeader.menuItems.length > 0}
               showAvatar={!!topHeader.userInitials}
               onAvatarClick={topHeader.onAvatarClick}
+              customLogoUrl={topHeader.customLogoUrl}
             />
           )}
 
@@ -144,6 +149,7 @@ export const PageLayout: React.FC<PageLayoutProps> = ({
               showMenuItems={!!topHeader.menuItems && topHeader.menuItems.length > 0}
               showAvatar={!!topHeader.userInitials}
               onAvatarClick={topHeader.onAvatarClick}
+              customLogoUrl={topHeader.customLogoUrl}
             />
           )}
 

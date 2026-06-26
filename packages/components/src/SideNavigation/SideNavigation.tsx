@@ -39,10 +39,12 @@ import { SideNavigationProps, SideNavigationState, NavigationItem } from './Side
 import {
   StyledSideNavigation,
   NavigationContent,
+  ScrollableMenuArea,
   BrandContainer,
   NavigationGroups,
   GroupTitle,
   MenuItemsContainer,
+  MenuItemWrapper,
   UserProfileContainer,
   UserInfo,
   UserName,
@@ -69,6 +71,10 @@ export const SideNavigation: React.FC<SideNavigationProps> = ({
   toggleButtonOffset = 24, // Default: align with brand logo center
   toggleButtonSize = 'large',
   toggleButtonIcon,
+  customLogoUrl,
+  logoAlignment = 'left',
+  logoPadding,
+  showLabelsWhenCollapsed = true,
 }) => {
   const [isHovered, setIsHovered] = React.useState(false);
   const [isExpanded, setIsExpanded] = React.useState(false);
@@ -235,6 +241,9 @@ export const SideNavigation: React.FC<SideNavigationProps> = ({
           <Brand 
             variant={effectiveState === 'collapsed' ? 'symbol' : 'logo'}
             mode="dark"
+            customLogoUrl={customLogoUrl}
+            logoAlignment={logoAlignment}
+            logoPadding={logoPadding}
           />
           
           {/* Pin Button - Right side, visible only on hover when expanded */}
@@ -259,76 +268,79 @@ export const SideNavigation: React.FC<SideNavigationProps> = ({
           )}
         </BrandContainer>
 
-        {/* Navigation Groups */}
-        {effectiveState === 'expanded' && (
-          <NavigationGroups>
-            {children || groups.map((group, groupIndex) => (
-              <React.Fragment key={groupIndex}>
-                {group.title && <GroupTitle>{group.title}</GroupTitle>}
-                
-                <MenuItemsContainer>
-                  {group.items.map((item) => (
-                    <div
-                      key={item.id}
-                      onMouseEnter={(e) => handleMenuItemHover(item, e)}
-                      onMouseLeave={handleMenuItemLeave}
-                    >
-                      <MenuItem
-                        border="left"
-                        mode="dark"
-                        state={item.active ? 'active' : 'inactive'}
-                        label={item.label}
-                        iconM={item.icon}
-                        showIcon={true}
-                        showLabel={true}
-                        showIndicator={item.showIndicator}
-                        nestedMenu={!!item.children && item.children.length > 0}
-                        onClick={item.onClick}
-                      />
-                    </div>
-                  ))}
-                </MenuItemsContainer>
+        {/* Scrollable Menu Area - only menu items scroll, logo stays fixed */}
+        <ScrollableMenuArea>
+          {/* Navigation Groups */}
+          {effectiveState === 'expanded' && (
+            <NavigationGroups>
+              {children || groups.map((group, groupIndex) => (
+                <React.Fragment key={groupIndex}>
+                  {group.title && <GroupTitle>{group.title}</GroupTitle>}
+                  
+                  <MenuItemsContainer>
+                    {group.items.map((item) => (
+                      <MenuItemWrapper
+                        key={item.id}
+                        onMouseEnter={(e) => handleMenuItemHover(item, e)}
+                        onMouseLeave={handleMenuItemLeave}
+                      >
+                        <MenuItem
+                          border="left"
+                          mode="dark"
+                          state={item.active ? 'active' : 'inactive'}
+                          label={item.label}
+                          iconM={item.icon}
+                          showIcon={true}
+                          showLabel={true}
+                          showIndicator={item.showIndicator}
+                          nestedMenu={!!item.children && item.children.length > 0}
+                          onClick={item.onClick}
+                        />
+                      </MenuItemWrapper>
+                    ))}
+                  </MenuItemsContainer>
 
-                {groupIndex < groups.length - 1 && <Divider />}
-              </React.Fragment>
-            ))}
-          </NavigationGroups>
-        )}
+                  {groupIndex < groups.length - 1 && <Divider />}
+                </React.Fragment>
+              ))}
+            </NavigationGroups>
+          )}
 
-        {/* Collapsed state - show vertical menu items with icons and labels */}
-        {effectiveState === 'collapsed' && (
-          <NavigationGroups>
-            {groups.map((group, groupIndex) => (
-              <React.Fragment key={groupIndex}>
-                <MenuItemsContainer>
-                  {group.items.map((item) => (
-                    <div
-                      key={item.id}
-                      onMouseEnter={(e) => handleMenuItemHover(item, e)}
-                      onMouseLeave={handleMenuItemLeave}
-                    >
-                      <MenuItem
-                        aligned="vertical"
-                        border="left"
-                        mode="dark"
-                        state={item.active ? 'active' : 'inactive'}
-                        label={item.label}
-                        iconM={item.icon}
-                        showIcon={true}
-                        showLabel={true}
-                        showIndicator={item.showIndicator}
-                        nestedMenu={!!item.children && item.children.length > 0}
-                        onClick={item.onClick}
-                      />
-                    </div>
-                  ))}
-                </MenuItemsContainer>
+          {/* Collapsed state - show vertical menu items with icons and labels */}
+          {effectiveState === 'collapsed' && (
+            <NavigationGroups>
+              {groups.map((group, groupIndex) => (
+                <React.Fragment key={groupIndex}>
+                  <MenuItemsContainer>
+                    {group.items.map((item) => (
+                      <MenuItemWrapper
+                        key={item.id}
+                        onMouseEnter={(e) => handleMenuItemHover(item, e)}
+                        onMouseLeave={handleMenuItemLeave}
+                      >
+                        <MenuItem
+                          aligned="vertical"
+                          border="left"
+                          mode="dark"
+                          state={item.active ? 'active' : 'inactive'}
+                          label={item.label}
+                          iconM={item.icon}
+                          showIcon={true}
+                          showLabel={showLabelsWhenCollapsed}
+                          showIndicator={item.showIndicator}
+                          nestedMenu={!!item.children && item.children.length > 0}
+                          onClick={item.onClick}
+                        />
+                      </MenuItemWrapper>
+                    ))}
+                  </MenuItemsContainer>
 
-                {groupIndex < groups.length - 1 && <Divider />}
-              </React.Fragment>
-            ))}
-          </NavigationGroups>
-        )}
+                  {groupIndex < groups.length - 1 && <Divider />}
+                </React.Fragment>
+              ))}
+            </NavigationGroups>
+          )}
+        </ScrollableMenuArea>
       </NavigationContent>
 
       {/* Nested Menu Overlay */}

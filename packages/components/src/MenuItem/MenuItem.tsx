@@ -55,6 +55,7 @@ export const MenuItem: React.FC<MenuItemProps> = ({
         $mode={mode}
         $state={state}
         $type={type}
+        $label={label}
         onClick={onClick}
         role="button"
         tabIndex={0}
@@ -72,6 +73,7 @@ export const MenuItem: React.FC<MenuItemProps> = ({
             $border={border}
             $state={state}
             $mode={mode}
+            $label={label}
           >
             {label}
           </MenuItemLabel>

@@ -130,11 +130,11 @@ const navigationGroups = [
   argTypes: {
     groups: {
       description: 'Array of navigation groups with menu items',
-      control: 'object',
+      control: false, // Disabled - contains React components (icons) that can't be edited
     },
     user: {
       description: 'User profile information (initials, name, subtitle, avatarUrl)',
-      control: 'object',
+      control: false, // Disabled - contains onClick handlers that can't be edited
     },
     isPinned: {
       control: 'boolean',
@@ -179,6 +179,10 @@ const navigationGroups = [
     logoPadding: {
       control: 'text',
       description: 'Custom padding for the logo (CSS padding value)',
+    },
+    showLabelsWhenCollapsed: {
+      control: 'boolean',
+      description: 'Whether to show menu item labels when sidebar is collapsed',
     },
     className: {
       description: 'Additional CSS class',
@@ -1213,6 +1217,141 @@ function App() {
     />
   );
 }`,
+      },
+    },
+  },
+};
+
+export const CustomLogo: Story = {
+  args: {
+    groups: sampleGroups,
+    user: sampleUser,
+    customLogoUrl: 'https://via.placeholder.com/150x40/0066CC/FFFFFF?text=My+Logo',
+    logoAlignment: 'center',
+    logoPadding: '16px',
+    expandMode: 'both',
+  },
+  parameters: {
+    layout: 'fullscreen',
+    docs: {
+      description: {
+        story: `**Custom Logo Demo** - Shows how to use your own logo instead of the default Carelon/Elevance branding.
+
+**Important Notes:**
+- The same logo is used in **both collapsed and expanded states**
+- The same logo is used in **both dark and light modes**
+- If you need different logos for collapsed/expanded, provide a square icon that works in both states
+- Recommended logo size: 120-150px wide for expanded, works as icon when collapsed
+
+**Try it:** Use the controls below to change the \`customLogoUrl\` to your own logo URL!`,
+      },
+      story: {
+        inline: true,
+        iframeHeight: 700,
+      },
+      source: {
+        code: `import { SideNavigation } from '@lean-ids/components';
+
+const navigationGroups = [
+  {
+    title: 'MAIN MENU',
+    items: [
+      {
+        id: 'home',
+        label: 'Home',
+        icon: <Icon name="Home" size="medium" />,
+        active: true,
+      },
+      {
+        id: 'about',
+        label: 'About',
+        icon: <Icon name="Info" size="medium" />,
+      },
+    ],
+  },
+];
+
+const userProfile = {
+  initials: 'AS',
+  name: 'Ajay Soni',
+  subtitle: 'Employee ID',
+};
+
+<SideNavigation
+  groups={navigationGroups}
+  user={userProfile}
+  
+  // Custom logo configuration
+  customLogoUrl="https://your-domain.com/logo.png"
+  logoAlignment="center"
+  logoPadding="16px"
+  
+  // Works in all states
+  expandMode="both"  // Try collapsing - same logo appears!
+/>`,
+      },
+    },
+  },
+};
+
+export const TextTruncation: Story = {
+  args: {
+    groups: [
+      {
+        title: 'TRUNCATION TEST',
+        items: [
+          {
+            id: '1',
+            label: 'Short',
+            icon: <Icon name="Home" size="medium" />,
+            active: false,
+          },
+          {
+            id: '2',
+            label: 'This is a very long menu item name that should truncate',
+            icon: <Icon name="Dashboard" size="medium" />,
+            active: true,
+          },
+          {
+            id: '3',
+            label: 'Another extremely long menu item label to test truncation behavior',
+            icon: <Icon name="Settings" size="medium" />,
+            active: false,
+          },
+          {
+            id: '4',
+            label: 'SuperLongMenuItemNameWithoutSpacesThatShouldAlsoTruncateProperly',
+            icon: <Icon name="Info" size="medium" />,
+            active: false,
+          },
+        ],
+      },
+    ],
+    user: sampleUser,
+    expandMode: 'both',
+    showLabelsWhenCollapsed: true,
+  },
+  parameters: {
+    layout: 'fullscreen',
+    docs: {
+      description: {
+        story: `**Text Truncation Test** - Tests that long menu item labels truncate properly with ellipsis (...) in both expanded and collapsed states.
+
+**What to Test:**
+1. **Expanded State (236px):** Long labels should truncate with "..." at the end
+2. **Collapsed State (60px):** Labels should truncate even more aggressively
+3. **Hover to Expand:** Watch labels expand/truncate smoothly
+4. **Toggle Button:** Click to pin/unpin and see truncation adjust
+
+**Expected Behavior:**
+- ✅ Text never overflows the container
+- ✅ Ellipsis (...) appears when text is cut off
+- ✅ No horizontal scrolling
+- ✅ Works with spaces and without spaces`,
+      },
+      story: {
+        inline: true,
+        iframeHeight: 700,
       },
     },
   },

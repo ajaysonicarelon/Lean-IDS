@@ -66,4 +66,6 @@ export interface SideNavigationProps {
   logoAlignment?: 'left' | 'center' | 'right';
   /** Custom padding for logo (CSS padding value) */
   logoPadding?: string;
+  /** Whether to show menu item labels when sidebar is collapsed */
+  showLabelsWhenCollapsed?: boolean;
 }
