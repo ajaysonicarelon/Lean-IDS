@@ -424,7 +424,7 @@ function LoginForm() {
 
 ### **Example 2: Dashboard Page**
 ```tsx
-import { PageLayout, Card, Button } from '@lean-ids/components';
+import { PageLayout, MetricCard, Button } from '@lean-ids/components';
 
 function Dashboard() {
   return (
@@ -434,13 +434,313 @@ function Dashboard() {
       topHeader={{ appName: "My App", userInitials: "JD" }}
       sideNav={{ groups: [...], user: {...} }}
     >
-      <Card>
-        <h2>Welcome to Dashboard</h2>
-        <Button variant="primary">Get Started</Button>
-      </Card>
+      <MetricCard
+        metricName="Total Users"
+        value="1,234"
+        showChange={true}
+        changeValue="+12%"
+        changeType="positive"
+      />
+      <Button variant="primary">Get Started</Button>
     </PageLayout>
   );
 }
+```
+
+---
+
+## 📚 COMPLETE COMPONENT API REFERENCE
+
+**⚠️ CRITICAL:** Always use the ACTUAL component APIs documented below. Do NOT guess or use simplified versions.
+
+### **Core UI Components**
+
+#### **Button** ✅
+```tsx
+// ✅ CORRECT - Use children + leadingIcon/trailingIcon
+import { Button } from '@lean-ids/components';
+import { Add } from '@mui/icons-material';
+
+<Button variant="primary" size="medium">
+  Click Me
+</Button>
+
+<Button leadingIcon={<Add />} variant="secondary">
+  Add Item
+</Button>
+
+// ❌ WRONG - These props don't exist!
+<Button label="Click Me" />           // NO 'label' prop
+<Button icon={<Add />} />             // NO 'icon' prop
+```
+
+#### **InputField** ✅
+```tsx
+// ✅ CORRECT
+import { InputField } from '@lean-ids/components';
+
+<InputField
+  label="Email Address"
+  type="email"
+  placeholder="Enter your email"
+  helperText="We'll never share your email"
+  size="default"
+/>
+```
+
+#### **Select** ✅
+```tsx
+// ✅ CORRECT
+import { Select } from '@lean-ids/components';
+
+<Select
+  label="Country"
+  placeholder="Select a country"
+  options={[
+    { value: 'us', label: 'United States' },
+    { value: 'uk', label: 'United Kingdom' }
+  ]}
+  onChange={(value) => console.log(value)}
+/>
+```
+
+#### **Checkbox** ✅
+```tsx
+// ✅ CORRECT
+import { Checkbox } from '@lean-ids/components';
+
+<Checkbox
+  label="Accept terms and conditions"
+  checked={accepted}
+  onChange={(e) => setAccepted(e.target.checked)}
+/>
+```
+
+#### **RadioButton** ✅
+```tsx
+// ✅ CORRECT
+import { RadioButton } from '@lean-ids/components';
+
+<RadioButton
+  label="Option 1"
+  name="options"
+  value="option1"
+  checked={selected === 'option1'}
+  onChange={(e) => setSelected(e.target.value)}
+/>
+```
+
+#### **Toggle** ✅
+```tsx
+// ✅ CORRECT
+import { Toggle } from '@lean-ids/components';
+
+<Toggle
+  label="Enable notifications"
+  checked={enabled}
+  onChange={(e) => setEnabled(e.target.checked)}
+/>
+```
+
+#### **Chip** ✅
+```tsx
+// ✅ CORRECT - Use label prop, NOT children
+import { Chip } from '@lean-ids/components';
+import { Close } from '@mui/icons-material';
+
+<Chip
+  label="Active"
+  type="success"
+  size="small"
+/>
+
+<Chip
+  label="Tag"
+  trailingIcon={<Close />}
+  onTrailingIconClick={() => console.log('Remove')}
+/>
+
+// ❌ WRONG
+<Chip>Active</Chip>  // NO children! Use 'label' prop
+```
+
+#### **Avatar** ✅
+```tsx
+// ✅ CORRECT
+import { Avatar } from '@lean-ids/components';
+
+// With image
+<Avatar src="/user.jpg" alt="John Doe" size="medium" />
+
+// With initials
+<Avatar initials="JD" color="purple" size="large" />
+```
+
+#### **Badge** ✅
+```tsx
+// ✅ CORRECT
+import { Badge } from '@lean-ids/components';
+import { Warning } from '@mui/icons-material';
+
+<Badge
+  label="Active"
+  type="success"
+  style="default"
+/>
+
+<Badge
+  label="Warning"
+  type="warning"
+  leadingIcon={<Warning />}
+  showLeadingIcon={true}
+/>
+```
+
+#### **Textarea** ✅
+```tsx
+// ✅ CORRECT
+import { Textarea } from '@lean-ids/components';
+
+<Textarea
+  label="Description"
+  placeholder="Enter description..."
+  rows={4}
+  helperText="Max 500 characters"
+  fullWidth={true}
+/>
+```
+
+### **Data Display Components**
+
+#### **MetricCard** ✅
+```tsx
+// ✅ CORRECT - Use metricName, NOT label
+import { MetricCard } from '@lean-ids/components';
+
+<MetricCard
+  variant="basic"
+  metricName="Total Users"
+  value="1,234"
+  showChange={true}
+  changeValue="+12%"
+  changeType="positive"
+/>
+
+// ❌ WRONG
+<MetricCard label="Total Users" value="1,234" />  // NO 'label' prop!
+```
+
+#### **Table** ✅
+```tsx
+// ✅ CORRECT
+import { Table } from '@lean-ids/components';
+
+<Table
+  columns={[
+    { id: 'name', label: 'Name', accessor: 'name' },
+    { id: 'email', label: 'Email', accessor: 'email' }
+  ]}
+  data={employees}
+  selectable={true}
+  paginated={true}
+/>
+```
+
+#### **Pagination** ✅
+```tsx
+// ✅ CORRECT
+import { Pagination } from '@lean-ids/components';
+
+<Pagination
+  currentPage={1}
+  totalPages={10}
+  totalItems={100}
+  itemsPerPage={10}
+  onPageChange={(page) => setCurrentPage(page)}
+  onItemsPerPageChange={(items) => setItemsPerPage(items)}
+/>
+```
+
+### **Overlay Components**
+
+#### **Modal** ✅
+```tsx
+// ✅ CORRECT
+import { Modal } from '@lean-ids/components';
+
+<Modal
+  isOpen={isOpen}
+  onClose={() => setIsOpen(false)}
+  title="Confirm Action"
+  description="Are you sure?"
+  showSubmit={true}
+  submitLabel="Confirm"
+  onSubmit={handleSubmit}
+>
+  <p>Modal content</p>
+</Modal>
+```
+
+#### **Drawer** ✅
+```tsx
+// ✅ CORRECT
+import { Drawer } from '@lean-ids/components';
+
+<Drawer
+  isOpen={isOpen}
+  onClose={() => setIsOpen(false)}
+  title="Settings"
+  position="right"
+  width={400}
+>
+  <div>Drawer content</div>
+</Drawer>
+```
+
+#### **Toast** ✅
+```tsx
+// ✅ CORRECT
+import { Toast } from '@lean-ids/components';
+
+<Toast
+  type="success"
+  text="Changes saved successfully"
+  showLeadIcon={true}
+  action={true}
+  buttonText="Undo"
+  onActionClick={handleUndo}
+/>
+```
+
+#### **AlertBanner** ✅
+```tsx
+// ✅ CORRECT
+import { AlertBanner } from '@lean-ids/components';
+
+<AlertBanner
+  type="warning"
+  text="Your session will expire in 5 minutes"
+  showLeadingIcon={true}
+  action={true}
+  buttonText="Extend Session"
+  onActionClick={handleExtend}
+/>
+```
+
+#### **Tooltip** ✅
+```tsx
+// ✅ CORRECT
+import { Tooltip } from '@lean-ids/components';
+
+<Tooltip
+  visible={true}
+  heading="Tooltip Title"
+  description="Additional information"
+  x={100}
+  y={200}
+  variant="pointer"
+  pointerPosition="top"
+/>
 ```
 
 ---

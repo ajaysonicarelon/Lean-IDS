@@ -47,7 +47,7 @@ export const Footer: React.FC<FooterProps> = ({
       </Version>
       
       <FeedbackSection>
-        Facing any issues?{' '}
+        <span>Facing any issues?</span>
         <FeedbackLink 
           href={feedbackUrl} 
           target="_blank" 

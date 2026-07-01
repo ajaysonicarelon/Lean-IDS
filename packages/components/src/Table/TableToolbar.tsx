@@ -9,7 +9,7 @@
  * - Settings button
  */
 
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Icon } from '../Icon';
 import { InputField } from '../InputField';

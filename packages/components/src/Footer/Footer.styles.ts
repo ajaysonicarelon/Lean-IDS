@@ -40,6 +40,7 @@ export const FeedbackSection = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+  gap: 4px;
   font-family: 'Elevance Sans', sans-serif;
   font-size: 14px;
   font-style: normal;

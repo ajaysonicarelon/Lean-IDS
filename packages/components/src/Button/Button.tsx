@@ -39,6 +39,27 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     },
     ref
   ) => {
+    // Runtime prop validation warnings for common mistakes
+    if (process.env.NODE_ENV !== 'production') {
+      const unknownProps = restProps as any;
+      
+      if (unknownProps.label !== undefined) {
+        console.warn(
+          '[Lean IDS Button] Warning: "label" prop is not supported. Use "children" instead.\n' +
+          'Example: <Button>Click Me</Button>\n' +
+          'See: Button component documentation'
+        );
+      }
+      
+      if (unknownProps.icon !== undefined) {
+        console.warn(
+          '[Lean IDS Button] Warning: "icon" prop is not supported. Use "leadingIcon" or "trailingIcon" instead.\n' +
+          'Example: <Button leadingIcon={<Icon name="Add" />}>Add Item</Button>\n' +
+          'See: Button component documentation'
+        );
+      }
+    }
+    
     return (
       <StyledButton
         ref={ref}

@@ -288,7 +288,21 @@ export const MetricCard: React.FC<MetricCardProps> = ({
   onDropdownChange,
   metrics = [],
   className,
+  ...restProps
 }) => {
+  // Runtime prop validation warnings for common mistakes
+  if (process.env.NODE_ENV !== 'production') {
+    const unknownProps = restProps as any;
+    
+    if (unknownProps.label !== undefined) {
+      console.warn(
+        '[Lean IDS MetricCard] Warning: "label" prop is not supported. Use "metricName" instead.\n' +
+        'Example: <MetricCard metricName="Total Users" value="1,234" />\n' +
+        'See: MetricCard component documentation'
+      );
+    }
+  }
+  
   const isFilled = variant === 'filled';
   const isSet = variant === 'set';
 
