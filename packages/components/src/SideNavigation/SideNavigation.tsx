@@ -72,6 +72,7 @@ export const SideNavigation: React.FC<SideNavigationProps> = ({
   toggleButtonSize = 'large',
   toggleButtonIcon,
   customLogoUrl,
+  customSymbolUrl,
   logoAlignment = 'left',
   logoPadding,
   showLabelsWhenCollapsed = true,
@@ -242,6 +243,7 @@ export const SideNavigation: React.FC<SideNavigationProps> = ({
             variant={effectiveState === 'collapsed' ? 'symbol' : 'logo'}
             mode="dark"
             customLogoUrl={customLogoUrl}
+            customSymbolUrl={customSymbolUrl}
             logoAlignment={logoAlignment}
             logoPadding={logoPadding}
           />

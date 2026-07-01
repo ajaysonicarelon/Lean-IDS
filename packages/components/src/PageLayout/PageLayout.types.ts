@@ -61,7 +61,8 @@ export interface PageLayoutProps {
     toggleButtonOffset?: number; // Vertical offset for toggle button (in pixels)
     toggleButtonSize?: 'small' | 'large'; // Size of toggle button
     toggleButtonIcon?: ReactNode; // Custom icon for toggle button
-    customLogoUrl?: string; // Custom logo URL
+    customLogoUrl?: string; // Custom logo URL for expanded state (full logo)
+    customSymbolUrl?: string; // Custom symbol URL for collapsed state (icon only)
     logoAlignment?: 'left' | 'center' | 'right'; // Logo alignment
     logoPadding?: string; // Custom padding for logo (CSS padding value)
     showLabelsWhenCollapsed?: boolean; // Whether to show menu item labels when sidebar is collapsed

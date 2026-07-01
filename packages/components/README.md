@@ -5,6 +5,58 @@ A comprehensive React component library for building consistent, accessible user
 [![npm version](https://img.shields.io/npm/v/@ajaysoni7832/lean-ids-components.svg)](https://www.npmjs.com/package/@ajaysoni7832/lean-ids-components)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
+---
+
+## 🤖 AI Assistant Setup (CRITICAL - READ FIRST!)
+
+**⚠️ If you're using AI coding assistants (Cursor, Windsurf, GitHub Copilot, etc.), you MUST set up AI guidelines first!**
+
+### **Why This Matters:**
+Without proper setup, AI assistants will suggest external UI libraries (Material-UI, Ant Design, etc.) instead of Lean IDS components, breaking design system consistency.
+
+### **Quick Setup (Choose One):**
+
+#### **Option 1: Automatic Setup (Recommended)**
+After installing the package, copy the AI guidelines to your project root:
+
+```bash
+# Copy AI guidelines from node_modules
+cp node_modules/@ajaysoni7832/lean-ids-components/.cursorrules .
+cp node_modules/@ajaysoni7832/lean-ids-components/.windsurfrules .
+cp node_modules/@ajaysoni7832/lean-ids-components/AI_GUIDELINES.md .
+cp node_modules/@ajaysoni7832/lean-ids-components/AI_READING_FLOW.md .
+```
+
+#### **Option 2: Manual Download**
+Download these files from the repository and place them in your project root:
+- [AI_READING_FLOW.md](https://github.com/ajaysonicarelon/Lean-IDS/blob/main/AI_READING_FLOW.md) - Start here
+- [.cursorrules](https://github.com/ajaysonicarelon/Lean-IDS/blob/main/.cursorrules) - For Cursor IDE
+- [.windsurfrules](https://github.com/ajaysonicarelon/Lean-IDS/blob/main/.windsurfrules) - For Windsurf IDE
+- [AI_GUIDELINES.md](https://github.com/ajaysonicarelon/Lean-IDS/blob/main/AI_GUIDELINES.md) - Universal guidelines
+
+#### **Option 3: Quick Prompt**
+If you can't set up files, tell your AI assistant:
+
+> "Use ONLY components from @ajaysoni7832/lean-ids-components. Do NOT use Material-UI, Ant Design, Chakra UI, or any other external UI library. Import all components from @ajaysoni7832/lean-ids-components and use theme tokens from @ajaysoni7832/lean-ids-tokens. Never create custom modal or drawer components - always use Modal and Drawer from Lean IDS."
+
+### **Verification:**
+After setup, test by asking your AI:
+```
+"Create a button component"
+```
+
+**Expected Response:**
+```tsx
+import { Button } from '@ajaysoni7832/lean-ids-components';
+```
+
+**Wrong Response (means setup failed):**
+```tsx
+import { Button } from '@mui/material'; // ❌ This means AI didn't read guidelines
+```
+
+---
+
 ## 📦 Installation
 
 ```bash

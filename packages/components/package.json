@@ -7,13 +7,21 @@
   "module": "dist/index.esm.js",
   "types": "dist/index.d.ts",
   "files": [
-    "dist"
+    "dist",
+    ".cursorrules",
+    ".windsurfrules",
+    "AI_GUIDELINES.md",
+    "AI_GUIDELINES_README.md",
+    "AI_READING_FLOW.md",
+    "AI_SETUP_COMPLETE.md",
+    "scripts/postinstall.js"
   ],
   "scripts": {
     "build": "rollup -c",
     "dev": "rollup -c -w",
     "storybook": "storybook dev -p 6006 --config-dir ../../.storybook",
-    "build-storybook": "storybook build -o ../../storybook-static --config-dir ../../.storybook"
+    "build-storybook": "storybook build -o ../../storybook-static --config-dir ../../.storybook",
+    "postinstall": "node scripts/postinstall.js || true"
   },
   "keywords": [
     "react",

@@ -171,6 +171,10 @@ const navigationGroups = [
       control: 'text',
       description: 'URL for custom logo image',
     },
+    customSymbolUrl: {
+      control: 'text',
+      description: 'Custom symbol image URL for collapsed state (icon only)',
+    },
     logoAlignment: {
       control: 'select',
       options: ['left', 'center', 'right'],

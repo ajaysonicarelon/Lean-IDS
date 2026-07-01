@@ -31,6 +31,7 @@ export const Brand: React.FC<BrandProps> = ({
   className,
   alt,
   customLogoUrl,
+  customSymbolUrl,
   logoAlignment = 'left',
   logoPadding,
 }) => {
@@ -59,8 +60,11 @@ export const Brand: React.FC<BrandProps> = ({
   const BrandSvg = getBrandSvg();
   const defaultAlt = alt || `${brandName.charAt(0).toUpperCase() + brandName.slice(1)} ${variant === 'logo' ? 'Logo' : 'Symbol'}`;
   
-  // Use custom logo if provided, otherwise use default brand logo
-  const logoSrc = customLogoUrl || BrandSvg;
+  // Use custom logo/symbol based on variant
+  // Priority: customSymbolUrl (for symbol) > customLogoUrl > default BrandSvg
+  const logoSrc = variant === 'symbol' 
+    ? (customSymbolUrl || customLogoUrl || BrandSvg)
+    : (customLogoUrl || BrandSvg);
 
   return (
     <StyledBrand

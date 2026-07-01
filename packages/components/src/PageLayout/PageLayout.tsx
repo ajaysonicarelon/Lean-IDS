@@ -98,6 +98,7 @@ export const PageLayout: React.FC<PageLayoutProps> = ({
           toggleButtonSize={sideNav.toggleButtonSize}
           toggleButtonIcon={sideNav.toggleButtonIcon}
           customLogoUrl={sideNav.customLogoUrl}
+          customSymbolUrl={sideNav.customSymbolUrl}
           logoAlignment={sideNav.logoAlignment}
           logoPadding={sideNav.logoPadding}
           showLabelsWhenCollapsed={sideNav.showLabelsWhenCollapsed}
