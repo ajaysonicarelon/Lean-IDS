@@ -9,7 +9,7 @@ Complete guide for developers on how to use the Table component with API data.
 ### **1. Basic Import**
 
 ```tsx
-import { Table, TableColumn } from '@lean-ids/components';
+import { Table, TableColumn } from '@ajaysoni7832/lean-ids-components';
 ```
 
 ### **2. Define Your Columns**
@@ -60,7 +60,7 @@ useEffect(() => {
 
 ```tsx
 import React, { useState, useEffect } from 'react';
-import { Table, TableColumn } from '@lean-ids/components';
+import { Table, TableColumn } from '@ajaysoni7832/lean-ids-components';
 
 const UsersTable = () => {
   const [users, setUsers] = useState([]);
@@ -513,7 +513,7 @@ const API_KEY = environment.apiKey;
 
 ```tsx
 import React, { useState, useEffect } from 'react';
-import { Table, TableColumn } from '@lean-ids/components';
+import { Table, TableColumn } from '@ajaysoni7832/lean-ids-components';
 
 interface User {
   id: string;

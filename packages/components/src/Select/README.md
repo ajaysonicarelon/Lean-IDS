@@ -29,7 +29,7 @@ The Select component is a reusable dropdown with support for single/multiple sel
 ### **Basic Usage:**
 
 ```tsx
-import { Select } from '@lean-ids/components';
+import { Select } from '@ajaysoni7832/lean-ids-components';
 import { useState } from 'react';
 
 function MyComponent() {
@@ -272,7 +272,7 @@ const CustomSelect = () => (
 ### **✅ CORRECT - Use Lean IDS Select:**
 ```tsx
 // DO THIS
-import { Select } from '@lean-ids/components';
+import { Select } from '@ajaysoni7832/lean-ids-components';
 
 <Select
   label="Country"
@@ -367,7 +367,7 @@ For questions or issues:
 
 **The Select component is the ONLY way to create dropdowns in Lean IDS applications.**
 
-- Import from `@lean-ids/components`
+- Import from `@ajaysoni7832/lean-ids-components`
 - Use for all dropdown selection needs
 - Do NOT create custom select components
 - Follow the examples and best practices

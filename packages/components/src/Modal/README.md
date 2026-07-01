@@ -30,7 +30,7 @@ The Modal component is a reusable dialog overlay that appears centered on the sc
 ### **Basic Usage:**
 
 ```tsx
-import { Modal } from '@lean-ids/components';
+import { Modal } from '@ajaysoni7832/lean-ids-components';
 import { useState } from 'react';
 
 function MyComponent() {
@@ -266,7 +266,7 @@ const CustomModal = () => (
 ### **✅ CORRECT - Use Lean IDS Modal:**
 ```tsx
 // DO THIS
-import { Modal } from '@lean-ids/components';
+import { Modal } from '@ajaysoni7832/lean-ids-components';
 
 <Modal
   isOpen={isOpen}
@@ -282,7 +282,7 @@ import { Modal } from '@lean-ids/components';
 ## 📊 Component Hierarchy
 
 ```
-Modal (from @lean-ids/components)
+Modal (from @ajaysoni7832/lean-ids-components)
 ├── Overlay (backdrop)
 └── ModalContainer
     ├── Header
@@ -370,7 +370,7 @@ For questions or issues:
 
 **The Modal component is the ONLY way to create popups in Lean IDS applications.**
 
-- Import from `@lean-ids/components`
+- Import from `@ajaysoni7832/lean-ids-components`
 - Use for all dialog/popup needs
 - Do NOT create custom modal components
 - Follow the examples and best practices

@@ -64,4 +64,7 @@ export interface TableCellProps {
   // Locked column feature
   locked?: boolean;
   leftOffset?: number;
+  
+  // Custom content
+  children?: React.ReactNode;
 }

@@ -5,6 +5,16 @@ A comprehensive React component library for building consistent, accessible user
 [![npm version](https://img.shields.io/npm/v/@ajaysoni7832/lean-ids-components.svg)](https://www.npmjs.com/package/@ajaysoni7832/lean-ids-components)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
+## 🎉 What's New in v1.7.0
+
+- 🚀 **Framework Support** - Next.js, Vite, CRA, Remix fully supported
+- 📊 **Table Enhancements** - Select all, global search, sorting feedback
+- 📦 **Breaking Change** - styled-components is now a peer dependency
+- 📚 **Complete Documentation** - 30 component READMEs, 11 guides
+- 🤖 **AI Ready** - Full AI assistant support
+
+📖 **[Read Full Release Notes](./RELEASE_NOTES.md)** | **[Migration Guide](./MIGRATION_GUIDE.md)**
+
 ---
 
 ## 🤖 AI Assistant Setup (CRITICAL - READ FIRST!)
@@ -63,19 +73,33 @@ import { Button } from '@mui/material'; // ❌ This means AI didn't read guideli
 npm install @ajaysoni7832/lean-ids-components @ajaysoni7832/lean-ids-tokens styled-components
 ```
 
+**Note:** `styled-components` is a peer dependency. You must install it separately.
+
+### Framework-Specific Setup
+
+Lean IDS works with all modern React frameworks:
+- ✅ **Next.js** (App Router & Pages Router)
+- ✅ **Vite**
+- ✅ **Create React App**
+- ✅ **Remix**
+
+📖 **See [FRAMEWORK_SUPPORT.md](./FRAMEWORK_SUPPORT.md) for detailed setup guides.**
+
 ## 🚀 Quick Start
 
 ### 1. Wrap your app with ThemeProvider
 
+Lean IDS provides **two brand themes**: `carelonTheme` (default) and `elevanceTheme`.
+
 ```tsx
 import React from 'react';
 import { ThemeProvider } from 'styled-components';
-import { theme } from '@ajaysoni7832/lean-ids-tokens';
+import { carelonTheme, elevanceTheme } from '@ajaysoni7832/lean-ids-tokens';
 import { GlobalStyles } from '@ajaysoni7832/lean-ids-components';
 
 function App() {
   return (
-    <ThemeProvider theme={theme}>
+    <ThemeProvider theme={carelonTheme}> {/* or elevanceTheme */}
       <GlobalStyles />
       {/* Your app content */}
     </ThemeProvider>
@@ -122,7 +146,19 @@ function MyComponent() {
 - **BreadcrumbSeparator** - Separator
 - **Breadcrumbs** - Complete navigation
 
-### Table Components
+### Data Display Components
+- **Table** - Full-featured data table with:
+  - Row selection (single/multiple)
+  - Sortable columns with visual indicators
+  - Pagination
+  - Column visibility controls
+  - Column reordering
+  - Locked columns (left/right)
+  - Global search
+  - Row actions
+  - Settings panel
+  - Toolbar with title and description
+  - Responsive design
 - **TableHeader** - Sortable column headers
 - **TableCell** - Flexible cells
 

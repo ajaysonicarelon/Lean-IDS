@@ -73,6 +73,7 @@ export const TableCell: React.FC<TableCellProps> = ({
   isFirstColumn = false,
   locked = false,
   leftOffset = 0,
+  children,
 }) => {
   const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (onCheckChange) {
@@ -181,6 +182,9 @@ export const TableCell: React.FC<TableCellProps> = ({
             )}
           </ActionsWrapper>
         )}
+
+        {/* Render custom children if provided */}
+        {children}
       </CellContent>
     </StyledTableCell>
   );

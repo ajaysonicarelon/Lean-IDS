@@ -47,7 +47,7 @@ Large card for displaying multiple related metrics.
 ### **Basic Metric Card:**
 
 ```tsx
-import { MetricCard } from '@lean-ids/components';
+import { MetricCard } from '@ajaysoni7832/lean-ids-components';
 
 <MetricCard
   variant="basic"
@@ -414,7 +414,7 @@ For questions or issues:
 
 **The MetricCard component provides flexible KPI/metric visualization for dashboards.**
 
-- Import from `@lean-ids/components`
+- Import from `@ajaysoni7832/lean-ids-components`
 - Three variants: Basic, Filled, Set
 - Support for change indicators, progress bars, and action chips
 - Fully customizable and accessible

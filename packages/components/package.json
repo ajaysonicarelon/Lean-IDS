@@ -1,11 +1,20 @@
 {
   "name": "@ajaysoni7832/lean-ids-components",
-  "version": "1.6.4",
+  "version": "1.7.0",
   "type": "module",
   "description": "React components for Lean IDS design system",
   "main": "dist/index.js",
   "module": "dist/index.esm.js",
   "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.esm.js",
+      "require": "./dist/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "sideEffects": false,
   "files": [
     "dist",
     ".cursorrules",
@@ -14,6 +23,16 @@
     "AI_GUIDELINES_README.md",
     "AI_READING_FLOW.md",
     "AI_SETUP_COMPLETE.md",
+    "CHANGELOG.md",
+    "RELEASE_NOTES.md",
+    "MIGRATION_GUIDE.md",
+    "FRAMEWORK_SUPPORT.md",
+    "COMPONENT_API_REFERENCE.md",
+    "ICON_SYSTEM_GUIDE.md",
+    "TABLE_GUIDE.md",
+    "NAVIGATION_GUIDE.md",
+    "MODAL_DRAWER_GUIDE.md",
+    "CONTRIBUTING.md",
     "scripts/postinstall.js"
   ],
   "scripts": {
@@ -42,13 +61,17 @@
   },
   "peerDependencies": {
     "react": ">=16.8.0 <20.0.0",
-    "react-dom": ">=16.8.0 <20.0.0"
+    "react-dom": ">=16.8.0 <20.0.0",
+    "styled-components": "^6.0.0"
   },
   "peerDependenciesMeta": {
     "react": {
       "optional": false
     },
     "react-dom": {
+      "optional": false
+    },
+    "styled-components": {
       "optional": false
     }
   },
@@ -57,8 +80,7 @@
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
     "@mui/icons-material": "^9.0.0",
-    "@mui/material": "^9.0.0",
-    "styled-components": "^6.1.15"
+    "@mui/material": "^9.0.0"
   },
   "devDependencies": {
     "@rollup/plugin-typescript": "^12.1.2",

@@ -9,10 +9,14 @@ interface StyledTableHeaderProps {
   $resizable?: boolean;
   $locked?: boolean;
   $leftOffset?: number;
+  $sortDirection?: 'asc' | 'desc' | 'none';
 }
 
 export const StyledTableHeader = styled.th<StyledTableHeaderProps>`
-  background-color: ${({ theme }) => theme.colors.palette.primary[50]};
+  background-color: ${({ theme, $sortDirection }) => 
+    $sortDirection && $sortDirection !== 'none' 
+      ? theme.colors.palette.primary[100] 
+      : theme.colors.palette.primary[50]};
   border-bottom: 1px solid ${({ theme }) => theme.colors.palette.neutral[300]};
   padding: ${({ theme }) => `${theme.spacing[3]} ${theme.spacing[7]}`};
   height: 56px;

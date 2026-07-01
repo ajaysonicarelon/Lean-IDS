@@ -25,7 +25,7 @@ The DonutChart component is a flexible data visualization component designed for
 ### **Basic Usage:**
 
 ```tsx
-import { DataVisualizationCard, DonutChart } from '@lean-ids/components';
+import { DataVisualizationCard, DonutChart } from '@ajaysoni7832/lean-ids-components';
 
 <DataVisualizationCard title="Revenue Distribution">
   <DonutChart
@@ -361,7 +361,7 @@ For questions or issues:
 
 **The DonutChart component provides flexible donut chart visualization for 2-6 metrics.**
 
-- Import from `@lean-ids/components`
+- Import from `@ajaysoni7832/lean-ids-components`
 - Always use with DataVisualizationCard
 - Supports vertical and horizontal layouts
 - Interactive legends with toggle functionality

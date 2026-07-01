@@ -4,7 +4,7 @@
 
 ### **Step 1: Import**
 ```tsx
-import { Table, TableColumn } from '@lean-ids/components';
+import { Table, TableColumn } from '@ajaysoni7832/lean-ids-components';
 ```
 
 ### **Step 2: Define Columns**

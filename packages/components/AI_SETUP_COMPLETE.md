@@ -38,8 +38,8 @@ AI guidelines have been successfully created for your Lean IDS project. Any AI c
 ### **Rule #1: Use ONLY Lean IDS**
 ```
 ✅ ALLOWED:
-- @lean-ids/components
-- @lean-ids/tokens
+- @ajaysoni7832/lean-ids-components
+- @ajaysoni7832/lean-ids-tokens
 - @lean-ids/icons
 
 ❌ FORBIDDEN:
@@ -66,7 +66,7 @@ For new projects:
 
 ### **✅ WILL:**
 1. Use Lean IDS components for all UI
-2. Import from `@lean-ids/components`
+2. Import from `@ajaysoni7832/lean-ids-components`
 3. Use theme tokens for styling
 4. Follow PageLayout templates
 5. Implement sidebar with correct behavior
@@ -142,13 +142,13 @@ Colors, Spacing, Fonts, Font Sizes, Font Weights, Line Heights, Radii, Shadows
 ### **Test 1: Ask AI to Create a Button**
 ```
 You: "Create a button component"
-AI: import { Button } from '@lean-ids/components';
+AI: import { Button } from '@ajaysoni7832/lean-ids-components';
 ```
 
 ### **Test 2: Ask AI to Create a Form**
 ```
 You: "Create a login form"
-AI: Uses Input, Button from @lean-ids/components
+AI: Uses Input, Button from @ajaysoni7832/lean-ids-components
 ```
 
 ### **Test 3: Ask AI to Create a Page**
@@ -171,7 +171,7 @@ import { Input } from 'antd';
 ### **After (With Guidelines):**
 ```tsx
 // AI will suggest:
-import { Button, Input } from '@lean-ids/components';
+import { Button, Input } from '@ajaysoni7832/lean-ids-components';
 ```
 
 ---

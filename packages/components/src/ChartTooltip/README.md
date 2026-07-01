@@ -23,7 +23,7 @@ The ChartTooltip component is a flexible, portal-based tooltip designed specific
 ### **Basic Usage:**
 
 ```tsx
-import { ChartTooltip } from '@lean-ids/components';
+import { ChartTooltip } from '@ajaysoni7832/lean-ids-components';
 import { useState } from 'react';
 
 function MyChart() {

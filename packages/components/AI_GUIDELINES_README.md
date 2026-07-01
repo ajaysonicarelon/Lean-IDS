@@ -56,8 +56,8 @@ These files ensure that **ANY** AI coding assistant (Cursor, Windsurf, Cline, Gi
 ### **Rule #1: Library Usage**
 ```
 ✅ ALLOWED:
-- @lean-ids/components
-- @lean-ids/tokens
+- @ajaysoni7832/lean-ids-components
+- @ajaysoni7832/lean-ids-tokens
 - @lean-ids/icons
 
 ❌ FORBIDDEN:
@@ -154,7 +154,7 @@ For new projects:
 ### **Example 1: Creating a Form**
 ```tsx
 // AI will suggest:
-import { Button, Input } from '@lean-ids/components';
+import { Button, Input } from '@ajaysoni7832/lean-ids-components';
 
 function LoginForm() {
   return (
@@ -170,7 +170,7 @@ function LoginForm() {
 ### **Example 2: Creating a Page**
 ```tsx
 // AI will suggest:
-import { PageLayout } from '@lean-ids/components';
+import { PageLayout } from '@ajaysoni7832/lean-ids-components';
 
 function Dashboard() {
   return (

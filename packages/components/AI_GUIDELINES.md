@@ -25,9 +25,14 @@ This is the **MOST IMPORTANT** rule. All AI assistants MUST follow this strictly
 
 #### ✅ ALLOWED IMPORTS:
 ```tsx
-import { Button, Input, Card } from '@lean-ids/components';
-import { theme } from '@lean-ids/tokens';
-import { IconName } from '@lean-ids/icons';
+import { Button, InputField, Card } from '@ajaysoni7832/lean-ids-components';
+import { carelonTheme, elevanceTheme } from '@ajaysoni7832/lean-ids-tokens';
+import { Add, Delete, Edit } from '@mui/icons-material'; // Icons ONLY
+```
+
+**IMPORTANT (v1.7.0+):** styled-components is a peer dependency:
+```bash
+npm install @ajaysoni7832/lean-ids-components @ajaysoni7832/lean-ids-tokens styled-components
 ```
 
 #### ❌ FORBIDDEN IMPORTS:
@@ -66,7 +71,7 @@ import { Button } from '@radix-ui/react';
 **For ANY popup, dialog, or overlay:**
 ```tsx
 // ✅ CORRECT - Use Lean IDS Modal
-import { Modal } from '@lean-ids/components';
+import { Modal } from '@ajaysoni7832/lean-ids-components';
 
 <Modal
   isOpen={isOpen}
@@ -80,7 +85,7 @@ import { Modal } from '@lean-ids/components';
 **For ANY side panel or drawer:**
 ```tsx
 // ✅ CORRECT - Use Lean IDS Drawer
-import { Drawer } from '@lean-ids/components';
+import { Drawer } from '@ajaysoni7832/lean-ids-components';
 
 <Drawer
   isOpen={isOpen}
@@ -113,8 +118,8 @@ import { Drawer } from '@mui/material';
 ```
 
 ### **ENFORCEMENT:**
-- **ALWAYS** use `Modal` from `@lean-ids/components` for popups
-- **ALWAYS** use `Drawer` from `@lean-ids/components` for side panels
+- **ALWAYS** use `Modal` from `@ajaysoni7832/lean-ids-components` for popups
+- **ALWAYS** use `Drawer` from `@ajaysoni7832/lean-ids-components` for side panels
 - **NEVER** create custom overlay components
 - **NEVER** use external modal/drawer libraries
 
@@ -138,7 +143,7 @@ Did user say "use only Lean IDS" or "replace with Lean IDS"?
   └─ NO → Follow above logic
 
 Does Lean IDS have this component?
-  ├─ YES → Use it from @lean-ids/components ✅
+  ├─ YES → Use it from @ajaysoni7832/lean-ids-components ✅
   └─ NO → ASK USER what to do ⚠️
 ```
 
@@ -146,32 +151,54 @@ Does Lean IDS have this component?
 
 ## 📦 AVAILABLE LEAN IDS COMPONENTS
 
-### **Core UI Components:**
-- `Button` - Primary, secondary, tertiary variants
-- `Input` - Text input with label, error, helper text
+### **Form Components:**
+- `Button` - Primary, secondary, tertiary variants (5 sizes, 4 types)
+- `InputField` - Text input with label, error, helper text
 - `TextArea` - Multi-line text input
 - `Select` - Dropdown select
 - `Checkbox` - Checkbox with label
-- `Radio` - Radio button with label
+- `RadioButton` - Radio button with label
 - `Toggle` - Toggle/switch component
+
+### **Display Components:**
+- `Avatar` - User avatar (3 sizes, 7 colors)
+- `Badge` - Status indicators (success, error, warning, info)
+- `Chip` - Removable tags (filled, outlined)
 - `Card` - Container card
-- `Chip` - Tag/chip component
-- `Badge` - Badge/counter
-- `Avatar` - User avatar
 - `Divider` - Horizontal/vertical divider
 - `Link` - Styled link
 - `Tooltip` - Tooltip component
-- `Icon` - Icon component
+
+### **Feedback Components:**
+- `Toast` - Temporary notifications
+- `AlertBanner` - Persistent alerts
+- `InlineMessage` - Contextual messages
+- `Modal` - Dialog popups (ALWAYS use this, never create custom)
+- `Drawer` - Side panels (ALWAYS use this, never create custom)
 
 ### **Layout Components:**
-- `PageLayout` - Main page layout (3 variants)
+- `PageLayout` - Main page layout (3 variants: topbar-only, sidebar-only, topbar-sidebar)
 - `TopHeader` - Top navigation header
-- `SideNavigation` - Sidebar navigation
+- `SideNavigation` - Sidebar navigation (with pin/unpin)
 - `Footer` - Page footer
-- `PageHeader` - Page title and description
-- `Breadcrumb` - Breadcrumb navigation
+- `PageHeader` - Page title and actions
+- `Breadcrumbs` - Breadcrumb navigation
 - `MenuItem` - Menu item component
 - `Brand` - Brand logo component
+
+### **Data Display Components:**
+- `Table` - Advanced data table with:
+  - Row selection (with select all checkbox)
+  - Sortable columns (with visual feedback)
+  - Pagination
+  - Global search
+  - Column visibility controls
+  - Column reordering
+  - Locked columns
+  - Settings panel
+- `Pagination` - Page navigation
+- `Tabs` - Tab navigation
+- `MetricCard` - Metric display cards
 
 ### **Design Tokens:**
 - `theme.colors` - Color palette
@@ -185,13 +212,65 @@ Does Lean IDS have this component?
 
 ---
 
+## 🚀 SETUP & INSTALLATION (v1.7.0+)
+
+### **Installation:**
+```bash
+npm install @ajaysoni7832/lean-ids-components @ajaysoni7832/lean-ids-tokens styled-components
+```
+
+**IMPORTANT:** `styled-components` is a peer dependency in v1.7.0+. You MUST install it separately.
+
+### **Theme Setup (REQUIRED):**
+
+Every Lean IDS app MUST wrap components with `ThemeProvider`:
+
+```tsx
+import { ThemeProvider } from 'styled-components';
+import { carelonTheme } from '@ajaysoni7832/lean-ids-tokens';
+
+function App() {
+  return (
+    <ThemeProvider theme={carelonTheme}>
+      {/* Your app content */}
+    </ThemeProvider>
+  );
+}
+```
+
+### **Theme Options:**
+
+Lean IDS provides TWO brand themes:
+
+1. **carelonTheme** (default) - Carelon brand colors
+2. **elevanceTheme** - Elevance brand colors
+
+```tsx
+// Use Carelon theme
+import { carelonTheme } from '@ajaysoni7832/lean-ids-tokens';
+<ThemeProvider theme={carelonTheme}>
+
+// OR use Elevance theme
+import { elevanceTheme } from '@ajaysoni7832/lean-ids-tokens';
+<ThemeProvider theme={elevanceTheme}>
+```
+
+### **Framework-Specific Setup:**
+
+- **Next.js:** See `FRAMEWORK_SUPPORT.md` for App Router/Pages Router setup
+- **Vite:** Works out of the box, just add ThemeProvider
+- **CRA:** Works out of the box, just add ThemeProvider
+- **Remix:** See `FRAMEWORK_SUPPORT.md` for setup
+
+---
+
 ## 🎨 PAGE LAYOUT TEMPLATES
 
 ### **Template 1: Top Bar Only**
 Use when: App needs only top navigation
 
 ```tsx
-import { PageLayout } from '@lean-ids/components';
+import { PageLayout } from '@ajaysoni7832/lean-ids-components';
 
 <PageLayout
   variant="topbar-only"
@@ -325,7 +404,7 @@ const [isPinned, setIsPinned] = useState(false);
 
 ```tsx
 import styled from 'styled-components';
-import { theme } from '@lean-ids/tokens';
+import { theme } from '@ajaysoni7832/lean-ids-tokens';
 
 // ✅ CORRECT
 const StyledComponent = styled.div`
@@ -352,7 +431,7 @@ const StyledComponent = styled.div`
 
 ```tsx
 import { ThemeProvider } from 'styled-components';
-import { theme } from '@lean-ids/tokens';
+import { theme } from '@ajaysoni7832/lean-ids-tokens';
 
 function App() {
   return (
@@ -399,7 +478,7 @@ const Button = styled.button`
 
 ### **Example 1: Login Form**
 ```tsx
-import { Button, Input, Card } from '@lean-ids/components';
+import { Button, Input, Card } from '@ajaysoni7832/lean-ids-components';
 
 function LoginForm() {
   return (
@@ -424,7 +503,7 @@ function LoginForm() {
 
 ### **Example 2: Dashboard Page**
 ```tsx
-import { PageLayout, Card, Button } from '@lean-ids/components';
+import { PageLayout, Card, Button } from '@ajaysoni7832/lean-ids-components';
 
 function Dashboard() {
   return (
@@ -487,7 +566,7 @@ const StyledDiv = styled.div`
 When creating new features or components, you MUST:
 
 1. **ONLY use existing Lean IDS components** - Never create custom versions
-2. **ALWAYS use tokens** from `@lean-ids/tokens` - Never hardcode values
+2. **ALWAYS use tokens** from `@ajaysoni7832/lean-ids-tokens` - Never hardcode values
 3. **Compose from Lean IDS** - Build complex components from simple ones
 
 ### **Examples:**
@@ -495,7 +574,7 @@ When creating new features or components, you MUST:
 **Need a form?**
 ```tsx
 // ✅ CORRECT - Use Lean IDS components
-import { Input, Button, Card } from '@lean-ids/components';
+import { Input, Button, Card } from '@ajaysoni7832/lean-ids-components';
 
 function LoginForm() {
   return (
@@ -517,7 +596,7 @@ const CustomInput = styled.input`
 **Need chips/tags?**
 ```tsx
 // ✅ CORRECT - Use Lean IDS Chip
-import { Chip } from '@lean-ids/components';
+import { Chip } from '@ajaysoni7832/lean-ids-components';
 
 <Chip label="Tag" onRemove={() => {}} />
 
@@ -531,8 +610,8 @@ const CustomChip = styled.div`
 **Building complex components?**
 ```tsx
 // ✅ CORRECT - Compose from Lean IDS components
-import { Card, Button, Avatar, Badge } from '@lean-ids/components';
-import { theme } from '@lean-ids/tokens';
+import { Card, Button, Avatar, Badge } from '@ajaysoni7832/lean-ids-components';
+import { theme } from '@ajaysoni7832/lean-ids-tokens';
 
 const UserCard = styled(Card)`
   padding: ${({ theme }) => theme.spacing[4]};
@@ -625,7 +704,7 @@ import { TextField } from '@mui/material'; // ❌ WRONG!
 **RULE:**
 - ✅ Import icons from `@mui/icons-material` ONLY
 - ❌ Do NOT import Button, Input, Card, TextField, or ANY other UI component from `@mui/material`
-- ✅ For UI components, ALWAYS use `@lean-ids/components`
+- ✅ For UI components, ALWAYS use `@ajaysoni7832/lean-ids-components`
 - ✅ Material Icons are the ONLY exception to the "no external libraries" rule
 
 **Why this exception?**
@@ -657,7 +736,7 @@ import { Button } from '@mui/material';
 const CustomButton = styled.button`...`;
 
 // ✅ CORRECT
-import { Button } from '@lean-ids/components';
+import { Button } from '@ajaysoni7832/lean-ids-components';
 ```
 
 ### **4. Don't Use Inline Styles**
@@ -677,7 +756,7 @@ const StyledDiv = styled.div`
 ## 📋 QUALITY CHECKLIST
 
 Before suggesting code, verify:
-- [ ] All UI components from `@lean-ids/components`
+- [ ] All UI components from `@ajaysoni7832/lean-ids-components`
 - [ ] No external UI library imports (unless pre-existing)
 - [ ] Using theme tokens for colors, spacing, fonts
 - [ ] Following PageLayout templates for layouts
@@ -718,16 +797,17 @@ Ask user for clarification when:
 
 ## 🚀 QUICK REFERENCE
 
-### **Import Pattern:**
+### **Import Pattern (v1.7.0+):**
 ```tsx
 // Components
-import { Button, Input, Card } from '@lean-ids/components';
+import { Button, InputField, Card, Modal, Drawer } from '@ajaysoni7832/lean-ids-components';
 
-// Tokens
-import { theme } from '@lean-ids/tokens';
+// Tokens & Theme
+import { carelonTheme, elevanceTheme } from '@ajaysoni7832/lean-ids-tokens';
+import { ThemeProvider } from 'styled-components';
 
-// Icons
-import { IconName } from '@lean-ids/icons';
+// Icons (from Material Icons ONLY)
+import { Add, Delete, Edit, Home, Settings } from '@mui/icons-material';
 
 // Styled Components
 import styled from 'styled-components';
@@ -736,11 +816,32 @@ import styled from 'styled-components';
 import React, { useState, useEffect } from 'react';
 ```
 
-### **Component Usage:**
+### **Component Usage (v1.7.0+):**
 ```tsx
-<Button variant="primary" size="medium">Click Me</Button>
-<Input label="Email" placeholder="Enter email" />
-<Card>Content</Card>
+// Button with all options
+<Button variant="primary" size="medium" buttonType="default">Click Me</Button>
+
+// InputField with validation
+<InputField label="Email" type="email" placeholder="Enter email" error={hasError} errorMessage="Invalid email" />
+
+// Modal (ALWAYS use, never create custom)
+<Modal isOpen={isOpen} onClose={onClose} title="Dialog">
+  {content}
+</Modal>
+
+// Drawer (ALWAYS use, never create custom)
+<Drawer isOpen={isOpen} onClose={onClose} title="Side Panel" position="right">
+  {content}
+</Drawer>
+
+// Table with all features
+<Table
+  columns={columns}
+  data={data}
+  selectable={true}
+  showGlobalSearch={true}
+  onSort={handleSort}
+/>
 ```
 
 ### **Styling:**

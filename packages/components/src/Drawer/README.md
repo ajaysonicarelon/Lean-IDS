@@ -32,7 +32,7 @@ The Drawer component is a reusable side panel that slides in from the left or ri
 ### **Basic Usage:**
 
 ```tsx
-import { Drawer } from '@lean-ids/components';
+import { Drawer } from '@ajaysoni7832/lean-ids-components';
 import { useState } from 'react';
 
 function MyComponent() {
@@ -290,7 +290,7 @@ const CustomDrawer = () => (
 ### **✅ CORRECT - Use Lean IDS Drawer:**
 ```tsx
 // DO THIS
-import { Drawer } from '@lean-ids/components';
+import { Drawer } from '@ajaysoni7832/lean-ids-components';
 
 <Drawer
   isOpen={isOpen}
@@ -307,7 +307,7 @@ import { Drawer } from '@lean-ids/components';
 ## 📊 Component Hierarchy
 
 ```
-Drawer (from @lean-ids/components)
+Drawer (from @ajaysoni7832/lean-ids-components)
 ├── Overlay (backdrop)
 └── DrawerContainer
     ├── Header
@@ -422,7 +422,7 @@ For questions or issues:
 
 **The Drawer component is the ONLY way to create side panels in Lean IDS applications.**
 
-- Import from `@lean-ids/components`
+- Import from `@ajaysoni7832/lean-ids-components`
 - Use for all drawer/side panel needs
 - Do NOT create custom drawer components
 - Follow the examples and best practices

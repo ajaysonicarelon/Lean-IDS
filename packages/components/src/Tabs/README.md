@@ -36,7 +36,7 @@ The Tabs component provides a flexible tab navigation system with support for tw
 ### **Basic Parent Tabs:**
 
 ```tsx
-import { Tabs } from '@lean-ids/components';
+import { Tabs } from '@ajaysoni7832/lean-ids-components';
 import { useState } from 'react';
 
 function MyComponent() {
@@ -412,7 +412,7 @@ For questions or issues:
 
 **The Tabs component provides flexible tab navigation with parent/child hierarchy support.**
 
-- Import from `@lean-ids/components`
+- Import from `@ajaysoni7832/lean-ids-components`
 - Use for content organization
 - Follow hierarchy guidelines
 - Limit to 5-6 tabs horizontally

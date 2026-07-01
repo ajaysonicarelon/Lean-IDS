@@ -5,8 +5,55 @@
 import { createGlobalStyle } from 'styled-components';
 
 export const GlobalStyles = createGlobalStyle`
-  /* Import Elevance Sans and Roboto Mono fonts */
-  @import url('@ajaysoni7832/lean-ids-tokens/dist/fonts.css');
+  /* Elevance Sans Font Family */
+  @font-face {
+    font-family: 'Elevance Sans';
+    src: url('https://fonts.cdnfonts.com/s/93849/ElevanceSans-Light.woff') format('woff');
+    font-weight: 300;
+    font-style: normal;
+    font-display: swap;
+  }
+
+  @font-face {
+    font-family: 'Elevance Sans';
+    src: url('https://fonts.cdnfonts.com/s/93849/ElevanceSans-Regular.woff') format('woff');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+  }
+
+  @font-face {
+    font-family: 'Elevance Sans';
+    src: url('https://fonts.cdnfonts.com/s/93849/ElevanceSans-Medium.woff') format('woff');
+    font-weight: 500;
+    font-style: normal;
+    font-display: swap;
+  }
+
+  @font-face {
+    font-family: 'Elevance Sans';
+    src: url('https://fonts.cdnfonts.com/s/93849/ElevanceSans-SemiBold.woff') format('woff');
+    font-weight: 600;
+    font-style: normal;
+    font-display: swap;
+  }
+
+  @font-face {
+    font-family: 'Elevance Sans';
+    src: url('https://fonts.cdnfonts.com/s/93849/ElevanceSans-Bold.woff') format('woff');
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+  }
+
+  /* Roboto Mono for code */
+  @font-face {
+    font-family: 'Roboto Mono';
+    src: url('https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500;600;700&display=swap');
+    font-weight: 400 700;
+    font-style: normal;
+    font-display: swap;
+  }
 
   * {
     box-sizing: border-box;

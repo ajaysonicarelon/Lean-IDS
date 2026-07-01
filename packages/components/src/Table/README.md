@@ -22,7 +22,7 @@ A complete, production-ready data table component with all features built-in.
 ## Basic Usage
 
 ```tsx
-import { Table } from '@lean-ids/components';
+import { Table } from '@ajaysoni7832/lean-ids-components';
 
 const MyTable = () => {
   const data = [
@@ -48,7 +48,7 @@ const MyTable = () => {
 ### With All Features
 
 ```tsx
-import { Table, TableColumn } from '@lean-ids/components';
+import { Table, TableColumn } from '@ajaysoni7832/lean-ids-components';
 
 const AdvancedTable = () => {
   const data = [
@@ -344,7 +344,7 @@ The Table component uses theme tokens for all styling. Customize via ThemeProvid
 
 ```tsx
 import { ThemeProvider } from 'styled-components';
-import { theme } from '@lean-ids/tokens';
+import { theme } from '@ajaysoni7832/lean-ids-tokens';
 
 <ThemeProvider theme={theme}>
   <Table data={data} columns={columns} />
@@ -446,14 +446,14 @@ If you're using the old `AdvancedDataTable` template:
 
 **Before:**
 ```tsx
-import { AdvancedDataTable } from '@lean-ids/components';
+import { AdvancedDataTable } from '@ajaysoni7832/lean-ids-components';
 
 <AdvancedDataTable />
 ```
 
 **After:**
 ```tsx
-import { Table } from '@lean-ids/components';
+import { Table } from '@ajaysoni7832/lean-ids-components';
 
 <Table data={myData} columns={myColumns} />
 ```

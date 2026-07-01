@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { Table } from './Table';
 import type { TableColumn } from './Table.types';
+import { Badge } from '../Badge';
 
 const meta: Meta<typeof Table> = {
   title: 'Components/Table',
@@ -128,18 +129,11 @@ const advancedColumns: TableColumn[] = [
     label: 'Status',
     sortable: true,
     renderCell: (value) => (
-      <span
-        style={{
-          padding: '4px 12px',
-          borderRadius: '12px',
-          fontSize: '12px',
-          fontWeight: 600,
-          backgroundColor: value === 'Active' ? '#D1FAE5' : '#FEE2E2',
-          color: value === 'Active' ? '#065F46' : '#991B1B',
-        }}
-      >
-        {value}
-      </span>
+      <Badge 
+        label={value} 
+        type={value === 'Active' ? 'success' : 'error'}
+        style="default"
+      />
     ),
   },
   {
@@ -152,100 +146,7 @@ const advancedColumns: TableColumn[] = [
 ];
 
 /**
- * Basic table with minimal configuration
- */
-export const Basic: Story = {
-  args: {
-    data: sampleData,
-    columns: basicColumns,
-    paginated: false,
-    showSettings: false,
-  },
-};
-
-/**
- * Table with sorting enabled on all columns
- */
-export const WithSorting: Story = {
-  args: {
-    data: sampleData,
-    columns: basicColumns.map(col => ({ ...col, sortable: true })),
-    paginated: false,
-    showSettings: false,
-  },
-};
-
-/**
- * Table with row selection
- */
-export const WithSelection: Story = {
-  args: {
-    data: sampleData,
-    columns: basicColumns,
-    selectable: true,
-    paginated: false,
-    showSettings: false,
-    onRowSelect: (ids) => console.log('Selected rows:', ids),
-  },
-};
-
-/**
- * Table with pagination
- */
-export const WithPagination: Story = {
-  args: {
-    data: sampleData,
-    columns: basicColumns,
-    paginated: true,
-    itemsPerPage: 3,
-    showSettings: false,
-  },
-};
-
-/**
- * Table with search functionality
- */
-export const WithSearch: Story = {
-  args: {
-    data: sampleData,
-    columns: [
-      { id: 'id', label: 'ID' },
-      { id: 'name', label: 'Name', searchable: true },
-      { id: 'email', label: 'Email', searchable: true },
-      { id: 'role', label: 'Role' },
-    ],
-    paginated: false,
-    showSettings: false,
-  },
-};
-
-/**
- * Table with actions column
- */
-export const WithActions: Story = {
-  args: {
-    data: sampleData,
-    columns: basicColumns,
-    showActions: true,
-    actions: [
-      {
-        icon: 'Edit',
-        label: 'Edit',
-        onClick: (row) => console.log('Edit:', row),
-      },
-      {
-        icon: 'Delete',
-        label: 'Delete',
-        onClick: (row) => console.log('Delete:', row),
-      },
-    ],
-    paginated: false,
-    showSettings: false,
-  },
-};
-
-/**
- * Complete table with all features enabled
+ * Complete table with all features enabled - matches CompleteExample design
  */
 export const Complete: Story = {
   args: {
@@ -253,9 +154,15 @@ export const Complete: Story = {
     columns: advancedColumns,
     selectable: true,
     paginated: true,
-    itemsPerPage: 5,
+    itemsPerPage: 10,
     showSettings: true,
     showActions: true,
+    showToolbar: true,
+    title: 'Employee Directory',
+    description: 'Manage and view all employee information',
+    showGlobalSearch: true,
+    showFilter: true,
+    showDownload: true,
     actions: [
       {
         icon: 'Edit',
@@ -273,17 +180,6 @@ export const Complete: Story = {
 };
 
 /**
- * Empty state
- */
-export const Empty: Story = {
-  args: {
-    data: [],
-    columns: basicColumns,
-    emptyMessage: 'No data available. Add your first item to get started.',
-  },
-};
-
-/**
  * Loading state
  */
 export const Loading: Story = {
@@ -291,17 +187,23 @@ export const Loading: Story = {
     data: sampleData,
     columns: basicColumns,
     loading: true,
+    title: 'Tabular View',
   },
 };
 
 /**
- * With custom cell rendering
+ * Empty state with action button
  */
-export const CustomCells: Story = {
+export const Empty: Story = {
   args: {
-    data: sampleData,
-    columns: advancedColumns,
-    paginated: false,
-    showSettings: false,
+    data: [],
+    columns: basicColumns,
+    showToolbar: true,
+    title: 'Tabular View',
+    emptyIcon: 'CloudOff',
+    emptyTitle: 'Not able to sync',
+    emptyDescription: 'Please check your internet connection',
+    emptyActionLabel: 'Refresh',
+    onEmptyAction: () => console.log('Refresh clicked'),
   },
 };

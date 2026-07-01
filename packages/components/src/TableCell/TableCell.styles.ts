@@ -14,10 +14,7 @@ export const StyledTableCell = styled.td<StyledTableCellProps>`
   border-bottom: 1px solid ${({ theme }) => theme.colors.palette.neutral[300]};
   border-left: ${({ theme, $selected, $isFirst }) => 
     $selected && $isFirst ? `2px solid ${theme.colors.palette.primary[500]}` : 'none'};
-  padding: ${({ theme, $selected, $isFirst }) => 
-    $selected && $isFirst 
-      ? `${theme.spacing[3]} ${theme.spacing[7]} ${theme.spacing[3]} calc(${theme.spacing[7]} - 2px)` 
-      : `${theme.spacing[3]} ${theme.spacing[7]}`};
+  padding: ${({ theme }) => `${theme.spacing[3]} ${theme.spacing[7]}`};
   height: 72px;
   text-align: ${({ $align }) => $align || 'left'};
   vertical-align: middle;
@@ -131,8 +128,8 @@ export const DateText = styled.div`
 
 export const RegularText = styled.div`
   font-family: ${({ theme }) => theme.fonts.primary};
-  font-size: ${({ theme }) => theme.fontSizes[14]};
-  font-weight: ${({ theme }) => theme.fontWeights.medium};
+  font-size: 14px;
+  font-weight: 500;
   line-height: 16px;
   color: ${({ theme }) => theme.colors.palette.neutral[800]};
   white-space: nowrap;

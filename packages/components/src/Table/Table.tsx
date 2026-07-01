@@ -29,6 +29,8 @@ import { TableHeader } from '../TableHeader';
 import { TableCell } from '../TableCell';
 import { Pagination } from '../Pagination';
 import { Icon } from '../Icon';
+import { Button } from '../Button';
+import { Checkbox } from '../Checkbox';
 import { TableSettings, ColumnConfig } from '../TableSettings';
 import { TableToolbar } from './TableToolbar';
 
@@ -80,6 +82,16 @@ export interface TableProps {
   rowKey?: string;
   /** Custom empty state message */
   emptyMessage?: string;
+  /** Empty state icon name (Material Icons) */
+  emptyIcon?: string;
+  /** Empty state title */
+  emptyTitle?: string;
+  /** Empty state description */
+  emptyDescription?: string;
+  /** Empty state action button label */
+  emptyActionLabel?: string;
+  /** Empty state action button handler */
+  onEmptyAction?: () => void;
   /** Loading state */
   loading?: boolean;
   /** Custom className */
@@ -107,7 +119,7 @@ export interface TableProps {
 const TableContainer = styled.div`
   display: flex;
   flex-direction: column;
-  gap: ${({ theme }) => theme.spacing[16]};
+  gap: ${({ theme }) => theme.spacing[8]};
   width: 100%;
 `;
 
@@ -125,50 +137,98 @@ const StyledTable = styled.table`
   table-layout: auto;
 `;
 
-const EmptyState = styled.div`
-  padding: ${({ theme }) => theme.spacing[48]} ${({ theme }) => theme.spacing[24]};
+const EmptyStateContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: ${({ theme }) => theme.spacing[32]} ${({ theme }) => theme.spacing[24]};
+  min-height: 400px;
+  background: ${({ theme }) => theme.colors.palette.neutral[50]};
+`;
+
+const EmptyStateContent = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: ${({ theme }) => theme.spacing[6]};
+  max-width: 300px;
+`;
+
+const EmptyStateIconWrapper = styled.div`
+  width: 80px;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+`;
+
+const EmptyStateTextWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: ${({ theme }) => theme.spacing[4]};
   text-align: center;
+`;
+
+const EmptyStateTitle = styled.h3`
+  font-family: 'Elevance Sans', sans-serif;
+  font-size: 24px;
+  font-weight: 600;
+  line-height: 28px;
+  letter-spacing: 1px;
+  color: ${({ theme }) => theme.colors.semantic.text.primary};
+  margin: 0;
+`;
+
+const EmptyStateDescription = styled.p`
+  font-family: 'Elevance Sans', sans-serif;
+  font-size: 16px;
+  font-weight: 300;
+  line-height: 19px;
   color: ${({ theme }) => theme.colors.semantic.text.secondary};
-  font-size: ${({ theme }) => theme.fontSizes.body};
+  margin: 0;
 `;
 
-const LoadingOverlay = styled.div`
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(255, 255, 255, 0.8);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 100;
+const SkeletonRow = styled.tr``;
+
+const SkeletonCell = styled.td`
+  padding: 16px;
+  border-bottom: 1px solid ${({ theme }) => theme.colors.palette.neutral[200]};
 `;
 
-const SettingsButton = styled.button`
-  position: fixed;
-  bottom: 24px;
-  right: 24px;
-  width: 56px;
-  height: 56px;
-  borderradius: 50%;
-  background: ${({ theme }) => theme.colors.palette.primary[600]};
-  color: white;
-  border: none;
-  cursor: pointer;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.2s;
+const SkeletonBox = styled.div<{ width?: string; height?: string }>`
+  width: ${({ width }) => width || '100%'};
+  height: ${({ height }) => height || '16px'};
+  background: ${({ theme }) => theme.colors.palette.neutral[200]};
+  border-radius: 4px;
+  position: relative;
+  overflow: hidden;
 
-  &:hover {
-    background: ${({ theme }) => theme.colors.palette.primary[700]};
-    transform: scale(1.05);
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      ${({ theme }) => theme.colors.palette.neutral[100]} 50%,
+      transparent 100%
+    );
+    animation: shimmer 2s infinite;
   }
 
-  &:active {
-    transform: scale(0.95);
+  @keyframes shimmer {
+    0% {
+      transform: translateX(-100%);
+    }
+    100% {
+      transform: translateX(100%);
+    }
   }
 `;
 
@@ -189,13 +249,18 @@ export const Table: React.FC<TableProps> = ({
   onRowAction,
   rowKey = 'id',
   emptyMessage = 'No data available',
+  emptyIcon = 'CloudOff',
+  emptyTitle = 'No data available',
+  emptyDescription = 'There are no items to display',
+  emptyActionLabel,
+  onEmptyAction,
   loading = false,
   className,
   title,
   description,
   showToolbar = true,
-  showGlobalSearch = true,
-  showFilter = false,
+  showGlobalSearch = false,
+  showFilter = true,
   showDownload = true,
   onDownload,
 }) => {
@@ -448,39 +513,75 @@ export const Table: React.FC<TableProps> = ({
   // RENDER
   // ============================================================================
 
-  if (data.length === 0 && !loading) {
-    return (
-      <TableContainer className={className}>
-        <EmptyState>{emptyMessage}</EmptyState>
-      </TableContainer>
-    );
-  }
+  // Empty state - show full table structure with centered empty content
+  const renderEmptyState = () => (
+    <ScrollContainer data-scroll-container>
+      <StyledTable>
+        <thead>
+          <tr>
+            {visibleColumns.map((colConfig, index) => {
+              const column = columns.find(col => col.id === colConfig.id);
+              const side = index === 0 ? 'left' : index === visibleColumns.length - 1 ? 'right' : undefined;
+
+              return (
+                <TableHeader
+                  key={colConfig.id}
+                  label={column?.label || colConfig.id}
+                  variant="default"
+                  side={side}
+                />
+              );
+            })}
+          </tr>
+        </thead>
+      </StyledTable>
+      
+      <EmptyStateContainer>
+        <EmptyStateContent>
+          <EmptyStateIconWrapper>
+            <Icon name={emptyIcon} size="large" style={{ width: '60px', height: '60px' }} />
+          </EmptyStateIconWrapper>
+          
+          <EmptyStateTextWrapper>
+            <EmptyStateTitle>{emptyTitle}</EmptyStateTitle>
+            <EmptyStateDescription>{emptyDescription}</EmptyStateDescription>
+          </EmptyStateTextWrapper>
+          
+          {emptyActionLabel && onEmptyAction && (
+            <Button
+              variant="primary"
+              size="medium"
+              onClick={onEmptyAction}
+            >
+              {emptyActionLabel}
+            </Button>
+          )}
+        </EmptyStateContent>
+      </EmptyStateContainer>
+    </ScrollContainer>
+  );
 
   return (
     <TableContainer className={className}>
       {showToolbar && (
         <TableToolbar
           title={title}
-          description={description}
-          showSearch={showGlobalSearch}
-          searchValue={globalSearch}
-          onSearchChange={setGlobalSearch}
-          showFilter={showFilter}
+          showDropdown={false}
+          dropdownOptions={[]}
           showDownload={showDownload}
           onDownload={onDownload}
-          showSettings={false}
-          selectedCount={selectedRows.length}
+          showFilter={showFilter}
+          onFilter={() => console.log('Filter clicked')}
+          showSettings={showSettings}
+          onSettingsClick={() => setSettingsOpen(true)}
         />
       )}
       
-      <ScrollContainer data-scroll-container>
-        {loading && (
-          <LoadingOverlay>
-            <div>Loading...</div>
-          </LoadingOverlay>
-        )}
-        
-        <StyledTable>
+      {data.length === 0 && !loading ? (
+        renderEmptyState()
+      ) : (
+        <ScrollContainer data-scroll-container>
+          <StyledTable>
           <thead>
             <tr>
               {visibleColumns.map((colConfig, index) => {
@@ -494,18 +595,16 @@ export const Table: React.FC<TableProps> = ({
                   return (
                     <TableHeader
                       key={colConfig.id}
+                      label=""
                       variant="default"
                       side={side}
                       locked={isLocked}
                       leftOffset={offset}
                       data-locked={isLocked}
-                    >
-                      <input
-                        type="checkbox"
-                        checked={allChecked}
-                        onChange={e => handleSelectAll(e.target.checked)}
-                      />
-                    </TableHeader>
+                      showCheckbox={true}
+                      checked={allChecked}
+                      onCheckChange={handleSelectAll}
+                    />
                   );
                 }
 
@@ -560,16 +659,38 @@ export const Table: React.FC<TableProps> = ({
           </thead>
 
           <tbody>
-            {paginatedData.map((row, rowIndex) => {
+            {loading ? (
+              // Show skeleton rows when loading
+              Array.from({ length: itemsPerPage }).map((_, skeletonIndex) => (
+                <SkeletonRow key={`skeleton-${skeletonIndex}`}>
+                  {visibleColumns.map((colConfig) => (
+                    <SkeletonCell key={colConfig.id}>
+                      {colConfig.id === 'checkbox' ? (
+                        <SkeletonBox width="20px" height="20px" />
+                      ) : colConfig.id === 'actions' ? (
+                        <div style={{ display: 'flex', gap: '8px' }}>
+                          <SkeletonBox width="32px" height="32px" />
+                          <SkeletonBox width="32px" height="32px" />
+                        </div>
+                      ) : (
+                        <SkeletonBox width="80%" />
+                      )}
+                    </SkeletonCell>
+                  ))}
+                </SkeletonRow>
+              ))
+            ) : (
+              paginatedData.map((row, rowIndex) => {
               const rowId = row[rowKey];
               const isSelected = selectedRows.includes(rowId);
 
               return (
                 <tr key={rowId}>
-                  {visibleColumns.map((colConfig) => {
+                  {visibleColumns.map((colConfig, colIndex) => {
                     const column = columns.find(col => col.id === colConfig.id);
                     const isLocked = colConfig.locked;
                     const offset = columnOffsets[colConfig.id];
+                    const isFirstCell = colIndex === 0;
 
                     // Checkbox cell
                     if (colConfig.id === 'checkbox') {
@@ -580,11 +701,11 @@ export const Table: React.FC<TableProps> = ({
                           locked={isLocked}
                           leftOffset={offset}
                           data-locked={isLocked}
+                          isFirstColumn={isFirstCell}
                         >
-                          <input
-                            type="checkbox"
+                          <Checkbox
                             checked={isSelected}
-                            onChange={e => handleRowSelect(rowId, e.target.checked)}
+                            onChange={(e) => handleRowSelect(rowId, e.target.checked)}
                           />
                         </TableCell>
                       );
@@ -602,13 +723,17 @@ export const Table: React.FC<TableProps> = ({
                         >
                           <div style={{ display: 'flex', gap: '8px' }}>
                             {actions.map((action, actionIndex) => (
-                              <button
+                              <Button
                                 key={actionIndex}
+                                variant="secondary"
+                                size="small"
+                                showLabel={false}
+                                leadingIcon={<Icon name={action.icon} size="small" />}
                                 onClick={() => action.onClick(row)}
-                                title={action.label}
+                                aria-label={action.label}
                               >
-                                <Icon name={action.icon} size="small" />
-                              </button>
+                                {action.label}
+                              </Button>
                             ))}
                           </div>
                         </TableCell>
@@ -624,6 +749,23 @@ export const Table: React.FC<TableProps> = ({
                         : row[column.accessor]
                       : row[column.id];
 
+                    // If column has custom renderCell, render it directly
+                    if (column.renderCell) {
+                      return (
+                        <TableCell
+                          key={colConfig.id}
+                          selected={isSelected}
+                          locked={isLocked}
+                          leftOffset={offset}
+                          data-locked={isLocked}
+                          isFirstColumn={isFirstCell}
+                        >
+                          {column.renderCell(value, row, rowIndex)}
+                        </TableCell>
+                      );
+                    }
+
+                    // Otherwise use showText prop
                     return (
                       <TableCell
                         key={colConfig.id}
@@ -631,17 +773,20 @@ export const Table: React.FC<TableProps> = ({
                         locked={isLocked}
                         leftOffset={offset}
                         data-locked={isLocked}
+                        isFirstColumn={isFirstCell}
                       >
-                        {column.renderCell ? column.renderCell(value, row, rowIndex) : value}
+                        {String(value || '')}
                       </TableCell>
                     );
                   })}
                 </tr>
               );
-            })}
+            })
+            )}
           </tbody>
         </StyledTable>
       </ScrollContainer>
+      )}
 
       {paginated && (
         <Pagination
@@ -690,10 +835,6 @@ export const Table: React.FC<TableProps> = ({
               }
             }}
           />
-
-          <SettingsButton onClick={() => setSettingsOpen(true)}>
-            <Icon name="Settings" size="medium" />
-          </SettingsButton>
         </>
       )}
     </TableContainer>

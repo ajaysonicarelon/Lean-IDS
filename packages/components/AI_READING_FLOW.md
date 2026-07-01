@@ -44,8 +44,8 @@ After reading all files above, you MUST follow these rules:
 ### **Rule #1: ONLY Use Lean IDS Components**
 ```tsx
 // ✅ CORRECT
-import { Button, Input, Card } from '@lean-ids/components';
-import { theme } from '@lean-ids/tokens';
+import { Button, Input, Card } from '@ajaysoni7832/lean-ids-components';
+import { theme } from '@ajaysoni7832/lean-ids-tokens';
 
 // ❌ FORBIDDEN - NEVER DO THIS
 import { Button } from '@mui/material';
@@ -97,8 +97,8 @@ Material-UI, Ant Design, Chakra UI, Bootstrap, Tailwind UI, Shadcn/ui, Radix UI,
 
 ### **Required Imports:**
 ```tsx
-import { ComponentName } from '@lean-ids/components';
-import { theme } from '@lean-ids/tokens';
+import { ComponentName } from '@ajaysoni7832/lean-ids-components';
+import { theme } from '@ajaysoni7832/lean-ids-tokens';
 ```
 
 ### **Styling Rules:**
@@ -110,7 +110,7 @@ import { theme } from '@lean-ids/tokens';
 ### **Component Creation Rules:**
 - **ONLY use existing Lean IDS components** to build new features
 - **NEVER create custom components** when Lean IDS has them
-- **ALWAYS use tokens** from `@lean-ids/tokens` (no hardcoded values)
+- **ALWAYS use tokens** from `@ajaysoni7832/lean-ids-tokens` (no hardcoded values)
 - Need a form? Use Input, Button from Lean IDS (don't create custom)
 - Need chips? Use Chip from Lean IDS (don't create custom)
 - Building complex components? Compose from existing Lean IDS components

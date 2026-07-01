@@ -132,6 +132,7 @@ export const TableHeader: React.FC<TableHeaderProps> = ({
       $resizable={resizable}
       $locked={locked}
       $leftOffset={leftOffset}
+      $sortDirection={sortDirection}
       onClick={handleClick}
       style={{ width }}
       className={className}

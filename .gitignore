@@ -42,3 +42,9 @@ coverage/
 
 # Local Netlify folder
 .netlify
+
+# Archive folder (old documentation)
+archive/
+
+# Temporary shell scripts
+create_all_readmes.sh

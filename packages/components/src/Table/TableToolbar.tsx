@@ -1,67 +1,61 @@
 /**
  * TableToolbar Component
  * 
- * Header section for tables with:
- * - Table title and description
- * - Global search
- * - Filter dropdown
+ * Clean header section for tables with:
+ * - Table title
+ * - Dropdown selector
  * - Download button
+ * - Filter button
  * - Settings button
  */
 
-import React, { useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import { Icon } from '../Icon';
-import { InputField } from '../InputField';
 import { Button } from '../Button';
 
 // ============================================================================
 // TYPES
 // ============================================================================
 
-export interface FilterOption {
-  id: string;
+export interface DropdownOption {
   label: string;
-  value: any;
+  value: string;
 }
 
 export interface TableToolbarProps {
   /** Table title */
   title?: string;
-  /** Table description */
-  description?: string;
+  /** Show dropdown selector */
+  showDropdown?: boolean;
+  /** Dropdown options */
+  dropdownOptions?: DropdownOption[];
+  /** Selected dropdown value */
+  dropdownValue?: string;
+  /** Dropdown change handler */
+  onDropdownChange?: (value: string) => void;
+  /** Dropdown placeholder/label */
+  dropdownLabel?: string;
   /** Show global search */
-  showSearch?: boolean;
-  /** Search placeholder text */
-  searchPlaceholder?: string;
-  /** Search value */
-  searchValue?: string;
-  /** Search change handler */
-  onSearchChange?: (value: string) => void;
-  /** Show filter dropdown */
-  showFilter?: boolean;
-  /** Filter options */
-  filterOptions?: FilterOption[];
-  /** Selected filter */
-  selectedFilter?: string;
-  /** Filter change handler */
-  onFilterChange?: (filterId: string) => void;
+  showGlobalSearch?: boolean;
+  /** Global search value */
+  globalSearchValue?: string;
+  /** Global search change handler */
+  onGlobalSearchChange?: (value: string) => void;
+  /** Global search placeholder */
+  globalSearchPlaceholder?: string;
   /** Show download button */
   showDownload?: boolean;
   /** Download handler */
   onDownload?: () => void;
-  /** Download formats */
-  downloadFormats?: Array<{ label: string; format: string }>;
+  /** Show filter button */
+  showFilter?: boolean;
+  /** Filter handler */
+  onFilter?: () => void;
   /** Show settings button */
   showSettings?: boolean;
   /** Settings click handler */
   onSettingsClick?: () => void;
-  /** Custom actions */
-  customActions?: React.ReactNode;
-  /** Selected rows count */
-  selectedCount?: number;
-  /** Bulk actions when rows are selected */
-  bulkActions?: React.ReactNode;
 }
 
 // ============================================================================
@@ -70,166 +64,79 @@ export interface TableToolbarProps {
 
 const ToolbarContainer = styled.div`
   display: flex;
-  flex-direction: column;
-  gap: 16px;
-  padding: 20px;
-  background: #ffffff;
-  border: 1px solid ${({ theme }) => theme.colors?.palette?.neutral?.[300] || '#E5E7EB'};
-  border-bottom: none;
-  border-radius: 8px 8px 0 0;
-`;
-
-const ToolbarHeader = styled.div`
-  display: flex;
+  align-items: center;
   justify-content: space-between;
-  align-items: flex-start;
-  gap: 16px;
-`;
-
-const TitleSection = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
+  padding: 0;
+  margin-bottom: 0;
 `;
 
 const Title = styled.h2`
-  margin: 0;
+  font-family: 'Elevance Sans', sans-serif;
   font-size: 20px;
   font-weight: 600;
   color: ${({ theme }) => theme.colors?.semantic?.text?.primary || '#111827'};
-`;
-
-const Description = styled.p`
   margin: 0;
-  font-size: 14px;
-  color: ${({ theme }) => theme.colors?.semantic?.text?.secondary || '#6B7280'};
 `;
 
 const ActionsSection = styled.div`
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 20px;
 `;
 
-const ToolbarControls = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  flex-wrap: wrap;
-`;
-
-const SearchContainer = styled.div`
-  flex: 1;
-  min-width: 250px;
-  max-width: 400px;
-`;
-
-const FilterButton = styled.button<{ $isActive?: boolean }>`
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 16px;
-  background: ${({ $isActive, theme }) =>
-    $isActive ? theme.colors?.palette?.primary?.[50] || '#EEF2FF' : '#ffffff'};
-  border: 1px solid ${({ theme }) => theme.colors?.palette?.neutral?.[300] || '#E5E7EB'};
-  border-radius: 6px;
+const Dropdown = styled.select`
+  padding: 8px 32px 8px 12px;
+  border: 1px solid ${({ theme }) => theme.colors?.palette?.neutral?.[400] || '#b1b1b1'};
+  border-radius: 4px;
   font-size: 14px;
-  font-weight: 500;
-  color: ${({ $isActive, theme }) =>
-    $isActive ? theme.colors?.palette?.primary?.[700] || '#4338CA' : '#374151'};
-  cursor: pointer;
-  transition: all 0.2s;
-
-  &:hover {
-    background: ${({ theme }) => theme.colors?.palette?.neutral?.[50] || '#F9FAFB'};
-    border-color: ${({ theme }) => theme.colors?.palette?.neutral?.[400] || '#D1D5DB'};
-  }
-
-  &:active {
-    transform: scale(0.98);
-  }
-`;
-
-const IconButton = styled.button`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 40px;
-  height: 40px;
+  font-family: 'Elevance Sans', sans-serif;
+  color: ${({ theme }) => theme.colors?.semantic?.text?.primary || '#111827'};
   background: #ffffff;
-  border: 1px solid ${({ theme }) => theme.colors?.palette?.neutral?.[300] || '#E5E7EB'};
-  border-radius: 6px;
   cursor: pointer;
-  transition: all 0.2s;
-
-  &:hover {
-    background: ${({ theme }) => theme.colors?.palette?.neutral?.[50] || '#F9FAFB'};
-    border-color: ${({ theme }) => theme.colors?.palette?.neutral?.[400] || '#D1D5DB'};
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1.5L6 6.5L11 1.5' stroke='%23666666' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  
+  &:focus {
+    outline: none;
+    border-color: ${({ theme }) => theme.colors?.palette?.primary?.[500] || '#3b82f6'};
   }
-
-  &:active {
-    transform: scale(0.95);
-  }
 `;
 
-const BulkActionsBar = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 12px 16px;
-  background: ${({ theme }) => theme.colors?.palette?.primary?.[50] || '#EEF2FF'};
-  border: 1px solid ${({ theme }) => theme.colors?.palette?.primary?.[200] || '#C7D2FE'};
-  border-radius: 6px;
-`;
-
-const SelectedCount = styled.span`
-  font-size: 14px;
-  font-weight: 600;
-  color: ${({ theme }) => theme.colors?.palette?.primary?.[700] || '#4338CA'};
-`;
-
-const DownloadMenu = styled.div`
+const SearchInputWrapper = styled.div`
   position: relative;
-  display: inline-block;
-`;
-
-const DownloadDropdown = styled.div`
-  position: absolute;
-  top: 100%;
-  right: 0;
-  margin-top: 4px;
-  background: #ffffff;
-  border: 1px solid ${({ theme }) => theme.colors?.palette?.neutral?.[300] || '#E5E7EB'};
-  border-radius: 6px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  z-index: 10;
-  min-width: 150px;
-`;
-
-const DownloadOption = styled.button`
   display: flex;
   align-items: center;
-  gap: 8px;
-  width: 100%;
-  padding: 10px 16px;
-  background: none;
-  border: none;
+`;
+
+const SearchInput = styled.input`
+  padding: 8px 12px 8px 36px;
+  border: 1px solid ${({ theme }) => theme.colors?.palette?.neutral?.[300] || '#d1d5db'};
+  border-radius: 4px;
   font-size: 14px;
-  color: #374151;
-  cursor: pointer;
-  transition: background 0.2s;
-
-  &:hover {
-    background: ${({ theme }) => theme.colors?.palette?.neutral?.[50] || '#F9FAFB'};
+  font-family: 'Elevance Sans', sans-serif;
+  color: ${({ theme }) => theme.colors?.semantic?.text?.primary || '#111827'};
+  background: #ffffff;
+  width: 300px;
+  
+  &::placeholder {
+    color: ${({ theme }) => theme.colors?.palette?.neutral?.[500] || '#6b7280'};
   }
-
-  &:first-child {
-    border-radius: 6px 6px 0 0;
+  
+  &:focus {
+    outline: none;
+    border-color: ${({ theme }) => theme.colors?.palette?.primary?.[500] || '#3b82f6'};
   }
+`;
 
-  &:last-child {
-    border-radius: 0 0 6px 6px;
-  }
+const SearchIconWrapper = styled.div`
+  position: absolute;
+  left: 12px;
+  display: flex;
+  align-items: center;
+  pointer-events: none;
+  color: ${({ theme }) => theme.colors?.palette?.neutral?.[500] || '#6b7280'};
 `;
 
 // ============================================================================
@@ -238,123 +145,93 @@ const DownloadOption = styled.button`
 
 export const TableToolbar: React.FC<TableToolbarProps> = ({
   title,
-  description,
-  showSearch = true,
-  searchPlaceholder = 'Search...',
-  searchValue = '',
-  onSearchChange,
-  showFilter = false,
-  filterOptions = [],
-  selectedFilter,
-  onFilterChange,
+  showDropdown = false,
+  dropdownOptions = [],
+  dropdownValue,
+  onDropdownChange,
+  dropdownLabel = 'Select',
+  showGlobalSearch = false,
+  globalSearchValue = '',
+  onGlobalSearchChange,
+  globalSearchPlaceholder = 'Search...',
   showDownload = true,
   onDownload,
-  downloadFormats = [
-    { label: 'Download as CSV', format: 'csv' },
-    { label: 'Download as Excel', format: 'xlsx' },
-    { label: 'Download as PDF', format: 'pdf' },
-  ],
+  showFilter = true,
+  onFilter,
   showSettings = true,
   onSettingsClick,
-  customActions,
-  selectedCount = 0,
-  bulkActions,
 }) => {
-  const [downloadMenuOpen, setDownloadMenuOpen] = useState(false);
-
-  const handleDownload = (format: string) => {
-    setDownloadMenuOpen(false);
-    if (onDownload) {
-      onDownload();
-    }
-    console.log('Download as:', format);
-  };
-
   return (
     <ToolbarContainer>
-      {/* Header with title and actions */}
-      <ToolbarHeader>
-        {(title || description) && (
-          <TitleSection>
-            {title && <Title>{title}</Title>}
-            {description && <Description>{description}</Description>}
-          </TitleSection>
+      {title && <Title>{title}</Title>}
+
+      <ActionsSection>
+        {showGlobalSearch && (
+          <SearchInputWrapper>
+            <SearchIconWrapper>
+              <Icon name="Search" size="small" />
+            </SearchIconWrapper>
+            <SearchInput
+              type="text"
+              value={globalSearchValue}
+              onChange={(e) => onGlobalSearchChange?.(e.target.value)}
+              placeholder={globalSearchPlaceholder}
+            />
+          </SearchInputWrapper>
         )}
 
-        <ActionsSection>
-          {customActions}
-          
-          {showDownload && (
-            <DownloadMenu>
-              <IconButton
-                onClick={() => setDownloadMenuOpen(!downloadMenuOpen)}
-                title="Download"
-              >
-                <Icon name="Download" size="small" />
-              </IconButton>
-              
-              {downloadMenuOpen && (
-                <DownloadDropdown>
-                  {downloadFormats.map((format) => (
-                    <DownloadOption
-                      key={format.format}
-                      onClick={() => handleDownload(format.format)}
-                    >
-                      <Icon name="Download" size="small" />
-                      {format.label}
-                    </DownloadOption>
-                  ))}
-                </DownloadDropdown>
-              )}
-            </DownloadMenu>
-          )}
+        {showDropdown && dropdownOptions.length > 0 && (
+          <Dropdown
+            value={dropdownValue}
+            onChange={(e) => onDropdownChange?.(e.target.value)}
+          >
+            {dropdownOptions.map((option) => (
+              <option key={option.value} value={option.value}>
+                {option.label}
+              </option>
+            ))}
+          </Dropdown>
+        )}
 
-          {showSettings && (
-            <IconButton onClick={onSettingsClick} title="Settings">
-              <Icon name="Settings" size="small" />
-            </IconButton>
-          )}
-        </ActionsSection>
-      </ToolbarHeader>
+        {showDownload && (
+          <Button
+            variant="secondary"
+            size="medium"
+            showLabel={false}
+            leadingIcon={<Icon name="Download" size="medium" />}
+            onClick={onDownload}
+            aria-label="Download"
+          >
+            Download
+          </Button>
+        )}
 
-      {/* Bulk actions bar (shown when rows are selected) */}
-      {selectedCount > 0 && bulkActions && (
-        <BulkActionsBar>
-          <SelectedCount>{selectedCount} selected</SelectedCount>
-          {bulkActions}
-        </BulkActionsBar>
-      )}
+        {showFilter && (
+          <Button
+            variant="secondary"
+            size="medium"
+            showLabel={false}
+            leadingIcon={<Icon name="FilterAlt" size="medium" />}
+            onClick={onFilter}
+            aria-label="Filter"
+          >
+            Filter
+          </Button>
+        )}
 
-      {/* Search and filter controls */}
-      {(showSearch || showFilter) && (
-        <ToolbarControls>
-          {showSearch && (
-            <SearchContainer>
-              <InputField
-                type="text"
-                placeholder={searchPlaceholder}
-                value={searchValue}
-                onChange={(e) => onSearchChange?.(e.target.value)}
-                size="medium"
-              />
-            </SearchContainer>
-          )}
-
-          {showFilter && filterOptions.length > 0 && (
-            <FilterButton
-              $isActive={!!selectedFilter}
-              onClick={() => {
-                // Toggle filter menu - you can implement a dropdown here
-                console.log('Filter clicked');
-              }}
-            >
-              <Icon name="FilterAlt" size="small" />
-              Filter
-              {selectedFilter && ` (${filterOptions.find(f => f.id === selectedFilter)?.label})`}
-            </FilterButton>
-          )}
-        </ToolbarControls>
-      )}
+        {showSettings && (
+          <Button
+            variant="secondary"
+            size="medium"
+            showLabel={false}
+            leadingIcon={<Icon name="Settings" size="medium" />}
+            onClick={onSettingsClick}
+            aria-label="Settings"
+          >
+            Settings
+          </Button>
+        )}
+      </ActionsSection>
     </ToolbarContainer>
   );
 };
