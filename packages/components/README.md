@@ -7,11 +7,12 @@ A comprehensive React component library for building consistent, accessible user
 
 ## 🎉 What's New in v1.7.0
 
-- 🚀 **Framework Support** - Next.js, Vite, CRA, Remix fully supported
-- 📊 **Table Enhancements** - Select all, global search, sorting feedback
-- 📦 **Breaking Change** - styled-components is now a peer dependency
-- 📚 **Complete Documentation** - 30 component READMEs, 11 guides
-- 🤖 **AI Ready** - Full AI assistant support
+- ✨ **New Components** - TableSidePanel, Accordion, DateTimePickers (DateTimePicker, TimePicker, DateTimeRangePicker)
+- 📊 **EnhancedTableTemplate** - Advanced table with sorting, filtering, pagination, and side panel integration
+- 📦 **New Dependency** - Added date-fns@4.4.0 for date handling
+- 📚 **Updates Page** - New Updates & Changelog page in Storybook with version history
+- � **Update Notifications** - localStorage-based notification system for new releases
+- 🔧 **Component Improvements** - Enhanced Table, TableHeader, TableSettings, Select, and PageLayout
 
 📖 **[Read Full Release Notes](./RELEASE_NOTES.md)** | **[Migration Guide](./MIGRATION_GUIDE.md)**
 
@@ -159,8 +160,17 @@ function MyComponent() {
   - Settings panel
   - Toolbar with title and description
   - Responsive design
+- **EnhancedTableTemplate** - Advanced table template with sorting, filtering, pagination, and side panel integration
 - **TableHeader** - Sortable column headers
 - **TableCell** - Flexible cells
+- **TableSidePanel** - Collapsible/expandable side panel for table detail views
+- **TableSubHeader** - Enhanced table header component
+- **TableSettings** - Column visibility controls
+- **Accordion** - Expand/collapse component for organizing content
+- **DateTimePickers** - Date and time selection components:
+  - **DateTimePicker** - Combined date and time picker
+  - **TimePicker** - Time selection only
+  - **DateTimeRangePicker** - Date and time range selection
 
 ## ⚠️ Important: Do's and Don'ts
 

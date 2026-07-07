@@ -90,7 +90,7 @@ Before writing ANY code, verify:
 ## 🎯 What You Should Know After Reading
 
 ### **Available Components:**
-Button, Input, Checkbox, Radio, Select, TextArea, Toggle, Avatar, Badge, Brand, Card, Chip, Divider, Icon, Link, MenuItem, Tooltip, PageLayout, TopHeader, SideNavigation, Footer, PageHeader, Breadcrumb, Modal, Drawer
+Button, Input, Checkbox, Radio, Select, TextArea, Toggle, Avatar, Badge, Brand, Card, Chip, Divider, Icon, Link, MenuItem, Tooltip, PageLayout, TopHeader, SideNavigation, Footer, PageHeader, Breadcrumb, Modal, Drawer, Table, TableHeader, TableCell, TableSettings, TableSidePanel, TableSubHeader, EnhancedTableTemplate, Accordion, DateTimePicker, TimePicker, DateTimeRangePicker, Pagination, Tabs, Toast, AlertBanner, InlineMessage
 
 ### **Forbidden Libraries:**
 Material-UI, Ant Design, Chakra UI, Bootstrap, Tailwind UI, Shadcn/ui, Radix UI, Mantine, and ALL other external UI libraries
