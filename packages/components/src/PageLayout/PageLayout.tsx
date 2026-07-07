@@ -17,6 +17,8 @@ import { Breadcrumb } from '../Breadcrumb';
 import { PageHeader } from '../PageHeader';
 import { Footer } from '../Footer';
 
+const SIDEBAR_PIN_STORAGE_KEY = 'lean-ids-sidebar-pinned';
+
 export const PageLayout: React.FC<PageLayoutProps> = ({
   variant,
   pageTitle,
@@ -28,11 +30,26 @@ export const PageLayout: React.FC<PageLayoutProps> = ({
   footer,
   className,
 }) => {
-  const [sidebarPinned, setSidebarPinned] = React.useState(sideNav?.isPinned || false);
+  // Initialize pin state from localStorage or prop
+  const [sidebarPinned, setSidebarPinned] = React.useState(() => {
+    // Check localStorage first (for persistence across navigation)
+    if (typeof window !== 'undefined') {
+      const stored = localStorage.getItem(SIDEBAR_PIN_STORAGE_KEY);
+      if (stored !== null) {
+        return stored === 'true';
+      }
+    }
+    // Fall back to prop value
+    return sideNav?.isPinned || false;
+  });
   
   // Handle pin state change
   const handlePinChange = (isPinned: boolean) => {
     setSidebarPinned(isPinned);
+    // Persist to localStorage
+    if (typeof window !== 'undefined') {
+      localStorage.setItem(SIDEBAR_PIN_STORAGE_KEY, String(isPinned));
+    }
     sideNav?.onPinChange?.(isPinned);
   };
   

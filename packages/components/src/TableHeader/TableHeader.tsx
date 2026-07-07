@@ -47,6 +47,7 @@ export const TableHeader: React.FC<TableHeaderProps> = ({
   locked = false,
   onLockToggle,
   leftOffset = 0,
+  isChildColumn = false,
   resizable = false,
   onResize,
   searchValue = '',
@@ -55,6 +56,12 @@ export const TableHeader: React.FC<TableHeaderProps> = ({
   align = 'left',
   width,
   className,
+  subHeader,
+  subHeaderSpan = 1,
+  isFirstInGroup = false,
+  isLastInGroup = false,
+  colSpan,
+  rowSpan,
 }) => {
   const [isResizing, setIsResizing] = useState(false);
   const headerRef = useRef<HTMLTableCellElement>(null);
@@ -137,6 +144,8 @@ export const TableHeader: React.FC<TableHeaderProps> = ({
       style={{ width }}
       className={className}
       data-locked={locked ? 'true' : undefined}
+      colSpan={colSpan}
+      rowSpan={rowSpan}
     >
       {isSearchVariant ? (
         <HeaderContent $variant={variant}>
@@ -176,35 +185,78 @@ export const TableHeader: React.FC<TableHeaderProps> = ({
                 />
               </CheckboxWrapper>
             )}
-            <span>{label}</span>
+            {label && (
+              subHeader ? (
+                <div style={{ display: 'flex', flexDirection: 'column', width: '100%', position: 'relative' }}>
+                  {/* Parent header spanning across columns */}
+                  {isFirstInGroup && (
+                    <div style={{
+                      position: 'absolute',
+                      top: '-12px',
+                      left: isFirstInGroup ? '0' : undefined,
+                      right: isLastInGroup ? '0' : undefined,
+                      width: isFirstInGroup ? `calc(${subHeaderSpan * 100}% + ${(subHeaderSpan - 1) * 1}px)` : undefined,
+                      fontSize: '12px',
+                      fontWeight: 500,
+                      textAlign: 'center',
+                      paddingBottom: '4px',
+                      borderBottom: '1px solid',
+                      borderColor: 'inherit',
+                    }}>
+                      {subHeader}
+                    </div>
+                  )}
+                  <span style={{ marginTop: isFirstInGroup ? '16px' : '0' }}>{label}</span>
+                </div>
+              ) : (
+                <span>{label}</span>
+              )
+            )}
             {sortable && (
               <SortIcon $direction={sortDirection}>
                 <ArrowDownIcon />
               </SortIcon>
             )}
-            {locked && onLockToggle && (
-              <button
-                onClick={handleLockClick}
-                style={{
-                  background: 'none',
-                  border: 'none',
-                  padding: 0,
-                  margin: '0 0 0 8px',
-                  cursor: 'pointer',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  width: '16px',
-                  height: '16px',
-                  color: '#A5B4FC',
-                  transition: 'color 0.2s',
-                }}
-                onMouseEnter={(e) => e.currentTarget.style.color = '#818CF8'}
-                onMouseLeave={(e) => e.currentTarget.style.color = '#A5B4FC'}
-                title="Unlock column"
-              >
-                <LockClosedIcon />
-              </button>
+            {locked && !isChildColumn && (
+              onLockToggle ? (
+                <button
+                  onClick={handleLockClick}
+                  style={{
+                    background: 'none',
+                    border: 'none',
+                    padding: 0,
+                    margin: '0 0 0 8px',
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    width: '16px',
+                    height: '16px',
+                    color: '#A5B4FC',
+                    transition: 'color 0.2s',
+                  }}
+                  onMouseEnter={(e) => e.currentTarget.style.color = '#818CF8'}
+                  onMouseLeave={(e) => e.currentTarget.style.color = '#A5B4FC'}
+                  title="Unlock column"
+                >
+                  <LockClosedIcon />
+                </button>
+              ) : (
+                <div
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    width: '16px',
+                    height: '16px',
+                    margin: '0 0 0 8px',
+                    color: '#A5B4FC',
+                  }}
+                  title="Column is locked"
+                >
+                  <LockClosedIcon />
+                </div>
+              )
             )}
           </HeaderLeftContent>
           {showResizeHandle && (

@@ -20,6 +20,7 @@ export interface TableHeaderProps {
   locked?: boolean;
   onLockToggle?: () => void;
   leftOffset?: number;
+  isChildColumn?: boolean; // Hide lock icon for child columns
   
   // Resizable column feature
   resizable?: boolean;
@@ -34,4 +35,14 @@ export interface TableHeaderProps {
   align?: 'left' | 'center' | 'right';
   width?: string | number;
   className?: string;
+  
+  // Sub-header feature (for nested columns)
+  subHeader?: string;
+  subHeaderSpan?: number;
+  isFirstInGroup?: boolean;
+  isLastInGroup?: boolean;
+  
+  // Table structure
+  colSpan?: number;
+  rowSpan?: number;
 }

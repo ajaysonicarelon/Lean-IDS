@@ -1,0 +1,793 @@
+import { Meta } from '@storybook/blocks';
+import { useEffect } from 'react';
+
+<Meta title="About/Updates & Changelog" />
+
+<script>
+{`
+  // Mark updates as viewed when user visits this page
+  if (typeof window !== 'undefined') {
+    const currentVersion = '1.6.3';
+    const lastViewedVersion = localStorage.getItem('lean-ids-last-viewed-version');
+    
+    // Mark as viewed
+    localStorage.setItem('lean-ids-last-viewed-version', currentVersion);
+    
+    // Show notification if there's a new version
+    if (lastViewedVersion && lastViewedVersion !== currentVersion) {
+      console.log('New Lean IDS version available:', currentVersion);
+    }
+  }
+`}
+</script>
+
+<style>
+  {`
+    .version-container {
+      margin: 2rem 0;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .version-header {
+      background: #5e35b1;
+      color: white;
+      padding: 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .version-number {
+      font-size: 1.5rem;
+      font-weight: 700;
+    }
+
+    .version-date {
+      font-size: 0.875rem;
+      opacity: 0.9;
+    }
+
+    .version-content {
+      padding: 1.5rem;
+      background: #fafafa;
+    }
+
+    .change-section {
+      margin-bottom: 1.5rem;
+    }
+
+    .change-section:last-child {
+      margin-bottom: 0;
+    }
+
+    .change-title {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .change-icon {
+      width: 20px;
+      height: 20px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+    }
+
+    .change-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .change-item {
+      padding: 0.5rem 0;
+      padding-left: 1.5rem;
+      position: relative;
+      line-height: 1.6;
+    }
+
+    .change-item:before {
+      content: "•";
+      position: absolute;
+      left: 0.5rem;
+      color: #666;
+    }
+
+    .change-item.critical {
+      background: #fff3cd;
+      border-left: 4px solid #ff9800;
+      padding-left: 1.5rem;
+      margin: 0.5rem 0;
+      border-radius: 4px;
+    }
+
+    .change-item.critical:before {
+      content: "⚠️ ";
+      left: 0.25rem;
+    }
+
+    .change-item.breaking {
+      background: #ffebee;
+      border-left: 4px solid #f44336;
+      padding-left: 1.5rem;
+      margin: 0.5rem 0;
+      border-radius: 4px;
+    }
+
+    .change-item.breaking:before {
+      content: "🚨 ";
+      left: 0.25rem;
+    }
+
+    .change-item code {
+      background: #e0e0e0;
+      padding: 0.125rem 0.375rem;
+      border-radius: 3px;
+      font-size: 0.875rem;
+      font-family: 'Monaco', 'Courier New', monospace;
+    }
+
+    .migration-note {
+      background: #e3f2fd;
+      border-left: 4px solid #2196f3;
+      padding: 1rem;
+      margin-top: 1rem;
+      border-radius: 4px;
+    }
+
+    .migration-note strong {
+      display: block;
+      margin-bottom: 0.5rem;
+      color: #1976d2;
+    }
+
+    .stats-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 1rem;
+      margin: 2rem 0;
+    }
+
+    .stat-card {
+      background: white;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      padding: 1rem;
+      text-align: center;
+    }
+
+    .stat-number {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #5e35b1;
+    }
+
+    .stat-label {
+      font-size: 0.875rem;
+      color: #666;
+      margin-top: 0.25rem;
+    }
+
+    .npm-badge {
+      display: inline-block;
+      margin: 1rem 0;
+    }
+
+    .new-update-banner {
+      background: #fff3cd;
+      border-left: 4px solid #ff9800;
+      padding: 1rem 1.5rem;
+      margin-bottom: 2rem;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .new-update-banner .icon {
+      font-size: 1.5rem;
+    }
+
+    .new-update-banner .content {
+      flex: 1;
+    }
+
+    .new-update-banner .title {
+      font-weight: 600;
+      margin-bottom: 0.25rem;
+      color: #f57c00;
+    }
+
+    .new-update-banner .message {
+      font-size: 0.875rem;
+      color: #666;
+    }
+  `}
+</style>
+
+<div id="new-update-notification" style={{ display: 'none' }}>
+  <div className="new-update-banner">
+    <div className="icon">🔔</div>
+    <div className="content">
+      <div className="title">New Update Available!</div>
+      <div className="message">Version 1.7.0 has been released. Check out the latest changes below.</div>
+    </div>
+  </div>
+</div>
+
+<script dangerouslySetInnerHTML={{__html: `
+  (function() {
+    if (typeof window !== 'undefined') {
+      const currentVersion = '1.7.0';
+      const lastViewedVersion = localStorage.getItem('lean-ids-last-viewed-version');
+      
+      // Show banner if user hasn't seen this version
+      if (!lastViewedVersion || lastViewedVersion !== currentVersion) {
+        const banner = document.getElementById('new-update-notification');
+        if (banner) {
+          banner.style.display = 'block';
+        }
+      }
+      
+      // Mark as viewed when page loads
+      localStorage.setItem('lean-ids-last-viewed-version', currentVersion);
+    }
+  })();
+`}} />
+
+# 📦 Lean IDS Updates & Changelog
+
+<div className="npm-badge">
+  <img src="https://img.shields.io/npm/v/@ajaysoni7832/lean-ids-components.svg" alt="npm version" />
+  <img src="https://img.shields.io/npm/dm/@ajaysoni7832/lean-ids-components.svg" alt="npm downloads" style={{ marginLeft: '8px' }} />
+  <img src="https://img.shields.io/npm/l/@ajaysoni7832/lean-ids-components.svg" alt="license" style={{ marginLeft: '8px' }} />
+</div>
+
+Stay up to date with the latest changes, improvements, and fixes to the Lean IDS design system.
+
+<div className="stats-container">
+  <div className="stat-card">
+    <div className="stat-number">1.7.0</div>
+    <div className="stat-label">Current Version</div>
+  </div>
+  <div className="stat-card">
+    <div className="stat-number">50+</div>
+    <div className="stat-label">Components</div>
+  </div>
+  <div className="stat-card">
+    <div className="stat-number">100%</div>
+    <div className="stat-label">TypeScript</div>
+  </div>
+  <div className="stat-card">
+    <div className="stat-number">WCAG 2.1</div>
+    <div className="stat-label">Accessible</div>
+  </div>
+</div>
+
+---
+
+## 🚀 Current Version
+
+<div className="version-container">
+  <div className="version-header">
+    <div className="version-number">v1.7.0</div>
+    <div className="version-date">July 8, 2026</div>
+  </div>
+  <div className="version-content">
+    
+    <div className="change-section">
+      <div className="change-title">
+        <span className="change-icon">✨</span>
+        New Components
+      </div>
+      <ul className="change-list">
+        <li className="change-item">
+          Added <code>TableSidePanel</code> component for table detail views with collapsible/expandable overlay
+        </li>
+        <li className="change-item">
+          Added <code>Accordion</code> component with expand/collapse functionality
+        </li>
+        <li className="change-item">
+          Added <code>DateTimePickers</code> component for date and time selection
+        </li>
+        <li className="change-item">
+          Added <code>TableSubHeader</code> component for enhanced table headers
+        </li>
+      </ul>
+    </div>
+
+    <div className="change-section">
+      <div className="change-title">
+        <span className="change-icon">🔧</span>
+        Improvements
+      </div>
+      <ul className="change-list">
+        <li className="change-item">
+          <strong>EnhancedTableTemplate:</strong> New advanced table template with sorting, filtering, pagination, and side panel integration
+        </li>
+        <li className="change-item">
+          Enhanced <code>Table</code> component with better TypeScript types and improved performance
+        </li>
+        <li className="change-item">
+          Improved <code>TableHeader</code> with better styling and accessibility
+        </li>
+        <li className="change-item">
+          Enhanced <code>TableSettings</code> with improved column visibility controls
+        </li>
+        <li className="change-item">
+          Updated <code>Select</code> component with better dropdown positioning
+        </li>
+        <li className="change-item">
+          Improved <code>PageLayout</code> with better responsive behavior
+        </li>
+      </ul>
+    </div>
+
+    <div className="change-section">
+      <div className="change-title">
+        <span className="change-icon">📝</span>
+        Documentation
+      </div>
+      <ul className="change-list">
+        <li className="change-item">
+          Added <strong>Updates & Changelog</strong> page in Storybook (About section)
+        </li>
+        <li className="change-item">
+          Added new update notification system with localStorage tracking
+        </li>
+        <li className="change-item">
+          Added <code>TABLE_ENHANCEMENTS.md</code> documentation for table improvements
+        </li>
+        <li className="change-item">
+          Added <code>TABLE_IMPLEMENTATION_SUMMARY.md</code> for implementation guide
+        </li>
+      </ul>
+    </div>
+
+    <div className="change-section">
+      <div className="change-title">
+        <span className="change-icon">📦</span>
+        Dependencies
+      </div>
+      <ul className="change-list">
+        <li className="change-item critical">
+          <strong>CRITICAL:</strong> Added <code>date-fns@4.4.0</code> for date handling in DateTimePickers
+        </li>
+      </ul>
+    </div>
+
+    <div className="migration-note">
+      <strong>📦 Installation & Setup:</strong>
+      Update to v1.7.0 to get all new components and improvements.
+      
+      <code>npm install @ajaysoni7832/lean-ids-components@1.7.0</code>
+    </div>
+
+  </div>
+</div>
+
+---
+
+## 📜 Previous Versions
+
+<div className="version-container">
+  <div className="version-header">
+    <div className="version-number">v1.6.3</div>
+    <div className="version-date">July 1, 2026</div>
+  </div>
+  <div className="version-content">
+    
+    <div className="change-section">
+      <div className="change-title">
+        <span className="change-icon icon-breaking">🚨</span>
+        AI Guidelines System - Critical Update
+      </div>
+      <ul className="change-list">
+        <li className="change-item breaking">
+          <strong>BREAKING:</strong> Added strict AI guidelines enforcement system with 4 critical rules
+        </li>
+        <li className="change-item critical">
+          <strong>CRITICAL:</strong> All AI assistants must read <code>AI_READING_FLOW.md</code> before generating code
+        </li>
+        <li className="change-item">
+          Added <code>postinstall</code> script to auto-distribute AI guidelines to consuming projects
+        </li>
+      </ul>
+    </div>
+
+    <div className="change-section">
+      <div className="change-title">
+        <span className="change-icon icon-new">✨</span>
+        New Features
+      </div>
+      <ul className="change-list">
+        <li className="change-item">
+          <strong>AI Reading Flow:</strong> Added master <code>AI_READING_FLOW.md</code> file for proper guideline reading order
+        </li>
+        <li className="change-item">
+          <strong>Component Creation Rules:</strong> Strict enforcement - build ONLY from existing Lean IDS components
+        </li>
+        <li className="change-item">
+          <strong>Token Usage Rules:</strong> Mandatory token usage for all styling (colors, spacing, typography)
+        </li>
+        <li className="change-item">
+          <strong>Icon Rules:</strong> Import ONLY icons from <code>@mui/icons-material</code>, no other MUI components
+        </li>
+        <li className="change-item">
+          <strong>Gradient Rules:</strong> NO gradients unless user explicitly requests
+        </li>
+      </ul>
+    </div>
+
+    <div className="change-section">
+      <div className="change-title">
+        <span className="change-icon icon-improved">📝</span>
+        Documentation
+      </div>
+      <ul className="change-list">
+        <li className="change-item">
+          Updated <code>.cursorrules</code> with comprehensive component creation examples
+        </li>
+        <li className="change-item">
+          Updated <code>.windsurfrules</code> with strict enforcement rules
+        </li>
+        <li className="change-item">
+          Enhanced <code>AI_GUIDELINES.md</code> with detailed sections for each rule
+        </li>
+        <li className="change-item">
+          Added <code>CRITICAL_RULES_UPDATE.md</code> documentation
+        </li>
+        <li className="change-item">
+          Added <code>QUICK_START_AI_SETUP.md</code> for quick reference
+        </li>
+      </ul>
+    </div>
+
+    <div className="migration-note">
+      <strong>📦 Installation & Setup:</strong>
+      After installing/updating to v1.6.3, AI guideline files will automatically copy to your project root via postinstall script. Restart your IDE to load the new rules.
+      
+      <code>npm install @ajaysoni7832/lean-ids-components@1.6.3</code>
+    </div>
+
+  </div>
+</div>
+
+---
+
+## 📜 Previous Versions
+
+<div className="version-container">
+  <div className="version-header">
+    <div className="version-number">v1.6.2</div>
+    <div className="version-date">June 28, 2026</div>
+  </div>
+  <div className="version-content">
+    
+    <div className="change-section">
+      <div className="change-title">
+        <span className="change-icon icon-new">✨</span>
+        New Components
+      </div>
+      <ul className="change-list">
+        <li className="change-item">
+          Added <code>TableSidePanel</code> component for table detail views
+        </li>
+        <li className="change-item">
+          Added <code>Accordion</code> component with expand/collapse functionality
+        </li>
+      </ul>
+    </div>
+
+    <div className="change-section">
+      <div className="change-title">
+        <span className="change-icon icon-improved">🔧</span>
+        Improvements
+      </div>
+      <ul className="change-list">
+        <li className="change-item">
+          Enhanced <code>Table</code> component with better TypeScript types
+        </li>
+        <li className="change-item">
+          Improved <code>PageLayout</code> sidebar pin functionality
+        </li>
+        <li className="change-item">
+          Updated <code>Brand</code> component with better logo handling
+        </li>
+      </ul>
+    </div>
+
+    <div className="change-section">
+      <div className="change-title">
+        <span className="change-icon icon-fixed">🐛</span>
+        Bug Fixes
+      </div>
+      <ul className="change-list">
+        <li className="change-item">
+          Fixed sidebar hover state in <code>SideNavigation</code>
+        </li>
+        <li className="change-item">
+          Fixed z-index issues in <code>Modal</code> and <code>Drawer</code>
+        </li>
+      </ul>
+    </div>
+
+  </div>
+</div>
+
+<div className="version-container">
+  <div className="version-header">
+    <div className="version-number">v1.6.1</div>
+    <div className="version-date">June 20, 2026</div>
+  </div>
+  <div className="version-content">
+    
+    <div className="change-section">
+      <div className="change-title">
+        <span className="change-icon icon-improved">🔧</span>
+        Improvements
+      </div>
+      <ul className="change-list">
+        <li className="change-item">
+          Performance optimization for <code>Table</code> component with large datasets
+        </li>
+        <li className="change-item">
+          Improved accessibility for <code>Modal</code> and <code>Drawer</code> components
+        </li>
+        <li className="change-item">
+          Enhanced <code>Input</code> component error state styling
+        </li>
+      </ul>
+    </div>
+
+    <div className="change-section">
+      <div className="change-title">
+        <span className="change-icon icon-fixed">🐛</span>
+        Bug Fixes
+      </div>
+      <ul className="change-list">
+        <li className="change-item">
+          Fixed <code>Select</code> dropdown positioning on scroll
+        </li>
+        <li className="change-item">
+          Fixed <code>Tooltip</code> arrow alignment
+        </li>
+        <li className="change-item">
+          Fixed <code>Pagination</code> button states
+        </li>
+      </ul>
+    </div>
+
+  </div>
+</div>
+
+<div className="version-container">
+  <div className="version-header">
+    <div className="version-number">v1.6.0</div>
+    <div className="version-date">June 10, 2026</div>
+  </div>
+  <div className="version-content">
+    
+    <div className="change-section">
+      <div className="change-title">
+        <span className="change-icon icon-new">✨</span>
+        New Features
+      </div>
+      <ul className="change-list">
+        <li className="change-item critical">
+          <strong>CRITICAL:</strong> Added <code>EnhancedTableTemplate</code> with advanced features (sorting, filtering, pagination)
+        </li>
+        <li className="change-item">
+          Added <code>TableSettings</code> component for column visibility control
+        </li>
+        <li className="change-item">
+          Added <code>MetricCard</code> component for dashboard metrics
+        </li>
+      </ul>
+    </div>
+
+    <div className="change-section">
+      <div className="change-title">
+        <span className="change-icon icon-breaking">🚨</span>
+        Breaking Changes
+      </div>
+      <ul className="change-list">
+        <li className="change-item breaking">
+          <strong>BREAKING:</strong> <code>Table</code> component API changed - <code>columns</code> prop now requires <code>id</code> field
+        </li>
+        <li className="change-item breaking">
+          <strong>BREAKING:</strong> Removed deprecated <code>LegacyButton</code> component
+        </li>
+      </ul>
+    </div>
+
+    <div className="migration-note">
+      <strong>🔄 Migration Guide:</strong>
+      Update your <code>Table</code> columns to include <code>id</code> field:
+      
+      <code>
+        columns={`[{ id: 'name', header: 'Name', accessor: 'name' }]`}
+      </code>
+    </div>
+
+  </div>
+</div>
+
+<div className="version-container">
+  <div className="version-header">
+    <div className="version-number">v1.5.0</div>
+    <div className="version-date">May 25, 2026</div>
+  </div>
+  <div className="version-content">
+    
+    <div className="change-section">
+      <div className="change-title">
+        <span className="change-icon icon-new">✨</span>
+        New Components
+      </div>
+      <ul className="change-list">
+        <li className="change-item">
+          Added <code>Pagination</code> component
+        </li>
+        <li className="change-item">
+          Added <code>Tabs</code> component
+        </li>
+        <li className="change-item">
+          Added <code>Toast</code> notification component
+        </li>
+      </ul>
+    </div>
+
+    <div className="change-section">
+      <div className="change-title">
+        <span className="change-icon icon-security">🔒</span>
+        Security
+      </div>
+      <ul className="change-list">
+        <li className="change-item critical">
+          <strong>CRITICAL:</strong> Updated <code>styled-components</code> to v6.1.8 (security patch)
+        </li>
+        <li className="change-item">
+          Updated all dependencies to latest secure versions
+        </li>
+      </ul>
+    </div>
+
+  </div>
+</div>
+
+---
+
+## 📋 Version History Summary
+
+<table style={{ width: '100%', borderCollapse: 'collapse', marginTop: '1rem' }}>
+  <thead>
+    <tr style={{ background: '#f5f5f5', borderBottom: '2px solid #e0e0e0' }}>
+      <th style={{ padding: '0.75rem', textAlign: 'left', fontWeight: 600 }}>Version</th>
+      <th style={{ padding: '0.75rem', textAlign: 'left', fontWeight: 600 }}>Release Date</th>
+      <th style={{ padding: '0.75rem', textAlign: 'left', fontWeight: 600 }}>Type</th>
+      <th style={{ padding: '0.75rem', textAlign: 'left', fontWeight: 600 }}>Key Changes</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr style={{ borderBottom: '1px solid #e0e0e0' }}>
+      <td style={{ padding: '0.75rem', fontWeight: 600 }}>1.7.0</td>
+      <td style={{ padding: '0.75rem' }}>Jul 8, 2026</td>
+      <td style={{ padding: '0.75rem' }}>Minor</td>
+      <td style={{ padding: '0.75rem' }}>TableSidePanel, Accordion, DateTimePickers, EnhancedTableTemplate, Updates page</td>
+    </tr>
+    <tr style={{ borderBottom: '1px solid #e0e0e0' }}>
+      <td style={{ padding: '0.75rem' }}>1.6.3</td>
+      <td style={{ padding: '0.75rem' }}>Jul 1, 2026</td>
+      <td style={{ padding: '0.75rem' }}>Major</td>
+      <td style={{ padding: '0.75rem' }}>AI Guidelines System, Strict Rules Enforcement</td>
+    </tr>
+    <tr style={{ borderBottom: '1px solid #e0e0e0' }}>
+      <td style={{ padding: '0.75rem' }}>1.6.2</td>
+      <td style={{ padding: '0.75rem' }}>Jun 28, 2026</td>
+      <td style={{ padding: '0.75rem' }}>Minor</td>
+      <td style={{ padding: '0.75rem' }}>Component improvements</td>
+    </tr>
+    <tr style={{ borderBottom: '1px solid #e0e0e0' }}>
+      <td style={{ padding: '0.75rem' }}>1.6.1</td>
+      <td style={{ padding: '0.75rem' }}>Jun 20, 2026</td>
+      <td style={{ padding: '0.75rem' }}>Patch</td>
+      <td style={{ padding: '0.75rem' }}>Performance improvements, bug fixes</td>
+    </tr>
+    <tr style={{ borderBottom: '1px solid #e0e0e0' }}>
+      <td style={{ padding: '0.75rem' }}>1.6.0</td>
+      <td style={{ padding: '0.75rem' }}>Jun 10, 2026</td>
+      <td style={{ padding: '0.75rem' }}>Major</td>
+      <td style={{ padding: '0.75rem' }}>EnhancedTableTemplate, Breaking changes</td>
+    </tr>
+    <tr style={{ borderBottom: '1px solid #e0e0e0' }}>
+      <td style={{ padding: '0.75rem' }}>1.5.0</td>
+      <td style={{ padding: '0.75rem' }}>May 25, 2026</td>
+      <td style={{ padding: '0.75rem' }}>Minor</td>
+      <td style={{ padding: '0.75rem' }}>Pagination, Tabs, Toast components</td>
+    </tr>
+    <tr style={{ borderBottom: '1px solid #e0e0e0' }}>
+      <td style={{ padding: '0.75rem' }}>1.4.0</td>
+      <td style={{ padding: '0.75rem' }}>May 10, 2026</td>
+      <td style={{ padding: '0.75rem' }}>Minor</td>
+      <td style={{ padding: '0.75rem' }}>Table component enhancements</td>
+    </tr>
+    <tr style={{ borderBottom: '1px solid #e0e0e0' }}>
+      <td style={{ padding: '0.75rem' }}>1.3.0</td>
+      <td style={{ padding: '0.75rem' }}>Apr 25, 2026</td>
+      <td style={{ padding: '0.75rem' }}>Minor</td>
+      <td style={{ padding: '0.75rem' }}>PageLayout improvements</td>
+    </tr>
+    <tr style={{ borderBottom: '1px solid #e0e0e0' }}>
+      <td style={{ padding: '0.75rem' }}>1.2.0</td>
+      <td style={{ padding: '0.75rem' }}>Apr 10, 2026</td>
+      <td style={{ padding: '0.75rem' }}>Minor</td>
+      <td style={{ padding: '0.75rem' }}>New form components</td>
+    </tr>
+    <tr style={{ borderBottom: '1px solid #e0e0e0' }}>
+      <td style={{ padding: '0.75rem' }}>1.1.0</td>
+      <td style={{ padding: '0.75rem' }}>Mar 25, 2026</td>
+      <td style={{ padding: '0.75rem' }}>Minor</td>
+      <td style={{ padding: '0.75rem' }}>Initial component library</td>
+    </tr>
+    <tr>
+      <td style={{ padding: '0.75rem' }}>1.0.0</td>
+      <td style={{ padding: '0.75rem' }}>Mar 1, 2026</td>
+      <td style={{ padding: '0.75rem' }}>Major</td>
+      <td style={{ padding: '0.75rem' }}>Initial release</td>
+    </tr>
+  </tbody>
+</table>
+
+---
+
+## 🔔 Stay Updated
+
+### **NPM Package**
+```bash
+npm install @ajaysoni7832/lean-ids-components@latest
+```
+
+### **Check Current Version**
+```bash
+npm list @ajaysoni7832/lean-ids-components
+```
+
+### **View All Versions**
+```bash
+npm view @ajaysoni7832/lean-ids-components versions
+```
+
+---
+
+## 📚 Additional Resources
+
+- **GitHub Repository:** [Lean-IDS](https://github.com/ajaysonicarelon/Lean-IDS)
+- **NPM Package:** [@ajaysoni7832/lean-ids-components](https://www.npmjs.com/package/@ajaysoni7832/lean-ids-components)
+- **Documentation:** See individual component stories
+- **Migration Guides:** Check version-specific migration notes above
+
+---
+
+## 💬 Feedback & Support
+
+Found a bug or have a feature request? 
+
+- **GitHub Issues:** [Report an issue](https://github.com/ajaysonicarelon/Lean-IDS/issues)
+- **Discussions:** [Join the discussion](https://github.com/ajaysonicarelon/Lean-IDS/discussions)
+- **Email:** Contact the design system team
+
+---
+
+<div style={{ marginTop: '3rem', padding: '1.5rem', background: '#f5f5f5', borderRadius: '8px', textAlign: 'center' }}>
+  <strong>🎯 Always use the latest version for the best experience and latest features!</strong>
+  <br /><br />
+  <code>npm install @ajaysoni7832/lean-ids-components@latest</code>
+</div>

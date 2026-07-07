@@ -1,0 +1,6 @@
+/**
+ * DateTimePicker Component
+ */
+
+export { DateTimePicker } from './DateTimePicker';
+export type { DateTimePickerProps } from './DateTimePicker.types';

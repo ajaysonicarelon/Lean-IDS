@@ -6,6 +6,9 @@
 export { ThemeProvider, useTheme } from './ThemeProvider';
 export type { ThemeProviderProps } from './ThemeProvider';
 
+export { Accordion } from './Accordion';
+export type { AccordionProps } from './Accordion';
+
 export { InputField } from './InputField';
 export type { InputFieldProps, InputType, InputSize, InputState } from './InputField';
 
@@ -78,6 +81,12 @@ export type { IconProps, IconSize } from './Icon';
 export { TableSettings } from './TableSettings';
 export type { TableSettingsProps, ColumnConfig } from './TableSettings';
 
+export { TableSubHeader } from './TableSubHeader';
+export type { TableSubHeaderProps } from './TableSubHeader';
+
+export { TableSidePanel } from './TableSidePanel';
+export type { TableSidePanelProps } from './TableSidePanel';
+
 export { Table } from './Table';
 export type { TableProps, TableColumn, TableAction } from './Table';
 
@@ -110,6 +119,16 @@ export type { DrawerProps } from './Drawer';
 
 export { Select } from './Select';
 export type { SelectProps, SelectOption } from './Select';
+
+export { TimePicker, DateTimePicker, DateTimeRangePicker } from './DateTimePickers';
+export type {
+  TimePickerProps,
+  TimeValue,
+  DateTimePickerProps,
+  DateTimeRangePickerProps,
+  DateRange,
+  QuickSelectOption,
+} from './DateTimePickers';
 
 export { Tabs } from './Tabs';
 export type { TabsProps, TabItem } from './Tabs';

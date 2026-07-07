@@ -115,6 +115,61 @@ export const ColumnLabel = styled.span`
   color: ${({ theme }) => theme.colors.palette.neutral[1000]};
 `;
 
+export const SubColumnItem = styled(ColumnItem)`
+  margin-left: ${({ theme }) => theme.spacing[10]};
+  background-color: ${({ theme, $isDragging, $isLocked }) =>
+    $isLocked ? theme.colors.palette.primary[50] : $isDragging ? theme.colors.palette.neutral[100] : theme.colors.palette.neutral[100]};
+`;
+
+export const ExpandIcon = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+  color: ${({ theme }) => theme.colors.palette.neutral[600]};
+  transition: color 0.2s;
+
+  &:hover {
+    color: ${({ theme }) => theme.colors.palette.neutral[1000]};
+  }
+
+  svg {
+    width: 20px;
+    height: 20px;
+  }
+`;
+
+export const CheckboxWrapper = styled.div`
+  display: flex;
+  align-items: center;
+`;
+
+export const LockButton = styled.button`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  color: ${({ theme }) => theme.colors.palette.neutral[600]};
+  border-radius: ${({ theme }) => theme.borderRadius.sm};
+  transition: all 0.2s;
+
+  &:hover {
+    background-color: ${({ theme }) => theme.colors.palette.neutral[100]};
+    color: ${({ theme }) => theme.colors.palette.neutral[1000]};
+  }
+
+  svg {
+    width: 16px;
+    height: 16px;
+  }
+`;
+
 export const ModalFooter = styled.div`
   display: flex;
   align-items: center;

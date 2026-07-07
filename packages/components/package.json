@@ -33,14 +33,14 @@
     "NAVIGATION_GUIDE.md",
     "MODAL_DRAWER_GUIDE.md",
     "CONTRIBUTING.md",
-    "scripts/postinstall.js"
+    "scripts/postinstall.cjs"
   ],
   "scripts": {
     "build": "rollup -c",
     "dev": "rollup -c -w",
     "storybook": "storybook dev -p 6006 --config-dir ../../.storybook",
     "build-storybook": "storybook build -o ../../storybook-static --config-dir ../../.storybook",
-    "postinstall": "node scripts/postinstall.js || true"
+    "postinstall": "node scripts/postinstall.cjs || true"
   },
   "keywords": [
     "react",
@@ -80,7 +80,8 @@
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
     "@mui/icons-material": "^9.0.0",
-    "@mui/material": "^9.0.0"
+    "@mui/material": "^9.0.0",
+    "date-fns": "^4.4.0"
   },
   "devDependencies": {
     "@rollup/plugin-typescript": "^12.1.2",

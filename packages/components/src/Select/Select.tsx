@@ -110,9 +110,10 @@ export const Select: React.FC<SelectProps> = ({
   required = false,
   disabled = false,
   error = false,
-  helperText = 'Default helping message',
+  helperText,
   size = 'default',
   className,
+  showSelectionIndicator = true,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
@@ -240,20 +241,22 @@ export const Select: React.FC<SelectProps> = ({
               $disabled={!!option.disabled}
               onClick={() => !option.disabled && handleSelect(option.value)}
             >
-              {multiple ? (
-                <Checkbox
-                  checked={isSelected(option.value)}
-                  disabled={option.disabled}
-                  size="default"
-                  onChange={() => {}}
-                />
-              ) : (
-                <RadioButton
-                  checked={isSelected(option.value)}
-                  disabled={option.disabled}
-                  size="default"
-                  onChange={() => {}}
-                />
+              {showSelectionIndicator && (
+                multiple ? (
+                  <Checkbox
+                    checked={isSelected(option.value)}
+                    disabled={option.disabled}
+                    size="default"
+                    onChange={() => {}}
+                  />
+                ) : (
+                  <RadioButton
+                    checked={isSelected(option.value)}
+                    disabled={option.disabled}
+                    size="default"
+                    onChange={() => {}}
+                  />
+                )
               )}
               <span>{option.label}</span>
             </OptionItem>

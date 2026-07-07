@@ -17,6 +17,7 @@ export interface TableColumn {
   visible?: boolean;
   locked?: boolean;
   renderCell?: (value: any, row: any, rowIndex: number) => React.ReactNode;
+  subColumns?: TableColumn[];
 }
 
 export interface TableAction {
@@ -54,4 +55,8 @@ export interface TableProps {
   loading?: boolean;
   /** Custom className */
   className?: string;
+  /** Show side panel for column/filter controls (alternative to modal settings) */
+  showSidePanel?: boolean;
+  /** Show column search bars in sub-header */
+  showColumnFilters?: boolean;
 }

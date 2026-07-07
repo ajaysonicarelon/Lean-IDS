@@ -353,18 +353,17 @@ export const AdvancedDataTable: React.FC = () => {
                   return (
                     <TableHeader
                       key={col.id}
+                      label=""
                       variant="default"
                       side={side}
+                      showCheckbox
+                      checked={allChecked}
+                      onCheckChange={handleSelectAll}
                       locked={isLocked}
                       leftOffset={offset}
                       data-locked={isLocked}
-                    >
-                      <input
-                        type="checkbox"
-                        checked={allChecked}
-                        onChange={e => handleSelectAll(e.target.checked)}
-                      />
-                    </TableHeader>
+                      isChildColumn={true}
+                    />
                   );
                 }
 

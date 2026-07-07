@@ -4,6 +4,8 @@ export interface ColumnConfig {
   visible: boolean;
   locked: boolean;
   order: number;
+  subColumns?: ColumnConfig[];
+  parentId?: string;
 }
 
 export interface TableSettingsProps {

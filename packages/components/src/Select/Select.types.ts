@@ -39,4 +39,6 @@ export interface SelectProps {
   size?: 'xsmall' | 'small' | 'default' | 'large';
   /** Custom className */
   className?: string;
+  /** Show selection indicator (radio/checkbox) */
+  showSelectionIndicator?: boolean;
 }

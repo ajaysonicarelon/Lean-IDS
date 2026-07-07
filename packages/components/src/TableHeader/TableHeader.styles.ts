@@ -29,6 +29,7 @@ export const StyledTableHeader = styled.th<StyledTableHeaderProps>`
   white-space: nowrap;
   cursor: ${({ $sortable }) => ($sortable ? 'pointer' : 'default')};
   user-select: none;
+  vertical-align: middle;
   
   ${({ $side }) => {
     if ($side === 'left') {
