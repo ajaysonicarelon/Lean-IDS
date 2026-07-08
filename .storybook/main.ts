@@ -20,6 +20,12 @@ const config: StorybookConfig = {
     autodocs: 'tag',
   },
   viteFinal: async (config) => {
+    // Ensure styled-components is properly resolved
+    config.resolve = {
+      ...config.resolve,
+      dedupe: ['styled-components', 'react', 'react-dom'],
+    };
+
     // Handle "use client" directives from MUI icons
     config.build = {
       ...config.build,
