@@ -5,7 +5,7 @@ A comprehensive React component library for building consistent, accessible user
 [![npm version](https://img.shields.io/npm/v/@ajaysoni7832/lean-ids-components.svg)](https://www.npmjs.com/package/@ajaysoni7832/lean-ids-components)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
-## 🎉 What's New in v1.7.0
+## 🎉 What's New in v1.7.1
 
 - ✨ **New Components** - TableSidePanel, Accordion, DateTimePickers (DateTimePicker, TimePicker, DateTimeRangePicker)
 - 📊 **EnhancedTableTemplate** - Advanced table with sorting, filtering, pagination, and side panel integration
