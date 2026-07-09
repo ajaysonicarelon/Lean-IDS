@@ -7,7 +7,7 @@ import { useEffect } from 'react';
 {`
   // Mark updates as viewed when user visits this page
   if (typeof window !== 'undefined') {
-    const currentVersion = '1.6.3';
+    const currentVersion = '1.7.1';
     const lastViewedVersion = localStorage.getItem('lean-ids-last-viewed-version');
     
     // Mark as viewed
@@ -383,12 +383,33 @@ Stay up to date with the latest changes, improvements, and fixes to the Lean IDS
 
     <div className="change-section">
       <div className="change-title">
-        <span className="change-icon">📦</span>
+        <span className="change-icon">�</span>
+        Bug Fixes
+      </div>
+      <ul className="change-list">
+        <li className="change-item critical">
+          <strong>CRITICAL:</strong> Fixed postinstall script CommonJS/ESM module conflict - renamed <code>postinstall.js</code> to <code>postinstall.cjs</code>
+        </li>
+        <li className="change-item">
+          Fixed <code>require('fs')</code> error that developers encountered during npm install
+        </li>
+        <li className="change-item">
+          Synced package versions - both tokens and components now at v1.7.1
+        </li>
+      </ul>
+    </div>
+
+    <div className="change-section">
+      <div className="change-title">
+        <span className="change-icon">�📦</span>
         Dependencies
       </div>
       <ul className="change-list">
         <li className="change-item critical">
           <strong>CRITICAL:</strong> Added <code>date-fns@4.4.0</code> for date handling in DateTimePickers
+        </li>
+        <li className="change-item">
+          Updated <code>@ajaysoni7832/lean-ids-tokens</code> dependency to <code>^1.7.1</code>
         </li>
       </ul>
     </div>
