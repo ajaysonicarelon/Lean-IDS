@@ -24,15 +24,31 @@ import { TableSubHeader } from '../TableSubHeader';
 import { TableCell } from '../TableCell';
 import { Pagination } from '../Pagination';
 import { TableSettings, ColumnConfig } from '../TableSettings';
-import { TableSidePanel } from '../TableSidePanel';
+import { TableSidePanel, ColumnFilter } from '../TableSidePanel';
 import { TableToolbar } from './TableToolbar';
-import { Checkbox } from '../Checkbox';
 
 const StyledTable = styled.table`
   width: 100%;
   border-collapse: separate;
   border-spacing: 0;
   table-layout: fixed;
+`;
+
+const AnimatedTableRow = styled.tr<{ $animationDelay: number }>`
+  @keyframes slideIn {
+    from {
+      opacity: 0;
+      transform: translateY(-4px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  animation: slideIn 0.3s ease-out;
+  animation-delay: ${({ $animationDelay }) => $animationDelay}ms;
+  animation-fill-mode: backwards;
 `;
 
 const TableContainer = styled.div`
@@ -56,6 +72,7 @@ const ScrollContainer = styled.div<{ $hasSidePanel?: boolean }>`
     $hasSidePanel ? '8px 0 0 8px' : '8px'};
   position: relative;
   flex: 1;
+  min-height: 500px;
 `;
 
 interface DataRow {
@@ -99,7 +116,26 @@ const getSampleData = (): DataRow[] => [
   { id: '1234567909', claimId: '1234567909', firstName: 'Betty', lastName: 'Lewis', userDetails: 'Associate Name', nrCodes: 'NR020', paidAmount: '$11,100', acrLoadDates: 'April 30, 2025', contact: '(555) 901.2345', amount: '$11,100', avatar: 'https://i.pravatar.cc/32?img=20', city: 'Boston', state: 'MA', status: 'Pending', priority: 'Medium' },
 ];
 
-const getInitialColumnConfigs = (): ColumnConfig[] => [
+// Simple columns without sub-headers (default)
+const getSimpleColumnConfigs = (): ColumnConfig[] => [
+  { id: 'checkbox', label: 'Select', visible: true, locked: true, order: 0 },
+  { id: 'claimId', label: 'Claim ID', visible: true, locked: false, order: 1 },
+  { id: 'firstName', label: 'First Name', visible: true, locked: false, order: 2 },
+  { id: 'lastName', label: 'Last Name', visible: true, locked: false, order: 3 },
+  { id: 'userDetails', label: 'Role', visible: true, locked: false, order: 4 },
+  { id: 'nrCodes', label: 'NR Codes', visible: true, locked: false, order: 5 },
+  { id: 'paidAmount', label: 'Paid Amount', visible: true, locked: false, order: 6 },
+  { id: 'acrLoadDates', label: 'ACR Load Dates', visible: true, locked: false, order: 7 },
+  { id: 'city', label: 'City', visible: true, locked: false, order: 8 },
+  { id: 'state', label: 'State', visible: true, locked: false, order: 9 },
+  { id: 'contact', label: 'Contact', visible: true, locked: false, order: 10 },
+  { id: 'status', label: 'Status', visible: true, locked: false, order: 11 },
+  { id: 'priority', label: 'Priority', visible: true, locked: false, order: 12 },
+  { id: 'amount', label: 'Amount', visible: true, locked: false, order: 13 },
+];
+
+// Columns with sub-headers (for WithSubHeaders story)
+export const getNestedColumnConfigs = (): ColumnConfig[] => [
   { id: 'checkbox', label: 'Select', visible: true, locked: true, order: 0 },
   { 
     id: 'claimId', 
@@ -138,6 +174,8 @@ interface AdvancedTableProps {
   useModal?: boolean;
   showToolbar?: boolean;
   toolbarTitle?: string;
+  initialColumns?: ColumnConfig[];
+  onRowClick?: (row: any, rowIndex: number, event: React.MouseEvent<HTMLTableRowElement>) => void;
 }
 
 export const AdvancedDataTable: React.FC<AdvancedTableProps> = ({ 
@@ -145,20 +183,26 @@ export const AdvancedDataTable: React.FC<AdvancedTableProps> = ({
   useModal = false,
   showToolbar = true,
   toolbarTitle = 'Data Table',
+  initialColumns,
+  onRowClick,
 }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
-  const [sortColumn, setSortColumn] = useState<string>('claimId');
-  const [sortDirection, setSortDirection] = useState<'asc' | 'desc' | 'none'>('asc');
+  const [sortColumn, setSortColumn] = useState<string>('');
+  const [sortDirection, setSortDirection] = useState<'asc' | 'desc' | 'none'>('none');
   const [allChecked, setAllChecked] = useState(false);
   const [selectedRows, setSelectedRows] = useState<number[]>([]);
+  const [lastSelectedIndex, setLastSelectedIndex] = useState<number | null>(null);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [columnOffsets, setColumnOffsets] = useState<{ [key: string]: number }>({});
   const [lockWarning, setLockWarning] = useState(false);
-  const [columnConfigs, setColumnConfigs] = useState<ColumnConfig[]>(getInitialColumnConfigs());
+  const [columnConfigs, setColumnConfigs] = useState<ColumnConfig[]>(initialColumns || getSimpleColumnConfigs());
   const [showColumnFilters, setShowColumnFilters] = useState(false);
   const [columnSearches, setColumnSearches] = useState<{ [key: string]: string }>({});
   const [globalSearch, setGlobalSearch] = useState<string>('');
+  const [columnWidths, setColumnWidths] = useState<{ [key: string]: number }>({});
+  const [animateSorting, setAnimateSorting] = useState(false);
+  const [sidePanelFilters, setSidePanelFilters] = useState<ColumnFilter[]>([]);
 
   const sampleData = getSampleData();
 
@@ -221,6 +265,10 @@ export const AdvancedDataTable: React.FC<AdvancedTableProps> = ({
       setSortColumn(column);
       setSortDirection('asc');
     }
+    
+    // Trigger animation
+    setAnimateSorting(true);
+    setTimeout(() => setAnimateSorting(false), 50);
   };
 
   const handleSelectAll = (checked: boolean) => {
@@ -228,17 +276,37 @@ export const AdvancedDataTable: React.FC<AdvancedTableProps> = ({
     setSelectedRows(checked ? Array.from({ length: sampleData.length }, (_, i) => i) : []);
   };
 
-  const handleRowSelect = (index: number, checked: boolean) => {
+  const handleRowSelect = (index: number, checked: boolean, shiftKey: boolean = false) => {
     if (checked) {
-      setSelectedRows([...selectedRows, index]);
+      // Shift-click: Select range from last selected to current
+      if (shiftKey && lastSelectedIndex !== null) {
+        const start = Math.min(lastSelectedIndex, index);
+        const end = Math.max(lastSelectedIndex, index);
+        const rangeIndices = Array.from({ length: end - start + 1 }, (_, i) => start + i);
+        const newSelection = Array.from(new Set([...selectedRows, ...rangeIndices]));
+        setSelectedRows(newSelection);
+      } else {
+        // Normal click: Add single row
+        setSelectedRows([...selectedRows, index]);
+        setLastSelectedIndex(index);
+      }
     } else {
+      // Uncheck: Remove row
       setSelectedRows(selectedRows.filter(i => i !== index));
       setAllChecked(false);
+      setLastSelectedIndex(index);
     }
   };
 
   const handleFilterToggle = () => {
     setShowColumnFilters(!showColumnFilters);
+  };
+
+  const handleColumnResize = (columnId: string, width: number) => {
+    setColumnWidths(prev => ({
+      ...prev,
+      [columnId]: width
+    }));
   };
 
   const handleColumnSearchChange = (columnId: string, value: string) => {
@@ -255,16 +323,25 @@ export const AdvancedDataTable: React.FC<AdvancedTableProps> = ({
       if (!matchesGlobalSearch) return false;
     }
 
-    // Column-specific search filters
-    return Object.entries(columnSearches).every(([columnId, searchValue]) => {
+    // Column-specific search filters (from sub-header search inputs)
+    const matchesColumnSearch = Object.entries(columnSearches).every(([columnId, searchValue]) => {
       if (!searchValue) return true;
       const value = row[columnId as keyof DataRow];
       return String(value).toLowerCase().includes(searchValue.toLowerCase());
     });
+    if (!matchesColumnSearch) return false;
+
+    // Side panel dropdown filters (exact match)
+    const matchesSidePanelFilters = sidePanelFilters.every(filter => {
+      const value = row[filter.columnId as keyof DataRow];
+      return String(value) === filter.value;
+    });
+    
+    return matchesSidePanelFilters;
   });
 
   const sortedData = [...filteredData].sort((a, b) => {
-    if (sortDirection === 'none') return 0;
+    if (sortDirection === 'none' || !sortColumn) return 0;
     let aValue: any = a[sortColumn as keyof typeof a];
     let bValue: any = b[sortColumn as keyof typeof b];
     if (aValue < bValue) return sortDirection === 'asc' ? -1 : 1;
@@ -389,11 +466,14 @@ export const AdvancedDataTable: React.FC<AdvancedTableProps> = ({
               );
             }
 
+            const dynamicWidth = columnWidths[col.id];
+            const currentWidth = dynamicWidth || (typeof col.width === 'number' ? col.width : undefined);
+            
             return (
               <TableHeader
                 key={col.id}
                 label={col.label}
-                variant="default"
+                variant={!isLocked && !col.subColumns ? 'resizeable-locked' : 'default'}
                 sortable={!col.subColumns || col.subColumns.length === 0}
                 sortDirection={sortColumn === col.id ? sortDirection : 'none'}
                 onSort={() => handleSort(col.id)}
@@ -404,6 +484,9 @@ export const AdvancedDataTable: React.FC<AdvancedTableProps> = ({
                 align={colSpan > 1 ? 'center' : 'left'}
                 colSpan={colSpan}
                 rowSpan={rowSpan}
+                resizable={!col.subColumns}
+                onResize={!col.subColumns ? (width) => handleColumnResize(col.id, width) : undefined}
+                width={currentWidth}
               />
             );
           })}
@@ -421,12 +504,14 @@ export const AdvancedDataTable: React.FC<AdvancedTableProps> = ({
               return parentCol.subColumns.map((subCol) => {
                 const isLocked = subCol.locked;
                 const offset = columnOffsets[subCol.id];
+                const dynamicWidth = columnWidths[subCol.id];
+                const currentWidth = dynamicWidth || (typeof subCol.width === 'number' ? subCol.width : undefined);
 
                 return (
                   <TableHeader
                     key={subCol.id}
                     label={subCol.label}
-                    variant="default"
+                    variant={!isLocked ? 'resizeable-locked' : 'default'}
                     sortable
                     sortDirection={sortColumn === subCol.id ? sortDirection : 'none'}
                     onSort={() => handleSort(subCol.id)}
@@ -434,6 +519,9 @@ export const AdvancedDataTable: React.FC<AdvancedTableProps> = ({
                     leftOffset={offset}
                     data-locked={isLocked}
                     isChildColumn={true}
+                    resizable={true}
+                    onResize={(width) => handleColumnResize(subCol.id, width)}
+                    width={currentWidth}
                   />
                 );
               });
@@ -452,9 +540,43 @@ export const AdvancedDataTable: React.FC<AdvancedTableProps> = ({
         {flatVisibleColumns.map((col) => {
           const isLocked = col.locked;
           const offset = columnOffsets[col.id];
+          const isFilterable = col.filterable !== false; // Default to true if not specified
 
+          // Skip filter input for checkbox-only columns (first column with only checkbox, no label)
           if (col.id === 'checkbox') {
-            return <TableSubHeader key={col.id} locked={isLocked} leftOffset={offset} />;
+            return (
+              <th
+                key={col.id}
+                style={{
+                  position: isLocked ? 'sticky' : 'relative',
+                  left: isLocked ? `${offset}px` : 'auto',
+                  zIndex: isLocked ? 3 : 1,
+                  background: '#f9fafb',
+                  borderBottom: '1px solid #e5e7eb',
+                  padding: '8px 12px',
+                  minWidth: '48px',
+                }}
+                data-locked={isLocked ? 'true' : undefined}
+              />
+            );
+          }
+
+          // If column is not filterable, render empty cell
+          if (!isFilterable) {
+            return (
+              <th
+                key={col.id}
+                style={{
+                  position: isLocked ? 'sticky' : 'relative',
+                  left: isLocked ? `${offset}px` : 'auto',
+                  zIndex: isLocked ? 3 : 1,
+                  background: '#f9fafb',
+                  borderBottom: '1px solid #e5e7eb',
+                  padding: '8px 12px',
+                }}
+                data-locked={isLocked ? 'true' : undefined}
+              />
+            );
           }
 
           return (
@@ -499,14 +621,20 @@ export const AdvancedDataTable: React.FC<AdvancedTableProps> = ({
             <colgroup>
               {visibleColumns.map((col) => {
                 if (col.subColumns && col.subColumns.length > 0) {
-                  // For grouped columns, each sub-column gets equal width
-                  return col.subColumns.map((subCol) => (
-                    <col key={subCol.id} style={{ width: '150px' }} />
-                  ));
+                  // For grouped columns, each sub-column can have its own width
+                  return col.subColumns.map((subCol) => {
+                    const dynamicWidth = columnWidths[subCol.id];
+                    const width = dynamicWidth ? `${dynamicWidth}px` : (subCol.width || col.width || '150px');
+                    return <col key={subCol.id} style={{ width }} />;
+                  });
                 } else if (col.id === 'checkbox') {
-                  return <col key={col.id} style={{ width: '48px' }} />;
+                  const dynamicWidth = columnWidths[col.id];
+                  const width = dynamicWidth ? `${dynamicWidth}px` : (col.width || '48px');
+                  return <col key={col.id} style={{ width }} />;
                 } else {
-                  return <col key={col.id} style={{ width: '150px' }} />;
+                  const dynamicWidth = columnWidths[col.id];
+                  const width = dynamicWidth ? `${dynamicWidth}px` : (col.width || '150px');
+                  return <col key={col.id} style={{ width }} />;
                 }
               })}
             </colgroup>
@@ -535,56 +663,29 @@ export const AdvancedDataTable: React.FC<AdvancedTableProps> = ({
                 paginatedData.map((row, rowIndex) => {
                   const isSelected = selectedRows.includes(startIndex + rowIndex);
 
-                  return (
-                    <tr key={row.id}>
-                      {flatVisibleColumns.map((col, colIndex) => {
-                      const isLocked = col.locked;
-                      const offset = columnOffsets[col.id];
-                      const isFirstColumn = colIndex === 0;
+                  // Render cells once - used by both animated and regular rows
+                  const cells = flatVisibleColumns.map((col, colIndex) => {
+                    const isLocked = col.locked;
+                    const offset = columnOffsets[col.id];
+                    const isFirstColumn = colIndex === 0;
 
-                      if (col.id === 'checkbox') {
-                        return (
-                          <TableCell
-                            key={col.id}
-                            selected={isSelected}
-                            locked={isLocked}
-                            leftOffset={offset}
-                            data-locked={isLocked}
-                            isFirstColumn={isFirstColumn}
-                          >
-                            <Checkbox
-                              checked={isSelected}
-                              onChange={(e) => handleRowSelect(startIndex + rowIndex, e.target.checked)}
-                            />
-                          </TableCell>
-                        );
-                      }
+                    if (col.id === 'checkbox') {
+                      return (
+                        <TableCell
+                          key={col.id}
+                          selected={isSelected}
+                          locked={isLocked}
+                          leftOffset={offset}
+                          data-locked={isLocked}
+                          isFirstColumn={isFirstColumn}
+                          showCheckbox
+                          checked={isSelected}
+                          onCheckChange={(checked, shiftKey) => handleRowSelect(startIndex + rowIndex, checked, shiftKey)}
+                        />
+                      );
+                    }
 
-                      if (col.id === 'userDetails') {
-                        return (
-                          <TableCell
-                            key={col.id}
-                            selected={isSelected}
-                            locked={isLocked}
-                            leftOffset={offset}
-                            data-locked={isLocked}
-                            isFirstColumn={isFirstColumn}
-                          >
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                              <img
-                                src={row.avatar}
-                                alt={row.userDetails}
-                                style={{ width: 32, height: 32, borderRadius: '50%' }}
-                              />
-                              <div>
-                                <div style={{ fontWeight: 600 }}>{row.userDetails}</div>
-                                <div style={{ fontSize: '12px', color: '#666' }}>Role</div>
-                              </div>
-                            </div>
-                          </TableCell>
-                        );
-                      }
-
+                    if (col.id === 'userDetails') {
                       return (
                         <TableCell
                           key={col.id}
@@ -594,13 +695,62 @@ export const AdvancedDataTable: React.FC<AdvancedTableProps> = ({
                           data-locked={isLocked}
                           isFirstColumn={isFirstColumn}
                         >
-                          {row[col.id as keyof DataRow]}
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                            <img
+                              src={row.avatar}
+                              alt={row.userDetails}
+                              style={{ width: 32, height: 32, borderRadius: '50%' }}
+                            />
+                            <div>
+                              <div style={{ fontWeight: 600 }}>{row.userDetails}</div>
+                              <div style={{ fontSize: '12px', color: '#666' }}>Role</div>
+                            </div>
+                          </div>
                         </TableCell>
                       );
-                    })}
-                  </tr>
-                );
-              })
+                    }
+
+                    return (
+                      <TableCell
+                        key={col.id}
+                        selected={isSelected}
+                        locked={isLocked}
+                        leftOffset={offset}
+                        data-locked={isLocked}
+                        isFirstColumn={isFirstColumn}
+                      >
+                        {row[col.id as keyof DataRow]}
+                      </TableCell>
+                    );
+                  });
+
+                  // Row click handler
+                  const handleRowClick = (e: React.MouseEvent<HTMLTableRowElement>) => {
+                    if (onRowClick) {
+                      onRowClick(row, startIndex + rowIndex, e);
+                    }
+                  };
+
+                  // Use animated row when sorting, regular row otherwise
+                  return animateSorting ? (
+                    <AnimatedTableRow 
+                      key={row.id} 
+                      $animationDelay={rowIndex * 20}
+                      onClick={handleRowClick}
+                      style={{ cursor: onRowClick ? 'pointer' : 'default' }}
+                    >
+                      {cells}
+                    </AnimatedTableRow>
+                  ) : (
+                    <tr 
+                      key={row.id}
+                      onClick={handleRowClick}
+                      style={{ cursor: onRowClick ? 'pointer' : 'default' }}
+                    >
+                      {cells}
+                    </tr>
+                  );
+                })
               )}
             </tbody>
           </StyledTable>
@@ -617,6 +767,9 @@ export const AdvancedDataTable: React.FC<AdvancedTableProps> = ({
             onFilterToggle={handleFilterToggle}
             showFilters={showColumnFilters}
             lockWarning={lockWarning}
+            tableData={sampleData}
+            columnFilters={sidePanelFilters}
+            onFiltersChange={setSidePanelFilters}
           />
         )}
       </TableWrapper>

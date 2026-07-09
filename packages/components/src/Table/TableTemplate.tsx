@@ -141,6 +141,7 @@ export const AdvancedDataTable: React.FC = () => {
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc' | 'none'>('asc');
   const [allChecked, setAllChecked] = useState(false);
   const [selectedRows, setSelectedRows] = useState<number[]>([]);
+  const [lastSelectedIndex, setLastSelectedIndex] = useState<number | null>(null);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [columnOffsets, setColumnOffsets] = useState<{ [key: string]: number }>({});
   const [lockWarning, setLockWarning] = useState(false);
@@ -218,14 +219,27 @@ export const AdvancedDataTable: React.FC = () => {
   };
 
   /**
-   * Handle individual row selection
+   * Handle individual row selection with shift-click support
    */
-  const handleRowSelect = (index: number, checked: boolean) => {
+  const handleRowSelect = (index: number, checked: boolean, shiftKey: boolean = false) => {
     if (checked) {
-      setSelectedRows([...selectedRows, index]);
+      // Shift-click: Select range from last selected to current
+      if (shiftKey && lastSelectedIndex !== null) {
+        const start = Math.min(lastSelectedIndex, index);
+        const end = Math.max(lastSelectedIndex, index);
+        const rangeIndices = Array.from({ length: end - start + 1 }, (_, i) => start + i);
+        const newSelection = Array.from(new Set([...selectedRows, ...rangeIndices]));
+        setSelectedRows(newSelection);
+      } else {
+        // Normal click: Add single row
+        setSelectedRows([...selectedRows, index]);
+        setLastSelectedIndex(index);
+      }
     } else {
+      // Uncheck: Remove row
       setSelectedRows(selectedRows.filter(i => i !== index));
       setAllChecked(false);
+      setLastSelectedIndex(index);
     }
   };
 
@@ -471,13 +485,10 @@ export const AdvancedDataTable: React.FC = () => {
                           locked={isLocked}
                           leftOffset={offset}
                           data-locked={isLocked}
-                        >
-                          <input
-                            type="checkbox"
-                            checked={isSelected}
-                            onChange={e => handleRowSelect(startIndex + rowIndex, e.target.checked)}
-                          />
-                        </TableCell>
+                          showCheckbox
+                          checked={isSelected}
+                          onCheckChange={(checked, shiftKey) => handleRowSelect(startIndex + rowIndex, checked, shiftKey)}
+                        />
                       );
                     }
 

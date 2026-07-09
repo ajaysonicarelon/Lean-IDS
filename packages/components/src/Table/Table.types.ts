@@ -47,6 +47,8 @@ export interface TableProps {
   onRowSelect?: (selectedIds: string[]) => void;
   /** Callback when row action is triggered */
   onRowAction?: (action: string, row: any) => void;
+  /** Callback when a row is clicked */
+  onRowClick?: (row: any, rowIndex: number, event: React.MouseEvent<HTMLTableRowElement>) => void;
   /** Custom row key accessor (default: 'id') */
   rowKey?: string;
   /** Custom empty state message */

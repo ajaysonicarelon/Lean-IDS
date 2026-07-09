@@ -24,6 +24,7 @@ import { Checkbox } from '../Checkbox';
 import { InlineMessage } from '../InlineMessage';
 import { Select } from '../Select';
 import type { SelectOption } from '../Select';
+import { Chip } from '../Chip';
 import CloseIcon from '@mui/icons-material/Close';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
@@ -40,6 +41,9 @@ export const TableSidePanel: React.FC<TableSidePanelProps> = ({
   showFilters = false,
   lockWarning = false,
   className,
+  tableData = [],
+  columnFilters = [],
+  onFiltersChange,
 }) => {
   const [activePanel, setActivePanel] = useState<'columns' | 'filters' | null>(null);
   const [localColumns, setLocalColumns] = useState<ColumnConfig[]>(columns);
@@ -97,6 +101,11 @@ export const TableSidePanel: React.FC<TableSidePanelProps> = ({
     });
     setLocalColumns(resetColumns);
     setExpandedParents(new Set());
+    
+    // Clear all filters
+    if (onFiltersChange) {
+      onFiltersChange([]);
+    }
   };
 
   const handleApply = () => {
@@ -393,52 +402,138 @@ export const TableSidePanel: React.FC<TableSidePanelProps> = ({
 
               {activePanel === 'filters' && (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-                  <p style={{ 
-                    margin: 0, 
-                    fontSize: '14px', 
-                    color: '#666',
-                    fontStyle: 'italic' 
-                  }}>
-                    Note: Filter options will be populated with actual table data values
-                  </p>
-                  {(() => {
-                    // Flatten columns to get only leaf columns (actual data columns)
-                    const flatColumns: ColumnConfig[] = [];
-                    localColumns.forEach(col => {
-                      if (col.subColumns && col.subColumns.length > 0) {
-                        // If has sub-columns, add the sub-columns (leaf columns)
-                        flatColumns.push(...col.subColumns);
-                      } else {
-                        // If no sub-columns, add the column itself (leaf column)
-                        flatColumns.push(col);
-                      }
-                    });
-                    
-                    // Filter out checkbox and hidden columns
-                    return flatColumns
-                      .filter((col) => col.id !== 'checkbox' && col.visible !== false)
-                      .map((column) => {
-                        // Generate dynamic options from column data (placeholder for now)
-                        const filterOptions: SelectOption[] = [
-                          { value: '', label: 'All' },
-                          { value: 'value1', label: 'Value 1' },
-                          { value: 'value2', label: 'Value 2' },
-                          { value: 'value3', label: 'Value 3' },
-                        ];
+                  {tableData.length === 0 ? (
+                    <p style={{ 
+                      margin: 0, 
+                      fontSize: '14px', 
+                      color: '#666',
+                      fontStyle: 'italic' 
+                    }}>
+                      No data available for filtering
+                    </p>
+                  ) : (
+                    <>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                        <p style={{ 
+                          margin: 0, 
+                          fontSize: '14px', 
+                          color: '#666',
+                          fontStyle: 'italic' 
+                        }}>
+                          Select values to filter table rows
+                        </p>
                         
-                        return (
-                          <Select
-                            key={column.id}
-                            label={column.label}
-                            placeholder={`Filter by ${column.label}`}
-                            options={filterOptions}
-                            size="small"
-                            searchable={true}
-                            showSelectionIndicator={false}
-                          />
-                        );
-                      });
-                  })()}
+                        {columnFilters.length > 0 && onFiltersChange && (
+                          <div style={{ 
+                            display: 'flex', 
+                            flexWrap: 'wrap', 
+                            gap: '8px',
+                            padding: '12px',
+                            background: '#f9fafb',
+                            borderRadius: '4px',
+                            border: '1px solid #e5e7eb'
+                          }}>
+                            {columnFilters.map((filter) => {
+                              const column = localColumns.find(col => {
+                                if (col.id === filter.columnId) return true;
+                                if (col.subColumns) {
+                                  return col.subColumns.some(sub => sub.id === filter.columnId);
+                                }
+                                return false;
+                              });
+                              
+                              let columnLabel = filter.columnId;
+                              if (column) {
+                                if (column.id === filter.columnId) {
+                                  columnLabel = column.label;
+                                } else if (column.subColumns) {
+                                  const subCol = column.subColumns.find(sub => sub.id === filter.columnId);
+                                  if (subCol) columnLabel = subCol.label;
+                                }
+                              }
+                              
+                              return (
+                                <Chip
+                                  key={filter.columnId}
+                                  label={`${columnLabel}: ${filter.value}`}
+                                  size="small"
+                                  variant="filled"
+                                  type="default"
+                                  trailingIcon={<CloseIcon style={{ fontSize: '14px' }} />}
+                                  onTrailingIconClick={() => {
+                                    const newFilters = columnFilters.filter(f => f.columnId !== filter.columnId);
+                                    onFiltersChange(newFilters);
+                                  }}
+                                />
+                              );
+                            })}
+                          </div>
+                        )}
+                      </div>
+                      {(() => {
+                        // Flatten columns to get only leaf columns (actual data columns)
+                        const flatColumns: ColumnConfig[] = [];
+                        localColumns.forEach(col => {
+                          if (col.subColumns && col.subColumns.length > 0) {
+                            flatColumns.push(...col.subColumns);
+                          } else {
+                            flatColumns.push(col);
+                          }
+                        });
+                        
+                        // Filter out checkbox and hidden columns
+                        return flatColumns
+                          .filter((col) => col.id !== 'checkbox' && col.visible !== false)
+                          .map((column) => {
+                            // Extract unique values from table data for this column
+                            const uniqueValues = new Set<string>();
+                            tableData.forEach((row) => {
+                              const value = row[column.id];
+                              if (value !== null && value !== undefined && value !== '') {
+                                uniqueValues.add(String(value));
+                              }
+                            });
+                            
+                            // Generate filter options from unique values
+                            const filterOptions: SelectOption[] = [
+                              { value: '', label: 'All' },
+                              ...Array.from(uniqueValues)
+                                .sort()
+                                .map((val) => ({ value: val, label: val })),
+                            ];
+                            
+                            // Get current filter value for this column
+                            const currentFilter = columnFilters.find(f => f.columnId === column.id);
+                            const currentValue = currentFilter?.value || '';
+                            
+                            return (
+                              <Select
+                                key={column.id}
+                                label={column.label}
+                                placeholder={`Filter by ${column.label}`}
+                                options={filterOptions}
+                                value={currentValue}
+                                onChange={(value) => {
+                                  if (onFiltersChange) {
+                                    // Handle both string and string[] from Select
+                                    const filterValue = Array.isArray(value) ? value[0] : value;
+                                    // Update filters
+                                    const newFilters = columnFilters.filter(f => f.columnId !== column.id);
+                                    if (filterValue) {
+                                      newFilters.push({ columnId: column.id, value: filterValue });
+                                    }
+                                    onFiltersChange(newFilters);
+                                  }
+                                }}
+                                size="small"
+                                searchable={true}
+                                showSelectionIndicator={false}
+                              />
+                            );
+                          });
+                      })()}
+                    </>
+                  )}
                 </div>
               )}
             </PanelContent>

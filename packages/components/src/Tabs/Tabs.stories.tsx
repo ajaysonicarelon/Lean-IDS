@@ -10,7 +10,165 @@ const meta: Meta<typeof Tabs> = {
     layout: 'padded',
     docs: {
       description: {
-        component: 'A tab navigation component with parent/child hierarchy support. Based on Figma design.',
+        component: `
+# Tabs
+
+A flexible tab navigation component with parent/child hierarchy support, icons, badges, and disabled states.
+
+## Installation
+
+\`\`\`bash
+npm install @ajaysoni7832/lean-ids-components
+\`\`\`
+
+## Basic Usage
+
+\`\`\`tsx
+import { Tabs } from '@ajaysoni7832/lean-ids-components';
+import type { TabItem } from '@ajaysoni7832/lean-ids-components';
+
+function MyComponent() {
+  const [activeTab, setActiveTab] = useState('1');
+  
+  const tabs: TabItem[] = [
+    { id: '1', label: 'Dashboard', leadingIcon: 'Home', count: 4 },
+    { id: '2', label: 'Analytics', leadingIcon: 'BarChart', count: 12 },
+    { id: '3', label: 'Reports', leadingIcon: 'Description' },
+  ];
+
+  return (
+    <Tabs
+      tabs={tabs}
+      activeTab={activeTab}
+      onChange={setActiveTab}
+      type="parent"
+      showLeadingIcon
+      showBadge
+    />
+  );
+}
+\`\`\`
+
+## Features
+
+✅ **Two Tab Types** - Parent (primary) and Child (secondary) tabs
+✅ **Icons Support** - Leading and trailing icons
+✅ **Badge Counts** - Show numerical badges on tabs
+✅ **Disabled State** - Disable specific tabs
+✅ **Hierarchy** - Combine parent and child tabs
+✅ **Responsive** - Scrollable when many tabs
+✅ **Keyboard Navigation** - Full keyboard support
+
+## Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| tabs | TabItem[] | required | Array of tab items |
+| activeTab | string | required | ID of active tab |
+| onChange | (id: string) => void | required | Tab change handler |
+| type | 'parent' \\| 'child' | 'parent' | Tab hierarchy type |
+| showLeadingIcon | boolean | false | Show leading icons |
+| showTrailingIcon | boolean | false | Show trailing icons |
+| showBadge | boolean | false | Show badge counts |
+| className | string | - | Custom CSS class |
+
+## TabItem Interface
+
+\`\`\`tsx
+interface TabItem {
+  id: string;              // Unique identifier
+  label: string;           // Tab label text
+  leadingIcon?: string;    // Material icon name
+  trailingIcon?: string;   // Material icon name
+  count?: number;          // Badge count
+  disabled?: boolean;      // Disable the tab
+}
+\`\`\`
+
+## Tab Types
+
+### Parent Tabs (Primary)
+- Larger size, bolder styling
+- Use for main navigation sections
+- Example: Dashboard, Analytics, Settings
+
+### Child Tabs (Secondary)
+- Smaller size, lighter styling
+- Use for sub-navigation within a section
+- Example: Overview, Details, History
+
+## Examples
+
+### Minimal Tabs
+\`\`\`tsx
+<Tabs
+  tabs={[
+    { id: '1', label: 'Tab 1' },
+    { id: '2', label: 'Tab 2' },
+  ]}
+  activeTab={activeTab}
+  onChange={setActiveTab}
+  type="parent"
+/>
+\`\`\`
+
+### With Icons and Badges
+\`\`\`tsx
+<Tabs
+  tabs={[
+    { id: '1', label: 'Dashboard', leadingIcon: 'Home', count: 4 },
+    { id: '2', label: 'Analytics', leadingIcon: 'BarChart', count: 12 },
+  ]}
+  activeTab={activeTab}
+  onChange={setActiveTab}
+  type="parent"
+  showLeadingIcon
+  showBadge
+/>
+\`\`\`
+
+### Hierarchy Example
+\`\`\`tsx
+// Parent tabs
+<Tabs tabs={parentTabs} activeTab={parentTab} onChange={setParentTab} type="parent" />
+
+// Child tabs (below parent)
+<Tabs tabs={childTabs} activeTab={childTab} onChange={setChildTab} type="child" />
+\`\`\`
+
+### With Disabled Tab
+\`\`\`tsx
+const tabs = [
+  { id: '1', label: 'Active Tab' },
+  { id: '2', label: 'Disabled Tab', disabled: true },
+];
+\`\`\`
+
+## Best Practices
+
+1. **Use parent tabs for main navigation** - Top-level sections
+2. **Use child tabs for sub-navigation** - Within a parent section
+3. **Limit tab count** - 5-7 tabs for optimal UX
+4. **Use icons sparingly** - Only when they add clarity
+5. **Badge counts for notifications** - Show unread/pending items
+6. **Disable, don't hide** - Show disabled tabs for context
+
+## Keyboard Navigation
+
+- **Tab** - Navigate between tabs
+- **Enter/Space** - Activate focused tab
+- **Arrow Left/Right** - Navigate between tabs
+- **Home** - Go to first tab
+- **End** - Go to last tab
+
+## Accessibility
+
+- ✅ ARIA roles and labels
+- ✅ Keyboard navigation
+- ✅ Focus indicators
+- ✅ Screen reader support
+- ✅ Disabled state announcements
+        `,
       },
     },
   },

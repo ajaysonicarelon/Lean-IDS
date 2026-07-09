@@ -5,7 +5,7 @@ export interface TableCellProps {
   // Selection
   showCheckbox?: boolean;
   checked?: boolean;
-  onCheckChange?: (checked: boolean) => void;
+  onCheckChange?: (checked: boolean, shiftKey?: boolean) => void;
 
   // Avatar
   showAvatar?: boolean;
@@ -52,6 +52,9 @@ export interface TableCellProps {
 
   showDeleteAction?: boolean;
   onDelete?: () => void;
+
+  // Cell click handler
+  onClick?: (event: React.MouseEvent<HTMLTableCellElement>) => void;
 
   // Styling
   align?: 'left' | 'center' | 'right';

@@ -93,6 +93,8 @@ export type { TableProps, TableColumn, TableAction } from './Table';
 export { TableToolbar } from './Table';
 export type { TableToolbarProps } from './Table';
 
+export { AdvancedDataTable, getNestedColumnConfigs } from './Table';
+
 export { MenuItem } from './MenuItem';
 export type { MenuItemProps, MenuItemBorder, MenuItemMode, MenuItemState } from './MenuItem';
 
@@ -153,6 +155,18 @@ export type { BarChartProps, BarChartData, BarChartOrientation, BarMetric } from
 
 export { Typography } from './Typography';
 export type { TypographyProps, TypographyVariant, TypographyWeight, TypographyCodeSize, TypographyAlign, TypographyElement } from './Typography';
+
+export { Popover } from './Popover';
+export type { PopoverProps, PopoverPlacement } from './Popover';
+
+export { TimePickerInput } from './DateTimePickers/TimePickerInput';
+export type { TimePickerInputProps } from './DateTimePickers/TimePickerInput';
+
+export { DateTimePickerInput } from './DateTimePickers/DateTimePickerInput';
+export type { DateTimePickerInputProps } from './DateTimePickers/DateTimePickerInput';
+
+export { DateTimeRangePickerInput } from './DateTimePickers/DateTimeRangePickerInput';
+export type { DateTimeRangePickerInputProps } from './DateTimePickers/DateTimeRangePickerInput';
 
 export {
   ArrowBackIcon,

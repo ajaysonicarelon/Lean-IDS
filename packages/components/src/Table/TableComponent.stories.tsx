@@ -10,7 +10,34 @@ const meta: Meta<typeof Table> = {
     layout: 'padded',
     docs: {
       description: {
-        component: 'A complete data table component with sorting, filtering, pagination, and more. Use this as your default table for all data display needs.',
+        component: `
+# Table
+
+Complete data table with sorting, filtering, pagination.
+
+## Installation
+\`\`\`bash
+npm install @ajaysoni7832/lean-ids-components
+\`\`\`
+
+## Basic Usage
+\`\`\`tsx
+import { Table } from '@ajaysoni7832/lean-ids-components';
+
+const columns = [
+  { key: 'name', header: 'Name', sortable: true },
+  { key: 'email', header: 'Email' },
+];
+
+<Table data={data} columns={columns} />
+\`\`\`
+
+## Features
+✅ Sorting, filtering, pagination
+✅ Row selection
+✅ Custom cell rendering
+✅ Responsive
+        `,
       },
     },
   },
@@ -147,6 +174,16 @@ const advancedColumns: TableColumn[] = [
 
 /**
  * Complete table with all features enabled - matches CompleteExample design
+ * 
+ * **Features:**
+ * - ✅ Row selection with checkboxes
+ * - ✅ **Shift-click multi-select**: Click first row, hold Shift, click another row to select range
+ * - ✅ Pagination
+ * - ✅ Column settings
+ * - ✅ Row actions
+ * - ✅ Global search
+ * - ✅ Filters
+ * - ✅ Download
  */
 export const Complete: Story = {
   args: {

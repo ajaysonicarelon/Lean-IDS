@@ -4,6 +4,8 @@ export interface ColumnConfig {
   visible: boolean;
   locked: boolean;
   order: number;
+  filterable?: boolean; // Whether column can have filter (default: true)
+  width?: string | number; // Custom column width (e.g., '150px', '20%', 200)
   subColumns?: ColumnConfig[];
   parentId?: string;
 }

@@ -68,7 +68,8 @@ export const TableHeader: React.FC<TableHeaderProps> = ({
   const startXRef = useRef(0);
   const startWidthRef = useRef(0);
 
-  const handleClick = () => {
+  const handleSortClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
     if (sortable && onSort && variant !== 'search') {
       onSort();
     }
@@ -140,7 +141,8 @@ export const TableHeader: React.FC<TableHeaderProps> = ({
       $locked={locked}
       $leftOffset={leftOffset}
       $sortDirection={sortDirection}
-      onClick={handleClick}
+      $showCheckbox={showCheckbox}
+      $hasLabel={!!label}
       style={{ width }}
       className={className}
       data-locked={locked ? 'true' : undefined}
@@ -185,39 +187,84 @@ export const TableHeader: React.FC<TableHeaderProps> = ({
                 />
               </CheckboxWrapper>
             )}
-            {label && (
-              subHeader ? (
-                <div style={{ display: 'flex', flexDirection: 'column', width: '100%', position: 'relative' }}>
-                  {/* Parent header spanning across columns */}
-                  {isFirstInGroup && (
-                    <div style={{
-                      position: 'absolute',
-                      top: '-12px',
-                      left: isFirstInGroup ? '0' : undefined,
-                      right: isLastInGroup ? '0' : undefined,
-                      width: isFirstInGroup ? `calc(${subHeaderSpan * 100}% + ${(subHeaderSpan - 1) * 1}px)` : undefined,
-                      fontSize: '12px',
-                      fontWeight: 500,
-                      textAlign: 'center',
-                      paddingBottom: '4px',
-                      borderBottom: '1px solid',
-                      borderColor: 'inherit',
-                    }}>
-                      {subHeader}
+            {sortable ? (
+              // Sortable: Wrap label and icon in larger clickable area
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  cursor: 'pointer',
+                  padding: '8px 4px',
+                  margin: '-8px -4px',
+                  flex: 1,
+                }}
+                onClick={handleSortClick}
+              >
+                {label && (
+                  subHeader ? (
+                    <div style={{ display: 'flex', flexDirection: 'column', width: '100%', position: 'relative' }}>
+                      {/* Parent header spanning across columns */}
+                      {isFirstInGroup && (
+                        <div style={{
+                          position: 'absolute',
+                          top: '-12px',
+                          left: isFirstInGroup ? '0' : undefined,
+                          right: isLastInGroup ? '0' : undefined,
+                          width: isFirstInGroup ? `calc(${subHeaderSpan * 100}% + ${(subHeaderSpan - 1) * 1}px)` : undefined,
+                          fontSize: '12px',
+                          fontWeight: 500,
+                          textAlign: 'center',
+                          paddingBottom: '4px',
+                          borderBottom: '1px solid',
+                          borderColor: 'inherit',
+                        }}>
+                          {subHeader}
+                        </div>
+                      )}
+                      <span style={{ marginTop: isFirstInGroup ? '16px' : '0' }}>{label}</span>
                     </div>
-                  )}
-                  <span style={{ marginTop: isFirstInGroup ? '16px' : '0' }}>{label}</span>
-                </div>
-              ) : (
-                <span>{label}</span>
-              )
+                  ) : (
+                    <span>{label}</span>
+                  )
+                )}
+                <SortIcon $direction={sortDirection}>
+                  <ArrowDownIcon />
+                </SortIcon>
+              </div>
+            ) : (
+              // Non-sortable: Just display label
+              <>
+                {label && (
+                  subHeader ? (
+                    <div style={{ display: 'flex', flexDirection: 'column', width: '100%', position: 'relative' }}>
+                      {/* Parent header spanning across columns */}
+                      {isFirstInGroup && (
+                        <div style={{
+                          position: 'absolute',
+                          top: '-12px',
+                          left: isFirstInGroup ? '0' : undefined,
+                          right: isLastInGroup ? '0' : undefined,
+                          width: isFirstInGroup ? `calc(${subHeaderSpan * 100}% + ${(subHeaderSpan - 1) * 1}px)` : undefined,
+                          fontSize: '12px',
+                          fontWeight: 500,
+                          textAlign: 'center',
+                          paddingBottom: '4px',
+                          borderBottom: '1px solid',
+                          borderColor: 'inherit',
+                        }}>
+                          {subHeader}
+                        </div>
+                      )}
+                      <span style={{ marginTop: isFirstInGroup ? '16px' : '0' }}>{label}</span>
+                    </div>
+                  ) : (
+                    <span>{label}</span>
+                  )
+                )}
+              </>
             )}
-            {sortable && (
-              <SortIcon $direction={sortDirection}>
-                <ArrowDownIcon />
-              </SortIcon>
-            )}
-            {locked && !isChildColumn && (
+            {locked && !isChildColumn && !showCheckbox && (
               onLockToggle ? (
                 <button
                   onClick={handleLockClick}

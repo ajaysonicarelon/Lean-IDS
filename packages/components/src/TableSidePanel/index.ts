@@ -1,2 +1,2 @@
 export { TableSidePanel } from './TableSidePanel';
-export type { TableSidePanelProps } from './TableSidePanel.types';
+export type { TableSidePanelProps, ColumnFilter } from './TableSidePanel.types';

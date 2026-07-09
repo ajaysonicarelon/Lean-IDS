@@ -15,7 +15,7 @@ export const RangePickerContainer = styled.div<RangePickerContainerProps>`
   border: 1px solid ${({ theme }) => theme.colors.palette.neutral[400]};
   border-radius: ${({ theme }) => theme.borderRadius.md};
   box-shadow: 0px 16px 32px 0px rgba(23, 37, 76, 0.12);
-  overflow: hidden;
+  overflow: visible;
   position: relative;
   z-index: 1;
 `;

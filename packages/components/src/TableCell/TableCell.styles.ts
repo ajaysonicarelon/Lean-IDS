@@ -102,11 +102,11 @@ export const UserRole = styled.div`
 `;
 
 export const NumberText = styled.div`
-  font-family: 'Roboto Mono', monospace;
-  font-size: ${({ theme }) => theme.fontSizes[14]};
-  font-weight: 400;
-  line-height: 16px;
-  letter-spacing: 1.5px;
+  font-family: ${({ theme }) => theme.fonts.monospace};
+  font-size: ${({ theme }) => theme.typography.code['regular-14'].fontSize};
+  font-weight: ${({ theme }) => theme.typography.code['regular-14'].fontWeight};
+  line-height: ${({ theme }) => theme.typography.code['regular-14'].lineHeight};
+  letter-spacing: ${({ theme }) => theme.typography.code['regular-14'].letterSpacing};
   color: ${({ theme }) => theme.colors.palette.neutral[900]};
   white-space: nowrap;
   flex-shrink: 0;

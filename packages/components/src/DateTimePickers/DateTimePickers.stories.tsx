@@ -1,14 +1,15 @@
 /**
  * DateTimePickers Storybook Stories
- * Showcases TimePicker, DateTimePicker, and DateTimeRangePicker components
+ * Showcases form input wrappers for date and time selection
  */
 
-import React, { useState } from 'react';
+import { useState } from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
-import { TimePicker } from './TimePicker';
-import { DateTimePicker } from './DateTimePicker';
-import { DateTimeRangePicker } from './DateTimeRangePicker';
+import { TimePickerInput } from './TimePickerInput';
+import { DateTimePickerInput } from './DateTimePickerInput';
+import { DateTimeRangePickerInput } from './DateTimeRangePickerInput';
 import { DateRange } from './DateTimeRangePicker/DateTimeRangePicker.types';
+import { Button } from '../Button';
 
 // =============================================================================
 // META
@@ -17,10 +18,225 @@ import { DateRange } from './DateTimeRangePicker/DateTimeRangePicker.types';
 const meta: Meta = {
   title: 'Components/DateTimePickers',
   parameters: {
-    layout: 'centered',
+    layout: 'padded',
     docs: {
       description: {
-        component: 'Comprehensive date and time selection components for Lean IDS.',
+        component: `
+# DateTimePickers
+
+Form input components for date and time selection. Click the input field to open the picker in an overlay.
+
+## Overview
+
+The DateTimePickers package provides three input wrapper components for form integration:
+- **TimePickerInput** - Time selection only
+- **DateTimePickerInput** - Date and time selection
+- **DateTimeRangePickerInput** - Date range selection with optional quick select
+
+## Installation
+
+\`\`\`bash
+npm install @ajaysoni7832/lean-ids-components
+\`\`\`
+
+## Basic Usage
+
+### TimePickerInput
+
+\`\`\`tsx
+import { TimePickerInput } from '@ajaysoni7832/lean-ids-components';
+
+function MyForm() {
+  const [time, setTime] = useState<string>('');
+
+  return (
+    <TimePickerInput
+      label="Select Time"
+      value={time}
+      onChange={setTime}
+      placeholder="hh:mm AM/PM"
+      required
+    />
+  );
+}
+\`\`\`
+
+### DateTimePickerInput
+
+\`\`\`tsx
+import { DateTimePickerInput } from '@ajaysoni7832/lean-ids-components';
+
+function MyForm() {
+  const [dateTime, setDateTime] = useState<Date>();
+
+  return (
+    <DateTimePickerInput
+      label="Appointment Date & Time"
+      value={dateTime}
+      onChange={setDateTime}
+      required
+    />
+  );
+}
+\`\`\`
+
+### DateTimeRangePickerInput
+
+\`\`\`tsx
+import { DateTimeRangePickerInput } from '@ajaysoni7832/lean-ids-components';
+import type { DateRange } from '@ajaysoni7832/lean-ids-components';
+
+function MyForm() {
+  const [range, setRange] = useState<DateRange>({
+    start: null,
+    end: null,
+  });
+
+  return (
+    <DateTimeRangePickerInput
+      label="Select Date Range"
+      value={range}
+      onChange={setRange}
+      showQuickSelect
+      required
+    />
+  );
+}
+\`\`\`
+
+## Features
+
+✅ **Form Integration** - Designed specifically for forms with proper validation support
+✅ **Overlay Behavior** - Pickers open in a popover overlay on click
+✅ **Accessibility** - Full keyboard navigation and screen reader support
+✅ **Validation** - Built-in error states and helper text
+✅ **Flexible Sizing** - Multiple size options (xsmall, small, default, large)
+✅ **Quick Select** - Pre-defined date ranges for DateTimeRangePicker
+✅ **Time Formats** - Support for both 12-hour and 24-hour formats
+
+## Props
+
+### Common Props (All Pickers)
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| label | string | required | Field label |
+| value | varies | - | Selected value |
+| onChange | function | - | Change handler |
+| placeholder | string | - | Placeholder text |
+| required | boolean | false | Mark as required field |
+| disabled | boolean | false | Disable the input |
+| error | boolean | false | Show error state |
+| helperText | string | - | Helper/error message |
+| size | 'xsmall' \\| 'small' \\| 'default' \\| 'large' | 'default' | Input size |
+| className | string | - | Custom CSS class |
+
+### TimePickerInput Specific
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| value | string | - | Time in "HH:mm A" format |
+| use24Hour | boolean | false | Use 24-hour format |
+
+### DateTimePickerInput Specific
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| value | Date | - | Selected Date object |
+| dateFormat | string | 'MMM dd, yyyy hh:mm a' | Display format |
+
+### DateTimeRangePickerInput Specific
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| value | DateRange | - | { start: Date \\| null, end: Date \\| null } |
+| showQuickSelect | boolean | false | Show quick select panel |
+| quickSelectOptions | QuickSelectOption[] | - | Custom quick select options |
+
+## Advanced Examples
+
+### With Validation
+
+\`\`\`tsx
+function FormWithValidation() {
+  const [time, setTime] = useState<string>('');
+  const [error, setError] = useState('');
+
+  const handleSubmit = () => {
+    if (!time) {
+      setError('Time is required');
+      return;
+    }
+    // Submit form
+  };
+
+  return (
+    <TimePickerInput
+      label="Meeting Time"
+      value={time}
+      onChange={(newTime) => {
+        setTime(newTime);
+        setError('');
+      }}
+      required
+      error={!!error}
+      helperText={error || 'Required field'}
+    />
+  );
+}
+\`\`\`
+
+### With Custom Quick Select Options
+
+\`\`\`tsx
+<DateTimeRangePickerInput
+  label="Report Period"
+  value={range}
+  onChange={setRange}
+  showQuickSelect
+  quickSelectOptions={[
+    {
+      label: 'Last 7 Days',
+      getValue: () => ({
+        start: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000),
+        end: new Date(),
+      }),
+    },
+    {
+      label: 'Last 30 Days',
+      getValue: () => ({
+        start: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000),
+        end: new Date(),
+      }),
+    },
+  ]}
+/>
+\`\`\`
+
+## Best Practices
+
+1. **Always provide labels** - Required for accessibility
+2. **Use appropriate sizes** - Match your form's design system
+3. **Handle validation** - Use error and helperText props
+4. **Consider time zones** - Date objects use local time zone
+5. **Format display values** - Use dateFormat prop to customize
+
+## Keyboard Navigation
+
+- **Tab** - Navigate between fields
+- **Escape** - Close the picker overlay
+- **Enter** - Select current value (in picker)
+- **Arrow Keys** - Navigate within picker
+
+## Accessibility
+
+All components include:
+- ✅ Proper ARIA labels and roles
+- ✅ Keyboard navigation support
+- ✅ Screen reader announcements
+- ✅ Focus management
+- ✅ Required field indicators
+        `,
       },
     },
   },
@@ -30,445 +246,263 @@ const meta: Meta = {
 export default meta;
 
 // =============================================================================
-// TIMEPICKER STORIES
+// FORM DEMO - ALL PICKERS
 // =============================================================================
 
-export const TimePickerDefault: StoryObj<typeof TimePicker> = {
-  name: 'TimePicker - Default',
-  render: () => {
-    const [time, setTime] = useState('12:45 PM');
-    
-    return (
-      <div style={{ padding: '20px' }}>
-        <h3 style={{ marginBottom: '20px' }}>TimePicker - 12 Hour Format</h3>
-        <TimePicker
-          value={time}
-          onChange={(newTime) => {
-            setTime(newTime);
-            console.log('Time selected:', newTime);
-          }}
-          use24Hour={false}
-        />
-        <p style={{ marginTop: '20px' }}>Selected Time: {time}</p>
-      </div>
-    );
+export const FormExample: StoryObj = {
+  name: 'Complete Form Example',
+  parameters: {
+    docs: {
+      description: {
+        story: `
+A complete form example showing all three picker types working together. This demonstrates:
+- How to manage state for each picker type
+- Form submission with all values
+- Reset functionality
+- Proper spacing and layout
+
+**Code:**
+\`\`\`tsx
+const [time, setTime] = useState<string>('');
+const [dateTime, setDateTime] = useState<Date | undefined>();
+const [dateRange, setDateRange] = useState<DateRange>({ start: null, end: null });
+
+<TimePickerInput label="Preferred Time" value={time} onChange={setTime} required />
+<DateTimePickerInput label="Appointment Date & Time" value={dateTime} onChange={setDateTime} required />
+<DateTimeRangePickerInput label="Availability Window" value={dateRange} onChange={setDateRange} showQuickSelect />
+\`\`\`
+        `,
+      },
+    },
   },
-};
-
-export const TimePicker24Hour: StoryObj<typeof TimePicker> = {
-  name: 'TimePicker - 24 Hour Format',
   render: () => {
-    const [time, setTime] = useState('14:30');
-    
-    return (
-      <div style={{ padding: '20px' }}>
-        <h3 style={{ marginBottom: '20px' }}>TimePicker - 24 Hour Format</h3>
-        <TimePicker
-          value={time}
-          onChange={(newTime) => {
-            setTime(newTime);
-            console.log('Time selected:', newTime);
-          }}
-          use24Hour={true}
-        />
-        <p style={{ marginTop: '20px' }}>Selected Time: {time}</p>
-      </div>
-    );
-  },
-};
-
-export const TimePickerDisabled: StoryObj<typeof TimePicker> = {
-  name: 'TimePicker - Disabled',
-  render: () => {
-    return (
-      <div style={{ padding: '20px' }}>
-        <h3 style={{ marginBottom: '20px' }}>TimePicker - Disabled State</h3>
-        <TimePicker
-          value="12:00 PM"
-          disabled={true}
-        />
-      </div>
-    );
-  },
-};
-
-// =============================================================================
-// DATETIMEPICKER STORIES
-// =============================================================================
-
-export const DateTimePickerDefault: StoryObj<typeof DateTimePicker> = {
-  name: 'DateTimePicker - Default',
-  render: () => {
-    const [date, setDate] = useState(new Date());
-    
-    return (
-      <div style={{ padding: '20px' }}>
-        <h3 style={{ marginBottom: '20px' }}>DateTimePicker - With Time</h3>
-        <DateTimePicker
-          value={date}
-          onChange={(newDate) => {
-            setDate(newDate);
-            console.log('Date selected:', newDate);
-          }}
-          showTime={true}
-          use24Hour={false}
-        />
-        <p style={{ marginTop: '20px' }}>
-          Selected: {date.toLocaleString()}
-        </p>
-      </div>
-    );
-  },
-};
-
-export const DateTimePickerDateOnly: StoryObj<typeof DateTimePicker> = {
-  name: 'DateTimePicker - Date Only',
-  render: () => {
-    const [date, setDate] = useState(new Date());
-    
-    return (
-      <div style={{ padding: '20px' }}>
-        <h3 style={{ marginBottom: '20px' }}>DateTimePicker - Date Only</h3>
-        <DateTimePicker
-          value={date}
-          onChange={(newDate) => {
-            setDate(newDate);
-            console.log('Date selected:', newDate);
-          }}
-          showTime={false}
-        />
-        <p style={{ marginTop: '20px' }}>
-          Selected: {date.toLocaleDateString()}
-        </p>
-      </div>
-    );
-  },
-};
-
-export const DateTimePicker24Hour: StoryObj<typeof DateTimePicker> = {
-  name: 'DateTimePicker - 24 Hour Format',
-  render: () => {
-    const [date, setDate] = useState(new Date());
-    
-    return (
-      <div style={{ padding: '20px' }}>
-        <h3 style={{ marginBottom: '20px' }}>DateTimePicker - 24 Hour Format</h3>
-        <DateTimePicker
-          value={date}
-          onChange={(newDate) => {
-            setDate(newDate);
-            console.log('Date selected:', newDate);
-          }}
-          showTime={true}
-          use24Hour={true}
-        />
-        <p style={{ marginTop: '20px' }}>
-          Selected: {date.toLocaleString('en-US', { hour12: false })}
-        </p>
-      </div>
-    );
-  },
-};
-
-export const DateTimePickerWithConstraints: StoryObj<typeof DateTimePicker> = {
-  name: 'DateTimePicker - With Min/Max Dates',
-  render: () => {
-    const [date, setDate] = useState(new Date());
-    const today = new Date();
-    const minDate = new Date(today.getFullYear(), today.getMonth(), 1);
-    const maxDate = new Date(today.getFullYear(), today.getMonth() + 1, 0);
-    
-    return (
-      <div style={{ padding: '20px' }}>
-        <h3 style={{ marginBottom: '20px' }}>DateTimePicker - Current Month Only</h3>
-        <DateTimePicker
-          value={date}
-          onChange={(newDate) => {
-            setDate(newDate);
-            console.log('Date selected:', newDate);
-          }}
-          minDate={minDate}
-          maxDate={maxDate}
-          showTime={true}
-        />
-        <p style={{ marginTop: '20px' }}>
-          Selected: {date.toLocaleString()}
-        </p>
-        <p style={{ fontSize: '12px', color: '#666' }}>
-          Min: {minDate.toLocaleDateString()} | Max: {maxDate.toLocaleDateString()}
-        </p>
-      </div>
-    );
-  },
-};
-
-export const DateTimePickerDisabled: StoryObj<typeof DateTimePicker> = {
-  name: 'DateTimePicker - Disabled',
-  render: () => {
-    return (
-      <div style={{ padding: '20px' }}>
-        <h3 style={{ marginBottom: '20px' }}>DateTimePicker - Disabled State</h3>
-        <DateTimePicker
-          value={new Date()}
-          disabled={true}
-          showTime={true}
-        />
-      </div>
-    );
-  },
-};
-
-// =============================================================================
-// DATETIMERANGEPICKER STORIES
-// =============================================================================
-
-export const DateTimeRangePickerDefault: StoryObj<typeof DateTimeRangePicker> = {
-  name: 'DateTimeRangePicker - Default',
-  render: () => {
-    const [range, setRange] = useState<DateRange>({
-      start: new Date(),
-      end: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
-    });
-    
-    return (
-      <div style={{ padding: '20px' }}>
-        <h3 style={{ marginBottom: '20px' }}>DateTimeRangePicker - With Quick Select</h3>
-        <DateTimeRangePicker
-          value={range}
-          onChange={(newRange) => {
-            setRange(newRange);
-            console.log('Range selected:', newRange);
-          }}
-          showTime={true}
-          showQuickSelect={true}
-          use24Hour={false}
-        />
-        <div style={{ marginTop: '20px' }}>
-          <p><strong>Start:</strong> {range.start?.toLocaleString() || 'Not selected'}</p>
-          <p><strong>End:</strong> {range.end?.toLocaleString() || 'Not selected'}</p>
-        </div>
-      </div>
-    );
-  },
-};
-
-export const DateTimeRangePickerNoQuickSelect: StoryObj<typeof DateTimeRangePicker> = {
-  name: 'DateTimeRangePicker - Without Quick Select',
-  render: () => {
-    const [range, setRange] = useState<DateRange>({
+    const [time, setTime] = useState<string>('');
+    const [dateTime, setDateTime] = useState<Date | undefined>();
+    const [dateRange, setDateRange] = useState<DateRange>({
       start: null,
       end: null,
     });
-    
-    return (
-      <div style={{ padding: '20px' }}>
-        <h3 style={{ marginBottom: '20px' }}>DateTimeRangePicker - No Quick Select</h3>
-        <DateTimeRangePicker
-          value={range}
-          onChange={(newRange) => {
-            setRange(newRange);
-            console.log('Range selected:', newRange);
-          }}
-          showTime={true}
-          showQuickSelect={false}
-          use24Hour={false}
-        />
-        <div style={{ marginTop: '20px' }}>
-          <p><strong>Start:</strong> {range.start?.toLocaleString() || 'Not selected'}</p>
-          <p><strong>End:</strong> {range.end?.toLocaleString() || 'Not selected'}</p>
-        </div>
-      </div>
-    );
-  },
-};
 
-export const DateTimeRangePickerDateOnly: StoryObj<typeof DateTimeRangePicker> = {
-  name: 'DateTimeRangePicker - Date Only',
-  render: () => {
-    const [range, setRange] = useState<DateRange>({
-      start: new Date(),
-      end: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
-    });
-    
-    return (
-      <div style={{ padding: '20px' }}>
-        <h3 style={{ marginBottom: '20px' }}>DateTimeRangePicker - Date Only</h3>
-        <DateTimeRangePicker
-          value={range}
-          onChange={(newRange) => {
-            setRange(newRange);
-            console.log('Range selected:', newRange);
-          }}
-          showTime={false}
-          showQuickSelect={true}
-        />
-        <div style={{ marginTop: '20px' }}>
-          <p><strong>Start:</strong> {range.start?.toLocaleDateString() || 'Not selected'}</p>
-          <p><strong>End:</strong> {range.end?.toLocaleDateString() || 'Not selected'}</p>
-        </div>
-      </div>
-    );
-  },
-};
-
-export const DateTimeRangePicker24Hour: StoryObj<typeof DateTimeRangePicker> = {
-  name: 'DateTimeRangePicker - 24 Hour Format',
-  render: () => {
-    const [range, setRange] = useState<DateRange>({
-      start: new Date(),
-      end: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
-    });
-    
-    return (
-      <div style={{ padding: '20px' }}>
-        <h3 style={{ marginBottom: '20px' }}>DateTimeRangePicker - 24 Hour Format</h3>
-        <DateTimeRangePicker
-          value={range}
-          onChange={(newRange) => {
-            setRange(newRange);
-            console.log('Range selected:', newRange);
-          }}
-          showTime={true}
-          showQuickSelect={true}
-          use24Hour={true}
-        />
-        <div style={{ marginTop: '20px' }}>
-          <p><strong>Start:</strong> {range.start?.toLocaleString('en-US', { hour12: false }) || 'Not selected'}</p>
-          <p><strong>End:</strong> {range.end?.toLocaleString('en-US', { hour12: false }) || 'Not selected'}</p>
-        </div>
-      </div>
-    );
-  },
-};
-
-export const DateTimeRangePickerCustomQuickSelect: StoryObj<typeof DateTimeRangePicker> = {
-  name: 'DateTimeRangePicker - Custom Quick Select',
-  render: () => {
-    const [range, setRange] = useState<DateRange>({
-      start: null,
-      end: null,
-    });
-    
-    const customQuickSelect = [
-      {
-        label: 'This Week',
-        getValue: () => {
-          const now = new Date();
-          const dayOfWeek = now.getDay();
-          const start = new Date(now);
-          start.setDate(now.getDate() - dayOfWeek + (dayOfWeek === 0 ? -6 : 1));
-          start.setHours(0, 0, 0, 0);
-          
-          const end = new Date(start);
-          end.setDate(start.getDate() + 6);
-          end.setHours(23, 59, 59, 999);
-          
-          return { start, end };
-        },
-      },
-      {
-        label: 'This Month',
-        getValue: () => {
-          const now = new Date();
-          const start = new Date(now.getFullYear(), now.getMonth(), 1);
-          const end = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59, 999);
-          return { start, end };
-        },
-      },
-      {
-        label: 'Last 90 Days',
-        getValue: () => {
-          const end = new Date();
-          end.setHours(23, 59, 59, 999);
-          const start = new Date(end);
-          start.setDate(end.getDate() - 89);
-          start.setHours(0, 0, 0, 0);
-          return { start, end };
-        },
-      },
-    ];
-    
-    return (
-      <div style={{ padding: '20px' }}>
-        <h3 style={{ marginBottom: '20px' }}>DateTimeRangePicker - Custom Quick Select</h3>
-        <DateTimeRangePicker
-          value={range}
-          onChange={(newRange) => {
-            setRange(newRange);
-            console.log('Range selected:', newRange);
-          }}
-          showTime={true}
-          showQuickSelect={true}
-          quickSelectOptions={customQuickSelect}
-        />
-        <div style={{ marginTop: '20px' }}>
-          <p><strong>Start:</strong> {range.start?.toLocaleString() || 'Not selected'}</p>
-          <p><strong>End:</strong> {range.end?.toLocaleString() || 'Not selected'}</p>
-        </div>
-      </div>
-    );
-  },
-};
-
-export const DateTimeRangePickerDisabled: StoryObj<typeof DateTimeRangePicker> = {
-  name: 'DateTimeRangePicker - Disabled',
-  render: () => {
-    const range: DateRange = {
-      start: new Date(),
-      end: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+    const handleSubmit = () => {
+      console.log('Form submitted:', {
+        time,
+        dateTime,
+        dateRange,
+      });
+      alert('Check console for submitted values');
     };
-    
-    return (
-      <div style={{ padding: '20px' }}>
-        <h3 style={{ marginBottom: '20px' }}>DateTimeRangePicker - Disabled State</h3>
-        <DateTimeRangePicker
-          value={range}
-          disabled={true}
-          showTime={true}
-          showQuickSelect={true}
-        />
-      </div>
-    );
-  },
-};
 
-// =============================================================================
-// COMPARISON STORY
-// =============================================================================
+    const handleReset = () => {
+      setTime('');
+      setDateTime(undefined);
+      setDateRange({ start: null, end: null });
+    };
 
-export const AllPickersComparison: StoryObj = {
-  name: 'All Pickers - Comparison',
-  render: () => {
-    const [time, setTime] = useState('12:45 PM');
-    const [date, setDate] = useState(new Date());
-    const [range, setRange] = useState<DateRange>({
-      start: new Date(),
-      end: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
-    });
-    
     return (
-      <div style={{ padding: '40px', display: 'flex', flexDirection: 'column', gap: '60px' }}>
-        <div>
-          <h2 style={{ marginBottom: '20px' }}>1. TimePicker</h2>
-          <TimePicker value={time} onChange={setTime} />
-          <p style={{ marginTop: '10px', fontSize: '14px' }}>Selected: {time}</p>
-        </div>
+      <div style={{ maxWidth: '600px', margin: '0 auto' }}>
+        <h2 style={{ marginBottom: '24px', fontSize: '24px', fontWeight: 600 }}>
+          Appointment Booking Form
+        </h2>
         
-        <div>
-          <h2 style={{ marginBottom: '20px' }}>2. DateTimePicker</h2>
-          <DateTimePicker value={date} onChange={setDate} showTime />
-          <p style={{ marginTop: '10px', fontSize: '14px' }}>Selected: {date.toLocaleString()}</p>
-        </div>
-        
-        <div>
-          <h2 style={{ marginBottom: '20px' }}>3. DateTimeRangePicker</h2>
-          <DateTimeRangePicker value={range} onChange={setRange} showTime showQuickSelect />
-          <div style={{ marginTop: '10px', fontSize: '14px' }}>
-            <p>Start: {range.start?.toLocaleString() || 'Not selected'}</p>
-            <p>End: {range.end?.toLocaleString() || 'Not selected'}</p>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+          {/* Time Only */}
+          <TimePickerInput
+            label="Preferred Time"
+            value={time}
+            onChange={setTime}
+            placeholder="Select time"
+            helperText="Select your preferred appointment time"
+            required
+          />
+
+          {/* Date & Time */}
+          <DateTimePickerInput
+            label="Appointment Date & Time"
+            value={dateTime}
+            onChange={setDateTime}
+            placeholder="Select date and time"
+            helperText="Choose the date and time for your appointment"
+            required
+          />
+
+          {/* Date Range */}
+          <DateTimeRangePickerInput
+            label="Availability Window"
+            value={dateRange}
+            onChange={setDateRange}
+            placeholder="Select date range"
+            helperText="Select your available date range"
+            showQuickSelect
+            quickSelectOptions={[
+              {
+                label: 'Next 7 Days',
+                getValue: () => ({
+                  start: new Date(),
+                  end: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+                }),
+              },
+              {
+                label: 'Next 30 Days',
+                getValue: () => ({
+                  start: new Date(),
+                  end: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+                }),
+              },
+            ]}
+          />
+
+          {/* Action Buttons */}
+          <div style={{ display: 'flex', gap: '12px', marginTop: '8px' }}>
+            <Button variant="primary" onClick={handleSubmit}>
+              Submit
+            </Button>
+            <Button variant="secondary" onClick={handleReset}>
+              Reset
+            </Button>
           </div>
         </div>
+
+        {/* Display Values */}
+        <div style={{ 
+          marginTop: '32px', 
+          padding: '16px', 
+          background: '#f5f5f5', 
+          borderRadius: '8px',
+          fontSize: '14px',
+        }}>
+          <strong>Current Values:</strong>
+          <pre style={{ marginTop: '8px', fontSize: '12px' }}>
+            {JSON.stringify({ time, dateTime, dateRange }, null, 2)}
+          </pre>
+        </div>
       </div>
     );
   },
 };
+
+// =============================================================================
+// TIME PICKER INPUT
+// =============================================================================
+
+export const TimeInput: StoryObj<typeof TimePickerInput> = {
+  name: 'Time Picker Input',
+  render: () => {
+    const [time, setTime] = useState<string>('');
+
+    return (
+      <div style={{ maxWidth: '400px' }}>
+        <TimePickerInput
+          label="Select Time"
+          value={time}
+          onChange={(newTime) => {
+            setTime(newTime);
+            console.log('Time selected:', newTime);
+          }}
+          placeholder="hh:mm AM/PM"
+          helperText="Click to open time picker"
+        />
+        
+        <div style={{ marginTop: '16px', fontSize: '14px', color: '#666' }}>
+          Selected: <strong>{time || 'None'}</strong>
+        </div>
+      </div>
+    );
+  },
+};
+
+// =============================================================================
+// DATETIME PICKER INPUT
+// =============================================================================
+
+export const DateTimeInput: StoryObj<typeof DateTimePickerInput> = {
+  name: 'DateTime Picker Input',
+  render: () => {
+    const [dateTime, setDateTime] = useState<Date | undefined>();
+
+    return (
+      <div style={{ maxWidth: '400px' }}>
+        <DateTimePickerInput
+          label="Select Date & Time"
+          value={dateTime}
+          onChange={(newDate) => {
+            setDateTime(newDate);
+            console.log('DateTime selected:', newDate);
+          }}
+          placeholder="MMM dd, yyyy hh:mm AM/PM"
+          helperText="Click to open date and time picker"
+        />
+        
+        <div style={{ marginTop: '16px', fontSize: '14px', color: '#666' }}>
+          Selected: <strong>{dateTime ? dateTime.toLocaleString() : 'None'}</strong>
+        </div>
+      </div>
+    );
+  },
+};
+
+// =============================================================================
+// DATETIME RANGE PICKER INPUT
+// =============================================================================
+
+export const DateTimeRangeInputWithQuickSelect: StoryObj<typeof DateTimeRangePickerInput> = {
+  name: 'DateTime Range Picker Input',
+  render: () => {
+    const [range, setRange] = useState<DateRange>({
+      start: null,
+      end: null,
+    });
+
+    return (
+      <div style={{ maxWidth: '600px' }}>
+        <DateTimeRangePickerInput
+          label="Select Date Range"
+          value={range}
+          onChange={setRange}
+          placeholder="Select start and end dates"
+          helperText="Includes quick select options"
+          showQuickSelect
+          quickSelectOptions={[
+            {
+              label: 'Today',
+              getValue: () => {
+                const now = new Date();
+                const endOfDay = new Date(now);
+                endOfDay.setHours(23, 59, 59, 999);
+                return { start: now, end: endOfDay };
+              },
+            },
+            {
+              label: 'Last 7 Days',
+              getValue: () => ({
+                start: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000),
+                end: new Date(),
+              }),
+            },
+            {
+              label: 'Last 30 Days',
+              getValue: () => ({
+                start: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000),
+                end: new Date(),
+              }),
+            },
+            {
+              label: 'This Month',
+              getValue: () => {
+                const now = new Date();
+                const start = new Date(now.getFullYear(), now.getMonth(), 1);
+                const end = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+                return { start, end };
+              },
+            },
+          ]}
+        />
+        
+        <div style={{ marginTop: '16px', fontSize: '14px', color: '#666' }}>
+          <div>Start: <strong>{range.start ? range.start.toLocaleString() : 'None'}</strong></div>
+          <div>End: <strong>{range.end ? range.end.toLocaleString() : 'None'}</strong></div>
+        </div>
+      </div>
+    );
+  },
+};
+

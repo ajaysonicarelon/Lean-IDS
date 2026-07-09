@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { AdvancedDataTable } from './EnhancedTableTemplate';
+import { AdvancedDataTable, getNestedColumnConfigs } from './EnhancedTableTemplate';
 
 const meta: Meta<typeof AdvancedDataTable> = {
   title: 'Components/Table/Advanced Table',
@@ -11,7 +11,31 @@ const meta: Meta<typeof AdvancedDataTable> = {
         component: `
 # Advanced Data Table
 
-The Advanced Data Table includes all the features of the standard table plus:
+Advanced table with nested columns, column filters, side panel controls, and drag-and-drop.
+
+## Installation
+
+\`\`\`bash
+npm install @ajaysoni7832/lean-ids-components
+\`\`\`
+
+## Basic Usage
+
+\`\`\`tsx
+import { AdvancedDataTable } from '@ajaysoni7832/lean-ids-components';
+
+<AdvancedDataTable
+  data={data}
+  columns={columns}
+  useSidePanel
+  showToolbar
+  toolbarTitle="Claims Data"
+/>
+\`\`\`
+
+## Features
+
+The Advanced Data Table includes all standard table features plus:
 
 ## New Features
 
@@ -38,21 +62,56 @@ The Advanced Data Table includes all the features of the standard table plus:
 - Drag-and-drop reordering for both parent and child columns
 - Individual visibility and lock controls for nested columns
 
+## Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| useSidePanel | boolean | false | Enable side panel for column/filter controls |
+| useModal | boolean | false | Enable modal for column settings |
+| showToolbar | boolean | true | Show toolbar with title and actions |
+| toolbarTitle | string | 'Data Table' | Title displayed in toolbar |
+| initialColumns | ColumnConfig[] | - | Custom column configuration (for nested columns) |
+
 ## Usage Modes
 
 ### With Side Panel (Recommended for complex tables)
 \`\`\`tsx
-<AdvancedDataTable useSidePanel={true} />
+<AdvancedDataTable 
+  useSidePanel={true}
+  showToolbar={true}
+  toolbarTitle="Claims Data"
+/>
 \`\`\`
 
 ### With Modal (Traditional approach)
 \`\`\`tsx
-<AdvancedDataTable useModal={true} />
+<AdvancedDataTable 
+  useModal={true}
+  showToolbar={true}
+  toolbarTitle="Claims Data"
+/>
+\`\`\`
+
+### With Sub-Headers (Nested Columns)
+\`\`\`tsx
+import { AdvancedDataTable, getNestedColumnConfigs } from '@ajaysoni7832/lean-ids-components';
+
+<AdvancedDataTable 
+  useModal={true}
+  showToolbar={true}
+  toolbarTitle="Claims Data with Sub-Headers"
+  initialColumns={getNestedColumnConfigs()}
+/>
 \`\`\`
 
 ### Both Modes
 \`\`\`tsx
-<AdvancedDataTable useSidePanel={true} useModal={true} />
+<AdvancedDataTable 
+  useSidePanel={true} 
+  useModal={true}
+  showToolbar={true}
+  toolbarTitle="Claims Data"
+/>
 \`\`\`
 
 ## Design Reference
@@ -125,11 +184,12 @@ export const WithSubHeaders: Story = {
     useModal: true,
     showToolbar: true,
     toolbarTitle: 'Claims Data with Sub-Headers',
+    initialColumns: getNestedColumnConfigs(),
   },
   parameters: {
     docs: {
       description: {
-        story: 'Table with sub-header support showing nested columns. The "Claim ID" column has two sub-columns: "First Name" and "Last Name". This demonstrates the hierarchical column structure.',
+        story: 'Table with sub-header support showing nested columns. The "User Details" parent column contains "First Name" and "Last Name" sub-columns, and the "Address" parent column contains "City" and "State" sub-columns. This demonstrates the hierarchical column structure with parent-child relationships.',
       },
     },
   },

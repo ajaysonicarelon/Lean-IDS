@@ -10,6 +10,8 @@ interface StyledTableHeaderProps {
   $locked?: boolean;
   $leftOffset?: number;
   $sortDirection?: 'asc' | 'desc' | 'none';
+  $showCheckbox?: boolean;
+  $hasLabel?: boolean;
 }
 
 export const StyledTableHeader = styled.th<StyledTableHeaderProps>`
@@ -30,6 +32,16 @@ export const StyledTableHeader = styled.th<StyledTableHeaderProps>`
   cursor: ${({ $sortable }) => ($sortable ? 'pointer' : 'default')};
   user-select: none;
   vertical-align: middle;
+  
+  /* Fixed width for checkbox-only columns */
+  ${({ $showCheckbox, $hasLabel, $sortable }) =>
+    $showCheckbox && !$hasLabel && !$sortable
+      ? `
+    width: 56px;
+    min-width: 56px;
+    max-width: 56px;
+  `
+      : ''}
   
   ${({ $side }) => {
     if ($side === 'left') {

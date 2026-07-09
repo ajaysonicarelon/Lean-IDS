@@ -67,6 +67,7 @@ export const TableCell: React.FC<TableCellProps> = ({
   onEdit,
   showDeleteAction = false,
   onDelete,
+  onClick,
   align = 'left',
   className,
   selected = false,
@@ -77,7 +78,7 @@ export const TableCell: React.FC<TableCellProps> = ({
 }) => {
   const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (onCheckChange) {
-      onCheckChange(e.target.checked);
+      onCheckChange(e.target.checked, (e.nativeEvent as MouseEvent).shiftKey);
     }
   };
 
@@ -91,6 +92,31 @@ export const TableCell: React.FC<TableCellProps> = ({
       .slice(0, 2);
   };
 
+  // Helper to detect if content is numeric (for auto-applying monospace font)
+  const isNumericContent = (content: any): boolean => {
+    if (typeof content === 'number') return true;
+    if (typeof content === 'string') {
+      // Check if string is a number, currency, or contains mostly digits
+      const cleaned = content.replace(/[$,\s]/g, '');
+      return /^\d+\.?\d*$/.test(cleaned);
+    }
+    return false;
+  };
+
+  // Wrap children in NumberText if they're numeric
+  const renderChildren = () => {
+    if (!children) return null;
+    
+    if (typeof children === 'string' || typeof children === 'number') {
+      if (isNumericContent(children)) {
+        return <NumberText>{children}</NumberText>;
+      }
+      return <RegularText>{children}</RegularText>;
+    }
+    
+    return children;
+  };
+
   return (
     <StyledTableCell 
       $align={align} 
@@ -100,6 +126,8 @@ export const TableCell: React.FC<TableCellProps> = ({
       $leftOffset={leftOffset}
       className={className}
       data-locked={locked ? 'true' : undefined}
+      onClick={onClick}
+      style={{ cursor: onClick ? 'pointer' : 'default' }}
     >
       <CellContent>
         {showCheckbox && (
@@ -184,7 +212,7 @@ export const TableCell: React.FC<TableCellProps> = ({
         )}
 
         {/* Render custom children if provided */}
-        {children}
+        {renderChildren()}
       </CellContent>
     </StyledTableCell>
   );

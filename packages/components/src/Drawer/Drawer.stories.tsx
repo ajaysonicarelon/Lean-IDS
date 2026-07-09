@@ -11,7 +11,149 @@ const meta: Meta<typeof Drawer> = {
     layout: 'fullscreen',
     docs: {
       description: {
-        component: 'A side panel drawer component with header, body, and footer sections. Based on Figma design.',
+        component: `
+# Drawer
+
+A side panel drawer component with header, body, and footer sections for displaying additional content or forms.
+
+## Installation
+
+\`\`\`bash
+npm install @ajaysoni7832/lean-ids-components
+\`\`\`
+
+## Basic Usage
+
+\`\`\`tsx
+import { Drawer } from '@ajaysoni7832/lean-ids-components';
+
+function MyComponent() {
+  const [isOpen, setIsOpen] = useState(false);
+
+  return (
+    <>
+      <Button onClick={() => setIsOpen(true)}>Open Drawer</Button>
+      
+      <Drawer
+        isOpen={isOpen}
+        onClose={() => setIsOpen(false)}
+        title="Drawer Title"
+      >
+        <p>Drawer content goes here</p>
+      </Drawer>
+    </>
+  );
+}
+\`\`\`
+
+## Features
+
+✅ **Overlay Backdrop** - Dims background content
+✅ **Header with Title** - Optional close button
+✅ **Scrollable Body** - For long content
+✅ **Footer Section** - For actions/buttons
+✅ **Escape Key** - Close on Esc key
+✅ **Click Outside** - Close on backdrop click
+✅ **Animations** - Smooth slide-in/out
+
+## Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| isOpen | boolean | required | Control drawer visibility |
+| onClose | () => void | required | Close handler |
+| title | string | - | Drawer title |
+| children | ReactNode | - | Drawer body content |
+| footer | ReactNode | - | Footer content (buttons) |
+| width | string | '400px' | Drawer width |
+| showCloseButton | boolean | true | Show close button in header |
+| closeOnBackdropClick | boolean | true | Close on backdrop click |
+| closeOnEscape | boolean | true | Close on Escape key |
+| className | string | - | Custom CSS class |
+
+## Examples
+
+### Basic Drawer
+\`\`\`tsx
+<Drawer
+  isOpen={isOpen}
+  onClose={() => setIsOpen(false)}
+  title="Settings"
+>
+  <p>Settings content</p>
+</Drawer>
+\`\`\`
+
+### With Footer Actions
+\`\`\`tsx
+<Drawer
+  isOpen={isOpen}
+  onClose={() => setIsOpen(false)}
+  title="Edit Profile"
+  footer={
+    <>
+      <Button variant="secondary" onClick={() => setIsOpen(false)}>
+        Cancel
+      </Button>
+      <Button variant="primary" onClick={handleSave}>
+        Save
+      </Button>
+    </>
+  }
+>
+  <InputField label="Name" />
+  <InputField label="Email" />
+</Drawer>
+\`\`\`
+
+### Custom Width
+\`\`\`tsx
+<Drawer
+  isOpen={isOpen}
+  onClose={() => setIsOpen(false)}
+  title="Wide Drawer"
+  width="600px"
+>
+  <p>Wide content</p>
+</Drawer>
+\`\`\`
+
+### No Close Button
+\`\`\`tsx
+<Drawer
+  isOpen={isOpen}
+  onClose={() => setIsOpen(false)}
+  title="Confirmation"
+  showCloseButton={false}
+  closeOnBackdropClick={false}
+  closeOnEscape={false}
+>
+  <p>Are you sure?</p>
+</Drawer>
+\`\`\`
+
+## Best Practices
+
+1. **Use for secondary content** - Details, forms, filters
+2. **Keep width reasonable** - 300-600px typically
+3. **Provide clear actions** - Save/Cancel buttons in footer
+4. **Allow easy dismissal** - Backdrop click, Escape key
+5. **Limit nesting** - Avoid drawer within drawer
+
+## Keyboard Navigation
+
+- **Escape** - Close drawer
+- **Tab** - Navigate through drawer content
+- **Shift+Tab** - Navigate backwards
+
+## Accessibility
+
+- ✅ Focus trap within drawer
+- ✅ ARIA role="dialog"
+- ✅ ARIA labels
+- ✅ Keyboard navigation
+- ✅ Screen reader announcements
+        `,
       },
     },
   },

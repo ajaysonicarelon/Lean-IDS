@@ -19,24 +19,53 @@ const meta: Meta<typeof Tooltip> = {
     docs: {
       description: {
         component: `
-A universal tooltip component for displaying contextual information.
+# Tooltip
 
-**Two Variants:**
-- **default**: Rectangular tooltip (for chart hovers, data points)
-- **pointer**: Tooltip with triangular pointer (for info icons, help text)
+Universal tooltip component for contextual information with default and pointer variants.
 
-**Features:**
-- Portal-based rendering (appears on top of all content)
-- Fixed positioning (no clipping by parent containers)
-- Four pointer positions: top, bottom, left, right
-- Clean, minimal design matching Figma specifications
-- Fully accessible with ARIA attributes
+## Installation
+\`\`\`bash
+npm install @ajaysoni7832/lean-ids-components
+\`\`\`
 
-**Use Cases:**
-- Info icon tooltips (use pointer variant)
-- Chart segment hover information (use default variant)
-- Data point details
-- Contextual help text
+## Basic Usage
+\`\`\`tsx
+import { Tooltip } from '@ajaysoni7832/lean-ids-components';
+
+<Tooltip content="Helpful information" variant="pointer" pointerPosition="top">
+  <InfoIcon />
+</Tooltip>
+\`\`\`
+
+## Features
+✅ **Two Variants** - Default (rectangular) and pointer (with arrow)
+✅ **Four Positions** - Top, bottom, left, right
+✅ **Portal Rendering** - No clipping issues
+✅ **Accessible** - ARIA attributes
+
+## Props
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| content | ReactNode | required | Tooltip content |
+| children | ReactNode | required | Trigger element |
+| variant | 'default' \\| 'pointer' | 'default' | Tooltip style |
+| pointerPosition | 'top' \\| 'bottom' \\| 'left' \\| 'right' | 'top' | Arrow position |
+| show | boolean | - | Controlled visibility |
+
+## Examples
+### Info Icon Tooltip
+\`\`\`tsx
+<Tooltip content="More information" variant="pointer" pointerPosition="top">
+  <InfoIcon />
+</Tooltip>
+\`\`\`
+
+### Chart Hover
+\`\`\`tsx
+<Tooltip content="Value: 42" variant="default">
+  <ChartBar />
+</Tooltip>
+\`\`\`
         `,
       },
     },

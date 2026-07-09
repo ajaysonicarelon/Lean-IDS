@@ -274,6 +274,7 @@ export const Table: React.FC<TableProps> = ({
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc' | 'none'>('none');
   const [allChecked, setAllChecked] = useState(false);
   const [selectedRows, setSelectedRows] = useState<string[]>([]);
+  const [lastSelectedIndex, setLastSelectedIndex] = useState<number | null>(null);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [columnOffsets, setColumnOffsets] = useState<{ [key: string]: number }>({});
   const [lockWarning, setLockWarning] = useState(false);
@@ -365,14 +366,33 @@ export const Table: React.FC<TableProps> = ({
     onRowSelect?.(newSelectedRows);
   };
 
-  const handleRowSelect = (id: string, checked: boolean) => {
-    const newSelectedRows = checked
-      ? [...selectedRows, id]
-      : selectedRows.filter(rowId => rowId !== id);
-    
-    setSelectedRows(newSelectedRows);
-    setAllChecked(newSelectedRows.length === data.length);
-    onRowSelect?.(newSelectedRows);
+  const handleRowSelect = (id: string, checked: boolean, rowIndex: number, shiftKey: boolean = false) => {
+    if (checked) {
+      // Shift-click: Select range from last selected to current
+      if (shiftKey && lastSelectedIndex !== null) {
+        const start = Math.min(lastSelectedIndex, rowIndex);
+        const end = Math.max(lastSelectedIndex, rowIndex);
+        const rangeIds = paginatedData.slice(start, end + 1).map(row => row[rowKey]);
+        const newSelectedRows = Array.from(new Set([...selectedRows, ...rangeIds]));
+        setSelectedRows(newSelectedRows);
+        setAllChecked(newSelectedRows.length === data.length);
+        onRowSelect?.(newSelectedRows);
+      } else {
+        // Normal click: Add single row
+        const newSelectedRows = [...selectedRows, id];
+        setSelectedRows(newSelectedRows);
+        setAllChecked(newSelectedRows.length === data.length);
+        setLastSelectedIndex(rowIndex);
+        onRowSelect?.(newSelectedRows);
+      }
+    } else {
+      // Uncheck: Remove row
+      const newSelectedRows = selectedRows.filter(rowId => rowId !== id);
+      setSelectedRows(newSelectedRows);
+      setAllChecked(false);
+      setLastSelectedIndex(rowIndex);
+      onRowSelect?.(newSelectedRows);
+    }
   };
 
   const handleSearch = (columnId: string, value: string) => {
@@ -705,7 +725,7 @@ export const Table: React.FC<TableProps> = ({
                         >
                           <Checkbox
                             checked={isSelected}
-                            onChange={(e) => handleRowSelect(rowId, e.target.checked)}
+                            onChange={(e) => handleRowSelect(rowId, e.target.checked, rowIndex, (e.nativeEvent as MouseEvent).shiftKey)}
                           />
                         </TableCell>
                       );

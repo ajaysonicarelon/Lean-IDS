@@ -289,16 +289,19 @@ Stay up to date with the latest changes, improvements, and fixes to the Lean IDS
       </div>
       <ul className="change-list">
         <li className="change-item">
+          Added <code>AdvancedDataTable</code> component with nested columns, column locking, global search, and side panel controls
+        </li>
+        <li className="change-item">
           Added <code>TableSidePanel</code> component for table detail views with collapsible/expandable overlay
         </li>
         <li className="change-item">
           Added <code>Accordion</code> component with expand/collapse functionality
         </li>
         <li className="change-item">
-          Added <code>DateTimePickers</code> component for date and time selection
+          Added <code>DateTimePickers</code> suite: <code>TimePickerInput</code>, <code>DateTimePickerInput</code>, and <code>DateTimeRangePickerInput</code>
         </li>
         <li className="change-item">
-          Added <code>TableSubHeader</code> component for enhanced table headers
+          Added <code>TableSubHeader</code> component for column search filters
         </li>
       </ul>
     </div>
@@ -306,26 +309,53 @@ Stay up to date with the latest changes, improvements, and fixes to the Lean IDS
     <div className="change-section">
       <div className="change-title">
         <span className="change-icon">🔧</span>
-        Improvements
+        Advanced Table Features
       </div>
       <ul className="change-list">
         <li className="change-item">
-          <strong>EnhancedTableTemplate:</strong> New advanced table template with sorting, filtering, pagination, and side panel integration
+          <strong>Nested Columns (Sub-Headers):</strong> Support for parent-child column hierarchies with expandable/collapsible groups
         </li>
         <li className="change-item">
-          Enhanced <code>Table</code> component with better TypeScript types and improved performance
+          <strong>Column Locking:</strong> Lock up to 3 columns with sticky positioning and cascading parent-child lock behavior
         </li>
         <li className="change-item">
-          Improved <code>TableHeader</code> with better styling and accessibility
+          <strong>Global Search:</strong> Search across all columns with real-time filtering in the toolbar
         </li>
         <li className="change-item">
-          Enhanced <code>TableSettings</code> with improved column visibility controls
+          <strong>Column Search Filters:</strong> Individual search bars for each column with toggle on/off via side panel
         </li>
         <li className="change-item">
-          Updated <code>Select</code> component with better dropdown positioning
+          <strong>Side Panel Controls:</strong> Alternative to modal settings with vertical panel for columns and filters
         </li>
         <li className="change-item">
-          Improved <code>PageLayout</code> with better responsive behavior
+          <strong>Drag & Drop Reordering:</strong> Reorder both parent and child columns with visual feedback
+        </li>
+        <li className="change-item">
+          <strong>Empty State:</strong> "No data available" message when search/filters yield no results
+        </li>
+        <li className="change-item">
+          <strong>Configurable Columns:</strong> <code>initialColumns</code> prop with <code>getNestedColumnConfigs()</code> helper for custom setups
+        </li>
+      </ul>
+    </div>
+
+    <div className="change-section">
+      <div className="change-title">
+        <span className="change-icon">🎨</span>
+        Component Improvements
+      </div>
+      <ul className="change-list">
+        <li className="change-item">
+          Enhanced <code>TableHeader</code> with lock icon visibility control, proper padding for checkbox columns, and <code>isChildColumn</code> prop
+        </li>
+        <li className="change-item">
+          Improved <code>TableToolbar</code> with global search integration and better action button layout
+        </li>
+        <li className="change-item">
+          Enhanced <code>TableSettings</code> with nested column management and improved visibility controls
+        </li>
+        <li className="change-item">
+          Updated <code>TableSidePanel</code> with hover states and expandable parent columns
         </li>
       </ul>
     </div>
