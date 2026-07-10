@@ -36,6 +36,10 @@ import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import HomeIcon from '@mui/icons-material/Home';
+import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
+import DateRangeIcon from '@mui/icons-material/DateRange';
+import ScheduleIcon from '@mui/icons-material/Schedule';
 
 // Icon map for quick lookup
 const ICON_MAP: Record<string, React.ComponentType<any>> = {
@@ -72,6 +76,10 @@ const ICON_MAP: Record<string, React.ComponentType<any>> = {
   Visibility: VisibilityIcon,
   VisibilityOff: VisibilityOffIcon,
   CheckCircle: CheckCircleIcon,
+  Home: HomeIcon,
+  CalendarToday: CalendarTodayIcon,
+  DateRange: DateRangeIcon,
+  Schedule: ScheduleIcon,
 };
 
 const sizeMap = {
