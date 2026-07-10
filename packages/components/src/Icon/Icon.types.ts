@@ -73,7 +73,7 @@ export const COMMON_ICONS = {
   Visibility: 'Visibility',
   VisibilityOff: 'VisibilityOff',
   Lock: 'Lock',
-  LockOpen: 'LockOpen',
+  LockOpen: 'LockOpenOutlined',
   
   // Status
   Info: 'Info',

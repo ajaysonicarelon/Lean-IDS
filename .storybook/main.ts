@@ -1,4 +1,5 @@
 import type { StorybookConfig } from '@storybook/react-vite';
+import path from 'path';
 
 const config: StorybookConfig = {
   stories: [
@@ -20,39 +21,29 @@ const config: StorybookConfig = {
     autodocs: 'tag',
   },
   viteFinal: async (config) => {
-    // Ensure styled-components is properly resolved
+    // Ensure proper module resolution
     config.resolve = {
       ...config.resolve,
-      dedupe: ['styled-components', 'react', 'react-dom'],
+      dedupe: ['styled-components', 'react', 'react-dom', '@mui/material'],
     };
 
-    // Handle "use client" directives and dynamic imports
+    // Handle "use client" directives
     config.build = {
       ...config.build,
       rollupOptions: {
         ...config.build?.rollupOptions,
         onwarn(warning, warn) {
-          // Ignore "use client" directive warnings from @mui/icons-material and lucide-react
+          // Ignore "use client" directive warnings
           if (
             warning.code === 'MODULE_LEVEL_DIRECTIVE' &&
-            warning.message.includes('"use client"') &&
-            (warning.message.includes('@mui/icons-material') || 
-             warning.message.includes('lucide-react'))
+            warning.message.includes('"use client"')
           ) {
             return;
           }
-          // Ignore dynamic import warnings from Icon component
+          // Ignore dynamic import warnings
           if (
             warning.code === 'MISSING_EXPORT' &&
             warning.message.includes('@mui/icons-material')
-          ) {
-            return;
-          }
-          // Ignore unresolved import warnings for @mui/material
-          if (
-            warning.code === 'UNRESOLVED_IMPORT' &&
-            (warning.message.includes('@mui/material') || 
-             warning.message.includes('@mui/icons-material'))
           ) {
             return;
           }
@@ -61,10 +52,12 @@ const config: StorybookConfig = {
       },
     };
     
-    // Configure dynamic import handling
+    // Configure optimizeDeps for Material UI
     if (!config.optimizeDeps) {
       config.optimizeDeps = {};
     }
+    
+    // Include Material UI core for pre-bundling
     config.optimizeDeps.include = [
       ...(config.optimizeDeps.include || []),
       '@mui/material',

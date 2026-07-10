@@ -5,6 +5,73 @@ All notable changes to the Lean IDS Design System will be documented in this fil
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.7.5] - 2026-07-11
+
+### � **Critical Fix: Icon Dynamic Imports Replaced with Static Imports**
+
+#### **What Changed**
+- **Replaced dynamic imports with static imports** in Icon component
+- Changed `LockOpen` icon to `LockOpenOutlined` for Material UI v5 compatibility
+- Removed Vite plugin complexity from Storybook
+
+#### **The Problem**
+Dynamic imports in Icon component caused runtime errors:
+```typescript
+// Before (v1.7.4) - FAILED in browser
+import(`@mui/icons-material/${iconName}`)
+// ❌ Browser cannot resolve bare module specifiers
+// ❌ Error: Failed to resolve module specifier '@mui/icons-material/Search'
+```
+
+#### **The Solution**
+Static imports with icon map:
+```typescript
+// After (v1.7.5) - WORKS everywhere
+import SearchIcon from '@mui/icons-material/Search';
+import CloseIcon from '@mui/icons-material/Close';
+// ... all icons imported statically
+
+const ICON_MAP = {
+  Search: SearchIcon,
+  Close: CloseIcon,
+  // ...
+};
+```
+
+#### **Why This Matters**
+- **Dynamic imports** = Runtime resolution (browser does it) ❌
+- **Static imports** = Build-time resolution (bundler does it) ✅
+- Browsers cannot resolve npm package names like `@mui/icons-material`
+- Only build tools (Vite, Webpack, Rollup) can resolve package names
+
+#### **Affected Components**
+- Icon component (all dynamic icon usage)
+- Select (Search icon)
+- Table (Settings, Download, FilterAlt, DragIndicator icons)
+- TableSettings (Lock, LockOpen, DragIndicator icons)
+- TableSidePanel (Lock, LockOpen, DragIndicator, Close icons)
+- All components using `<Icon name="..." />`
+
+#### **Fixes**
+- ✅ **Fixed:** Icons not showing in Vite dev servers
+- ✅ **Fixed:** Icons not showing in Storybook
+- ✅ **Fixed:** `TypeError: Failed to resolve module specifier` errors
+- ✅ **Fixed:** LockOpen icon compatibility with Material UI v5.0-v5.10
+- ✅ **Works:** Production builds
+- ✅ **Works:** Development servers (Vite, Webpack)
+- ✅ **Works:** Storybook
+- ✅ **Works:** All Material UI versions v5.0+
+
+#### **Migration from v1.7.4**
+No code changes needed! Just update:
+```bash
+npm install @ajaysoni7832/lean-ids-components@1.7.5
+```
+
+All icons will work immediately in all environments.
+
+---
+
 ## [1.7.4] - 2026-07-11
 
 ### 🔧 **BREAKING CHANGE: Material UI as Peer Dependencies**

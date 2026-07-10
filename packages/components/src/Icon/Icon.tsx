@@ -1,6 +1,78 @@
-import React, { useState, useEffect } from 'react';
-import { IconProps } from './Icon.types';
+import React from 'react';
+import { IconProps, COMMON_ICONS } from './Icon.types';
 import styled from 'styled-components';
+
+// Import all commonly used icons statically
+import SearchIcon from '@mui/icons-material/Search';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import ExpandLessIcon from '@mui/icons-material/ExpandLess';
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
+import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
+import CloseIcon from '@mui/icons-material/Close';
+import CheckIcon from '@mui/icons-material/Check';
+import SettingsIcon from '@mui/icons-material/Settings';
+import FilterAltIcon from '@mui/icons-material/FilterAlt';
+import DownloadIcon from '@mui/icons-material/Download';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
+import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
+import LockIcon from '@mui/icons-material/Lock';
+import LockOpenIcon from '@mui/icons-material/LockOpenOutlined';
+import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
+import InfoIcon from '@mui/icons-material/Info';
+import WarningIcon from '@mui/icons-material/Warning';
+import ErrorIcon from '@mui/icons-material/Error';
+import AddIcon from '@mui/icons-material/Add';
+import RemoveIcon from '@mui/icons-material/Remove';
+import SortIcon from '@mui/icons-material/Sort';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+import FirstPageIcon from '@mui/icons-material/FirstPage';
+import LastPageIcon from '@mui/icons-material/LastPage';
+import MenuIcon from '@mui/icons-material/Menu';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
+import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+
+// Icon map for quick lookup
+const ICON_MAP: Record<string, React.ComponentType<any>> = {
+  Search: SearchIcon,
+  ExpandMore: ExpandMoreIcon,
+  ExpandLess: ExpandLessIcon,
+  ArrowDropDown: ArrowDropDownIcon,
+  ArrowDropUp: ArrowDropUpIcon,
+  Close: CloseIcon,
+  Check: CheckIcon,
+  Settings: SettingsIcon,
+  FilterAlt: FilterAltIcon,
+  Download: DownloadIcon,
+  Edit: EditIcon,
+  Delete: DeleteIcon,
+  DragIndicator: DragIndicatorIcon,
+  Lock: LockIcon,
+  LockOpenOutlined: LockOpenIcon,
+  ChevronRight: ChevronRightIcon,
+  ChevronLeft: ChevronLeftIcon,
+  Info: InfoIcon,
+  Warning: WarningIcon,
+  Error: ErrorIcon,
+  Add: AddIcon,
+  Remove: RemoveIcon,
+  Sort: SortIcon,
+  ArrowBack: ArrowBackIcon,
+  ArrowForward: ArrowForwardIcon,
+  FirstPage: FirstPageIcon,
+  LastPage: LastPageIcon,
+  Menu: MenuIcon,
+  MoreVert: MoreVertIcon,
+  MoreHoriz: MoreHorizIcon,
+  Visibility: VisibilityIcon,
+  VisibilityOff: VisibilityOffIcon,
+  CheckCircle: CheckCircleIcon,
+};
 
 const sizeMap = {
   small: '16px',
@@ -40,20 +112,14 @@ export const Icon: React.FC<IconProps> = ({
   onClick,
   ...rest
 }) => {
-  const [IconComponent, setIconComponent] = useState<React.ComponentType<any> | null>(null);
-
-  useEffect(() => {
-    // Dynamically import the icon on-demand
-    import(`@mui/icons-material/${name}`)
-      .then((module) => {
-        setIconComponent(() => module.default);
-      })
-      .catch((error) => {
-        console.warn(`Icon "${name}" not found in @mui/icons-material`, error);
-      });
-  }, [name]);
+  // Map icon name using COMMON_ICONS (handles special cases like LockOpen -> LockOpenOutlined)
+  const iconName = (COMMON_ICONS as any)[name] || name;
+  
+  // Get icon component from static map
+  const IconComponent = ICON_MAP[iconName];
 
   if (!IconComponent) {
+    console.warn(`Icon "${name}" (mapped to "${iconName}") not found in icon map`);
     return null;
   }
 
@@ -92,7 +158,7 @@ export { default as SettingsIcon } from '@mui/icons-material/Settings';
 export { default as CloseIcon } from '@mui/icons-material/Close';
 export { default as CheckIcon } from '@mui/icons-material/Check';
 export { default as LockIcon } from '@mui/icons-material/Lock';
-export { default as LockOpenIcon } from '@mui/icons-material/LockOpen';
+export { default as LockOpenIcon } from '@mui/icons-material/LockOpenOutlined';
 export { default as VisibilityIcon } from '@mui/icons-material/Visibility';
 export { default as VisibilityOffIcon } from '@mui/icons-material/VisibilityOff';
 export { default as InfoIcon } from '@mui/icons-material/Info';
