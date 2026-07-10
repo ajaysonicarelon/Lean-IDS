@@ -26,17 +26,33 @@ const config: StorybookConfig = {
       dedupe: ['styled-components', 'react', 'react-dom'],
     };
 
-    // Handle "use client" directives from MUI icons
+    // Handle "use client" directives and dynamic imports
     config.build = {
       ...config.build,
       rollupOptions: {
         ...config.build?.rollupOptions,
         onwarn(warning, warn) {
-          // Ignore "use client" directive warnings from @mui/icons-material
+          // Ignore "use client" directive warnings from @mui/icons-material and lucide-react
           if (
             warning.code === 'MODULE_LEVEL_DIRECTIVE' &&
             warning.message.includes('"use client"') &&
+            (warning.message.includes('@mui/icons-material') || 
+             warning.message.includes('lucide-react'))
+          ) {
+            return;
+          }
+          // Ignore dynamic import warnings from Icon component
+          if (
+            warning.code === 'MISSING_EXPORT' &&
             warning.message.includes('@mui/icons-material')
+          ) {
+            return;
+          }
+          // Ignore unresolved import warnings for @mui/material
+          if (
+            warning.code === 'UNRESOLVED_IMPORT' &&
+            (warning.message.includes('@mui/material') || 
+             warning.message.includes('@mui/icons-material'))
           ) {
             return;
           }
@@ -44,6 +60,19 @@ const config: StorybookConfig = {
         },
       },
     };
+    
+    // Configure dynamic import handling
+    if (!config.optimizeDeps) {
+      config.optimizeDeps = {};
+    }
+    config.optimizeDeps.include = [
+      ...(config.optimizeDeps.include || []),
+      '@mui/material',
+      '@mui/icons-material',
+      '@emotion/react',
+      '@emotion/styled',
+    ];
+
     return config;
   },
 };

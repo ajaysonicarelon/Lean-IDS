@@ -79,9 +79,12 @@
   "dependencies": {
     "@ajaysoni7832/lean-ids-tokens": "^1.7.3",
     "@mui/icons-material": "^9.0.0",
+    "@mui/material": "^9.0.0",
     "date-fns": "^4.4.0"
   },
   "devDependencies": {
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.1",
     "@rollup/plugin-typescript": "^12.1.2",
     "@rollup/plugin-url": "^8.0.2",
     "@storybook/addon-a11y": "^8.5.3",
