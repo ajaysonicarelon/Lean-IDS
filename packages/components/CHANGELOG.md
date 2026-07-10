@@ -5,6 +5,76 @@ All notable changes to the Lean IDS Design System will be documented in this fil
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.7.4] - 2026-07-11
+
+### 🔧 **BREAKING CHANGE: Material UI as Peer Dependencies**
+
+#### **What Changed**
+- `@mui/icons-material` and `@mui/material` moved from `dependencies` to `peerDependencies`
+- Minimum version: Material UI >=5.0.0
+- Compatible with Material UI v5, v6, v7, v8, and v9
+
+#### **Why This Change**
+1. ✅ **Fixes Missing Icons** - Icons now always visible in dev environment
+2. ✅ **Prevents EMFILE Errors** - No duplicate Material UI installations
+3. ✅ **Eliminates Version Conflicts** - Apps control their Material UI version
+4. ✅ **Reduces Bundle Size** - Shared Material UI across all packages
+5. ✅ **Industry Standard** - Follows React library best practices
+
+#### **Migration Required**
+
+**If you're upgrading from v1.7.3, you MUST install Material UI:**
+
+```bash
+npm install @mui/icons-material@latest @mui/material@latest
+```
+
+Or with Yarn:
+```bash
+yarn add @mui/icons-material @mui/material
+```
+
+**If you already have Material UI v5+ installed:**
+- ✅ No action needed - Lean IDS will use your existing installation
+- ✅ All APIs remain the same
+- ✅ No code changes required
+
+#### **Benefits**
+
+**Before (v1.7.3):**
+```
+Your App → Material UI v5 (4MB)
+        → Lean IDS → Material UI v9 (4MB nested)
+Total: 8MB, version conflicts, EMFILE errors
+```
+
+**After (v1.7.4):**
+```
+Your App → Material UI v5 (4MB)
+        → Lean IDS → Uses your Material UI ✅
+Total: 4MB, no conflicts, no EMFILE errors
+```
+
+#### **Compatibility**
+
+| Your Material UI | Lean IDS v1.7.4 | Status |
+|------------------|-----------------|--------|
+| v5.x.x | ✅ Compatible | Recommended |
+| v6.x.x | ✅ Compatible | Supported |
+| v7.x.x | ✅ Compatible | Supported |
+| v8.x.x | ✅ Compatible | Supported |
+| v9.x.x | ✅ Compatible | Supported |
+| < v5.0.0 | ❌ Not supported | Upgrade required |
+
+#### **Fixes**
+
+- 🐛 **Fixed:** Icons not showing in Select dropdowns, Table settings, Accordion
+- 🐛 **Fixed:** EMFILE errors in Tekton/CI builds with multiple Material UI versions
+- 🐛 **Fixed:** Duplicate Material UI installations causing bundle bloat
+- 🐛 **Fixed:** Version conflicts when using multiple design systems
+
+---
+
 ## [1.7.3] - 2026-07-10
 
 ### 🐛 Bug Fixes

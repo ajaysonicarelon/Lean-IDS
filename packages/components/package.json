@@ -1,6 +1,6 @@
 {
   "name": "@ajaysoni7832/lean-ids-components",
-  "version": "1.7.3",
+  "version": "1.7.4",
   "type": "module",
   "description": "React components for Lean IDS design system",
   "main": "dist/index.js",
@@ -63,7 +63,9 @@
   "peerDependencies": {
     "react": ">=16.8.0 <20.0.0",
     "react-dom": ">=16.8.0 <20.0.0",
-    "styled-components": "^6.0.0"
+    "styled-components": "^6.0.0",
+    "@mui/icons-material": ">=5.0.0",
+    "@mui/material": ">=5.0.0"
   },
   "peerDependenciesMeta": {
     "react": {
@@ -74,17 +76,23 @@
     },
     "styled-components": {
       "optional": false
+    },
+    "@mui/icons-material": {
+      "optional": false
+    },
+    "@mui/material": {
+      "optional": false
     }
   },
   "dependencies": {
     "@ajaysoni7832/lean-ids-tokens": "^1.7.3",
-    "@mui/icons-material": "^9.0.0",
-    "@mui/material": "^9.0.0",
     "date-fns": "^4.4.0"
   },
   "devDependencies": {
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
+    "@mui/icons-material": "^9.0.0",
+    "@mui/material": "^9.0.0",
     "@rollup/plugin-typescript": "^12.1.2",
     "@rollup/plugin-url": "^8.0.2",
     "@storybook/addon-a11y": "^8.5.3",
