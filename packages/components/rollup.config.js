@@ -42,6 +42,8 @@ export default defineConfig({
     '@ajaysoni7832/lean-ids-tokens',
     '@mui/icons-material',
     /^@mui\/icons-material\//,
+    '@mui/material',
+    /^@mui\/material\//,
     'date-fns',
   ],
 });
