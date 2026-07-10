@@ -24,7 +24,7 @@ import { TableSubHeader } from '../TableSubHeader';
 import { TableCell } from '../TableCell';
 import { Pagination } from '../Pagination';
 import { TableSettings, ColumnConfig } from '../TableSettings';
-import { TableSidePanel, ColumnFilter } from '../TableSidePanel';
+import { TableSidePanel, ColumnFilter, CustomTabConfig } from '../TableSidePanel';
 import { TableToolbar } from './TableToolbar';
 
 const StyledTable = styled.table`
@@ -176,6 +176,8 @@ interface AdvancedTableProps {
   toolbarTitle?: string;
   initialColumns?: ColumnConfig[];
   onRowClick?: (row: any, rowIndex: number, event: React.MouseEvent<HTMLTableRowElement>) => void;
+  showColumnSearchByDefault?: boolean;
+  customSidePanelTabs?: CustomTabConfig[];
 }
 
 export const AdvancedDataTable: React.FC<AdvancedTableProps> = ({ 
@@ -185,6 +187,8 @@ export const AdvancedDataTable: React.FC<AdvancedTableProps> = ({
   toolbarTitle = 'Data Table',
   initialColumns,
   onRowClick,
+  showColumnSearchByDefault = false,
+  customSidePanelTabs = [],
 }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
@@ -299,8 +303,18 @@ export const AdvancedDataTable: React.FC<AdvancedTableProps> = ({
   };
 
   const handleFilterToggle = () => {
-    setShowColumnFilters(!showColumnFilters);
+    // This is now just a placeholder - search headers are controlled by filters being applied
+    // or showColumnSearchByDefault prop
   };
+
+  // Automatically show/hide search headers based on applied filters
+  useEffect(() => {
+    if (showColumnSearchByDefault) {
+      setShowColumnFilters(true);
+    } else {
+      setShowColumnFilters(sidePanelFilters.length > 0);
+    }
+  }, [sidePanelFilters, showColumnSearchByDefault]);
 
   const handleColumnResize = (columnId: string, width: number) => {
     setColumnWidths(prev => ({
@@ -770,6 +784,7 @@ export const AdvancedDataTable: React.FC<AdvancedTableProps> = ({
             tableData={sampleData}
             columnFilters={sidePanelFilters}
             onFiltersChange={setSidePanelFilters}
+            customTabs={customSidePanelTabs}
           />
         )}
       </TableWrapper>

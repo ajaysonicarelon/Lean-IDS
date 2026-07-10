@@ -1,5 +1,4 @@
-import React from 'react';
-import * as MuiIcons from '@mui/icons-material';
+import React, { useState, useEffect } from 'react';
 import { IconProps } from './Icon.types';
 import styled from 'styled-components';
 
@@ -41,11 +40,20 @@ export const Icon: React.FC<IconProps> = ({
   onClick,
   ...rest
 }) => {
-  // Dynamically get the icon component from MUI Icons
-  const IconComponent = (MuiIcons as any)[name];
+  const [IconComponent, setIconComponent] = useState<React.ComponentType<any> | null>(null);
+
+  useEffect(() => {
+    // Dynamically import the icon on-demand
+    import(`@mui/icons-material/${name}`)
+      .then((module) => {
+        setIconComponent(() => module.default);
+      })
+      .catch((error) => {
+        console.warn(`Icon "${name}" not found in @mui/icons-material`, error);
+      });
+  }, [name]);
 
   if (!IconComponent) {
-    console.warn(`Icon "${name}" not found in @mui/icons-material`);
     return null;
   }
 
@@ -64,34 +72,34 @@ export const Icon: React.FC<IconProps> = ({
   );
 };
 
-// Export commonly used icons as named exports for convenience
-export const ArrowBackIcon = (props: Omit<IconProps, 'name'>) => <Icon name="ArrowBack" {...props} />;
-export const ArrowForwardIcon = (props: Omit<IconProps, 'name'>) => <Icon name="ArrowForward" {...props} />;
-export const ArrowDropDownIcon = (props: Omit<IconProps, 'name'>) => <Icon name="ArrowDropDown" {...props} />;
-export const ArrowDropUpIcon = (props: Omit<IconProps, 'name'>) => <Icon name="ArrowDropUp" {...props} />;
-export const ChevronLeftIcon = (props: Omit<IconProps, 'name'>) => <Icon name="ChevronLeft" {...props} />;
-export const ChevronRightIcon = (props: Omit<IconProps, 'name'>) => <Icon name="ChevronRight" {...props} />;
-export const FirstPageIcon = (props: Omit<IconProps, 'name'>) => <Icon name="FirstPage" {...props} />;
-export const LastPageIcon = (props: Omit<IconProps, 'name'>) => <Icon name="LastPage" {...props} />;
-export const AddIcon = (props: Omit<IconProps, 'name'>) => <Icon name="Add" {...props} />;
-export const RemoveIcon = (props: Omit<IconProps, 'name'>) => <Icon name="Remove" {...props} />;
-export const EditIcon = (props: Omit<IconProps, 'name'>) => <Icon name="Edit" {...props} />;
-export const DeleteIcon = (props: Omit<IconProps, 'name'>) => <Icon name="Delete" {...props} />;
-export const SearchIcon = (props: Omit<IconProps, 'name'>) => <Icon name="Search" {...props} />;
-export const FilterAltIcon = (props: Omit<IconProps, 'name'>) => <Icon name="FilterAlt" {...props} />;
-export const DownloadIcon = (props: Omit<IconProps, 'name'>) => <Icon name="Download" {...props} />;
-export const SettingsIcon = (props: Omit<IconProps, 'name'>) => <Icon name="Settings" {...props} />;
-export const CloseIcon = (props: Omit<IconProps, 'name'>) => <Icon name="Close" {...props} />;
-export const CheckIcon = (props: Omit<IconProps, 'name'>) => <Icon name="Check" {...props} />;
-export const LockIcon = (props: Omit<IconProps, 'name'>) => <Icon name="Lock" {...props} />;
-export const LockOpenIcon = (props: Omit<IconProps, 'name'>) => <Icon name="LockOpen" {...props} />;
-export const VisibilityIcon = (props: Omit<IconProps, 'name'>) => <Icon name="Visibility" {...props} />;
-export const VisibilityOffIcon = (props: Omit<IconProps, 'name'>) => <Icon name="VisibilityOff" {...props} />;
-export const InfoIcon = (props: Omit<IconProps, 'name'>) => <Icon name="Info" {...props} />;
-export const WarningIcon = (props: Omit<IconProps, 'name'>) => <Icon name="Warning" {...props} />;
-export const ErrorIcon = (props: Omit<IconProps, 'name'>) => <Icon name="Error" {...props} />;
-export const CheckCircleIcon = (props: Omit<IconProps, 'name'>) => <Icon name="CheckCircle" {...props} />;
-export const SortIcon = (props: Omit<IconProps, 'name'>) => <Icon name="Sort" {...props} />;
-export const DragIndicatorIcon = (props: Omit<IconProps, 'name'>) => <Icon name="DragIndicator" {...props} />;
-export const MoreVertIcon = (props: Omit<IconProps, 'name'>) => <Icon name="MoreVert" {...props} />;
-export const MoreHorizIcon = (props: Omit<IconProps, 'name'>) => <Icon name="MoreHoriz" {...props} />;
+// Export commonly used icons with direct imports for better tree-shaking
+export { default as ArrowBackIcon } from '@mui/icons-material/ArrowBack';
+export { default as ArrowForwardIcon } from '@mui/icons-material/ArrowForward';
+export { default as ArrowDropDownIcon } from '@mui/icons-material/ArrowDropDown';
+export { default as ArrowDropUpIcon } from '@mui/icons-material/ArrowDropUp';
+export { default as ChevronLeftIcon } from '@mui/icons-material/ChevronLeft';
+export { default as ChevronRightIcon } from '@mui/icons-material/ChevronRight';
+export { default as FirstPageIcon } from '@mui/icons-material/FirstPage';
+export { default as LastPageIcon } from '@mui/icons-material/LastPage';
+export { default as AddIcon } from '@mui/icons-material/Add';
+export { default as RemoveIcon } from '@mui/icons-material/Remove';
+export { default as EditIcon } from '@mui/icons-material/Edit';
+export { default as DeleteIcon } from '@mui/icons-material/Delete';
+export { default as SearchIcon } from '@mui/icons-material/Search';
+export { default as FilterAltIcon } from '@mui/icons-material/FilterAlt';
+export { default as DownloadIcon } from '@mui/icons-material/Download';
+export { default as SettingsIcon } from '@mui/icons-material/Settings';
+export { default as CloseIcon } from '@mui/icons-material/Close';
+export { default as CheckIcon } from '@mui/icons-material/Check';
+export { default as LockIcon } from '@mui/icons-material/Lock';
+export { default as LockOpenIcon } from '@mui/icons-material/LockOpen';
+export { default as VisibilityIcon } from '@mui/icons-material/Visibility';
+export { default as VisibilityOffIcon } from '@mui/icons-material/VisibilityOff';
+export { default as InfoIcon } from '@mui/icons-material/Info';
+export { default as WarningIcon } from '@mui/icons-material/Warning';
+export { default as ErrorIcon } from '@mui/icons-material/Error';
+export { default as CheckCircleIcon } from '@mui/icons-material/CheckCircle';
+export { default as SortIcon } from '@mui/icons-material/Sort';
+export { default as DragIndicatorIcon } from '@mui/icons-material/DragIndicator';
+export { default as MoreVertIcon } from '@mui/icons-material/MoreVert';
+export { default as MoreHorizIcon } from '@mui/icons-material/MoreHoriz';

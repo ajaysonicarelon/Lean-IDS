@@ -1,6 +1,6 @@
 {
   "name": "@ajaysoni7832/lean-ids-components",
-  "version": "1.7.2",
+  "version": "1.7.3",
   "type": "module",
   "description": "React components for Lean IDS design system",
   "main": "dist/index.js",
@@ -29,6 +29,7 @@
     "FRAMEWORK_SUPPORT.md",
     "COMPONENT_API_REFERENCE.md",
     "ICON_SYSTEM_GUIDE.md",
+    "ICON_IMPORT_FIX.md",
     "TABLE_GUIDE.md",
     "NAVIGATION_GUIDE.md",
     "MODAL_DRAWER_GUIDE.md",
@@ -76,11 +77,8 @@
     }
   },
   "dependencies": {
-    "@ajaysoni7832/lean-ids-tokens": "^1.7.2",
-    "@emotion/react": "^11.14.0",
-    "@emotion/styled": "^11.14.1",
+    "@ajaysoni7832/lean-ids-tokens": "^1.7.3",
     "@mui/icons-material": "^9.0.0",
-    "@mui/material": "^9.0.0",
     "date-fns": "^4.4.0"
   },
   "devDependencies": {

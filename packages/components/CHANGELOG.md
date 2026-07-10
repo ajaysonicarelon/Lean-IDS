@@ -5,6 +5,53 @@ All notable changes to the Lean IDS Design System will be documented in this fil
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.7.3] - 2026-07-10
+
+### 🐛 Bug Fixes
+
+#### **Critical Build Fix: Material Icons Import**
+- **Fixed:** `EMFILE: too many open files` error during Vite production builds
+- **Root Cause:** Wildcard import `import * as MuiIcons from '@mui/icons-material'` was attempting to load all 2000+ icon files simultaneously
+- **Solution:** Replaced with dynamic imports that load icons on-demand
+- **Impact:** 
+  - ✅ Production builds now complete successfully
+  - ✅ Significantly reduced bundle size through better tree-shaking
+  - ✅ Icons load only when needed at runtime
+  - ✅ Named icon exports use direct imports for optimal performance
+
+### 🧹 Dependency Cleanup
+
+#### **Removed Unused Dependencies**
+- **Removed:** `@emotion/react`, `@emotion/styled`, `@mui/material`
+- **Reason:** These packages were listed as dependencies but never imported or used in the codebase
+- **Impact:**
+  - ✅ Smaller node_modules size
+  - ✅ Faster installation times
+  - ✅ Reduced risk of peer dependency conflicts
+  - ✅ Cleaner dependency tree
+
+#### **Technical Details**
+```tsx
+// Before (❌ Caused build failures)
+import * as MuiIcons from '@mui/icons-material';
+const IconComponent = (MuiIcons as any)[name];
+
+// After (✅ Fixed)
+const [IconComponent, setIconComponent] = useState(null);
+useEffect(() => {
+  import(`@mui/icons-material/${name}`)
+    .then(module => setIconComponent(() => module.default));
+}, [name]);
+```
+
+**Files Changed:**
+- `packages/components/src/Icon/Icon.tsx` - Implemented dynamic imports
+- `packages/components/ICON_IMPORT_FIX.md` - Added comprehensive documentation
+
+**References:**
+- Error: `[vite:load-fallback] Could not load .../CasinoOutlined.mjs: EMFILE: too many open files`
+- See `ICON_IMPORT_FIX.md` for detailed explanation and best practices
+
 ## [1.7.0] - 2026-07-02
 
 ### 🚀 Major Features

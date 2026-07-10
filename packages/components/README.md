@@ -11,7 +11,7 @@ A comprehensive React component library for building consistent, accessible user
 - 📊 **EnhancedTableTemplate** - Advanced table with sorting, filtering, pagination, and side panel integration
 - 📦 **New Dependency** - Added date-fns@4.4.0 for date handling
 - 📚 **Updates Page** - New Updates & Changelog page in Storybook with version history
-- � **Update Notifications** - localStorage-based notification system for new releases
+- **Update Notifications** - localStorage-based notification system for new releases
 - 🔧 **Component Improvements** - Enhanced Table, TableHeader, TableSettings, Select, and PageLayout
 
 📖 **[Read Full Release Notes](./RELEASE_NOTES.md)** | **[Migration Guide](./MIGRATION_GUIDE.md)**

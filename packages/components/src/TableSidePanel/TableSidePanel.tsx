@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { TableSidePanelProps } from './TableSidePanel.types';
+import { TableSidePanelProps, ColumnFilter } from './TableSidePanel.types';
 import { ColumnConfig } from '../TableSettings';
 import {
   CollapsedPanel,
@@ -25,6 +25,7 @@ import { InlineMessage } from '../InlineMessage';
 import { Select } from '../Select';
 import type { SelectOption } from '../Select';
 import { Chip } from '../Chip';
+import { Button } from '../Button';
 import CloseIcon from '@mui/icons-material/Close';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
@@ -44,13 +45,19 @@ export const TableSidePanel: React.FC<TableSidePanelProps> = ({
   tableData = [],
   columnFilters = [],
   onFiltersChange,
+  customTabs = [],
+  onClose,
 }) => {
-  const [activePanel, setActivePanel] = useState<'columns' | 'filters' | null>(null);
+  const [activePanel, setActivePanel] = useState<'columns' | 'filters' | string | null>(null);
   const [localColumns, setLocalColumns] = useState<ColumnConfig[]>(columns);
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
   const [showWarning, setShowWarning] = useState(false);
   const [expandedParents, setExpandedParents] = useState<Set<string>>(new Set());
   const [hoveredColumnId, setHoveredColumnId] = useState<string | null>(null);
+  const [pendingFilters, setPendingFilters] = useState<{ [key: string]: string }>({});
+  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
+  const [showUnsavedWarning, setShowUnsavedWarning] = useState(false);
+  const panelRef = React.useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     setLocalColumns(columns);
@@ -65,15 +72,60 @@ export const TableSidePanel: React.FC<TableSidePanelProps> = ({
     return undefined;
   }, [lockWarning]);
 
+  // Click outside to close
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (panelRef.current && !panelRef.current.contains(event.target as Node) && activePanel) {
+        // Check if there are unsaved filter changes
+        if (activePanel === 'filters' && hasUnsavedChanges) {
+          // Prevent closing and show warning
+          setShowUnsavedWarning(true);
+          setTimeout(() => setShowUnsavedWarning(false), 3000);
+        } else {
+          // Close the panel
+          setActivePanel(null);
+          if (onClose) {
+            onClose();
+          }
+        }
+      }
+    };
+
+    if (activePanel) {
+      document.addEventListener('mousedown', handleClickOutside);
+      return () => {
+        document.removeEventListener('mousedown', handleClickOutside);
+      };
+    }
+    return undefined;
+  }, [activePanel, hasUnsavedChanges, onClose]);
+
+  // Track pending filter changes
+  useEffect(() => {
+    if (activePanel === 'filters') {
+      // Check if there are any pending filter selections that haven't been applied
+      const hasPending = Object.keys(pendingFilters).length > 0;
+      setHasUnsavedChanges(hasPending);
+    } else {
+      setHasUnsavedChanges(false);
+    }
+  }, [pendingFilters, activePanel]);
+
   const handleColumnsClick = () => {
     setActivePanel(activePanel === 'columns' ? null : 'columns');
   };
 
   const handleFiltersClick = () => {
-    setActivePanel(activePanel === 'filters' ? null : 'filters');
-    if (onFilterToggle) {
-      onFilterToggle();
+    const newPanel = activePanel === 'filters' ? null : 'filters';
+    setActivePanel(newPanel);
+    // Don't call onFilterToggle - it's no longer needed for toggling search headers
+  };
+  
+  const handleClearAllFilters = () => {
+    if (onFiltersChange) {
+      onFiltersChange([]);
     }
+    setPendingFilters({});
   };
 
   const handleReset = () => {
@@ -110,11 +162,39 @@ export const TableSidePanel: React.FC<TableSidePanelProps> = ({
 
   const handleApply = () => {
     onColumnsChange(localColumns);
+    
+    // Apply pending filters - merge with existing filters instead of replacing
+    if (onFiltersChange && Object.keys(pendingFilters).length > 0) {
+      // Start with existing filters
+      const existingFiltersMap = new Map(columnFilters.map(f => [f.columnId, f.value]));
+      
+      // Merge pending filters
+      Object.entries(pendingFilters).forEach(([columnId, value]) => {
+        if (value) {
+          existingFiltersMap.set(columnId, value);
+        } else {
+          existingFiltersMap.delete(columnId);
+        }
+      });
+      
+      // Convert back to array
+      const mergedFilters: ColumnFilter[] = Array.from(existingFiltersMap.entries()).map(([columnId, value]) => ({
+        columnId,
+        value
+      }));
+      
+      onFiltersChange(mergedFilters);
+    }
+    
+    // Clear pending filters after applying
+    setPendingFilters({});
     setActivePanel(null);
   };
 
   const handleCancel = () => {
     setLocalColumns(columns);
+    // Clear pending filters without applying
+    setPendingFilters({});
     setActivePanel(null);
   };
 
@@ -354,17 +434,71 @@ export const TableSidePanel: React.FC<TableSidePanelProps> = ({
 
         <VerticalButton onClick={handleFiltersClick} $active={activePanel === 'filters'}>
           <ButtonIcon>
-            <FilterListIcon style={{ fontSize: '16px' }} />
+            {activePanel === 'filters' ? <CloseIcon style={{ fontSize: '16px' }} /> : <FilterListIcon style={{ fontSize: '16px' }} />}
+            {columnFilters.length > 0 && activePanel !== 'filters' && (
+              <span style={{
+                position: 'absolute',
+                top: '-4px',
+                right: '-4px',
+                background: '#5e35b1',
+                color: 'white',
+                borderRadius: '50%',
+                width: '16px',
+                height: '16px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontSize: '10px',
+                fontWeight: 600
+              }}>
+                {columnFilters.length}
+              </span>
+            )}
           </ButtonIcon>
           <VerticalText>Filters</VerticalText>
         </VerticalButton>
+        
+        {/* Clear All Filters Button - only show when there are active filters */}
+        {columnFilters.length > 0 && (
+          <VerticalButton 
+            onClick={handleClearAllFilters}
+            style={{ 
+              marginTop: '8px',
+              opacity: 0.8,
+              fontSize: '12px'
+            }}
+          >
+            <ButtonIcon>
+              <CloseIcon style={{ fontSize: '14px' }} />
+            </ButtonIcon>
+            <VerticalText style={{ fontSize: '11px' }}>Clear All</VerticalText>
+          </VerticalButton>
+        )}
+
+        {/* Custom Tabs */}
+        {customTabs.map((tab) => (
+          <VerticalButton
+            key={tab.id}
+            onClick={() => {
+              if (tab.onClick) {
+                tab.onClick();
+              } else if (tab.content) {
+                setActivePanel(activePanel === tab.id ? null : tab.id);
+              }
+            }}
+            $active={activePanel === tab.id}
+          >
+            <ButtonIcon>{tab.icon}</ButtonIcon>
+            <VerticalText>{tab.label}</VerticalText>
+          </VerticalButton>
+        ))}
       </CollapsedPanel>
 
       {/* Expanded Overlay Panel */}
       {activePanel && (
         <ExpandedOverlay>
-          <ExpandedPanel>
-            <PanelHeader>
+          <ExpandedPanel ref={panelRef}>
+            <PanelHeader $shake={showUnsavedWarning}>
               <HeaderButton onClick={handleReset} $variant="danger">
                 Reset
               </HeaderButton>
@@ -384,6 +518,21 @@ export const TableSidePanel: React.FC<TableSidePanelProps> = ({
                     style="accentBorder"
                     text="Maximum columns reached"
                     descriptionText="You can only freeze any 3 columns at a time."
+                    showLeadingIcon={true}
+                    showTrailingIcon={false}
+                    action={false}
+                    link={false}
+                  />
+                </div>
+              )}
+
+              {showUnsavedWarning && activePanel === 'filters' && (
+                <div style={{ marginBottom: '16px' }}>
+                  <InlineMessage
+                    type="warning"
+                    style="accentBorder"
+                    text="Unsaved filter changes"
+                    descriptionText="Please apply, cancel, or reset filters before closing."
                     showLeadingIcon={true}
                     showTrailingIcon={false}
                     action={false}
@@ -414,14 +563,30 @@ export const TableSidePanel: React.FC<TableSidePanelProps> = ({
                   ) : (
                     <>
                       <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                        <p style={{ 
-                          margin: 0, 
-                          fontSize: '14px', 
-                          color: '#666',
-                          fontStyle: 'italic' 
+                        <div style={{ 
+                          display: 'flex', 
+                          justifyContent: 'space-between', 
+                          alignItems: 'center' 
                         }}>
-                          Select values to filter table rows
-                        </p>
+                          <p style={{ 
+                            margin: 0, 
+                            fontSize: '14px', 
+                            color: '#666',
+                            fontStyle: 'italic' 
+                          }}>
+                            Select values to filter table rows
+                          </p>
+                          
+                          {columnFilters.length > 0 && onFiltersChange && (
+                            <Button
+                              variant="tertiary"
+                              size="small"
+                              onClick={handleClearAllFilters}
+                            >
+                              Clear All
+                            </Button>
+                          )}
+                        </div>
                         
                         {columnFilters.length > 0 && onFiltersChange && (
                           <div style={{ 
@@ -502,9 +667,10 @@ export const TableSidePanel: React.FC<TableSidePanelProps> = ({
                                 .map((val) => ({ value: val, label: val })),
                             ];
                             
-                            // Get current filter value for this column
+                            // Get current filter value for this column (from pending or applied)
+                            const pendingValue = pendingFilters[column.id];
                             const currentFilter = columnFilters.find(f => f.columnId === column.id);
-                            const currentValue = currentFilter?.value || '';
+                            const currentValue = pendingValue !== undefined ? pendingValue : (currentFilter?.value || '');
                             
                             return (
                               <Select
@@ -514,16 +680,18 @@ export const TableSidePanel: React.FC<TableSidePanelProps> = ({
                                 options={filterOptions}
                                 value={currentValue}
                                 onChange={(value) => {
-                                  if (onFiltersChange) {
-                                    // Handle both string and string[] from Select
-                                    const filterValue = Array.isArray(value) ? value[0] : value;
-                                    // Update filters
-                                    const newFilters = columnFilters.filter(f => f.columnId !== column.id);
+                                  // Handle both string and string[] from Select
+                                  const filterValue = Array.isArray(value) ? value[0] : value;
+                                  // Store in pending filters (not applied yet)
+                                  setPendingFilters(prev => {
+                                    const newPending = { ...prev };
                                     if (filterValue) {
-                                      newFilters.push({ columnId: column.id, value: filterValue });
+                                      newPending[column.id] = filterValue;
+                                    } else {
+                                      delete newPending[column.id];
                                     }
-                                    onFiltersChange(newFilters);
-                                  }
+                                    return newPending;
+                                  });
                                 }}
                                 size="small"
                                 searchable={true}
@@ -535,6 +703,13 @@ export const TableSidePanel: React.FC<TableSidePanelProps> = ({
                     </>
                   )}
                 </div>
+              )}
+
+              {/* Custom Tab Content */}
+              {customTabs.map((tab) => 
+                activePanel === tab.id && tab.content ? (
+                  <div key={tab.id}>{tab.content}</div>
+                ) : null
               )}
             </PanelContent>
           </ExpandedPanel>

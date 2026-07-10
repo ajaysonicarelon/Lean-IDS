@@ -33,6 +33,7 @@ export const ButtonIcon = styled.div`
   width: 16px;
   height: 16px;
   color: ${({ theme }) => theme.colors.palette.neutral[900]};
+  position: relative;
 `;
 
 export const VerticalText = styled.div`
@@ -66,14 +67,38 @@ export const ExpandedPanel = styled.div`
   background-color: ${({ theme }) => theme.colors.palette.neutral[200]};
   box-shadow: -4px 0 12px rgba(0, 0, 0, 0.15);
   pointer-events: auto;
+  
+  /* Slide-in animation */
+  animation: slideIn 0.3s ease-out;
+  
+  @keyframes slideIn {
+    from {
+      transform: translateX(100%);
+      opacity: 0;
+    }
+    to {
+      transform: translateX(0);
+      opacity: 1;
+    }
+  }
 `;
 
-export const PanelHeader = styled.div`
+export const PanelHeader = styled.div<{ $shake?: boolean }>`
   display: flex;
   gap: ${({ theme }) => theme.spacing[3]};
   padding: ${({ theme }) => theme.spacing[7]};
   border-bottom: 1px solid ${({ theme }) => theme.colors.palette.neutral[300]};
   background-color: ${({ theme }) => theme.colors.palette.neutral[200]};
+
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    10%, 30%, 50%, 70%, 90% { transform: translateX(-4px); }
+    20%, 40%, 60%, 80% { transform: translateX(4px); }
+  }
+
+  ${({ $shake }) => $shake && `
+    animation: shake 0.5s ease-in-out;
+  `}
 `;
 
 export const HeaderButton = styled.button<{ $variant?: 'primary' | 'secondary' | 'danger' }>`

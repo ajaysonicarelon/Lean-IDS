@@ -1,8 +1,17 @@
+import { ReactNode } from 'react';
 import { ColumnConfig } from '../TableSettings';
 
 export interface ColumnFilter {
   columnId: string;
   value: string;
+}
+
+export interface CustomTabConfig {
+  id: string;
+  label: string;
+  icon: ReactNode;
+  onClick?: () => void;
+  content?: ReactNode;
 }
 
 export interface TableSidePanelProps {
@@ -15,4 +24,6 @@ export interface TableSidePanelProps {
   tableData?: any[];
   columnFilters?: ColumnFilter[];
   onFiltersChange?: (filters: ColumnFilter[]) => void;
+  customTabs?: CustomTabConfig[];
+  onClose?: () => void;
 }
