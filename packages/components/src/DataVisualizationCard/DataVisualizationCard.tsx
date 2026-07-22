@@ -66,16 +66,21 @@ const InfoIconButton = styled.button`
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 24px;
-  height: 24px;
+  width: ${({ theme }) => theme.spacing[7]};
+  height: ${({ theme }) => theme.spacing[7]};
   background: transparent;
   border: none;
   cursor: pointer;
-  color: #909090;
+  color: ${({ theme }) => theme.colors.semantic.text.secondary};
   padding: 0;
   
   &:hover {
-    color: #222222;
+    color: ${({ theme }) => theme.colors.semantic.text.primary};
+  }
+  
+  &:focus-visible {
+    outline: 2px solid ${({ theme }) => theme.colors.semantic.focus.indicator};
+    outline-offset: 2px;
   }
 `;
 

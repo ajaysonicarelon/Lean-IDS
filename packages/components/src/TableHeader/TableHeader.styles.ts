@@ -32,6 +32,7 @@ export const StyledTableHeader = styled.th<StyledTableHeaderProps>`
   cursor: ${({ $sortable }) => ($sortable ? 'pointer' : 'default')};
   user-select: none;
   vertical-align: middle;
+  position: relative;
   
   /* Fixed width for checkbox-only columns */
   ${({ $showCheckbox, $hasLabel, $sortable }) =>
@@ -91,6 +92,14 @@ export const HeaderLeftContent = styled.div`
   min-width: 0;
 `;
 
+export const HeaderLabel = styled.span`
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex: 1;
+  min-width: 0;
+`;
+
 export const HeaderRightContent = styled.div`
   display: flex;
   align-items: center;
@@ -100,14 +109,12 @@ export const HeaderRightContent = styled.div`
 `;
 
 export const SortIcon = styled.span<{ $direction: 'asc' | 'desc' | 'none' }>`
-  display: inline-flex;
+  display: ${({ $direction }) => ($direction === 'none' ? 'none' : 'inline-flex')};
   align-items: center;
   justify-content: center;
   width: 16px;
   height: 16px;
   color: ${({ theme }) => theme.colors.palette.neutral[600]};
-  transform: ${({ $direction }) => ($direction === 'desc' ? 'rotate(180deg)' : 'none')};
-  opacity: ${({ $direction }) => ($direction === 'none' ? 0.3 : 1)};
   transition: all 0.2s ease-in-out;
 
   svg {
@@ -124,7 +131,8 @@ export const CheckboxWrapper = styled.div`
 `;
 
 export const ResizeHandle = styled.div`
-  display: inline-flex;
+  display: none; /* Hidden - using ResizeBorder instead */
+  /* display: inline-flex; */
   align-items: center;
   justify-content: center;
   width: 16px;
@@ -142,6 +150,40 @@ export const ResizeHandle = styled.div`
     width: 100%;
     height: 100%;
     fill: currentColor;
+  }
+`;
+
+export const ResizeBorder = styled.div`
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 8px;
+  height: 50%;
+  cursor: col-resize;
+  user-select: none;
+  z-index: 2;
+  
+  /* Visual border - half height, centered vertically */
+  &::before {
+    content: '';
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 2px;
+    height: 100%;
+    background-color: ${({ theme }) => theme.colors.palette.neutral[400]};
+    transition: background-color 0.2s ease;
+  }
+  
+  /* Hover state */
+  &:hover::before {
+    background-color: ${({ theme }) => theme.colors.palette.primary[500]};
+  }
+  
+  /* Active/dragging state */
+  &:active::before {
+    background-color: ${({ theme }) => theme.colors.palette.primary[600]};
   }
 `;
 

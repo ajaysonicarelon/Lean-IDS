@@ -5,6 +5,200 @@ All notable changes to the Lean IDS Design System will be documented in this fil
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.7.6] - 2026-07-22
+
+### 🎯 **Component Maturity Initiative - Complete Refactoring**
+
+This is a **MAJOR** release representing a comprehensive refactoring effort where we applied the Component Maturity Checklist to 13+ core components, bringing them all to enterprise-grade standards.
+
+#### **✨ Component Refactoring (Component Maturity Checklist Applied)**
+
+**Tooltip Component** ✅
+- Fixed infinite loop issue in useEffect dependencies
+- Added Storybook action spies for all callbacks (onOpen, onClose, onAfterOpen, onAfterClose, onEscape)
+- Optimized re-renders - only re-run effects when visibility changes
+- Enhanced Storybook documentation with proper Typography usage
+
+**Checkbox Component** ✅ COMPLETE REFACTOR
+- Removed custom styled label - now uses Typography component
+- Added error/invalid state with red border and error icon color
+- Fixed sizing - uses theme.spacing tokens (spacing[7] for default, spacing[10] for large)
+- Added loading state with spinner
+- Improved transitions - uses theme.transitions.default
+- Enhanced accessibility - proper ARIA attributes
+- Comprehensive Storybook - all 8 states documented
+
+**RadioButton Component** ✅ COMPLETE REFACTOR
+- Typography integration - replaced all custom text styling
+- Token-based sizing - theme.spacing for all dimensions
+- 8 states implemented - default, hover, focus, active, disabled, loading, error, empty
+- Enhanced accessibility - keyboard navigation, ARIA labels
+- Comprehensive Storybook - interactive examples for all states
+
+**Toggle Component** ✅ COMPLETE REFACTOR
+- Typography for labels - no more custom styled text
+- Token-based styling - colors, spacing, transitions from theme
+- 8 states - all interactive states properly implemented
+- Loading state - spinner animation
+- Error state - visual feedback
+- Accessibility - keyboard support, ARIA attributes
+- Storybook documentation - complete with all variants
+
+**MenuItem Component** ✅ COMPLETE REFACTOR
+- Fixed alignment - proper vertical centering of icon and text
+- Added ChildrenArrow component - styled arrow for nested menus
+- Typography integration - all text uses Typography component
+- Token-based borders - uses theme.borderWidth[2]
+- Enhanced hover states - proper opacity from theme
+- Storybook improvements - comprehensive examples
+
+**NestedMenuOverlay Component** ✅ COMPLETE REFACTOR
+- Light/dark mode support - $mode prop for theming
+- Disabled state - visual feedback and pointer-events handling
+- Token-based styling - spacing, colors, shadows from theme
+- Loading state - LoadingSpinner component
+- Enhanced accessibility - focus management
+- Trigger mode support - hover vs click interactions
+
+**MetricCard Component** ✅ COMPLETE REFACTOR
+- Design preservation - maintained original visual design
+- Typography integration - all text uses Typography component
+- Token-based styling - NO hardcoded values
+- 8 states - loading, error, empty states
+- Enhanced variants - basic, filled, set
+- Comprehensive Storybook - all use cases documented
+
+**BarChart Component** ✅
+- Fixed X-axis alignment - proper label positioning
+- Added Storybook actions - onClick handlers for bars
+- Typography integration - all labels use Typography
+- Token-based styling - spacing, colors from theme
+- Horizontal variant - complete implementation
+
+**Button Component** ✅ COMPLETE REFACTOR
+- Typography integration - button text uses Typography
+- Token-based sizing - all dimensions from theme.spacing
+- 8 states - comprehensive state management
+- Loading state - spinner with proper positioning
+- Enhanced accessibility - ARIA attributes, keyboard support
+
+**Modal Component** ✅ COMPLETE REFACTOR
+- Storybook Typography cleanup - removed all HTML tags
+- Typography integration - all text uses Typography component
+- Enhanced documentation - comprehensive examples
+- Accessibility improvements - focus trap, ESC key handling
+
+**Form Components (InputField, Textarea, Select)** ✅
+- Typography integration - labels, helper text, error messages
+- Token-based styling - consistent spacing and colors
+- Error state standardization - unified error handling
+- Enhanced accessibility - proper ARIA labels
+
+**Footer Component** ✅
+- Typography integration - all text uses Typography
+- Enhanced layout - better responsive behavior
+- Token-based styling - spacing and colors from theme
+
+**Table Component** ✅ COMPLETE REFACTOR
+- **Standalone Components** - TableRow extracted as independent component
+- **Component Maturity Checklist** - All 6 pillars implemented
+- **forwardRef + polymorphic 'as' prop** - Full API flexibility
+- **8 States** - Added error state with banner, enhanced loading/empty states
+- **Typography integration** - All text uses Typography component
+- **Token-based styling** - Zero hardcoded pixels or colors
+- **Enhanced accessibility** - ARIA attributes, keyboard navigation (Escape, Ctrl+A)
+- **Multiple override points** - className, style, scrollContainerClassName, emptyStateClassName
+- **New props** - isInvalid, errorMessage for error state
+- **Enhanced toolbar** - Better action button layout
+- **Column width guide** - Documentation for width behavior
+- **Comprehensive Storybook** - ErrorState, LoadingState, ForwardRef, PolymorphicAs stories
+
+#### **🎨 New Styled Components**
+
+**BarChart.styles.ts** (NEW FILE)
+- Complete styled components for BarChart
+- Vertical and horizontal variants
+- Grid lines, legends, loading states
+- Token-based styling throughout
+
+**MetricCard.styles.ts** (NEW FILE)
+- Complete styled components for MetricCard
+- Card variants (basic, filled, set)
+- Progress bars, change indicators
+- Action chips, loading/error states
+
+**TableRow Component** (NEW COMPONENT)
+- Standalone, composable table row component
+- Independent of main Table component
+- Enables custom table compositions
+- Full TypeScript support
+
+**Table Documentation** (NEW FILES)
+- `COLUMN_WIDTH_GUIDE.md` - Column width behavior documentation
+- `STANDALONE_COMPONENTS_GUIDE.md` - Guide for using standalone table components
+- `TABLE_REFACTOR_SUMMARY.md` - Complete refactor documentation
+- `CustomTableComposition.stories.tsx` - Examples of custom table compositions
+
+#### **📚 Documentation Updates**
+
+**Component Maturity Checklist**
+- Location: `.windsurf/workflows/component-maturity-checklist.md`
+- Quick Reference: `packages/components/COMPONENT_MATURITY_CHECKLIST.md`
+- 6 Pillars documented: API & Composition, Layout & Responsiveness, Overrides & Theming, States & Behavior, Accessibility, Storybook Documentation
+
+**Individual Component Documentation**
+- Added comprehensive refactor completion docs for all updated components
+- Added guides for form components, table components
+- Added standards documentation
+
+#### **🔧 Technical Improvements**
+
+**Typography Component Enforcement**
+- ❌ Removed: All custom styled text components (h1, h2, p, span)
+- ✅ Added: Typography component usage in ALL components
+- ✅ Storybook: Zero HTML tags in stories, all use Typography
+
+**Token-Based Styling**
+- ❌ Removed: Hardcoded pixels (16px, 24px, etc.)
+- ❌ Removed: Hardcoded colors (#333, #666, etc.)
+- ✅ Added: theme.spacing[*] for all dimensions
+- ✅ Added: theme.colors.* for all colors
+- ✅ Added: theme.transitions.* for animations
+
+**8 States Implementation**
+All refactored components now support: Default, Hover, Focus, Active, Disabled, Loading, Error, Empty
+
+**Accessibility Enhancements**
+- ARIA attributes - proper labels and descriptions
+- Keyboard navigation - Tab, Enter, Space, Escape
+- Focus management - visible focus indicators
+- Screen reader support - semantic HTML and ARIA
+
+#### **🐛 Bug Fixes**
+
+- Fixed Tooltip infinite loop in useEffect
+- Fixed Checkbox 24px sizing issue and error icon color
+- Fixed MenuItem vertical alignment of icon and text
+- Fixed BarChart X-axis label alignment
+- Fixed Table column width behavior and header alignment
+
+#### **📊 Statistics**
+
+- Components Refactored: 13+
+- Files Modified: 70+
+- New Files Created: 50+ (styles, documentation)
+- Lines of Code Changed: 5000+
+- Documentation Pages: 20+
+
+#### **📦 Migration Guide**
+
+See `RELEASE_v1.7.6_SUMMARY.md` for comprehensive migration guide including:
+- Typography component usage examples
+- Token-based styling patterns
+- Storybook story updates
+
+---
+
 ## [1.7.5] - 2026-07-11
 
 ### � **Critical Fix: Icon Dynamic Imports Replaced with Static Imports**

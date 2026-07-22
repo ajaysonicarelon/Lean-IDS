@@ -2,7 +2,7 @@
  * Button component types
  */
 
-import { ButtonHTMLAttributes, ReactNode } from 'react';
+import { ButtonHTMLAttributes, ReactNode, ElementType, CSSProperties, MouseEvent, FocusEvent } from 'react';
 
 export type ButtonSize = 'xsmall' | 'small' | 'medium' | 'large' | 'xlarge';
 
@@ -15,6 +15,12 @@ export interface ButtonProps extends Omit<ButtonHTMLAttributes<HTMLButtonElement
    * Button label text
    */
   children: ReactNode;
+  
+  /**
+   * Polymorphic prop - render as different element
+   * @default 'button'
+   */
+  as?: ElementType;
   
   /**
    * Button size
@@ -40,6 +46,21 @@ export interface ButtonProps extends Omit<ButtonHTMLAttributes<HTMLButtonElement
   disabled?: boolean;
   
   /**
+   * Loading state - shows spinner and disables interaction
+   */
+  isLoading?: boolean;
+  
+  /**
+   * Invalid/error state - shows error styling
+   */
+  isInvalid?: boolean;
+  
+  /**
+   * Empty state message (for specialized use cases)
+   */
+  isEmpty?: boolean;
+  
+  /**
    * Leading icon element
    */
   leadingIcon?: ReactNode;
@@ -48,6 +69,11 @@ export interface ButtonProps extends Omit<ButtonHTMLAttributes<HTMLButtonElement
    * Trailing icon element
    */
   trailingIcon?: ReactNode;
+  
+  /**
+   * Custom loading indicator (replaces default spinner)
+   */
+  loadingIndicator?: ReactNode;
   
   /**
    * Whether to show label text
@@ -64,15 +90,65 @@ export interface ButtonProps extends Omit<ButtonHTMLAttributes<HTMLButtonElement
   /**
    * Click handler
    */
-  onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;
+  onClick?: (event: MouseEvent<HTMLButtonElement>) => void;
   
   /**
-   * Custom class name
+   * Mouse enter handler
+   */
+  onMouseEnter?: (event: MouseEvent<HTMLButtonElement>) => void;
+  
+  /**
+   * Mouse leave handler
+   */
+  onMouseLeave?: (event: MouseEvent<HTMLButtonElement>) => void;
+  
+  /**
+   * Focus handler
+   */
+  onFocus?: (event: FocusEvent<HTMLButtonElement>) => void;
+  
+  /**
+   * Blur handler
+   */
+  onBlur?: (event: FocusEvent<HTMLButtonElement>) => void;
+  
+  /**
+   * Custom class name for root element
    */
   className?: string;
+  
+  /**
+   * Custom inline styles for root element
+   */
+  style?: CSSProperties;
+  
+  /**
+   * Custom class name for icon wrapper
+   */
+  iconClassName?: string;
+  
+  /**
+   * Custom class name for label wrapper
+   */
+  labelClassName?: string;
   
   /**
    * Full width button
    */
   fullWidth?: boolean;
+  
+  /**
+   * ARIA label for accessibility (required for icon-only buttons)
+   */
+  'aria-label'?: string;
+  
+  /**
+   * ARIA labelledby for accessibility
+   */
+  'aria-labelledby'?: string;
+  
+  /**
+   * ARIA describedby for accessibility
+   */
+  'aria-describedby'?: string;
 }

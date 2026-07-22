@@ -33,6 +33,7 @@ interface StyledRadioProps {
   $size: RadioButtonSize;
   $checked: boolean;
   $disabled: boolean;
+  $isInvalid?: boolean;
 }
 
 export const StyledRadio = styled.div<StyledRadioProps>`
@@ -41,7 +42,7 @@ export const StyledRadio = styled.div<StyledRadioProps>`
   justify-content: center;
   flex-shrink: 0;
   border-radius: 50%;
-  transition: all 0.2s ease-in-out;
+  transition: ${({ theme }) => (theme as any).transitions?.default || 'all 300ms cubic-bezier(0.4, 0, 0.2, 1)'};
   cursor: ${({ $disabled }) => ($disabled ? 'not-allowed' : 'pointer')};
   position: relative;
   
@@ -49,32 +50,39 @@ export const StyledRadio = styled.div<StyledRadioProps>`
     box-shadow: 0 0 0 2px ${({ theme }) => theme.colors.semantic.focus.indicator};
   }
   
-  ${({ $size }) => {
-    const size = $size === 'large' ? '24px' : '16px';
+  ${({ $size, theme }) => {
+    // Default: 16px (spacing[7]), Large: 24px (spacing[10])
+    const size = $size === 'large' ? theme.spacing[10] : theme.spacing[7];
     return `
       width: ${size};
       height: ${size};
     `;
   }}
   
-  ${({ theme, $checked, $disabled }) => {
+  ${({ theme, $checked, $disabled, $isInvalid }) => {
+    if ($isInvalid) {
+      return `
+        background-color: ${theme.colors.palette.error[50]};
+        border: ${theme.borderWidth[2]} solid ${theme.colors.palette.error[500]};
+      `;
+    }
     if ($disabled && $checked) {
       return `
-        border: 2px solid ${theme.colors.palette.neutral[300]};
+        border: ${theme.borderWidth[2]} solid ${theme.colors.palette.neutral[300]};
       `;
     }
     if ($disabled) {
       return `
-        border: 2px solid ${theme.colors.palette.neutral[300]};
+        border: ${theme.borderWidth[2]} solid ${theme.colors.palette.neutral[300]};
       `;
     }
     if ($checked) {
       return `
-        border: 2px solid ${theme.colors.palette.primary[500]};
+        border: ${theme.borderWidth[2]} solid ${theme.colors.palette.primary[500]};
       `;
     }
     return `
-      border: 2px solid ${theme.colors.palette.neutral[400]};
+      border: ${theme.borderWidth[2]} solid ${theme.colors.palette.neutral[400]};
     `;
   }}
   
@@ -96,10 +104,11 @@ interface RadioInnerDotProps {
 
 export const RadioInnerDot = styled.div<RadioInnerDotProps>`
   border-radius: 50%;
-  transition: all 0.2s ease-in-out;
+  transition: ${({ theme }) => (theme as any).transitions?.default || 'all 300ms cubic-bezier(0.4, 0, 0.2, 1)'};
   
-  ${({ $size }) => {
-    const size = $size === 'large' ? '10px' : '7px';
+  ${({ $size, theme }) => {
+    // Inner dot: Large 10px (spacing[4]), Default 7px (spacing[3])
+    const size = $size === 'large' ? theme.spacing[4] : theme.spacing[3];
     return `
       width: ${size};
       height: ${size};
@@ -110,29 +119,7 @@ export const RadioInnerDot = styled.div<RadioInnerDotProps>`
     $disabled ? theme.colors.palette.neutral[300] : theme.colors.palette.primary[500]};
 `;
 
-interface RadioLabelProps {
-  $size: RadioButtonSize;
-  $disabled: boolean;
-}
-
-export const RadioLabel = styled.label<RadioLabelProps>`
-  font-family: ${({ theme }) => theme.fonts.primary};
-  font-weight: ${({ theme }) => theme.fontWeights.regular};
-  line-height: normal;
-  white-space: nowrap;
-  cursor: ${({ $disabled }) => ($disabled ? 'not-allowed' : 'pointer')};
-  user-select: none;
-  
-  ${({ theme, $size }) => {
-    if ($size === 'large') {
-      return `font-size: ${theme.fontSizes[16]};`;
-    }
-    return `font-size: ${theme.fontSizes[14]};`;
-  }}
-  
-  color: ${({ theme, $disabled }) =>
-    $disabled ? theme.colors.palette.neutral[400] : theme.colors.palette.neutral[900]};
-`;
+// ❌ REMOVED: RadioLabel - Now using Typography component
 
 interface TrailingIconProps {
   $size: RadioButtonSize;
@@ -145,8 +132,9 @@ export const TrailingIcon = styled.div<TrailingIconProps>`
   justify-content: center;
   flex-shrink: 0;
   
-  ${({ $size }) => {
-    const size = $size === 'large' ? '24px' : '16px';
+  ${({ $size, theme }) => {
+    // Trailing icon smaller than radio: Default 14px (spacing[5]), Large 16px (spacing[6])
+    const size = $size === 'large' ? theme.spacing[6] : theme.spacing[5];
     return `
       width: ${size};
       height: ${size};
@@ -155,6 +143,20 @@ export const TrailingIcon = styled.div<TrailingIconProps>`
   
   color: ${({ theme, $disabled }) =>
     $disabled ? theme.colors.palette.neutral[400] : theme.colors.palette.neutral[600]};
+  
+  svg {
+    width: 100%;
+    height: 100%;
+  }
+`;
+
+export const LoadingSpinner = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: ${({ theme }) => theme.spacing[7]};
+  height: ${({ theme }) => theme.spacing[7]};
+  color: ${({ theme }) => theme.colors.palette.primary[500]};
   
   svg {
     width: 100%;

@@ -5,20 +5,19 @@ import {
   HeaderContent,
   HeaderLeftContent,
   HeaderRightContent,
+  HeaderLabel,
   SortIcon,
   CheckboxWrapper,
   ResizeHandle,
+  ResizeBorder,
   SearchInputWrapper,
   SearchInput,
   SearchActions,
 } from './TableHeader.styles';
 import { Checkbox } from '../Checkbox';
+import ArrowUpward from '@mui/icons-material/ArrowUpward';
+import ArrowDownward from '@mui/icons-material/ArrowDownward';
 
-const ArrowDownIcon = () => (
-  <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <path d="M8 11L4 7H12L8 11Z" fill="currentColor"/>
-  </svg>
-);
 
 const LockClosedIcon = () => (
   <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -55,6 +54,8 @@ export const TableHeader: React.FC<TableHeaderProps> = ({
   onSearchChange,
   align = 'left',
   width,
+  minWidth,
+  maxWidth,
   className,
   subHeader,
   subHeaderSpan = 1,
@@ -109,9 +110,16 @@ export const TableHeader: React.FC<TableHeaderProps> = ({
 
     const handleMouseMove = (e: MouseEvent) => {
       if (!headerRef.current || !onResize) return;
+      
       const diff = e.clientX - startXRef.current;
       const newWidth = startWidthRef.current + diff;
-      onResize(Math.max(50, newWidth));
+      
+      // Simple minimum width - don't recalculate content width on every move
+      // This prevents sudden jumps
+      const minWidth = 80; // Absolute minimum
+      
+      // Ensure width doesn't go below minimum
+      onResize(Math.max(minWidth, newWidth));
     };
 
     const handleMouseUp = () => {
@@ -143,7 +151,11 @@ export const TableHeader: React.FC<TableHeaderProps> = ({
       $sortDirection={sortDirection}
       $showCheckbox={showCheckbox}
       $hasLabel={!!label}
-      style={{ width }}
+      style={{ 
+        width: width ? `${width}px` : undefined, 
+        minWidth: minWidth ? `${minWidth}px` : (width ? `${width}px` : undefined), 
+        maxWidth: maxWidth ? `${maxWidth}px` : (width ? `${width}px` : undefined) 
+      }}
       className={className}
       data-locked={locked ? 'true' : undefined}
       colSpan={colSpan}
@@ -164,7 +176,7 @@ export const TableHeader: React.FC<TableHeaderProps> = ({
             <SearchActions>
               {sortable && (
                 <SortIcon $direction={sortDirection}>
-                  <ArrowDownIcon />
+                  {sortDirection === 'asc' ? <ArrowUpward fontSize="small" /> : <ArrowDownward fontSize="small" />}
                 </SortIcon>
               )}
             </SearchActions>
@@ -198,12 +210,13 @@ export const TableHeader: React.FC<TableHeaderProps> = ({
                   padding: '8px 4px',
                   margin: '-8px -4px',
                   flex: 1,
+                  minWidth: 0,
                 }}
                 onClick={handleSortClick}
               >
                 {label && (
                   subHeader ? (
-                    <div style={{ display: 'flex', flexDirection: 'column', width: '100%', position: 'relative' }}>
+                    <div style={{ display: 'flex', flexDirection: 'column', width: '100%', position: 'relative', minWidth: 0 }}>
                       {/* Parent header spanning across columns */}
                       {isFirstInGroup && (
                         <div style={{
@@ -222,14 +235,14 @@ export const TableHeader: React.FC<TableHeaderProps> = ({
                           {subHeader}
                         </div>
                       )}
-                      <span style={{ marginTop: isFirstInGroup ? '16px' : '0' }}>{label}</span>
+                      <HeaderLabel style={{ marginTop: isFirstInGroup ? '16px' : '0' }}>{label}</HeaderLabel>
                     </div>
                   ) : (
-                    <span>{label}</span>
+                    <HeaderLabel>{label}</HeaderLabel>
                   )
                 )}
                 <SortIcon $direction={sortDirection}>
-                  <ArrowDownIcon />
+                  {sortDirection === 'asc' ? <ArrowUpward fontSize="small" /> : <ArrowDownward fontSize="small" />}
                 </SortIcon>
               </div>
             ) : (
@@ -237,7 +250,7 @@ export const TableHeader: React.FC<TableHeaderProps> = ({
               <>
                 {label && (
                   subHeader ? (
-                    <div style={{ display: 'flex', flexDirection: 'column', width: '100%', position: 'relative' }}>
+                    <div style={{ display: 'flex', flexDirection: 'column', width: '100%', position: 'relative', minWidth: 0 }}>
                       {/* Parent header spanning across columns */}
                       {isFirstInGroup && (
                         <div style={{
@@ -256,10 +269,10 @@ export const TableHeader: React.FC<TableHeaderProps> = ({
                           {subHeader}
                         </div>
                       )}
-                      <span style={{ marginTop: isFirstInGroup ? '16px' : '0' }}>{label}</span>
+                      <HeaderLabel style={{ marginTop: isFirstInGroup ? '16px' : '0' }}>{label}</HeaderLabel>
                     </div>
                   ) : (
-                    <span>{label}</span>
+                    <HeaderLabel>{label}</HeaderLabel>
                   )
                 )}
               </>
@@ -314,6 +327,10 @@ export const TableHeader: React.FC<TableHeaderProps> = ({
             </HeaderRightContent>
           )}
         </HeaderContent>
+      )}
+      {/* Resize border - half-height border on right side for resizing */}
+      {resizable && (
+        <ResizeBorder onMouseDown={handleResizeStart} />
       )}
     </StyledTableHeader>
   );

@@ -27,6 +27,7 @@ import { HelpingText } from '../HelpingText';
 export const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
   (
     {
+      as,
       label,
       helperText,
       helperTextState = 'default',
@@ -36,6 +37,10 @@ export const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
       disabled = false,
       readOnly = false,
       error = false,
+      isLoading = false,
+      isEmpty = false,
+      emptyMessage = 'No data available',
+      isInvalid = false,
       showLabel = true,
       showFieldImportance = false,
       fieldImportanceVariant = 'asterisk',
@@ -48,10 +53,20 @@ export const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
       onChange,
       onFocus,
       onBlur,
+      onAfterFocus,
+      onAfterBlur,
+      onClear,
+      onEnter,
+      onEscape,
       fullWidth = false,
       name,
       id: providedId,
       className,
+      style,
+      labelClassName,
+      wrapperClassName,
+      inputClassName,
+      helperTextClassName,
       'aria-label': ariaLabel,
       'aria-describedby': ariaDescribedBy,
       ...restProps
@@ -64,10 +79,16 @@ export const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
     const labelId = `${inputId}-label`;
     
     const [isFocused, setIsFocused] = useState(false);
+    const [isHovered, setIsHovered] = useState(false);
 
+    // Determine actual error state
+    const hasError = error || isInvalid;
+    
     // Use helperText directly
     const displayMessage = helperText;
-    const hasError = error;
+    
+    // Polymorphic component type
+    const Component = as || 'input';
 
     // Compute ARIA attributes
     const ariaDescribedByValue = [
@@ -80,19 +101,165 @@ export const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
     const handleFocus = (e: React.FocusEvent<HTMLInputElement>) => {
       setIsFocused(true);
       onFocus?.(e);
+      
+      // Fire onAfterFocus after transition completes (200ms)
+      setTimeout(() => {
+        onAfterFocus?.();
+      }, 200);
     };
 
     const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
       setIsFocused(false);
       onBlur?.(e);
+      
+      // Fire onAfterBlur after transition completes (200ms)
+      setTimeout(() => {
+        onAfterBlur?.();
+      }, 200);
+    };
+    
+    const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+      if (e.key === 'Enter') {
+        onEnter?.(e);
+      } else if (e.key === 'Escape') {
+        onEscape?.(e);
+      }
+      
+      // Call original onKeyDown if provided
+      restProps.onKeyDown?.(e);
+    };
+    
+    const handleMouseEnter = () => {
+      setIsHovered(true);
+    };
+    
+    const handleMouseLeave = () => {
+      setIsHovered(false);
     };
 
     // Determine helper text state from prop
     const finalHelpingTextState = helperTextState;
     const helpingTextSize = size === 'large' ? 'large' : 'default';
 
+    // Show loading state
+    if (isLoading) {
+      return (
+        <InputContainer $fullWidth={fullWidth} className={className} style={style}>
+          {showLabel && label && (
+            <LabelContainer>
+              <Label
+                htmlFor={inputId}
+                id={labelId}
+                $size={size}
+                $disabled={disabled}
+                className={labelClassName}
+              >
+                {label}
+              </Label>
+              {showFieldImportance && (
+                <FieldImportance variant={fieldImportanceVariant} />
+              )}
+            </LabelContainer>
+          )}
+          <InputWrapper
+            $size={size}
+            $error={false}
+            $disabled={true}
+            $readOnly={false}
+            $isFocused={false}
+            $filled={false}
+            className={wrapperClassName}
+          >
+            <StyledInput
+              ref={ref}
+              id={inputId}
+              type={type}
+              placeholder="Loading..."
+              disabled={true}
+              value=""
+              readOnly
+              $size={size}
+              className={inputClassName}
+              aria-busy="true"
+              aria-label={ariaLabel || 'Loading'}
+            />
+            {/* Loading spinner icon */}
+            <IconWrapper $size={size}>
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="8" cy="8" r="6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeDasharray="9.42 9.42">
+                  <animateTransform
+                    attributeName="transform"
+                    type="rotate"
+                    from="0 8 8"
+                    to="360 8 8"
+                    dur="1s"
+                    repeatCount="indefinite"
+                  />
+                </circle>
+              </svg>
+            </IconWrapper>
+          </InputWrapper>
+        </InputContainer>
+      );
+    }
+    
+    // Show empty state
+    if (isEmpty) {
+      return (
+        <InputContainer $fullWidth={fullWidth} className={className} style={style}>
+          {showLabel && label && (
+            <LabelContainer>
+              <Label
+                htmlFor={inputId}
+                id={labelId}
+                $size={size}
+                $disabled={disabled}
+                className={labelClassName}
+              >
+                {label}
+              </Label>
+              {showFieldImportance && (
+                <FieldImportance variant={fieldImportanceVariant} />
+              )}
+            </LabelContainer>
+          )}
+          <InputWrapper
+            $size={size}
+            $error={false}
+            $disabled={true}
+            $readOnly={false}
+            $isFocused={false}
+            $filled={false}
+            className={wrapperClassName}
+          >
+            <StyledInput
+              ref={ref}
+              id={inputId}
+              type={type}
+              placeholder={emptyMessage}
+              disabled={true}
+              value=""
+              readOnly
+              $size={size}
+              className={inputClassName}
+              aria-label={ariaLabel || emptyMessage}
+            />
+          </InputWrapper>
+          {showInlineText && emptyMessage && (
+            <HelpingText
+              text={emptyMessage}
+              state="default"
+              size={helpingTextSize}
+              showIcon={true}
+              className={helperTextClassName}
+            />
+          )}
+        </InputContainer>
+      );
+    }
+    
     return (
-      <InputContainer $fullWidth={fullWidth} className={className}>
+      <InputContainer $fullWidth={fullWidth} className={className} style={style}>
         {showLabel && label && (
           <LabelContainer>
             <Label
@@ -100,6 +267,7 @@ export const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
               id={labelId}
               $size={size}
               $disabled={disabled}
+              className={labelClassName}
             >
               {label}
             </Label>
@@ -116,6 +284,9 @@ export const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
           $readOnly={readOnly}
           $isFocused={isFocused}
           $filled={!!value}
+          className={wrapperClassName}
+          onMouseEnter={handleMouseEnter}
+          onMouseLeave={handleMouseLeave}
         >
           {leadingIcon && (
             <IconWrapper $size={size}>
@@ -124,6 +295,7 @@ export const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
           )}
           
           <StyledInput
+            as={Component}
             ref={ref}
             id={inputId}
             type={type}
@@ -134,6 +306,7 @@ export const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
             onChange={onChange}
             onFocus={handleFocus}
             onBlur={handleBlur}
+            onKeyDown={handleKeyDown}
             disabled={disabled}
             readOnly={readOnly}
             required={required}
@@ -143,6 +316,7 @@ export const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
             aria-invalid={hasError}
             aria-required={required}
             $size={size}
+            className={inputClassName}
             {...restProps}
           />
           
@@ -159,6 +333,7 @@ export const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
             state={finalHelpingTextState}
             size={helpingTextSize}
             showIcon={true}
+            className={helperTextClassName}
           />
         )}
       </InputContainer>

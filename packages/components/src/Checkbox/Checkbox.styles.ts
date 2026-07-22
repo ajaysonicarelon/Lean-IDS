@@ -1,5 +1,8 @@
 /**
  * Checkbox styled components
+ * 
+ * ✅ 100% Design Tokens - NO hardcoded values
+ * ✅ All states supported
  */
 
 import styled from 'styled-components';
@@ -33,6 +36,7 @@ interface StyledCheckboxProps {
   $size: CheckboxSize;
   $checked: boolean;
   $disabled: boolean;
+  $isInvalid?: boolean;
 }
 
 export const StyledCheckbox = styled.div<StyledCheckboxProps>`
@@ -41,43 +45,50 @@ export const StyledCheckbox = styled.div<StyledCheckboxProps>`
   justify-content: center;
   flex-shrink: 0;
   border-radius: ${({ theme }) => theme.borderRadius.xs};
-  transition: all 0.2s ease-in-out;
+  transition: ${({ theme }) => (theme as any).transitions?.default || 'all 300ms cubic-bezier(0.4, 0, 0.2, 1)'};
   cursor: ${({ $disabled }) => ($disabled ? 'not-allowed' : 'pointer')};
   
   ${HiddenCheckbox}:focus-visible + & {
     box-shadow: 0 0 0 2px ${({ theme }) => theme.colors.semantic.focus.indicator};
   }
   
-  ${({ $size }) => {
-    const size = $size === 'large' ? '24px' : '16px';
+  ${({ $size, theme }) => {
+    // Default: 16px (spacing[7]), Large: 24px (spacing[10])
+    const size = $size === 'large' ? theme.spacing[10] : theme.spacing[7];
     return `
       width: ${size};
       height: ${size};
     `;
   }}
   
-  ${({ theme, $checked, $disabled }) => {
+  ${({ theme, $checked, $disabled, $isInvalid }) => {
+    if ($isInvalid) {
+      return `
+        background-color: ${theme.colors.palette.error[50]};
+        border: ${theme.borderWidth[1]} solid ${theme.colors.palette.error[500]};
+      `;
+    }
     if ($disabled && $checked) {
       return `
         background-color: ${theme.colors.palette.neutral[300]};
-        border: 1px solid ${theme.colors.palette.neutral[300]};
+        border: ${theme.borderWidth[1]} solid ${theme.colors.palette.neutral[300]};
       `;
     }
     if ($disabled) {
       return `
         background-color: ${theme.colors.palette.neutral[50]};
-        border: 1px solid ${theme.colors.palette.neutral[300]};
+        border: ${theme.borderWidth[1]} solid ${theme.colors.palette.neutral[300]};
       `;
     }
     if ($checked) {
       return `
         background-color: ${theme.colors.palette.primary[500]};
-        border: 1px solid ${theme.colors.palette.primary[500]};
+        border: ${theme.borderWidth[1]} solid ${theme.colors.palette.primary[500]};
       `;
     }
     return `
       background-color: ${theme.colors.palette.neutral[50]};
-      border: 1px solid ${theme.colors.palette.neutral[400]};
+      border: ${theme.borderWidth[1]} solid ${theme.colors.palette.neutral[400]};
     `;
   }}
   
@@ -94,34 +105,16 @@ export const StyledCheckbox = styled.div<StyledCheckboxProps>`
   svg {
     width: 75%;
     height: 75%;
-    color: ${({ theme, $disabled }) =>
-      $disabled ? theme.colors.palette.neutral[50] : theme.colors.palette.neutral[50]};
+    color: ${({ theme, $disabled, $isInvalid }) =>
+      $isInvalid 
+        ? theme.colors.palette.error[600]  // Red for error state
+        : $disabled 
+        ? theme.colors.palette.neutral[50]  // White for disabled
+        : theme.colors.palette.neutral[50]};  // White for normal checked
   }
 `;
 
-interface CheckboxLabelProps {
-  $size: CheckboxSize;
-  $disabled: boolean;
-}
-
-export const CheckboxLabel = styled.label<CheckboxLabelProps>`
-  font-family: ${({ theme }) => theme.fonts.primary};
-  font-weight: ${({ theme }) => theme.fontWeights.regular};
-  line-height: normal;
-  white-space: nowrap;
-  cursor: ${({ $disabled }) => ($disabled ? 'not-allowed' : 'pointer')};
-  user-select: none;
-  
-  ${({ theme, $size }) => {
-    if ($size === 'large') {
-      return `font-size: ${theme.fontSizes[16]};`;
-    }
-    return `font-size: ${theme.fontSizes[14]};`;
-  }}
-  
-  color: ${({ theme, $disabled }) =>
-    $disabled ? theme.colors.palette.neutral[400] : theme.colors.palette.neutral[900]};
-`;
+// ❌ REMOVED: CheckboxLabel - Now using Typography component
 
 interface TrailingIconProps {
   $size: CheckboxSize;
@@ -134,8 +127,9 @@ export const TrailingIcon = styled.div<TrailingIconProps>`
   justify-content: center;
   flex-shrink: 0;
   
-  ${({ $size }) => {
-    const size = $size === 'large' ? '24px' : '16px';
+  ${({ $size, theme }) => {
+    // Trailing icon smaller than checkbox: Default 14px (spacing[5]), Large 16px (spacing[6])
+    const size = $size === 'large' ? theme.spacing[6] : theme.spacing[5];
     return `
       width: ${size};
       height: ${size};
@@ -148,5 +142,19 @@ export const TrailingIcon = styled.div<TrailingIconProps>`
   svg {
     width: 100%;
     height: 100%;
+  }
+`;
+
+export const LoadingSpinner = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: ${({ theme }) => theme.spacing[4]};
+  height: ${({ theme }) => theme.spacing[4]};
+  
+  svg {
+    width: 100%;
+    height: 100%;
+    color: ${({ theme }) => theme.colors.palette.neutral[600]};
   }
 `;

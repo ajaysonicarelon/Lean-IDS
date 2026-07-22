@@ -23,7 +23,7 @@
  * ```
  */
 
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useLayoutEffect, useRef, forwardRef, ElementType } from 'react';
 import styled from 'styled-components';
 import { TableHeader } from '../TableHeader';
 import { TableCell } from '../TableCell';
@@ -33,6 +33,7 @@ import { Button } from '../Button';
 import { Checkbox } from '../Checkbox';
 import { TableSettings, ColumnConfig } from '../TableSettings';
 import { TableToolbar } from './TableToolbar';
+import { Typography } from '../Typography';
 
 // ============================================================================
 // TYPES
@@ -53,7 +54,9 @@ export interface TableColumn {
   renderCell?: (value: any, row: any, rowIndex: number) => React.ReactNode;
 }
 
-export interface TableProps {
+export interface TableProps extends React.HTMLAttributes<HTMLDivElement> {
+  /** Polymorphic component type (default: 'div') */
+  as?: ElementType;
   /** Array of data objects to display */
   data: any[];
   /** Column configuration */
@@ -78,6 +81,8 @@ export interface TableProps {
   onRowSelect?: (selectedIds: string[]) => void;
   /** Callback when row action is triggered */
   onRowAction?: (action: string, row: any) => void;
+  /** Callback when a row is clicked */
+  onRowClick?: (row: any, rowIndex: number, event: React.MouseEvent<HTMLTableRowElement>) => void;
   /** Custom row key accessor (default: 'id') */
   rowKey?: string;
   /** Custom empty state message */
@@ -96,6 +101,8 @@ export interface TableProps {
   loading?: boolean;
   /** Custom className */
   className?: string;
+  /** Custom toolbar content - when provided, renders instead of default toolbar */
+  toolbar?: React.ReactNode;
   /** Table title */
   title?: string;
   /** Table description */
@@ -110,6 +117,28 @@ export interface TableProps {
   showDownload?: boolean;
   /** Download handler */
   onDownload?: () => void;
+  /** Sorting mode: 'client' (default) or 'server' */
+  sortMode?: 'client' | 'server';
+  /** Callback when sort changes (only used when sortMode='server') */
+  onSort?: (columnId: string, direction: 'asc' | 'desc' | 'none') => void;
+  /** Controlled sort column (only used when sortMode='server') */
+  sortColumn?: string;
+  /** Controlled sort direction (only used when sortMode='server') */
+  sortDirection?: 'asc' | 'desc' | 'none';
+  /** Maximum height for table body (enables fixed header with internal scroll). Example: '400px', '50vh' */
+  maxHeight?: string;
+  /** Invalid/error state */
+  isInvalid?: boolean;
+  /** Error message to display when isInvalid is true */
+  errorMessage?: string;
+  /** Override className for scroll container */
+  scrollContainerClassName?: string;
+  /** Override style for scroll container */
+  scrollContainerStyle?: React.CSSProperties;
+  /** Override className for empty state */
+  emptyStateClassName?: string;
+  /** Override style for empty state */
+  emptyStateStyle?: React.CSSProperties;
 }
 
 // ============================================================================
@@ -123,18 +152,33 @@ const TableContainer = styled.div`
   width: 100%;
 `;
 
-const ScrollContainer = styled.div`
+const ScrollContainer = styled.div<{ $maxHeight?: string }>`
   overflow-x: auto;
-  border: 1px solid ${({ theme }) => theme.colors.palette.neutral[300]};
-  border-radius: 8px;
+  overflow-y: hidden; /* Prevent rows from appearing outside during animation */
+  ${({ $maxHeight }) => $maxHeight && `
+    max-height: ${$maxHeight};
+    overflow-y: auto;
+    display: block;
+  `}
+  border: ${({ theme }) => theme.borderWidth[1]} solid ${({ theme }) => theme.colors.palette.neutral[300]};
+  border-radius: ${({ theme }) => theme.borderRadius.md};
   position: relative;
 `;
 
-const StyledTable = styled.table`
+const StyledTable = styled.table<{ $hasMaxHeight?: boolean }>`
   width: 100%;
   border-collapse: separate;
   border-spacing: 0;
   table-layout: auto;
+  
+  ${({ $hasMaxHeight }) => $hasMaxHeight && `
+    thead {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      background: #f9fafb;
+    }
+  `}
 `;
 
 const EmptyStateContainer = styled.div`
@@ -143,7 +187,7 @@ const EmptyStateContainer = styled.div`
   align-items: center;
   justify-content: center;
   padding: ${({ theme }) => theme.spacing[32]} ${({ theme }) => theme.spacing[24]};
-  min-height: 400px;
+  min-height: min(25rem, 50vh);
   background: ${({ theme }) => theme.colors.palette.neutral[50]};
 `;
 
@@ -152,12 +196,12 @@ const EmptyStateContent = styled.div`
   flex-direction: column;
   align-items: center;
   gap: ${({ theme }) => theme.spacing[6]};
-  max-width: 300px;
+  max-width: min(18.75rem, 90%);
 `;
 
 const EmptyStateIconWrapper = styled.div`
-  width: 80px;
-  height: 80px;
+  width: ${({ theme }) => theme.spacing[20]};
+  height: ${({ theme }) => theme.spacing[20]};
   display: flex;
   align-items: center;
   justify-content: center;
@@ -172,37 +216,35 @@ const EmptyStateTextWrapper = styled.div`
   text-align: center;
 `;
 
-const EmptyStateTitle = styled.h3`
-  font-family: 'Elevance Sans', sans-serif;
-  font-size: 24px;
-  font-weight: 600;
-  line-height: 28px;
-  letter-spacing: 1px;
-  color: ${({ theme }) => theme.colors.semantic.text.primary};
-  margin: 0;
+const ErrorContainer = styled.div`
+  display: flex;
+  align-items: center;
+  gap: ${({ theme }) => theme.spacing[2]};
+  padding: ${({ theme }) => theme.spacing[3]} ${({ theme }) => theme.spacing[4]};
+  background: ${({ theme }) => theme.colors.palette.error[50]};
+  border: ${({ theme }) => theme.borderWidth[1]} solid ${({ theme }) => theme.colors.semantic.border.error};
+  border-radius: ${({ theme }) => theme.borderRadius.md};
+  margin-bottom: ${({ theme }) => theme.spacing[4]};
 `;
 
-const EmptyStateDescription = styled.p`
-  font-family: 'Elevance Sans', sans-serif;
-  font-size: 16px;
-  font-weight: 300;
-  line-height: 19px;
-  color: ${({ theme }) => theme.colors.semantic.text.secondary};
-  margin: 0;
-`;
+// Removed custom styled text components - using Typography component instead
 
 const SkeletonRow = styled.tr``;
 
+const AnimatedTableRow = styled.tr<{ $animationDelay: number }>`
+  /* Keyframe animation disabled - using FLIP animation instead */
+`;
+
 const SkeletonCell = styled.td`
-  padding: 16px;
-  border-bottom: 1px solid ${({ theme }) => theme.colors.palette.neutral[200]};
+  padding: ${({ theme }) => theme.spacing[4]};
+  border-bottom: ${({ theme }) => theme.borderWidth[1]} solid ${({ theme }) => theme.colors.palette.neutral[200]};
 `;
 
 const SkeletonBox = styled.div<{ width?: string; height?: string }>`
   width: ${({ width }) => width || '100%'};
-  height: ${({ height }) => height || '16px'};
+  height: ${({ height }) => height || '1rem'};
   background: ${({ theme }) => theme.colors.palette.neutral[200]};
-  border-radius: 4px;
+  border-radius: ${({ theme }) => theme.borderRadius.sm};
   position: relative;
   overflow: hidden;
 
@@ -236,7 +278,7 @@ const SkeletonBox = styled.div<{ width?: string; height?: string }>`
 // MAIN COMPONENT
 // ============================================================================
 
-export const Table: React.FC<TableProps> = ({
+export const Table = forwardRef<HTMLDivElement, TableProps>(({  as: Component = 'div',
   data = [],
   columns = [],
   selectable = false,
@@ -247,6 +289,7 @@ export const Table: React.FC<TableProps> = ({
   actions = [],
   onRowSelect,
   onRowAction,
+  onRowClick,
   rowKey = 'id',
   emptyMessage = 'No data available',
   emptyIcon = 'CloudOff',
@@ -256,6 +299,7 @@ export const Table: React.FC<TableProps> = ({
   onEmptyAction,
   loading = false,
   className,
+  toolbar,
   title,
   description,
   showToolbar = true,
@@ -263,24 +307,47 @@ export const Table: React.FC<TableProps> = ({
   showFilter = true,
   showDownload = true,
   onDownload,
-}) => {
+  sortMode = 'client',
+  onSort,
+  sortColumn: controlledSortColumn,
+  sortDirection: controlledSortDirection,
+  maxHeight,
+  isInvalid = false,
+  errorMessage,
+  scrollContainerClassName,
+  scrollContainerStyle,
+  emptyStateClassName,
+  emptyStateStyle,
+  style,
+  ...restProps
+}, ref) => {
   // ============================================================================
   // STATE
   // ============================================================================
 
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(initialItemsPerPage);
-  const [sortColumn, setSortColumn] = useState<string>('');
-  const [sortDirection, setSortDirection] = useState<'asc' | 'desc' | 'none'>('none');
+  const [internalSortColumn, setInternalSortColumn] = useState<string>('');
+  const [internalSortDirection, setInternalSortDirection] = useState<'asc' | 'desc' | 'none'>('none');
+  
+  // Use controlled props in server mode, internal state in client mode
+  const sortColumn = sortMode === 'server' ? (controlledSortColumn || '') : internalSortColumn;
+  const sortDirection = sortMode === 'server' ? (controlledSortDirection || 'none') : internalSortDirection;
   const [allChecked, setAllChecked] = useState(false);
   const [selectedRows, setSelectedRows] = useState<string[]>([]);
   const [lastSelectedIndex, setLastSelectedIndex] = useState<number | null>(null);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [columnOffsets, setColumnOffsets] = useState<{ [key: string]: number }>({});
   const [lockWarning, setLockWarning] = useState(false);
+  const [animateSorting, setAnimateSorting] = useState(false);
   const [searchValues, setSearchValues] = useState<{ [key: string]: string }>({});
   const [columnWidths, setColumnWidths] = useState<{ [key: string]: number }>({});
   const [globalSearch, setGlobalSearch] = useState('');
+  
+  // FLIP animation refs
+  const rowPositionsRef = useRef<Map<string, number>>(new Map());
+  const tbodyRef = useRef<HTMLTableSectionElement>(null);
+  const isAnimatingRef = useRef(false);
 
   // Initialize column configs
   const [columnConfigs, setColumnConfigs] = useState<ColumnConfig[]>(() => {
@@ -349,14 +416,44 @@ export const Table: React.FC<TableProps> = ({
   };
 
   const handleSort = (columnId: string) => {
-    if (sortColumn === columnId) {
-      setSortDirection(
-        sortDirection === 'asc' ? 'desc' : sortDirection === 'desc' ? 'none' : 'asc'
-      );
-    } else {
-      setSortColumn(columnId);
-      setSortDirection('asc');
+    // CAPTURE positions BEFORE sorting for CLIENT-SIDE mode
+    if (sortMode === 'client' && tbodyRef.current) {
+      console.log('🔵 CLIENT-SIDE: Capturing positions before sort...');
+      const rows = Array.from(tbodyRef.current.querySelectorAll('tr')) as HTMLElement[];
+      // Capture current positions (don't clear - keep positions of rows not currently visible)
+      rows.forEach((row, index) => {
+        const rowId = paginatedData[index]?.[rowKey];
+        if (rowId) {
+          const position = row.getBoundingClientRect().top;
+          rowPositionsRef.current.set(rowId, position);
+          console.log(`🔵 Row ${index} (ID: ${rowId}): position = ${position}px`);
+        }
+      });
     }
+
+    let newDirection: 'asc' | 'desc' | 'none';
+    
+    if (sortColumn === columnId) {
+      newDirection = sortDirection === 'asc' ? 'desc' : sortDirection === 'desc' ? 'none' : 'asc';
+    } else {
+      newDirection = 'asc';
+    }
+
+    console.log(`🟣 Sort state changing: column=${columnId}, direction=${newDirection}`);
+
+    if (sortMode === 'server' && onSort) {
+      // Server-side sorting: call the callback (parent manages state)
+      onSort(columnId, newDirection);
+    } else {
+      // Client-side sorting: update internal state
+      console.log('🟣 Setting internal sort state...');
+      setInternalSortColumn(columnId);
+      setInternalSortDirection(newDirection);
+    }
+    
+    // Trigger animation
+    setAnimateSorting(true);
+    setTimeout(() => setAnimateSorting(false), 50);
   };
 
   const handleSelectAll = (checked: boolean) => {
@@ -409,6 +506,7 @@ export const Table: React.FC<TableProps> = ({
   // ============================================================================
 
   const processedData = useMemo(() => {
+    console.log(`🟠 Processing data - sortMode=${sortMode}, sortColumn=${sortColumn}, sortDirection=${sortDirection}`);
     let result = [...data];
 
     // Apply search filters
@@ -429,8 +527,8 @@ export const Table: React.FC<TableProps> = ({
       }
     });
 
-    // Apply sorting
-    if (sortColumn && sortDirection !== 'none') {
+    // Apply sorting (only for client-side mode)
+    if (sortMode === 'client' && sortColumn && sortDirection !== 'none') {
       const column = columns.find(col => col.id === sortColumn);
       if (column) {
         result.sort((a, b) => {
@@ -471,6 +569,95 @@ export const Table: React.FC<TableProps> = ({
   // ============================================================================
   // EFFECTS
   // ============================================================================
+
+  // Capture positions on every render for SERVER-SIDE mode (before DOM updates)
+  useLayoutEffect(() => {
+    if (sortMode !== 'server' || !tbodyRef.current) return;
+    
+    // Capture CURRENT positions before React updates the DOM
+    const rows = Array.from(tbodyRef.current.querySelectorAll('tr')) as HTMLElement[];
+    rows.forEach((row, index) => {
+      const rowId = paginatedData[index]?.[rowKey];
+      if (rowId && !rowPositionsRef.current.has(rowId)) {
+        // Only capture if we don't have this row's position yet
+        const position = row.getBoundingClientRect().top;
+        rowPositionsRef.current.set(rowId, position);
+        console.log(`🔵 SERVER-SIDE: Initial capture Row ${index} (ID: ${rowId}): position = ${position}px`);
+      }
+    });
+  }); // Run on every render for server-side
+
+  // FLIP animation for row reordering
+  useLayoutEffect(() => {
+    console.log('🟢 AFTER SORT - useLayoutEffect running...');
+    
+    // Prevent multiple animations from running simultaneously
+    if (isAnimatingRef.current) {
+      console.log('⏸️ Animation already in progress, skipping...');
+      return;
+    }
+    
+    if (!tbodyRef.current) {
+      console.log('🔴 No tbody ref!');
+      return;
+    }
+
+    const rows = Array.from(tbodyRef.current.querySelectorAll('tr')) as HTMLElement[];
+    console.log('🟢 Found rows in DOM:', rows.length);
+    
+    let hasAnimation = false;
+    
+    rows.forEach((row, index) => {
+      const rowId = paginatedData[index]?.[rowKey];
+      if (!rowId) return;
+
+      // Get old and new positions
+      const oldPosition = rowPositionsRef.current.get(rowId);
+      const newPosition = row.getBoundingClientRect().top;
+
+      console.log(`🟢 Row ${index} (ID: ${rowId}): old=${oldPosition}px, new=${newPosition}px`);
+
+      if (oldPosition !== undefined && oldPosition !== newPosition) {
+        const delta = oldPosition - newPosition;
+        
+        // Clamp delta to prevent rows from going too far outside viewport
+        const maxDelta = 1000; // Maximum pixels to animate
+        const clampedDelta = Math.max(-maxDelta, Math.min(maxDelta, delta));
+        
+        console.log(`🟡 ANIMATING Row ${rowId}: delta=${delta}px (clamped: ${clampedDelta}px)`);
+        
+        hasAnimation = true;
+        
+        // FLIP technique:
+        // 1. Apply transform immediately (move to old position)
+        row.style.transform = `translateY(${clampedDelta}px)`;
+        row.style.transition = 'none';
+        
+        // 2. Force reflow
+        row.offsetHeight;
+        
+        // 3. Enable transition and animate to new position
+        requestAnimationFrame(() => {
+          row.style.transition = 'transform 0.6s cubic-bezier(0.4, 0, 0.2, 1)';
+          row.style.transform = 'translateY(0)';
+        });
+      } else {
+        console.log(`⚪ Row ${rowId}: No animation (same position or first render)`);
+      }
+
+      // Store new position for next render
+      rowPositionsRef.current.set(rowId, newPosition);
+    });
+    
+    // Set animation lock and clear it after animation completes
+    if (hasAnimation) {
+      isAnimatingRef.current = true;
+      setTimeout(() => {
+        isAnimatingRef.current = false;
+        console.log('✅ Animation complete, lock released');
+      }, 600); // Match animation duration
+    }
+  }, [paginatedData, rowKey]);
 
   // Calculate column offsets for locked columns
   useEffect(() => {
@@ -529,14 +716,33 @@ export const Table: React.FC<TableProps> = ({
     return () => scrollContainer.removeEventListener('scroll', handleScroll);
   }, []);
 
+  // Keyboard navigation support
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Escape key to close settings modal
+      if (e.key === 'Escape' && settingsOpen) {
+        setSettingsOpen(false);
+      }
+      
+      // Ctrl/Cmd + A to select all rows (when selectable)
+      if ((e.ctrlKey || e.metaKey) && e.key === 'a' && selectable && data.length > 0) {
+        e.preventDefault();
+        handleSelectAll(true);
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [settingsOpen, selectable, data.length]);
+
   // ============================================================================
   // RENDER
   // ============================================================================
 
   // Empty state - show full table structure with centered empty content
   const renderEmptyState = () => (
-    <ScrollContainer data-scroll-container>
-      <StyledTable>
+    <ScrollContainer data-scroll-container $maxHeight={maxHeight}>
+      <StyledTable $hasMaxHeight={!!maxHeight}>
         <thead>
           <tr>
             {visibleColumns.map((colConfig, index) => {
@@ -556,15 +762,24 @@ export const Table: React.FC<TableProps> = ({
         </thead>
       </StyledTable>
       
-      <EmptyStateContainer>
+      <EmptyStateContainer 
+        className={emptyStateClassName} 
+        style={emptyStateStyle}
+        role="status"
+        aria-live="polite"
+      >
         <EmptyStateContent>
           <EmptyStateIconWrapper>
             <Icon name={emptyIcon} size="large" style={{ width: '60px', height: '60px' }} />
           </EmptyStateIconWrapper>
           
           <EmptyStateTextWrapper>
-            <EmptyStateTitle>{emptyTitle}</EmptyStateTitle>
-            <EmptyStateDescription>{emptyDescription}</EmptyStateDescription>
+            <Typography variant="headingL" weight="semibold" as="h3">
+              {emptyTitle}
+            </Typography>
+            <Typography variant="body" color="secondary">
+              {emptyDescription}
+            </Typography>
           </EmptyStateTextWrapper>
           
           {emptyActionLabel && onEmptyAction && (
@@ -582,8 +797,28 @@ export const Table: React.FC<TableProps> = ({
   );
 
   return (
-    <TableContainer className={className}>
-      {showToolbar && (
+    <Component ref={ref} style={style} {...restProps}>
+      <TableContainer 
+        className={className}
+        role="region"
+        aria-label={title || 'Data table'}
+        aria-busy={loading}
+        aria-invalid={isInvalid}
+      >
+      {/* Error state */}
+      {isInvalid && errorMessage && (
+        <ErrorContainer role="alert" aria-live="polite">
+          <Icon name="Error" size="small" />
+          <Typography variant="body" color="error">
+            {errorMessage}
+          </Typography>
+        </ErrorContainer>
+      )}
+      
+      {/* Custom toolbar takes precedence */}
+      {toolbar ? (
+        toolbar
+      ) : showToolbar ? (
         <TableToolbar
           title={title}
           showDropdown={false}
@@ -594,14 +829,25 @@ export const Table: React.FC<TableProps> = ({
           onFilter={() => console.log('Filter clicked')}
           showSettings={showSettings}
           onSettingsClick={() => setSettingsOpen(true)}
+          showGlobalSearch={showGlobalSearch}
         />
-      )}
+      ) : null}
       
       {data.length === 0 && !loading ? (
         renderEmptyState()
       ) : (
-        <ScrollContainer data-scroll-container>
-          <StyledTable>
+        <ScrollContainer 
+          data-scroll-container 
+          $maxHeight={maxHeight}
+          className={scrollContainerClassName}
+          style={scrollContainerStyle}
+        >
+          <StyledTable 
+            $hasMaxHeight={!!maxHeight}
+            role="table"
+            aria-label={title || 'Data table'}
+            aria-rowcount={totalItems}
+          >
           <thead>
             <tr>
               {visibleColumns.map((colConfig, index) => {
@@ -668,6 +914,8 @@ export const Table: React.FC<TableProps> = ({
                     resizable={column.resizable && !isLocked}
                     onResize={column.resizable && !isLocked ? (width) => handleResize(column.id, width) : undefined}
                     width={columnWidths[column.id] || column.width}
+                    minWidth={column.minWidth}
+                    maxWidth={column.maxWidth}
                     onLockToggle={() => handleColumnLock(column.id, !isLocked)}
                     locked={isLocked}
                     leftOffset={offset}
@@ -678,7 +926,7 @@ export const Table: React.FC<TableProps> = ({
             </tr>
           </thead>
 
-          <tbody>
+          <tbody ref={tbodyRef}>
             {loading ? (
               // Show skeleton rows when loading
               Array.from({ length: itemsPerPage }).map((_, skeletonIndex) => (
@@ -703,9 +951,15 @@ export const Table: React.FC<TableProps> = ({
               paginatedData.map((row, rowIndex) => {
               const rowId = row[rowKey];
               const isSelected = selectedRows.includes(rowId);
+              
+              const handleRowClick = (e: React.MouseEvent<HTMLTableRowElement>) => {
+                if (onRowClick) {
+                  onRowClick(row, rowIndex, e);
+                }
+              };
 
-              return (
-                <tr key={rowId}>
+              const cells = (
+                <React.Fragment>
                   {visibleColumns.map((colConfig, colIndex) => {
                     const column = columns.find(col => col.id === colConfig.id);
                     const isLocked = colConfig.locked;
@@ -723,10 +977,18 @@ export const Table: React.FC<TableProps> = ({
                           data-locked={isLocked}
                           isFirstColumn={isFirstCell}
                         >
-                          <Checkbox
-                            checked={isSelected}
-                            onChange={(e) => handleRowSelect(rowId, e.target.checked, rowIndex, (e.nativeEvent as MouseEvent).shiftKey)}
-                          />
+                          <div
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleRowSelect(rowId, !isSelected, rowIndex, e.shiftKey);
+                            }}
+                            style={{ cursor: 'pointer', display: 'inline-flex' }}
+                          >
+                            <Checkbox
+                              checked={isSelected}
+                              onChange={() => {}} // Controlled by wrapper click
+                            />
+                          </div>
                         </TableCell>
                       );
                     }
@@ -745,7 +1007,7 @@ export const Table: React.FC<TableProps> = ({
                             {actions.map((action, actionIndex) => (
                               <Button
                                 key={actionIndex}
-                                variant="secondary"
+                                variant="tertiary"
                                 size="small"
                                 showLabel={false}
                                 leadingIcon={<Icon name={action.icon} size="small" />}
@@ -799,6 +1061,26 @@ export const Table: React.FC<TableProps> = ({
                       </TableCell>
                     );
                   })}
+                </React.Fragment>
+              );
+
+              // Use animated row when sorting, regular row otherwise
+              return animateSorting ? (
+                <AnimatedTableRow 
+                  key={rowId} 
+                  $animationDelay={rowIndex * 30}
+                  onClick={handleRowClick}
+                  style={{ cursor: onRowClick ? 'pointer' : 'default' }}
+                >
+                  {cells}
+                </AnimatedTableRow>
+              ) : (
+                <tr 
+                  key={rowId}
+                  onClick={handleRowClick}
+                  style={{ cursor: onRowClick ? 'pointer' : 'default' }}
+                >
+                  {cells}
                 </tr>
               );
             })
@@ -858,5 +1140,8 @@ export const Table: React.FC<TableProps> = ({
         </>
       )}
     </TableContainer>
+    </Component>
   );
-};
+});
+
+Table.displayName = 'Table';

@@ -14,29 +14,34 @@ interface StyledButtonProps {
   $variant: ButtonVariant;
   $buttonType: ButtonType;
   $disabled?: boolean;
+  $isLoading?: boolean;
+  $isInvalid?: boolean;
+  $isEmpty?: boolean;
   $fullWidth?: boolean;
 }
 
 export const StyledButton = styled.button<StyledButtonProps>`
+  position: relative;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   font-family: ${({ theme }) => theme.fonts.primary};
   font-weight: ${({ theme }) => theme.fontWeights.semibold};
   border: none;
-  cursor: ${({ $disabled }) => ($disabled ? 'not-allowed' : 'pointer')};
+  cursor: ${({ $disabled, $isLoading }) => ($disabled || $isLoading ? 'not-allowed' : 'pointer')};
   transition: all 0.2s ease-in-out;
   white-space: nowrap;
   user-select: none;
   width: ${({ $fullWidth }) => ($fullWidth ? '100%' : 'auto')};
+  opacity: ${({ $isLoading }) => ($isLoading ? 0.7 : 1)};
   
   &:focus {
     outline: none;
   }
   
   &:focus-visible {
-    outline: 2px solid ${({ theme }) => theme.colors.semantic.focus.indicator};
-    outline-offset: 2px;
+    outline: ${({ theme }) => theme.borderWidth[2]} solid ${({ theme }) => theme.colors.semantic.focus.indicator};
+    outline-offset: ${({ theme }) => theme.spacing[1]};
   }
   
   ${({ $size, theme }) => {
@@ -48,7 +53,7 @@ export const StyledButton = styled.button<StyledButtonProps>`
           font-size: ${theme.fontSizes[12]};
           line-height: ${theme.lineHeights[14]};
           border-radius: ${theme.borderRadius.sm};
-          min-height: 27px;
+          min-height: calc(${theme.lineHeights[14]} + ${theme.spacing[1]} * 2);
         `;
       case 'small':
         return `
@@ -57,7 +62,7 @@ export const StyledButton = styled.button<StyledButtonProps>`
           font-size: ${theme.fontSizes[14]};
           line-height: ${theme.lineHeights[16]};
           border-radius: ${theme.borderRadius.sm};
-          min-height: 35px;
+          min-height: calc(${theme.lineHeights[16]} + ${theme.spacing[2]} * 2);
         `;
       case 'large':
         return `
@@ -66,7 +71,7 @@ export const StyledButton = styled.button<StyledButtonProps>`
           font-size: ${theme.fontSizes[16]};
           line-height: ${theme.lineHeights[19]};
           border-radius: ${theme.borderRadius.sm};
-          min-height: 43px;
+          min-height: calc(${theme.lineHeights[19]} + ${theme.spacing[3]} * 2);
         `;
       case 'xlarge':
         return `
@@ -75,7 +80,7 @@ export const StyledButton = styled.button<StyledButtonProps>`
           font-size: ${theme.fontSizes[18]};
           line-height: ${theme.lineHeights[21]};
           border-radius: ${theme.borderRadius.sm};
-          min-height: 48px;
+          min-height: calc(${theme.lineHeights[21]} + ${theme.spacing[3]} * 2);
         `;
       case 'medium':
       default:
@@ -85,12 +90,12 @@ export const StyledButton = styled.button<StyledButtonProps>`
           font-size: ${theme.fontSizes[16]};
           line-height: ${theme.lineHeights[19]};
           border-radius: ${theme.borderRadius.sm};
-          min-height: 39px;
+          min-height: calc(${theme.lineHeights[19]} + ${theme.spacing[4]} * 2);
         `;
     }
   }}
   
-  ${({ theme, $variant, $buttonType, $disabled }) => {
+  ${({ theme, $variant, $buttonType, $disabled, $isInvalid }) => {
     // PRIMARY VARIANT
     if ($variant === 'primary') {
       if ($disabled) {
@@ -98,6 +103,21 @@ export const StyledButton = styled.button<StyledButtonProps>`
           background-color: ${theme.colors.palette.neutral[300]};
           color: ${theme.colors.palette.neutral[500]};
           pointer-events: none;
+        `;
+      }
+      
+      if ($isInvalid) {
+        return `
+          background-color: ${theme.colors.palette.error[500]};
+          color: ${theme.colors.palette.neutral[50]};
+          
+          &:hover {
+            background-color: ${theme.colors.palette.error[400]};
+          }
+          
+          &:active {
+            background-color: ${theme.colors.palette.error[600]};
+          }
         `;
       }
       
@@ -167,8 +187,28 @@ export const StyledButton = styled.button<StyledButtonProps>`
         return `
           background-color: transparent;
           color: ${theme.colors.palette.neutral[400]};
-          border: 1px solid ${theme.colors.palette.neutral[300]};
+          border: ${theme.borderWidth[1]} solid ${theme.colors.palette.neutral[300]};
           pointer-events: none;
+        `;
+      }
+      
+      if ($isInvalid) {
+        return `
+          background-color: transparent;
+          color: ${theme.colors.palette.error[500]};
+          border: ${theme.borderWidth[1]} solid ${theme.colors.palette.error[500]};
+          
+          &:hover {
+            background-color: transparent;
+            border-color: ${theme.colors.palette.error[400]};
+            color: ${theme.colors.palette.error[400]};
+          }
+          
+          &:active {
+            background-color: transparent;
+            border-color: ${theme.colors.palette.error[600]};
+            color: ${theme.colors.palette.error[600]};
+          }
         `;
       }
       
@@ -176,7 +216,7 @@ export const StyledButton = styled.button<StyledButtonProps>`
         return `
           background-color: transparent;
           color: ${theme.colors.palette.success[500]};
-          border: 1px solid ${theme.colors.palette.success[500]};
+          border: ${theme.borderWidth[1]} solid ${theme.colors.palette.success[500]};
           
           &:hover {
             background-color: transparent;
@@ -196,7 +236,7 @@ export const StyledButton = styled.button<StyledButtonProps>`
         return `
           background-color: transparent;
           color: ${theme.colors.palette.warning[700]};
-          border: 1px solid ${theme.colors.palette.warning[700]};
+          border: ${theme.borderWidth[1]} solid ${theme.colors.palette.warning[700]};
           
           &:hover {
             background-color: transparent;
@@ -216,7 +256,7 @@ export const StyledButton = styled.button<StyledButtonProps>`
         return `
           background-color: transparent;
           color: ${theme.colors.palette.error[500]};
-          border: 1px solid ${theme.colors.palette.error[500]};
+          border: ${theme.borderWidth[1]} solid ${theme.colors.palette.error[500]};
           
           &:hover {
             background-color: transparent;
@@ -236,7 +276,7 @@ export const StyledButton = styled.button<StyledButtonProps>`
       return `
         background-color: transparent;
         color: ${theme.colors.palette.primary[400]};
-        border: 1px solid ${theme.colors.palette.primary[400]};
+        border: ${theme.borderWidth[1]} solid ${theme.colors.palette.primary[400]};
         
         &:hover {
           background-color: transparent;
@@ -260,6 +300,24 @@ export const StyledButton = styled.button<StyledButtonProps>`
           color: ${theme.colors.palette.neutral[400]};
           border: none;
           pointer-events: none;
+        `;
+      }
+      
+      if ($isInvalid) {
+        return `
+          background-color: transparent;
+          color: ${theme.colors.palette.error[500]};
+          border: none;
+          
+          &:hover {
+            background-color: transparent;
+            color: ${theme.colors.palette.error[400]};
+          }
+          
+          &:active {
+            background-color: transparent;
+            color: ${theme.colors.palette.error[600]};
+          }
         `;
       }
       
@@ -334,6 +392,9 @@ export const StyledButton = styled.button<StyledButtonProps>`
         }
       `;
     }
+    
+    // Fallback (should never reach here)
+    return '';
   }}
 `;
 
@@ -343,33 +404,33 @@ export const IconWrapper = styled.span<{ $size: ButtonSize }>`
   justify-content: center;
   flex-shrink: 0;
   
-  ${({ $size }) => {
+  ${({ theme, $size }) => {
     switch ($size) {
       case 'xsmall':
         return `
-          width: 16px;
-          height: 16px;
+          width: ${theme.spacing[4]};
+          height: ${theme.spacing[4]};
         `;
       case 'small':
         return `
-          width: 16px;
-          height: 16px;
+          width: ${theme.spacing[7]};
+          height: ${theme.spacing[7]};
         `;
       case 'large':
         return `
-          width: 16px;
-          height: 16px;
+          width: ${theme.spacing[5]};
+          height: ${theme.spacing[5]};
         `;
       case 'xlarge':
         return `
-          width: 16px;
-          height: 16px;
+          width: ${theme.spacing[6]};
+          height: ${theme.spacing[6]};
         `;
       case 'medium':
       default:
         return `
-          width: 16px;
-          height: 16px;
+          width: ${theme.spacing[7]};
+          height: ${theme.spacing[7]};
         `;
     }
   }}
@@ -383,4 +444,46 @@ export const IconWrapper = styled.span<{ $size: ButtonSize }>`
 export const ButtonLabel = styled.span`
   display: inline-flex;
   align-items: center;
+`;
+
+export const LoadingOverlay = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: transparent;
+  pointer-events: none;
+`;
+
+export const LoadingSpinner = styled.div<{ $size: ButtonSize }>`
+  ${({ theme, $size }) => {
+    const sizeMap = {
+      xsmall: theme.spacing[3],
+      small: theme.spacing[4],
+      medium: theme.spacing[4],
+      large: theme.spacing[5],
+      xlarge: theme.spacing[6],
+    };
+    
+    const size = sizeMap[$size];
+    
+    return `
+      width: ${size};
+      height: ${size};
+      border: ${theme.borderWidth[2]} solid currentColor;
+      border-top-color: transparent;
+      border-radius: 50%;
+      animation: spin 0.6s linear infinite;
+    `;
+  }}
+  
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
 `;

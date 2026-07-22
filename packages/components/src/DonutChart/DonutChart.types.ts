@@ -18,6 +18,8 @@ export interface DonutChartProps {
   showInfoIcon?: boolean;
   /** Info icon click handler */
   onInfoClick?: () => void;
+  /** Info icon tooltip content */
+  infoTooltipContent?: string;
   /** Array of data points (2-6 metrics recommended) */
   data: DonutChartData[];
   /** Center KPI value to display */

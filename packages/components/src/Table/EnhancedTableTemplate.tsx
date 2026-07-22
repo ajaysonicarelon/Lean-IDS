@@ -27,11 +27,20 @@ import { TableSettings, ColumnConfig } from '../TableSettings';
 import { TableSidePanel, ColumnFilter, CustomTabConfig } from '../TableSidePanel';
 import { TableToolbar } from './TableToolbar';
 
-const StyledTable = styled.table`
+const StyledTable = styled.table<{ $hasMaxHeight?: boolean }>`
   width: 100%;
   border-collapse: separate;
   border-spacing: 0;
-  table-layout: fixed;
+  table-layout: auto;
+  
+  ${({ $hasMaxHeight }) => $hasMaxHeight && `
+    thead {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      background: #f9fafb;
+    }
+  `}
 `;
 
 const AnimatedTableRow = styled.tr<{ $animationDelay: number }>`
@@ -65,14 +74,19 @@ const TableWrapper = styled.div<{ $hasSidePanel?: boolean }>`
   position: relative;
 `;
 
-const ScrollContainer = styled.div<{ $hasSidePanel?: boolean }>`
+const ScrollContainer = styled.div<{ $hasSidePanel?: boolean; $maxHeight?: string }>`
   overflow-x: auto;
+  ${({ $maxHeight }) => $maxHeight && `
+    max-height: ${$maxHeight};
+    overflow-y: auto;
+    display: block;
+  `}
   border: 1px solid ${({ theme }) => theme.colors.palette.neutral[300]};
   border-radius: ${({ $hasSidePanel }) => 
     $hasSidePanel ? '8px 0 0 8px' : '8px'};
   position: relative;
   flex: 1;
-  min-height: 500px;
+  ${({ $maxHeight }) => !$maxHeight && 'min-height: 500px;'}
 `;
 
 interface DataRow {
@@ -170,6 +184,19 @@ export const getNestedColumnConfigs = (): ColumnConfig[] => [
 ];
 
 interface AdvancedTableProps {
+  /** Table data rows */
+  data?: DataRow[];
+  /** Table column definitions */
+  columns?: Array<{
+    id: string;
+    label: string;
+    accessor?: string | ((row: any) => any);
+    sortable?: boolean;
+    resizable?: boolean;
+    visible?: boolean;
+    locked?: boolean;
+    order?: number;
+  }>;
   useSidePanel?: boolean;
   useModal?: boolean;
   showToolbar?: boolean;
@@ -178,9 +205,21 @@ interface AdvancedTableProps {
   onRowClick?: (row: any, rowIndex: number, event: React.MouseEvent<HTMLTableRowElement>) => void;
   showColumnSearchByDefault?: boolean;
   customSidePanelTabs?: CustomTabConfig[];
+  /** Sorting mode: 'client' (default) or 'server' */
+  sortMode?: 'client' | 'server';
+  /** Callback when sort changes (only used when sortMode='server') */
+  onSort?: (columnId: string, direction: 'asc' | 'desc' | 'none') => void;
+  /** Controlled sort column (only used when sortMode='server') */
+  sortColumn?: string;
+  /** Controlled sort direction (only used when sortMode='server') */
+  sortDirection?: 'asc' | 'desc' | 'none';
+  /** Maximum height for table body (enables fixed header with internal scroll). Example: '400px', '50vh' */
+  maxHeight?: string;
 }
 
 export const AdvancedDataTable: React.FC<AdvancedTableProps> = ({ 
+  data: propData,
+  columns: propColumns,
   useSidePanel = false,
   useModal = false,
   showToolbar = true,
@@ -189,18 +228,42 @@ export const AdvancedDataTable: React.FC<AdvancedTableProps> = ({
   onRowClick,
   showColumnSearchByDefault = false,
   customSidePanelTabs = [],
+  sortMode = 'client',
+  onSort,
+  sortColumn: controlledSortColumn,
+  sortDirection: controlledSortDirection,
+  maxHeight,
 }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
-  const [sortColumn, setSortColumn] = useState<string>('');
-  const [sortDirection, setSortDirection] = useState<'asc' | 'desc' | 'none'>('none');
+  const [internalSortColumn, setInternalSortColumn] = useState<string>('');
+  const [internalSortDirection, setInternalSortDirection] = useState<'asc' | 'desc' | 'none'>('none');
+  
+  // Use controlled props in server mode, internal state in client mode
+  const sortColumn = sortMode === 'server' ? (controlledSortColumn || '') : internalSortColumn;
+  const sortDirection = sortMode === 'server' ? (controlledSortDirection || 'none') : internalSortDirection;
   const [allChecked, setAllChecked] = useState(false);
   const [selectedRows, setSelectedRows] = useState<number[]>([]);
   const [lastSelectedIndex, setLastSelectedIndex] = useState<number | null>(null);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [columnOffsets, setColumnOffsets] = useState<{ [key: string]: number }>({});
   const [lockWarning, setLockWarning] = useState(false);
-  const [columnConfigs, setColumnConfigs] = useState<ColumnConfig[]>(initialColumns || getSimpleColumnConfigs());
+  // Convert propColumns to ColumnConfig format if provided
+  const getInitialColumns = (): ColumnConfig[] => {
+    if (initialColumns) return initialColumns;
+    if (propColumns) {
+      return propColumns.map((col, index) => ({
+        id: col.id,
+        label: col.label,
+        visible: col.visible !== undefined ? col.visible : true,
+        locked: col.locked || false,
+        order: col.order !== undefined ? col.order : index,
+      }));
+    }
+    return getSimpleColumnConfigs();
+  };
+
+  const [columnConfigs, setColumnConfigs] = useState<ColumnConfig[]>(getInitialColumns());
   const [showColumnFilters, setShowColumnFilters] = useState(false);
   const [columnSearches, setColumnSearches] = useState<{ [key: string]: string }>({});
   const [globalSearch, setGlobalSearch] = useState<string>('');
@@ -208,7 +271,8 @@ export const AdvancedDataTable: React.FC<AdvancedTableProps> = ({
   const [animateSorting, setAnimateSorting] = useState(false);
   const [sidePanelFilters, setSidePanelFilters] = useState<ColumnFilter[]>([]);
 
-  const sampleData = getSampleData();
+  // Use provided data or fall back to demo data
+  const sampleData = propData || getSampleData();
 
   const handleColumnLock = (columnId: string) => {
     const column = columnConfigs.find(col => col.id === columnId);
@@ -261,13 +325,21 @@ export const AdvancedDataTable: React.FC<AdvancedTableProps> = ({
   };
 
   const handleSort = (column: string) => {
+    let newDirection: 'asc' | 'desc' | 'none';
+    
     if (sortColumn === column) {
-      setSortDirection(
-        sortDirection === 'asc' ? 'desc' : sortDirection === 'desc' ? 'none' : 'asc'
-      );
+      newDirection = sortDirection === 'asc' ? 'desc' : sortDirection === 'desc' ? 'none' : 'asc';
     } else {
-      setSortColumn(column);
-      setSortDirection('asc');
+      newDirection = 'asc';
+    }
+
+    if (sortMode === 'server' && onSort) {
+      // Server-side sorting: call the callback (parent manages state)
+      onSort(column, newDirection);
+    } else {
+      // Client-side sorting: update internal state
+      setInternalSortColumn(column);
+      setInternalSortDirection(newDirection);
     }
     
     // Trigger animation
@@ -354,14 +426,15 @@ export const AdvancedDataTable: React.FC<AdvancedTableProps> = ({
     return matchesSidePanelFilters;
   });
 
-  const sortedData = [...filteredData].sort((a, b) => {
-    if (sortDirection === 'none' || !sortColumn) return 0;
-    let aValue: any = a[sortColumn as keyof typeof a];
-    let bValue: any = b[sortColumn as keyof typeof b];
-    if (aValue < bValue) return sortDirection === 'asc' ? -1 : 1;
-    if (aValue > bValue) return sortDirection === 'asc' ? 1 : -1;
-    return 0;
-  });
+  const sortedData = sortMode === 'client' && sortColumn && sortDirection !== 'none'
+    ? [...filteredData].sort((a, b) => {
+        let aValue: any = a[sortColumn as keyof typeof a];
+        let bValue: any = b[sortColumn as keyof typeof b];
+        if (aValue < bValue) return sortDirection === 'asc' ? -1 : 1;
+        if (aValue > bValue) return sortDirection === 'asc' ? 1 : -1;
+        return 0;
+      })
+    : filteredData;
 
   const totalItems = sortedData.length;
   const totalPages = Math.ceil(totalItems / itemsPerPage);
@@ -630,8 +703,8 @@ export const AdvancedDataTable: React.FC<AdvancedTableProps> = ({
       )}
 
       <TableWrapper $hasSidePanel={useSidePanel}>
-        <ScrollContainer data-scroll-container $hasSidePanel={useSidePanel}>
-          <StyledTable>
+        <ScrollContainer data-scroll-container $hasSidePanel={useSidePanel} $maxHeight={maxHeight}>
+          <StyledTable $hasMaxHeight={!!maxHeight}>
             <colgroup>
               {visibleColumns.map((col) => {
                 if (col.subColumns && col.subColumns.length > 0) {

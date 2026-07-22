@@ -3,7 +3,7 @@
  * Based on Figma design system specifications
  */
 
-import { InputHTMLAttributes } from 'react';
+import { InputHTMLAttributes, ElementType, CSSProperties } from 'react';
 import { HelpingTextState } from '../HelpingText/HelpingText.types';
 
 export type InputType = 
@@ -23,6 +23,11 @@ export type InputSize = 'xsmall' | 'small' | 'default' | 'large';
 export type InputState = 'active' | 'focused' | 'error' | 'disabled' | 'filled' | 'non-editable';
 
 export interface InputFieldProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'size'> {
+  /**
+   * Polymorphic prop - render as different element
+   * @default 'input'
+   */
+  as?: ElementType;
   /**
    * Input field label
    */
@@ -71,6 +76,30 @@ export interface InputFieldProps extends Omit<InputHTMLAttributes<HTMLInputEleme
    * Whether the field has an error
    */
   error?: boolean;
+  
+  /**
+   * Loading state - shows loading indicator
+   * @default false
+   */
+  isLoading?: boolean;
+  
+  /**
+   * Empty state - shows empty state message
+   * @default false
+   */
+  isEmpty?: boolean;
+  
+  /**
+   * Empty state message
+   * @default 'No data available'
+   */
+  emptyMessage?: string;
+  
+  /**
+   * Invalid state (alias for error)
+   * @default false
+   */
+  isInvalid?: boolean;
   
   /**
    * Whether to show the label
@@ -163,7 +192,57 @@ export interface InputFieldProps extends Omit<InputHTMLAttributes<HTMLInputEleme
   'aria-describedby'?: string;
   
   /**
-   * Custom class name
+   * Custom class name for root container
    */
   className?: string;
+  
+  /**
+   * Custom inline styles for root container
+   */
+  style?: CSSProperties;
+  
+  /**
+   * Custom class name for label
+   */
+  labelClassName?: string;
+  
+  /**
+   * Custom class name for input wrapper
+   */
+  wrapperClassName?: string;
+  
+  /**
+   * Custom class name for input element
+   */
+  inputClassName?: string;
+  
+  /**
+   * Custom class name for helper text
+   */
+  helperTextClassName?: string;
+  
+  /**
+   * Callback fired after focus animation completes
+   */
+  onAfterFocus?: () => void;
+  
+  /**
+   * Callback fired after blur animation completes
+   */
+  onAfterBlur?: () => void;
+  
+  /**
+   * Callback fired when input value is cleared
+   */
+  onClear?: () => void;
+  
+  /**
+   * Callback fired on Enter key press
+   */
+  onEnter?: (event: React.KeyboardEvent<HTMLInputElement>) => void;
+  
+  /**
+   * Callback fired on Escape key press
+   */
+  onEscape?: (event: React.KeyboardEvent<HTMLInputElement>) => void;
 }

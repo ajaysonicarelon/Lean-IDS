@@ -46,6 +46,7 @@ export const CheckboxWrapper = styled.div`
   display: inline-flex;
   align-items: center;
   flex-shrink: 0;
+  user-select: none;
 `;
 
 export const AvatarWrapper = styled.div`

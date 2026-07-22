@@ -97,7 +97,7 @@ export const StyledTextarea = styled.textarea`
   resize: vertical;
   
   &::placeholder {
-    color: ${({ theme }) => theme.colors.palette.neutral[500]};
+    color: ${({ theme }) => theme.colors.palette.neutral[700]}; // Updated from 500 to 700
   }
   
   &:disabled {

@@ -217,7 +217,7 @@ import { useEffect } from 'react';
     <div className="icon">🔔</div>
     <div className="content">
       <div className="title">New Update Available!</div>
-      <div className="message">Version 1.7.1 has been released. Check out the latest changes below.</div>
+      <div className="message">Version 1.7.6 has been released. Check out the latest changes below.</div>
     </div>
   </div>
 </div>
@@ -254,7 +254,7 @@ Stay up to date with the latest changes, improvements, and fixes to the Lean IDS
 
 <div className="stats-container">
   <div className="stat-card">
-    <div className="stat-number">1.7.2</div>
+    <div className="stat-number">1.7.6</div>
     <div className="stat-label">Current Version</div>
   </div>
   <div className="stat-card">
@@ -277,31 +277,49 @@ Stay up to date with the latest changes, improvements, and fixes to the Lean IDS
 
 <div className="version-container">
   <div className="version-header">
-    <div className="version-number">v1.7.2</div>
-    <div className="version-date">July 9, 2026</div>
+    <div className="version-number">v1.7.6</div>
+    <div className="version-date">July 22, 2026</div>
   </div>
   <div className="version-content">
     
     <div className="change-section">
       <div className="change-title">
-        <span className="change-icon">✨</span>
-        New Components
+        <span className="change-icon">🎯</span>
+        Component Maturity Initiative - Complete Refactoring
       </div>
       <ul className="change-list">
-        <li className="change-item">
-          Added <code>AdvancedDataTable</code> component with nested columns, column locking, global search, and side panel controls
+        <li className="change-item critical">
+          <strong>MAJOR RELEASE:</strong> Applied Component Maturity Checklist to 14+ core components
         </li>
         <li className="change-item">
-          Added <code>TableSidePanel</code> component for table detail views with collapsible/expandable overlay
+          <strong>Tooltip</strong> - Fixed infinite loop, added Storybook action spies
         </li>
         <li className="change-item">
-          Added <code>Accordion</code> component with expand/collapse functionality
+          <strong>Checkbox</strong> - Complete refactor with error state, Typography integration, token-based sizing
         </li>
         <li className="change-item">
-          Added <code>DateTimePickers</code> suite: <code>TimePickerInput</code>, <code>DateTimePickerInput</code>, and <code>DateTimeRangePickerInput</code>
+          <strong>RadioButton</strong> - Complete refactor with 8 states, accessibility enhancements
         </li>
         <li className="change-item">
-          Added <code>TableSubHeader</code> component for column search filters
+          <strong>Toggle</strong> - Complete refactor with loading/error states, keyboard support
+        </li>
+        <li className="change-item">
+          <strong>MenuItem</strong> - Alignment fixes, ChildrenArrow component, Typography integration
+        </li>
+        <li className="change-item">
+          <strong>NestedMenuOverlay</strong> - Light/dark mode support, disabled state
+        </li>
+        <li className="change-item">
+          <strong>MetricCard</strong> - Complete refactor with design preservation, new styles file
+        </li>
+        <li className="change-item">
+          <strong>BarChart</strong> - X-axis alignment fix, Storybook actions, new styles file
+        </li>
+        <li className="change-item">
+          <strong>Button, Modal, Form Components, Footer</strong> - Typography integration across all
+        </li>
+        <li className="change-item critical">
+          <strong>Table</strong> - COMPLETE REFACTOR: forwardRef, polymorphic 'as' prop, error state, standalone TableRow component
         </li>
       </ul>
     </div>
@@ -309,53 +327,47 @@ Stay up to date with the latest changes, improvements, and fixes to the Lean IDS
     <div className="change-section">
       <div className="change-title">
         <span className="change-icon">🔧</span>
-        Advanced Table Features
+        Technical Improvements
       </div>
       <ul className="change-list">
-        <li className="change-item">
-          <strong>Nested Columns (Sub-Headers):</strong> Support for parent-child column hierarchies with expandable/collapsible groups
+        <li className="change-item critical">
+          <strong>Typography Component Enforcement:</strong> Zero custom styled text - all components use Typography
+        </li>
+        <li className="change-item critical">
+          <strong>Token-Based Styling:</strong> Zero hardcoded pixels or colors - all use theme tokens
         </li>
         <li className="change-item">
-          <strong>Column Locking:</strong> Lock up to 3 columns with sticky positioning and cascading parent-child lock behavior
+          <strong>8 States Implementation:</strong> Default, Hover, Focus, Active, Disabled, Loading, Error, Empty
         </li>
         <li className="change-item">
-          <strong>Global Search:</strong> Search across all columns with real-time filtering in the toolbar
+          <strong>Accessibility Enhancements:</strong> ARIA attributes, keyboard navigation, focus management
         </li>
         <li className="change-item">
-          <strong>Column Search Filters:</strong> Individual search bars for each column with toggle on/off via side panel
+          <strong>forwardRef + Polymorphic:</strong> All refactored components support ref forwarding and 'as' prop
         </li>
         <li className="change-item">
-          <strong>Side Panel Controls:</strong> Alternative to modal settings with vertical panel for columns and filters
-        </li>
-        <li className="change-item">
-          <strong>Drag & Drop Reordering:</strong> Reorder both parent and child columns with visual feedback
-        </li>
-        <li className="change-item">
-          <strong>Empty State:</strong> "No data available" message when search/filters yield no results
-        </li>
-        <li className="change-item">
-          <strong>Configurable Columns:</strong> <code>initialColumns</code> prop with <code>getNestedColumnConfigs()</code> helper for custom setups
+          <strong>Multiple Override Points:</strong> className, style props for customization
         </li>
       </ul>
     </div>
 
     <div className="change-section">
       <div className="change-title">
-        <span className="change-icon">🎨</span>
-        Component Improvements
+        <span className="change-icon">✨</span>
+        New Files & Components
       </div>
       <ul className="change-list">
         <li className="change-item">
-          Enhanced <code>TableHeader</code> with lock icon visibility control, proper padding for checkbox columns, and <code>isChildColumn</code> prop
+          <code>BarChart.styles.ts</code> - Complete styled components for BarChart with vertical/horizontal variants
         </li>
         <li className="change-item">
-          Improved <code>TableToolbar</code> with global search integration and better action button layout
+          <code>MetricCard.styles.ts</code> - Complete styled components for MetricCard with all variants
         </li>
         <li className="change-item">
-          Enhanced <code>TableSettings</code> with nested column management and improved visibility controls
+          <code>TableRow</code> component - NEW standalone, composable table row component
         </li>
         <li className="change-item">
-          Updated <code>TableSidePanel</code> with hover states and expandable parent columns
+          Table documentation - 4 new guides (COLUMN_WIDTH_GUIDE, STANDALONE_COMPONENTS_GUIDE, TABLE_REFACTOR_SUMMARY, CustomTableComposition.stories)
         </li>
       </ul>
     </div>
@@ -366,17 +378,47 @@ Stay up to date with the latest changes, improvements, and fixes to the Lean IDS
         Documentation
       </div>
       <ul className="change-list">
-        <li className="change-item">
-          Added <strong>Updates & Changelog</strong> page in Storybook (About section)
+        <li className="change-item critical">
+          <strong>Component Maturity Checklist</strong> - Workflow and quick reference guide
         </li>
         <li className="change-item">
-          Added new update notification system with localStorage tracking
+          20+ component-specific refactor completion docs
         </li>
         <li className="change-item">
-          Added <code>TABLE_ENHANCEMENTS.md</code> documentation for table improvements
+          Form components enhancement guide and color standardization
         </li>
         <li className="change-item">
-          Added <code>TABLE_IMPLEMENTATION_SUMMARY.md</code> for implementation guide
+          Table refactor summary and standalone components guide
+        </li>
+        <li className="change-item">
+          Comprehensive Storybook updates - all components now have complete documentation
+        </li>
+      </ul>
+    </div>
+
+    <div className="change-section">
+      <div className="change-title">
+        <span className="change-icon">🐛</span>
+        Bug Fixes
+      </div>
+      <ul className="change-list">
+        <li className="change-item">
+          Fixed Tooltip infinite loop in useEffect dependencies
+        </li>
+        <li className="change-item">
+          Fixed Checkbox 24px sizing issue and error icon color
+        </li>
+        <li className="change-item">
+          Fixed MenuItem vertical alignment of icon and text
+        </li>
+        <li className="change-item">
+          Fixed BarChart X-axis label alignment
+        </li>
+        <li className="change-item">
+          Fixed Table column width behavior and header alignment
+        </li>
+        <li className="change-item">
+          Fixed DonutChart TypeScript type issues
         </li>
       </ul>
     </div>
@@ -384,41 +426,41 @@ Stay up to date with the latest changes, improvements, and fixes to the Lean IDS
     <div className="change-section">
       <div className="change-title">
         <span className="change-icon">�</span>
-        Bug Fixes
+        Statistics
       </div>
       <ul className="change-list">
-        <li className="change-item critical">
-          <strong>CRITICAL:</strong> Fixed postinstall script CommonJS/ESM module conflict - renamed <code>postinstall.js</code> to <code>postinstall.cjs</code>
+        <li className="change-item">
+          <strong>Components Refactored:</strong> 14+
         </li>
         <li className="change-item">
-          Fixed <code>require('fs')</code> error that developers encountered during npm install
+          <strong>Files Modified:</strong> 70+
         </li>
         <li className="change-item">
-          Synced package versions - both tokens and components now at v1.7.1
-        </li>
-      </ul>
-    </div>
-
-    <div className="change-section">
-      <div className="change-title">
-        <span className="change-icon">�📦</span>
-        Dependencies
-      </div>
-      <ul className="change-list">
-        <li className="change-item critical">
-          <strong>CRITICAL:</strong> Added <code>date-fns@4.4.0</code> for date handling in DateTimePickers
+          <strong>New Files Created:</strong> 50+
         </li>
         <li className="change-item">
-          Updated <code>@ajaysoni7832/lean-ids-tokens</code> dependency to <code>^1.7.2</code>
+          <strong>Lines Changed:</strong> 5,000+
+        </li>
+        <li className="change-item">
+          <strong>Documentation Pages:</strong> 20+
         </li>
       </ul>
     </div>
 
     <div className="migration-note">
       <strong>📦 Installation & Setup:</strong>
-      Update to v1.7.2 to get all new components and improvements.
+      Update to v1.7.6 to get all Component Maturity improvements.
       
-      <code>npm install @ajaysoni7832/lean-ids-components@1.7.2</code>
+      <code>npm install @ajaysoni7832/lean-ids-components@1.7.6</code>
+      
+      <br /><br />
+      <strong>⚠️ Migration Notes:</strong>
+      <ul>
+        <li>All components now use Typography component - update custom implementations if needed</li>
+        <li>Token-based styling enforced - hardcoded values will be deprecated</li>
+        <li>New error states available on Checkbox, Table, and other form components</li>
+        <li>Table component has new props: isInvalid, errorMessage</li>
+      </ul>
     </div>
 
   </div>
@@ -728,6 +770,12 @@ Stay up to date with the latest changes, improvements, and fixes to the Lean IDS
     </tr>
   </thead>
   <tbody>
+    <tr style={{ borderBottom: '1px solid #e0e0e0', background: '#fff3cd' }}>
+      <td style={{ padding: '0.75rem', fontWeight: 600 }}>1.7.6</td>
+      <td style={{ padding: '0.75rem' }}>Jul 22, 2026</td>
+      <td style={{ padding: '0.75rem' }}>Major</td>
+      <td style={{ padding: '0.75rem' }}>Component Maturity Initiative - 14+ components refactored, Typography enforcement, Token-based styling</td>
+    </tr>
     <tr style={{ borderBottom: '1px solid #e0e0e0' }}>
       <td style={{ padding: '0.75rem', fontWeight: 600 }}>1.7.1</td>
       <td style={{ padding: '0.75rem' }}>Jul 8, 2026</td>

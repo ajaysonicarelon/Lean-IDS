@@ -76,9 +76,10 @@ export const TableCell: React.FC<TableCellProps> = ({
   leftOffset = 0,
   children,
 }) => {
-  const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleCheckboxClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
     if (onCheckChange) {
-      onCheckChange(e.target.checked, (e.nativeEvent as MouseEvent).shiftKey);
+      onCheckChange(!checked, e.shiftKey);
     }
   };
 
@@ -131,8 +132,8 @@ export const TableCell: React.FC<TableCellProps> = ({
     >
       <CellContent>
         {showCheckbox && (
-          <CheckboxWrapper>
-            <Checkbox checked={checked} onChange={handleCheckboxChange} />
+          <CheckboxWrapper onClick={handleCheckboxClick} style={{ cursor: 'pointer' }}>
+            <Checkbox checked={checked} onChange={() => {}} />
           </CheckboxWrapper>
         )}
 

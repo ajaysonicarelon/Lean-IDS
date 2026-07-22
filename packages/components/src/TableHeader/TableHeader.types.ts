@@ -34,6 +34,8 @@ export interface TableHeaderProps {
   
   align?: 'left' | 'center' | 'right';
   width?: string | number;
+  minWidth?: string | number;
+  maxWidth?: string | number;
   className?: string;
   
   // Sub-header feature (for nested columns)

@@ -53,16 +53,21 @@ const InfoIconButton = styled.button`
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 16px;
-  height: 16px;
+  width: ${({ theme }) => theme.spacing[7]};
+  height: ${({ theme }) => theme.spacing[7]};
   background: transparent;
   border: none;
   cursor: pointer;
-  color: #909090; // gray-600
+  color: ${({ theme }) => theme.colors.semantic.text.secondary};
   padding: 0;
   
   &:hover {
-    color: #222222;
+    color: ${({ theme }) => theme.colors.semantic.text.primary};
+  }
+  
+  &:focus-visible {
+    outline: 2px solid ${({ theme }) => theme.colors.semantic.focus.indicator};
+    outline-offset: 2px;
   }
 `;
 
@@ -217,7 +222,7 @@ export const DonutChart: React.FC<DonutChartProps> = ({
     }
   };
 
-  const handleSegmentHover = (event: React.MouseEvent, segment: typeof activeData[0]) => {
+  const handleSegmentHover = (event: React.MouseEvent, segment: ReturnType<typeof calculateDonutSegments>[0]) => {
     // Use screen coordinates since tooltip is now fixed positioned via Portal
     setTooltip({
       visible: true,
@@ -264,6 +269,7 @@ export const DonutChart: React.FC<DonutChartProps> = ({
       document.addEventListener('click', handleClickOutside);
       return () => document.removeEventListener('click', handleClickOutside);
     }
+    return undefined;
   }, [infoTooltip.visible]);
 
   // Keep all data but set inactive metrics to 0 value for smooth transitions

@@ -7,9 +7,13 @@ const meta: Meta<typeof AdvancedDataTable> = {
   parameters: {
     layout: 'padded',
     docs: {
+      story: {
+        inline: false,
+        iframeHeight: 600,
+      },
       description: {
         component: `
-# Advanced Data Table
+## Details:
 
 Advanced table with nested columns, column filters, side panel controls, and drag-and-drop.
 
@@ -19,17 +23,242 @@ Advanced table with nested columns, column filters, side panel controls, and dra
 npm install @ajaysoni7832/lean-ids-components
 \`\`\`
 
-## Basic Usage
+## Complete Usage Example
 
 \`\`\`tsx
 import { AdvancedDataTable } from '@ajaysoni7832/lean-ids-components';
 
+// 1. Define your data
+const data = [
+  { 
+    id: 1, 
+    claimId: 'CLM-001', 
+    firstName: 'John', 
+    lastName: 'Doe',
+    status: 'Approved', 
+    amount: 1500,
+    date: '2024-01-15'
+  },
+  { 
+    id: 2, 
+    claimId: 'CLM-002', 
+    firstName: 'Jane', 
+    lastName: 'Smith',
+    status: 'Pending', 
+    amount: 2300,
+    date: '2024-01-16'
+  },
+];
+
+// 2. Define columns with nested structure
+const columns = [
+  {
+    id: 'claimId',
+    label: 'Claim ID',
+    accessor: 'claimId',
+    sortable: true,
+    resizable: true,
+    width: 150,
+  },
+  {
+    id: 'patient',
+    label: 'Patient Name',
+    subColumns: [
+      {
+        id: 'firstName',
+        label: 'First Name',
+        accessor: 'firstName',
+        sortable: true,
+        resizable: true,
+      },
+      {
+        id: 'lastName',
+        label: 'Last Name',
+        accessor: 'lastName',
+        sortable: true,
+        resizable: true,
+      },
+    ],
+  },
+  {
+    id: 'status',
+    label: 'Status',
+    accessor: 'status',
+    sortable: true,
+    resizable: true,
+  },
+  {
+    id: 'amount',
+    label: 'Amount',
+    accessor: 'amount',
+    sortable: true,
+    resizable: true,
+    renderCell: (value) => \`$\${value.toLocaleString()}\`,
+  },
+];
+
+// 3. Define filters (optional)
+const filters = [
+  {
+    id: 'status',
+    label: 'Status',
+    type: 'select' as const,
+    options: [
+      { label: 'All', value: '' },
+      { label: 'Approved', value: 'approved' },
+      { label: 'Pending', value: 'pending' },
+      { label: 'Rejected', value: 'rejected' },
+    ],
+  },
+  {
+    id: 'dateRange',
+    label: 'Date Range',
+    type: 'dateRange' as const,
+  },
+];
+
+// 4. Use the component
 <AdvancedDataTable
   data={data}
   columns={columns}
-  useSidePanel
-  showToolbar
+  useSidePanel={true}
+  showToolbar={true}
   toolbarTitle="Claims Data"
+  columnFilters={filters}
+  onFiltersChange={(filters) => console.log('Filters changed:', filters)}
+/>
+\`\`\`
+
+## Customization Guide
+
+### How to Customize the Advanced Table
+
+**1. Custom Toolbar**
+
+Use the toolbar prop to replace the default toolbar with your own:
+
+\`\`\`tsx
+import { AdvancedDataTable, TableToolbar, TableToolbarSection, TableToolbarTitle, TableToolbarActions } from '@ajaysoni7832/lean-ids-components';
+import { Button } from '@ajaysoni7832/lean-ids-components';
+import { Download, Upload } from '@mui/icons-material';
+
+<AdvancedDataTable
+  data={data}
+  columns={columns}
+  useSidePanel={true}
+  toolbar={
+    <TableToolbar>
+      <TableToolbarSection>
+        <TableToolbarTitle>My Custom Title</TableToolbarTitle>
+      </TableToolbarSection>
+      <TableToolbarActions>
+        <Button variant="outlined" size="small" startIcon={<Upload />}>
+          Import
+        </Button>
+        <Button variant="contained" size="small" startIcon={<Download />}>
+          Export
+        </Button>
+      </TableToolbarActions>
+    </TableToolbar>
+  }
+/>
+\`\`\`
+
+**2. Custom Filters in Side Panel**
+
+Add column filters using the columnFilters prop (Note: This feature is in the base Table component):
+
+\`\`\`tsx
+const filters = [
+  {
+    id: 'status',
+    label: 'Status',
+    type: 'select',
+    options: [
+      { label: 'All', value: '' },
+      { label: 'Approved', value: 'approved' },
+      { label: 'Pending', value: 'pending' },
+    ],
+  },
+  {
+    id: 'dateRange',
+    label: 'Date Range',
+    type: 'dateRange',
+  },
+];
+
+<AdvancedDataTable
+  data={data}
+  columns={columns}
+  useSidePanel={true}
+  columnFilters={filters}
+  onFiltersChange={(filters) => console.log('Applied filters:', filters)}
+/>
+\`\`\`
+
+**3. Custom Tabs in Side Panel**
+
+Add custom tabs with your own content using customSidePanelTabs:
+
+\`\`\`tsx
+import { Settings, Info } from '@mui/icons-material';
+
+const customTabs = [
+  {
+    id: 'settings',
+    label: 'Settings',
+    icon: <Settings />,
+    content: (
+      <div style={{ padding: '16px' }}>
+        <h3>Custom Settings</h3>
+        <p>Add your custom settings UI here</p>
+      </div>
+    ),
+  },
+  {
+    id: 'info',
+    label: 'Info',
+    icon: <Info />,
+    onClick: () => {
+      alert('Info clicked!');
+    },
+  },
+];
+
+<AdvancedDataTable
+  data={data}
+  columns={columns}
+  useSidePanel={true}
+  customSidePanelTabs={customTabs}
+/>
+\`\`\`
+
+**4. Always Show Search Headers**
+
+Force column search headers to be visible by default:
+
+\`\`\`tsx
+<AdvancedDataTable
+  data={data}
+  columns={columns}
+  useSidePanel={true}
+  showColumnSearchByDefault={true}
+/>
+\`\`\`
+
+**5. Handle Row Clicks**
+
+Add custom row click behavior:
+
+\`\`\`tsx
+<AdvancedDataTable
+  data={data}
+  columns={columns}
+  useSidePanel={true}
+  onRowClick={(row, rowIndex, event) => {
+    console.log('Clicked row:', row);
+    console.log('Row index:', rowIndex);
+  }}
 />
 \`\`\`
 
@@ -90,15 +319,103 @@ The Advanced Data Table includes all standard table features plus:
 - Shake animation + warning when trying to close with unsaved changes
 - Prevents accidental loss of filter selections
 
-## Props
+## Props Reference
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| useSidePanel | boolean | false | Enable side panel for column/filter controls |
-| useModal | boolean | false | Enable modal for column settings |
-| showToolbar | boolean | true | Show toolbar with title and actions |
-| toolbarTitle | string | 'Data Table' | Title displayed in toolbar |
-| initialColumns | ColumnConfig[] | - | Custom column configuration (for nested columns) |
+### Core Props
+
+**data** (optional): Array of data objects to display in the table. If not provided, demo data will be used.
+
+**columns** (optional): Column configuration array with support for nested columns via subColumns property. If not provided, demo columns will be used.
+
+**useSidePanel**: Enable side panel for column/filter controls (default: false, recommended for complex tables)
+
+**useModal**: Enable modal for column settings (default: false, traditional approach)
+
+**showToolbar**: Show toolbar with title and actions (default: true)
+
+**toolbarTitle**: Title displayed in toolbar (default: 'Data Table')
+
+**toolbar**: Custom toolbar content - overrides default toolbar when provided
+
+**initialColumns**: Custom column configuration for nested columns (use with getNestedColumnConfigs helper)
+
+### Customization Props
+
+**customSidePanelTabs**: Array of custom tab configurations to add to side panel - add your own tabs with custom content or actions
+
+**showColumnSearchByDefault**: Force column search headers to always be visible (default: false)
+
+**onRowClick**: Callback when a row is clicked: (row, rowIndex, event) => void
+
+**columnFilters**: Array of filter configurations for the side panel (Note: This is a base Table prop)
+
+**onFiltersChange**: Callback when filters are applied: (filters) => void
+
+### Column Configuration Props
+
+Each column object supports:
+
+**id** (required): Unique identifier for the column
+
+**label** (required): Display label for column header
+
+**accessor**: Property key (string) or function to extract cell value
+
+**sortable**: Enable sorting for this column (default: false)
+
+**resizable**: Enable column resizing (default: false)
+
+**width**: Initial column width in pixels
+
+**minWidth**: Minimum column width (default: 50)
+
+**maxWidth**: Maximum column width
+
+**visible**: Initial visibility state (default: true)
+
+**locked**: Lock column to left side with sticky positioning (default: false)
+
+**subColumns**: Array of nested columns for sub-header structure
+
+**renderCell**: Custom cell renderer function: (value, row, rowIndex) => ReactNode
+
+### Filter Props
+
+**columnFilters**: Array of filter configurations for the side panel
+
+**onFiltersChange**: Callback when filters are applied: (filters) => void
+
+**showColumnSearchByDefault**: Show column search headers by default without clicking Filter button (default: false)
+
+### Custom Tabs
+
+**customTabs**: Array of custom tab configurations to add additional functionality to side panel
+
+### Filter Configuration Interface
+
+\`\`\`tsx
+interface ColumnFilter {
+  id: string;                    // Must match column id
+  label: string;                 // Display label
+  type: 'select' | 'dateRange';  // Filter type
+  options?: Array<{              // For select type
+    label: string;
+    value: string;
+  }>;
+}
+\`\`\`
+
+### Custom Tab Configuration Interface
+
+\`\`\`tsx
+interface CustomTabConfig {
+  id: string;                    // Unique tab identifier
+  label: string;                 // Tab button label
+  icon?: React.ReactNode;        // Optional icon
+  onClick?: () => void;          // Action-only mode (no panel)
+  content?: React.ReactNode;     // Panel content mode
+}
+\`\`\`
 
 ## Usage Modes
 
@@ -142,12 +459,11 @@ import { AdvancedDataTable, getNestedColumnConfigs } from '@ajaysoni7832/lean-id
 />
 \`\`\`
 
-## Design Reference
-Based on Figma designs:
-- Sub-header structure: node-id=5450-11756
-- Search filters: node-id=5450-11755
-- Side panel overlay: node-id=4041-15211
-- Table with side panel: node-id=4038-14309
+## Main Reference
+Complete basic example:
+- Global Search
+- Pagination
+- Side Panel
         `,
       },
     },
@@ -158,6 +474,37 @@ Based on Figma designs:
 export default meta;
 type Story = StoryObj<typeof AdvancedDataTable>;
 
+/**
+ * ## With Side Panel
+ * 
+ * Advanced table with side panel for column and filter controls. Recommended for complex tables.
+ * 
+ * **Usage:**
+ * ```tsx
+ * import { AdvancedDataTable } from '@ajaysoni7832/lean-ids-components';
+ * 
+ * const data = [
+ *   { id: 1, claimId: 'CLM-001', firstName: 'John', lastName: 'Doe', status: 'Approved', amount: 1500 },
+ *   { id: 2, claimId: 'CLM-002', firstName: 'Jane', lastName: 'Smith', status: 'Pending', amount: 2300 },
+ * ];
+ * 
+ * const columns = [
+ *   { id: 'claimId', label: 'Claim ID', accessor: 'claimId', sortable: true, resizable: true },
+ *   { id: 'firstName', label: 'First Name', accessor: 'firstName', sortable: true, resizable: true },
+ *   { id: 'lastName', label: 'Last Name', accessor: 'lastName', sortable: true, resizable: true },
+ *   { id: 'status', label: 'Status', accessor: 'status', sortable: true, resizable: true },
+ *   { id: 'amount', label: 'Amount', accessor: 'amount', sortable: true, resizable: true },
+ * ];
+ * 
+ * <AdvancedDataTable
+ *   data={data}
+ *   columns={columns}
+ *   useSidePanel={true}
+ *   showToolbar={true}
+ *   toolbarTitle="Claims Data"
+ * />
+ * ```
+ */
 export const WithSidePanel: Story = {
   args: {
     useSidePanel: true,
@@ -168,12 +515,71 @@ export const WithSidePanel: Story = {
   parameters: {
     docs: {
       description: {
-        story: 'Table with side panel for column and filter controls. The table has no right border radius to seamlessly connect with the side panel.',
+        story: 'Table with side panel for column and filter controls. The table has no right border radius to seamlessly connect with the side panel. Column resizing works in both Canvas and Docs views.',
+      },
+      source: {
+        code: `import { AdvancedDataTable } from '@ajaysoni7832/lean-ids-components';
+
+const data = [
+  { id: 1, claimId: 'CLM-001', firstName: 'John', lastName: 'Doe', status: 'Approved', amount: 1500 },
+  { id: 2, claimId: 'CLM-002', firstName: 'Jane', lastName: 'Smith', status: 'Pending', amount: 2300 },
+];
+
+const columns = [
+  { id: 'claimId', label: 'Claim ID', accessor: 'claimId', sortable: true, resizable: true },
+  { id: 'firstName', label: 'First Name', accessor: 'firstName', sortable: true, resizable: true },
+  { id: 'lastName', label: 'Last Name', accessor: 'lastName', sortable: true, resizable: true },
+  { id: 'status', label: 'Status', accessor: 'status', sortable: true, resizable: true },
+  { id: 'amount', label: 'Amount', accessor: 'amount', sortable: true, resizable: true },
+];
+
+<AdvancedDataTable
+  data={data}
+  columns={columns}
+  useSidePanel={true}
+  showToolbar={true}
+  toolbarTitle="Claims Data"
+/>`,
+      },
+      story: {
+        inline: false,
+        iframeHeight: 600,
       },
     },
   },
 };
 
+/**
+ * ## With Modal
+ * 
+ * Traditional table with modal settings dialog. Click settings icon to configure columns.
+ * 
+ * **Usage:**
+ * ```tsx
+ * import { AdvancedDataTable } from '@ajaysoni7832/lean-ids-components';
+ * 
+ * const data = [
+ *   { id: 1, claimId: 'CLM-001', firstName: 'John', lastName: 'Doe', status: 'Approved', amount: 1500 },
+ *   { id: 2, claimId: 'CLM-002', firstName: 'Jane', lastName: 'Smith', status: 'Pending', amount: 2300 },
+ * ];
+ * 
+ * const columns = [
+ *   { id: 'claimId', label: 'Claim ID', accessor: 'claimId', sortable: true, resizable: true },
+ *   { id: 'firstName', label: 'First Name', accessor: 'firstName', sortable: true, resizable: true },
+ *   { id: 'lastName', label: 'Last Name', accessor: 'lastName', sortable: true, resizable: true },
+ *   { id: 'status', label: 'Status', accessor: 'status', sortable: true, resizable: true },
+ *   { id: 'amount', label: 'Amount', accessor: 'amount', sortable: true, resizable: true },
+ * ];
+ * 
+ * <AdvancedDataTable
+ *   data={data}
+ *   columns={columns}
+ *   useModal={true}
+ *   showToolbar={true}
+ *   toolbarTitle="Claims Data"
+ * />
+ * ```
+ */
 export const WithModal: Story = {
   args: {
     useSidePanel: false,
@@ -184,7 +590,35 @@ export const WithModal: Story = {
   parameters: {
     docs: {
       description: {
-        story: 'Traditional table with modal settings. Click the settings icon button in the toolbar to open column settings.',
+        story: 'Traditional table with modal settings. Click the settings icon button in the toolbar to open column settings. Column resizing works in both Canvas and Docs views.',
+      },
+      source: {
+        code: `import { AdvancedDataTable } from '@ajaysoni7832/lean-ids-components';
+
+const data = [
+  { id: 1, claimId: 'CLM-001', firstName: 'John', lastName: 'Doe', status: 'Approved', amount: 1500 },
+  { id: 2, claimId: 'CLM-002', firstName: 'Jane', lastName: 'Smith', status: 'Pending', amount: 2300 },
+];
+
+const columns = [
+  { id: 'claimId', label: 'Claim ID', accessor: 'claimId', sortable: true, resizable: true },
+  { id: 'firstName', label: 'First Name', accessor: 'firstName', sortable: true, resizable: true },
+  { id: 'lastName', label: 'Last Name', accessor: 'lastName', sortable: true, resizable: true },
+  { id: 'status', label: 'Status', accessor: 'status', sortable: true, resizable: true },
+  { id: 'amount', label: 'Amount', accessor: 'amount', sortable: true, resizable: true },
+];
+
+<AdvancedDataTable
+  data={data}
+  columns={columns}
+  useModal={true}
+  showToolbar={true}
+  toolbarTitle="Claims Data"
+/>`,
+      },
+      story: {
+        inline: false,
+        iframeHeight: 600,
       },
     },
   },
@@ -200,12 +634,96 @@ export const WithBothControls: Story = {
   parameters: {
     docs: {
       description: {
-        story: 'Table with both side panel and modal controls available. The toolbar settings button opens the modal, while the side panel provides quick access to column/filter controls.',
+        story: 'Table with both side panel and modal controls available. The toolbar settings button opens the modal, while the side panel provides quick access to column/filter controls. Column resizing works in both Canvas and Docs views.',
+      },
+      story: {
+        inline: false,
+        iframeHeight: 600,
       },
     },
   },
 };
 
+/**
+ * ## With Sub-Headers (Nested Columns)
+ * 
+ * Table with hierarchical column structure using parent-child relationships.
+ * 
+ * **Usage:**
+ * ```tsx
+ * import { AdvancedDataTable } from '@ajaysoni7832/lean-ids-components';
+ * 
+ * const data = [
+ *   { 
+ *     id: 1, 
+ *     claimId: 'CLM-001', 
+ *     firstName: 'John', 
+ *     lastName: 'Doe',
+ *     city: 'New York',
+ *     state: 'NY',
+ *     status: 'Approved'
+ *   },
+ * ];
+ * 
+ * const columns = [
+ *   {
+ *     id: 'claimId',
+ *     label: 'Claim ID',
+ *     accessor: 'claimId',
+ *     sortable: true,
+ *     resizable: true,
+ *   },
+ *   {
+ *     id: 'userDetails',
+ *     label: 'User Details',
+ *     subColumns: [
+ *       {
+ *         id: 'firstName',
+ *         label: 'First Name',
+ *         accessor: 'firstName',
+ *         sortable: true,
+ *         resizable: true,
+ *       },
+ *       {
+ *         id: 'lastName',
+ *         label: 'Last Name',
+ *         accessor: 'lastName',
+ *         sortable: true,
+ *         resizable: true,
+ *       },
+ *     ],
+ *   },
+ *   {
+ *     id: 'address',
+ *     label: 'Address',
+ *     subColumns: [
+ *       {
+ *         id: 'city',
+ *         label: 'City',
+ *         accessor: 'city',
+ *         sortable: true,
+ *         resizable: true,
+ *       },
+ *       {
+ *         id: 'state',
+ *         label: 'State',
+ *         accessor: 'state',
+ *         sortable: true,
+ *         resizable: true,
+ *       },
+ *     ],
+ *   },
+ * ];
+ * 
+ * <AdvancedDataTable
+ *   data={data}
+ *   columns={columns}
+ *   useModal={true}
+ *   showToolbar={true}
+ *   toolbarTitle="Claims Data with Sub-Headers"
+ * />
+ * ```
+ */
 export const WithSubHeaders: Story = {
   args: {
     useSidePanel: false,
@@ -217,7 +735,84 @@ export const WithSubHeaders: Story = {
   parameters: {
     docs: {
       description: {
-        story: 'Table with sub-header support showing nested columns. The "User Details" parent column contains "First Name" and "Last Name" sub-columns, and the "Address" parent column contains "City" and "State" sub-columns. This demonstrates the hierarchical column structure with parent-child relationships.',
+        story: 'Table with sub-header support showing nested columns. The "User Details" parent column contains "First Name" and "Last Name" sub-columns, and the "Address" parent column contains "City" and "State" sub-columns. This demonstrates the hierarchical column structure with parent-child relationships. Column resizing works in both Canvas and Docs views.',
+      },
+      source: {
+        code: `import { AdvancedDataTable } from '@ajaysoni7832/lean-ids-components';
+
+const data = [
+  { 
+    id: 1, 
+    claimId: 'CLM-001', 
+    firstName: 'John', 
+    lastName: 'Doe',
+    city: 'New York',
+    state: 'NY',
+    status: 'Approved'
+  },
+];
+
+const columns = [
+  {
+    id: 'claimId',
+    label: 'Claim ID',
+    accessor: 'claimId',
+    sortable: true,
+    resizable: true,
+  },
+  {
+    id: 'userDetails',
+    label: 'User Details',
+    subColumns: [
+      {
+        id: 'firstName',
+        label: 'First Name',
+        accessor: 'firstName',
+        sortable: true,
+        resizable: true,
+      },
+      {
+        id: 'lastName',
+        label: 'Last Name',
+        accessor: 'lastName',
+        sortable: true,
+        resizable: true,
+      },
+    ],
+  },
+  {
+    id: 'address',
+    label: 'Address',
+    subColumns: [
+      {
+        id: 'city',
+        label: 'City',
+        accessor: 'city',
+        sortable: true,
+        resizable: true,
+      },
+      {
+        id: 'state',
+        label: 'State',
+        accessor: 'state',
+        sortable: true,
+        resizable: true,
+      },
+    ],
+  },
+];
+
+<AdvancedDataTable
+  data={data}
+  columns={columns}
+  useModal={true}
+  showToolbar={true}
+  toolbarTitle="Claims Data with Sub-Headers"
+/>`,
+      },
+      story: {
+        inline: false,
+        iframeHeight: 600,
       },
     },
   },
@@ -239,21 +834,60 @@ export const DefaultTable: Story = {
 };
 
 /**
- * ## New Feature: Filter Count Badge & Smart Search Headers
+ * ## With Filters & Filter Count Badge
  * 
- * **What's New:**
- * - 🔢 **Filter count badge** appears on Filter button showing active filter count
- * - 🔍 **Smart search headers** - only appear when filters are actually applied
- * - 🎯 Search headers persist even when side panel is closed (if filters are active)
- * - ✨ Better UX - no more confusion about when search headers appear
+ * Table with column filters and visual filter count badge.
  * 
- * **Try it:**
- * 1. Click "Filters" button in side panel
- * 2. Select a filter value from any dropdown (e.g., Status = "Approved")
- * 3. Click "Apply" - notice search headers appear automatically
- * 4. See the purple badge on Filter button showing "1"
- * 5. Click "Filters" again to close panel - search headers remain visible
- * 6. Remove filter chip to clear - search headers disappear
+ * **Usage:**
+ * ```tsx
+ * import { AdvancedDataTable } from '@ajaysoni7832/lean-ids-components';
+ * 
+ * const data = [
+ *   { id: 1, claimId: 'CLM-001', firstName: 'John', status: 'Approved', amount: 1500 },
+ *   { id: 2, claimId: 'CLM-002', firstName: 'Jane', status: 'Pending', amount: 2300 },
+ * ];
+ * 
+ * const columns = [
+ *   { id: 'claimId', label: 'Claim ID', accessor: 'claimId', sortable: true, resizable: true },
+ *   { id: 'firstName', label: 'First Name', accessor: 'firstName', sortable: true, resizable: true },
+ *   { id: 'status', label: 'Status', accessor: 'status', sortable: true, resizable: true },
+ *   { id: 'amount', label: 'Amount', accessor: 'amount', sortable: true, resizable: true },
+ * ];
+ * 
+ * const filters = [
+ *   {
+ *     id: 'status',
+ *     label: 'Status',
+ *     type: 'select',
+ *     options: [
+ *       { label: 'All', value: '' },
+ *       { label: 'Approved', value: 'approved' },
+ *       { label: 'Pending', value: 'pending' },
+ *       { label: 'Rejected', value: 'rejected' },
+ *     ],
+ *   },
+ *   {
+ *     id: 'dateRange',
+ *     label: 'Date Range',
+ *     type: 'dateRange',
+ *   },
+ * ];
+ * 
+ * <AdvancedDataTable
+ *   data={data}
+ *   columns={columns}
+ *   useSidePanel={true}
+ *   showToolbar={true}
+ *   toolbarTitle="Table with Filters"
+ *   columnFilters={filters}
+ *   onFiltersChange={(filters) => console.log('Filters:', filters)}
+ * />
+ * ```
+ * 
+ * **Features:**
+ * - Filter count badge shows number of active filters
+ * - Smart search headers appear when filters are applied
+ * - Search headers persist when side panel is closed
  */
 export const WithFilterCountBadge: Story = {
   args: {
@@ -266,6 +900,54 @@ export const WithFilterCountBadge: Story = {
     docs: {
       description: {
         story: '**Filter Count Badge & Smart Search Headers**: The Filter button now shows a purple badge with the count of active filters. Search headers only appear when filters are actually applied, not just when clicking the Filter button. This provides better visual feedback and cleaner UX.',
+      },
+      source: {
+        code: `import { AdvancedDataTable } from '@ajaysoni7832/lean-ids-components';
+
+const data = [
+  { id: 1, claimId: 'CLM-001', firstName: 'John', status: 'Approved', amount: 1500 },
+  { id: 2, claimId: 'CLM-002', firstName: 'Jane', status: 'Pending', amount: 2300 },
+];
+
+const columns = [
+  { id: 'claimId', label: 'Claim ID', accessor: 'claimId', sortable: true, resizable: true },
+  { id: 'firstName', label: 'First Name', accessor: 'firstName', sortable: true, resizable: true },
+  { id: 'status', label: 'Status', accessor: 'status', sortable: true, resizable: true },
+  { id: 'amount', label: 'Amount', accessor: 'amount', sortable: true, resizable: true },
+];
+
+const filters = [
+  {
+    id: 'status',
+    label: 'Status',
+    type: 'select',
+    options: [
+      { label: 'All', value: '' },
+      { label: 'Approved', value: 'approved' },
+      { label: 'Pending', value: 'pending' },
+      { label: 'Rejected', value: 'rejected' },
+    ],
+  },
+  {
+    id: 'dateRange',
+    label: 'Date Range',
+    type: 'dateRange',
+  },
+];
+
+<AdvancedDataTable
+  data={data}
+  columns={columns}
+  useSidePanel={true}
+  showToolbar={true}
+  toolbarTitle="Table with Filters"
+  columnFilters={filters}
+  onFiltersChange={(filters) => console.log('Filters:', filters)}
+/>`,
+      },
+      story: {
+        inline: false,
+        iframeHeight: 600,
       },
     },
   },
@@ -295,6 +977,10 @@ export const WithAlwaysVisibleSearchHeaders: Story = {
     docs: {
       description: {
         story: '**Always Visible Search Headers**: Set showColumnSearchByDefault to true to force search headers to always be visible, regardless of filter state. Useful when column search is the primary filtering method.',
+      },
+      story: {
+        inline: false,
+        iframeHeight: 600,
       },
     },
   },
@@ -370,6 +1056,10 @@ export const WithCustomTabs: Story = {
       description: {
         story: '**Custom Tabs**: Add your own tabs to the side panel with customSidePanelTabs prop. Supports both action-only tabs (with onClick) and content tabs (with content ReactNode). Try clicking the "Export" and "Info" tabs!',
       },
+      story: {
+        inline: false,
+        iframeHeight: 600,
+      },
     },
   },
 };
@@ -400,6 +1090,10 @@ export const WithClickOutsideToClose: Story = {
     docs: {
       description: {
         story: '**Click Outside to Close**: The side panel now closes when clicking outside, providing standard overlay/modal behavior. However, if there are unsaved filter changes, the panel prevents closing and shows a warning with shake animation. This prevents accidental loss of filter selections.',
+      },
+      story: {
+        inline: false,
+        iframeHeight: 600,
       },
     },
   },
@@ -437,6 +1131,10 @@ export const WithUnsavedChangesProtection: Story = {
     docs: {
       description: {
         story: '**Unsaved Changes Protection**: Filter selections are now tracked as "pending" until you click Apply. If you try to close the panel with unsaved changes, it prevents closing and shows a shake animation with a warning message: "Please apply, cancel, or reset filters before closing." This ensures users never accidentally lose their filter selections.',
+      },
+      story: {
+        inline: false,
+        iframeHeight: 600,
       },
     },
   },

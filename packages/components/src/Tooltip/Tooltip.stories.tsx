@@ -1,14 +1,24 @@
 /**
  * Tooltip Component Stories
  * 
- * Universal tooltip component with two variants:
- * - default: Rectangular (for chart hovers)
- * - pointer: With triangular tip (for info icons)
+ * Enterprise-grade tooltip component following Component Maturity Checklist.
+ * 
+ * Features:
+ * - ✅ Two variants: 'default' (rectangular) and 'pointer' (with triangle)
+ * - ✅ All 8 states (default, hover, focus, active, disabled, loading, empty, error)
+ * - ✅ Design tokens (NO hardcoded values)
+ * - ✅ Typography component (NO HTML tags in component)
+ * - ✅ Full accessibility (ARIA, keyboard navigation)
+ * 
+ * Note: Demo styled components in this file still use some hardcoded values for simplicity.
+ * The actual Tooltip component is fully compliant.
  */
 
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
+import { fn } from '@storybook/test';
 import { Tooltip } from './Tooltip';
+import { Typography } from '../Typography';
 import styled from 'styled-components';
 
 const meta: Meta<typeof Tooltip> = {
@@ -71,6 +81,16 @@ import { Tooltip } from '@ajaysoni7832/lean-ids-components';
     },
   },
   tags: ['autodocs'],
+  args: {
+    // Explicit action spies for all callback props (Storybook best practice)
+    onOpen: fn(),
+    onClose: fn(),
+    onAfterOpen: fn(),
+    onAfterClose: fn(),
+    onMouseEnter: fn(),
+    onMouseLeave: fn(),
+    onEscape: fn(),
+  },
   argTypes: {
     variant: {
       control: 'select',
@@ -82,6 +102,13 @@ import { Tooltip } from '@ajaysoni7832/lean-ids-components';
       options: ['top', 'bottom', 'left', 'right'],
       description: 'Position of the pointer triangle (only for pointer variant)',
     },
+    onOpen: { action: 'opened' },
+    onClose: { action: 'closed' },
+    onAfterOpen: { action: 'after-opened' },
+    onAfterClose: { action: 'after-closed' },
+    onMouseEnter: { action: 'mouse-enter' },
+    onMouseLeave: { action: 'mouse-leave' },
+    onEscape: { action: 'escape-pressed' },
   },
 };
 
@@ -440,5 +467,208 @@ export const PointerAlwaysVisible: Story = {
     y: 200,
     variant: 'pointer',
     pointerPosition: 'top',
+  },
+};
+
+// ============================================================================
+// NEW STATES - Component Maturity Checklist
+// ============================================================================
+
+/**
+ * Loading state - shows spinner while content is being fetched
+ */
+export const LoadingState: Story = {
+  args: {
+    visible: true,
+    isLoading: true,
+    x: 300,
+    y: 200,
+    variant: 'default',
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Tooltip in loading state displays a spinner animation. Use this when fetching tooltip content asynchronously.',
+      },
+    },
+  },
+};
+
+/**
+ * Empty state - shows when no content is available
+ */
+export const EmptyState: Story = {
+  args: {
+    visible: true,
+    isEmpty: true,
+    emptyMessage: 'No data available for this period',
+    x: 300,
+    y: 200,
+    variant: 'pointer',
+    pointerPosition: 'top',
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Tooltip in empty state displays a custom message when no content is available.',
+      },
+    },
+  },
+};
+
+/**
+ * Error state - shows error message with red border
+ */
+export const ErrorState: Story = {
+  args: {
+    visible: true,
+    isInvalid: true,
+    errorMessage: 'Failed to load tooltip data. Please try again.',
+    x: 300,
+    y: 200,
+    variant: 'pointer',
+    pointerPosition: 'bottom',
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Tooltip in error state displays an error message with a red border to indicate a problem.',
+      },
+    },
+  },
+};
+
+/**
+ * Disabled state - tooltip is visible but with reduced opacity
+ */
+export const DisabledState: Story = {
+  args: {
+    visible: true,
+    disabled: true,
+    heading: 'Disabled Tooltip',
+    description: 'This tooltip is disabled and has reduced opacity',
+    x: 300,
+    y: 200,
+    variant: 'default',
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Tooltip in disabled state has reduced opacity (0.5) and no pointer events.',
+      },
+    },
+  },
+};
+
+/**
+ * Custom max width - override the default width
+ */
+export const CustomMaxWidth: Story = {
+  args: {
+    visible: true,
+    heading: 'Custom Width Tooltip',
+    description: 'This tooltip has a custom maximum width of 30rem, allowing for much longer content that would normally wrap or be constrained.',
+    x: 300,
+    y: 200,
+    maxWidth: '30rem',
+    variant: 'pointer',
+    pointerPosition: 'top',
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Tooltip with custom maxWidth prop to accommodate longer content.',
+      },
+    },
+  },
+};
+
+/**
+ * With event callbacks - demonstrates lifecycle events
+ */
+export const WithEventCallbacks: Story = {
+  render: () => {
+    const [tooltip, setTooltip] = useState({ visible: false, x: 0, y: 0 });
+    const [events, setEvents] = useState<string[]>([]);
+
+    const addEvent = useCallback((event: string) => {
+      setEvents(prev => [...prev.slice(-4), `${new Date().toLocaleTimeString()}: ${event}`]);
+    }, []);
+
+    const handleOpen = useCallback(() => addEvent('onOpen'), [addEvent]);
+    const handleClose = useCallback(() => addEvent('onClose'), [addEvent]);
+    const handleAfterOpen = useCallback(() => addEvent('onAfterOpen (150ms delay)'), [addEvent]);
+    const handleAfterClose = useCallback(() => addEvent('onAfterClose (150ms delay)'), [addEvent]);
+    const handleMouseEnter = useCallback(() => addEvent('onMouseEnter'), [addEvent]);
+    const handleMouseLeave = useCallback(() => addEvent('onMouseLeave'), [addEvent]);
+    const handleEscape = useCallback(() => {
+      addEvent('onEscape (Escape key pressed)');
+      setTooltip({ visible: false, x: 0, y: 0 });
+    }, [addEvent]);
+
+    return (
+      <DemoContainer>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', alignItems: 'center' }}>
+          <DemoButton
+            onClick={(e) => {
+              const rect = e.currentTarget.getBoundingClientRect();
+              setTooltip(prev => ({
+                visible: !prev.visible,
+                x: rect.left + rect.width / 2 - 126.5,
+                y: rect.bottom + 10,
+              }));
+            }}
+          >
+            Toggle Tooltip
+          </DemoButton>
+          
+          <div style={{ 
+            padding: '12px', 
+            background: '#f5f5f5', 
+            borderRadius: '4px',
+            minWidth: '300px',
+            maxHeight: '150px',
+            overflow: 'auto'
+          }}>
+            <Typography variant="caption" weight="semibold" style={{ marginBottom: '8px', display: 'block' }}>
+              Event Log:
+            </Typography>
+            {events.length === 0 ? (
+              <Typography variant="caption">No events yet. Click the button to trigger events.</Typography>
+            ) : (
+              events.map((event, i) => (
+                <Typography key={i} variant="caption" style={{ display: 'block', marginBottom: '4px' }}>
+                  {event}
+                </Typography>
+              ))
+            )}
+          </div>
+        </div>
+
+        <Tooltip
+          visible={tooltip.visible}
+          heading="Event Callbacks Demo"
+          description="This tooltip fires events on open, close, and keyboard interactions"
+          x={tooltip.x}
+          y={tooltip.y}
+          variant="pointer"
+          pointerPosition="top"
+          onOpen={handleOpen}
+          onClose={handleClose}
+          onAfterOpen={handleAfterOpen}
+          onAfterClose={handleAfterClose}
+          onMouseEnter={handleMouseEnter}
+          onMouseLeave={handleMouseLeave}
+          onEscape={handleEscape}
+        />
+      </DemoContainer>
+    );
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Demonstrates all event callbacks: onOpen, onClose, onAfterOpen, onAfterClose, onMouseEnter, onMouseLeave, and onEscape. Press Escape key when tooltip is visible to trigger onEscape.',
+      },
+    },
   },
 };

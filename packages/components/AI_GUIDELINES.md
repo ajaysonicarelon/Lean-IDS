@@ -64,6 +64,85 @@ import { Button } from '@radix-ui/react';
 
 ---
 
+## 🎯 COMPONENT MATURITY CHECKLIST (v1.7.6+)
+
+### **Building Enterprise-Grade Components**
+
+All Lean IDS components follow the **Component Maturity Checklist** - a set of standards ensuring consistency, accessibility, and maintainability.
+
+#### **The 6 Pillars:**
+
+1. **API & Composition**
+   - ✅ forwardRef support
+   - ✅ Polymorphic 'as' prop
+   - ✅ Explicit TypeScript interfaces
+   - ✅ Passthrough of standard HTML attributes
+
+2. **Layout & Responsiveness**
+   - ✅ **ZERO hardcoded pixels** - Use `theme.spacing[*]`
+   - ✅ **Typography component** - NO custom styled text
+   - ✅ Design tokens for ALL styling
+   - ✅ Fluid layouts (min, max, %, rem, vh)
+
+3. **Overrides & Theming**
+   - ✅ className prop
+   - ✅ style prop
+   - ✅ Multiple customization points
+
+4. **States & Behavior**
+   - ✅ **8 States:** Default, Hover, Focus, Active, Disabled, Loading, Error, Empty
+   - ✅ All event callbacks exposed
+   - ✅ Proper state management
+
+5. **Accessibility**
+   - ✅ ARIA attributes (role, aria-label, aria-busy, etc.)
+   - ✅ Semantic HTML (button, table, etc.)
+   - ✅ Keyboard navigation
+   - ✅ Focus management
+
+6. **Storybook Documentation**
+   - ✅ **Typography in ALL stories** - NO HTML tags
+   - ✅ Stories for all states
+   - ✅ Comprehensive examples
+   - ✅ Copy-paste ready code
+
+#### **Quick Reference:**
+See `COMPONENT_MATURITY_CHECKLIST.md` for detailed guidelines.
+
+#### **Example - Typography Usage:**
+```tsx
+// ❌ NEVER do this
+<h2 style={{ fontSize: '24px', fontWeight: 600 }}>Title</h2>
+<p style={{ color: '#666' }}>Description</p>
+
+// ✅ ALWAYS do this
+import { Typography } from '@ajaysoni7832/lean-ids-components';
+
+<Typography variant="headingL" weight="semibold" as="h2">Title</Typography>
+<Typography variant="body" color="secondary">Description</Typography>
+```
+
+#### **Example - Token-Based Styling:**
+```tsx
+// ❌ NEVER hardcode
+const StyledDiv = styled.div`
+  padding: 16px;
+  margin: 20px;
+  color: #333333;
+  border-radius: 8px;
+`;
+
+// ✅ ALWAYS use tokens
+const StyledDiv = styled.div`
+  padding: ${({ theme }) => theme.spacing[4]};
+  margin: ${({ theme }) => theme.spacing[5]};
+  color: ${({ theme }) => theme.colors.palette.neutral[900]};
+  border-radius: ${({ theme }) => theme.borderRadius.md};
+`;
+```
+
+---
+
 ## 🚨 CRITICAL RULE #2: MODAL & DRAWER COMPONENTS
 
 ### **ALWAYS USE LEAN IDS MODAL AND DRAWER COMPONENTS**

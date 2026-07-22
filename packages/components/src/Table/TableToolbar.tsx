@@ -24,6 +24,10 @@ export interface DropdownOption {
 }
 
 export interface TableToolbarProps {
+  /** Custom children - when provided, renders custom content instead of default toolbar */
+  children?: React.ReactNode;
+  /** Custom className */
+  className?: string;
   /** Table title */
   title?: string;
   /** Show dropdown selector */
@@ -140,10 +144,77 @@ const SearchIconWrapper = styled.div`
 `;
 
 // ============================================================================
-// COMPONENT
+// HELPER COMPONENTS FOR CUSTOM TOOLBARS
+// ============================================================================
+
+const ToolbarSection = styled.div<{ $align?: 'left' | 'center' | 'right' }>`
+  display: flex;
+  align-items: center;
+  gap: ${({ theme }) => theme.spacing?.[5] || '12px'};
+  ${({ $align }) => {
+    if ($align === 'right') return 'margin-left: auto;';
+    if ($align === 'center') return 'margin: 0 auto;';
+    return '';
+  }}
+`;
+
+const ToolbarTitle = styled.h2`
+  font-family: ${({ theme }) => theme.fonts?.primary || 'Elevance Sans, sans-serif'};
+  font-size: ${({ theme }) => theme.fontSizes?.[20] || '20px'};
+  font-weight: ${({ theme }) => theme.fontWeights?.semibold || 600};
+  color: ${({ theme }) => theme.colors?.semantic?.text?.primary || '#111827'};
+  margin: 0;
+`;
+
+const ToolbarActions = styled.div`
+  display: flex;
+  align-items: center;
+  gap: ${({ theme }) => theme.spacing?.[5] || '12px'};
+`;
+
+// ============================================================================
+// HELPER COMPONENT EXPORTS
+// ============================================================================
+
+interface TableToolbarSectionProps {
+  align?: 'left' | 'center' | 'right';
+  children: React.ReactNode;
+  className?: string;
+}
+
+export const TableToolbarSection: React.FC<TableToolbarSectionProps> = ({ 
+  align = 'left', 
+  children,
+  className 
+}) => {
+  return <ToolbarSection $align={align} className={className}>{children}</ToolbarSection>;
+};
+
+interface TableToolbarTitleProps {
+  children: React.ReactNode;
+  className?: string;
+}
+
+export const TableToolbarTitle: React.FC<TableToolbarTitleProps> = ({ children, className }) => {
+  return <ToolbarTitle className={className}>{children}</ToolbarTitle>;
+};
+
+interface TableToolbarActionsProps {
+  children: React.ReactNode;
+  className?: string;
+}
+
+export const TableToolbarActions: React.FC<TableToolbarActionsProps> = ({ children, className }) => {
+  return <ToolbarActions className={className}>{children}</ToolbarActions>;
+};
+
+// ============================================================================
+// MAIN COMPONENT
 // ============================================================================
 
 export const TableToolbar: React.FC<TableToolbarProps> = ({
+  children,
+  className,
   title,
   showDropdown = false,
   dropdownOptions = [],
@@ -161,8 +232,14 @@ export const TableToolbar: React.FC<TableToolbarProps> = ({
   showSettings = true,
   onSettingsClick,
 }) => {
+  // If custom children provided, render them instead of default toolbar
+  if (children) {
+    return <ToolbarContainer className={className}>{children}</ToolbarContainer>;
+  }
+
+  // Default toolbar layout (backward compatible)
   return (
-    <ToolbarContainer>
+    <ToolbarContainer className={className}>
       {title && <Title>{title}</Title>}
 
       <ActionsSection>

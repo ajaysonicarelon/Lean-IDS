@@ -8,17 +8,21 @@ interface StyledMenuItemProps {
   $state: MenuItemState;
   $type: MenuItemType;
   $label?: string; // Label text to determine alignment
+  $disabled?: boolean;
+  $isLoading?: boolean;
+  $isInvalid?: boolean;
 }
 
 export const StyledMenuItem = styled.div<StyledMenuItemProps>`
   display: flex;
-  /* align-items removed - allows text alignment to work independently */
+  align-items: center; /* Vertically center icon and text */
   gap: ${({ theme }) => theme.spacing[4]};
   width: 100%; /* Constrain width for text truncation */
   overflow: hidden;
-  cursor: pointer;
-  transition: all 0.2s ease;
+  cursor: ${({ $disabled }) => ($disabled ? 'not-allowed' : 'pointer')};
+  transition: ${({ theme }) => (theme as any).transitions?.default || 'all 300ms cubic-bezier(0.4, 0, 0.2, 1)'};
   position: relative;
+  opacity: ${({ $disabled, theme }) => ($disabled ? (theme as any).opacity?.[40] || 0.4 : 1)};
 
   ${({ $aligned, $border, $state, $mode, theme }) => {
     const isVertical = $aligned === 'vertical';
@@ -45,8 +49,14 @@ export const StyledMenuItem = styled.div<StyledMenuItemProps>`
         
         &:hover {
           background-color: ${$mode === 'dark' 
-            ? 'rgba(255, 255, 255, 0.05)' 
-            : 'rgba(199, 199, 199, 0.05)'};
+            ? `rgba(255, 255, 255, ${(theme as any).opacity?.[5] || '0.05'})` 
+            : `rgba(199, 199, 199, ${(theme as any).opacity?.[5] || '0.05'})`};
+          ${borderRadius}
+        }
+        
+        &:focus-visible {
+          outline: ${theme.borderWidth[2]} solid ${theme.colors.semantic.focus.indicator};
+          outline-offset: ${theme.spacing[1]};
           ${borderRadius}
         }
       `;
@@ -57,13 +67,21 @@ export const StyledMenuItem = styled.div<StyledMenuItemProps>`
       ? theme.colors.palette.neutral[50]
       : theme.colors.palette.neutral[900];
     
+    const opacity = (theme as any).opacity?.[10] || '0.1';
     const backgroundColor = $mode === 'dark'
-      ? 'rgba(255, 255, 255, 0.1)'
-      : 'rgba(199, 199, 199, 0.1)';
+      ? `rgba(255, 255, 255, ${opacity})`
+      : `rgba(199, 199, 199, ${opacity})`;
 
     const borderStyle = $border === 'left'
-      ? `border-left: 3px solid ${borderColor};`
-      : `border-bottom: 3px solid ${borderColor};`;
+      ? `border-left: ${theme.borderWidth[2]} solid ${borderColor};`
+      : `border-bottom: ${theme.borderWidth[2]} solid ${borderColor};`;
+    
+    const focusStyle = `
+      &:focus-visible {
+        outline: ${theme.borderWidth[2]} solid ${theme.colors.semantic.focus.indicator};
+        outline-offset: ${theme.spacing[1]};
+      }
+    `;
 
     return css`
       ${flexDirection}
@@ -71,6 +89,7 @@ export const StyledMenuItem = styled.div<StyledMenuItemProps>`
       ${borderRadius}
       background-color: ${backgroundColor};
       ${borderStyle}
+      ${focusStyle}
     `;
   }}
 `;
@@ -176,12 +195,12 @@ interface NotificationIndicatorProps {
 
 export const NotificationIndicator = styled.div<NotificationIndicatorProps>`
   position: absolute;
-  width: 8px;
-  height: 8px;
+  width: ${({ theme }) => theme.spacing[2]};
+  height: ${({ theme }) => theme.spacing[2]};
   border-radius: 50%;
   background-color: ${({ theme }) => theme.colors.palette.error[500]};
   
-  ${({ $border, $aligned }) => {
+  ${({ $border, $aligned, theme }) => {
     // For vertical alignment (collapsed state), position at top-right
     if ($aligned === 'vertical') {
       return css`
@@ -192,16 +211,49 @@ export const NotificationIndicator = styled.div<NotificationIndicatorProps>`
     // For top header (horizontal), position above the text
     if ($border === 'bottom') {
       return css`
-        right: 8px;
-        top: 8px;
+        right: ${theme.spacing[2]};
+        top: ${theme.spacing[2]};
       `;
     }
     // For side nav horizontal (expanded), position on the right side
     return css`
-      right: 16px;
-      top: 15px;
+      right: ${theme.spacing[4]};
+      top: ${theme.spacing[3]};
     `;
   }}
+`;
+
+export const LoadingSpinner = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
+  svg {
+    width: ${({ theme }) => theme.spacing[4]};
+    height: ${({ theme }) => theme.spacing[4]};
+    color: currentColor;
+  }
+`;
+
+interface ChildrenArrowProps {
+  $mode: MenuItemMode;
+}
+
+export const ChildrenArrow = styled.div<ChildrenArrowProps>`
+  width: ${({ theme }) => theme.spacing[6]};
+  height: ${({ theme }) => theme.spacing[6]};
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: ${({ theme }) => theme.spacing[2]};
+  flex-shrink: 0;
+  color: ${({ $mode, theme }) => 
+    $mode === 'dark' ? '#FFFFFF' : '#1A1A1A'};
+  
+  svg {
+    width: 100%;
+    height: 100%;
+  }
 `;
 
 export const MenuItemContainer = styled.div`

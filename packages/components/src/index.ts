@@ -66,6 +66,9 @@ export type { TableHeaderProps, SortDirection, TableHeaderVariant, TableHeaderSi
 export { TableCell } from './TableCell';
 export type { TableCellProps } from './TableCell';
 
+export { TableRow } from './TableRow';
+export type { TableRowProps } from './TableRow';
+
 export { Avatar } from './Avatar';
 export type { AvatarProps, AvatarSize, AvatarColor } from './Avatar';
 
@@ -90,7 +93,12 @@ export type { TableSidePanelProps } from './TableSidePanel';
 export { Table } from './Table';
 export type { TableProps, TableColumn, TableAction } from './Table';
 
-export { TableToolbar } from './Table';
+export { 
+  TableToolbar, 
+  TableToolbarSection, 
+  TableToolbarTitle, 
+  TableToolbarActions 
+} from './Table';
 export type { TableToolbarProps } from './Table';
 
 export { AdvancedDataTable, getNestedColumnConfigs } from './Table';

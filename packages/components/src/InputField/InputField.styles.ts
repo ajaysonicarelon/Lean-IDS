@@ -107,7 +107,7 @@ export const InputWrapper = styled.div<StyledInputWrapperProps>`
     if ($error && $isFocused) return theme.colors.palette.error[500];
     if ($error) return theme.colors.palette.error[500];
     if ($isFocused) return theme.colors.semantic.focus.input; // Input fields use semantic focus.input color
-    return theme.colors.palette.neutral[400];
+    return theme.colors.palette.neutral[500]; // Updated from 400 to 500
   }};
   border-radius: ${({ theme }) => theme.borderRadius.sm};
   transition: all 0.2s ease-in-out;
@@ -168,7 +168,7 @@ export const StyledInput = styled.input<StyledInputProps>`
   }}
   
   &::placeholder {
-    color: ${({ theme }) => theme.colors.palette.neutral[400]};
+    color: ${({ theme }) => theme.colors.palette.neutral[700]}; // Updated from 400 to 700
     font-weight: ${({ theme }) => theme.fontWeights.regular}; /* 400 for placeholder */
   }
   

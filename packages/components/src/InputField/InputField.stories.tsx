@@ -12,7 +12,8 @@
 
 import type { Meta, StoryObj } from '@storybook/react';
 import { InputField } from './InputField';
-import React from 'react';
+import { Typography } from '../Typography';
+import { useState } from 'react';
 
 const meta: Meta<typeof InputField> = {
   title: 'Components/InputField',
@@ -961,6 +962,213 @@ export const AllSizes: Story = {
 };
 
 // Accessibility Story
+// New States - Loading
+export const LoadingState: Story = {
+  render: () => (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', padding: '20px' }}>
+      <Typography variant="headingM" weight="semibold">Loading State</Typography>
+      <Typography variant="body">Shows a loading spinner while data is being fetched.</Typography>
+      
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', width: '400px' }}>
+        <InputField
+          label="Email Address"
+          isLoading={true}
+        />
+        <InputField
+          label="Username"
+          isLoading={true}
+          helperText="Checking availability..."
+        />
+      </div>
+    </div>
+  ),
+  parameters: {
+    docs: {
+      description: {
+        story: 'Use `isLoading` prop to show a loading spinner. The input is disabled and shows "Loading..." placeholder.',
+      },
+    },
+  },
+};
+
+// New States - Empty
+export const EmptyState: Story = {
+  render: () => (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', padding: '20px' }}>
+      <Typography variant="headingM" weight="semibold">Empty State</Typography>
+      <Typography variant="body">Shows an empty state message when no data is available.</Typography>
+      
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', width: '400px' }}>
+        <InputField
+          label="Search Results"
+          isEmpty={true}
+          emptyMessage="No results found"
+        />
+        <InputField
+          label="Recent Items"
+          isEmpty={true}
+          emptyMessage="No recent items available"
+        />
+      </div>
+    </div>
+  ),
+  parameters: {
+    docs: {
+      description: {
+        story: 'Use `isEmpty` prop with custom `emptyMessage` to show empty states.',
+      },
+    },
+  },
+};
+
+// Event Callbacks
+export const EventCallbacks: Story = {
+  render: () => {
+    const [logs, setLogs] = useState<string[]>([]);
+    const addLog = (message: string) => {
+      setLogs(prev => [...prev.slice(-4), `${new Date().toLocaleTimeString()}: ${message}`]);
+    };
+
+    return (
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', padding: '20px' }}>
+        <Typography variant="headingM" weight="semibold">Event Callbacks</Typography>
+        <Typography variant="body">All available event callbacks demonstrated.</Typography>
+        
+        <InputField
+          label="Interactive Input"
+          placeholder="Try focusing, typing, and pressing Enter/Escape"
+          onFocus={() => addLog('onFocus fired')}
+          onAfterFocus={() => addLog('onAfterFocus fired (200ms delay)')}
+          onBlur={() => addLog('onBlur fired')}
+          onAfterBlur={() => addLog('onAfterBlur fired (200ms delay)')}
+          onChange={(e) => addLog(`onChange: ${e.target.value}`)}
+          onEnter={() => addLog('onEnter fired (Enter key pressed)')}
+          onEscape={() => addLog('onEscape fired (Escape key pressed)')}
+          style={{ width: '400px' }}
+        />
+        
+        <div style={{ 
+          marginTop: '16px', 
+          padding: '12px', 
+          background: '#f5f5f5', 
+          borderRadius: '4px',
+          maxHeight: '150px',
+          overflow: 'auto'
+        }}>
+          <Typography variant="caption" weight="semibold" style={{ marginBottom: '8px', display: 'block' }}>
+            Event Log:
+          </Typography>
+          {logs.length === 0 ? (
+            <Typography variant="caption" style={{ color: '#666' }}>No events yet...</Typography>
+          ) : (
+            logs.map((log, i) => (
+              <Typography key={i} variant="caption" style={{ display: 'block', marginBottom: '4px' }}>
+                {log}
+              </Typography>
+            ))
+          )}
+        </div>
+      </div>
+    );
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: `
+New event callbacks available:
+- **onAfterFocus**: Fired 200ms after focus (after animation)
+- **onAfterBlur**: Fired 200ms after blur (after animation)
+- **onEnter**: Fired when Enter key is pressed
+- **onEscape**: Fired when Escape key is pressed
+- **onClear**: Fired when input is cleared
+        `,
+      },
+    },
+  },
+};
+
+// className Overrides
+export const ClassNameOverrides: Story = {
+  render: () => (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', padding: '20px' }}>
+      <Typography variant="headingM" weight="semibold">className Overrides</Typography>
+      <Typography variant="body">Multiple override points for custom styling.</Typography>
+      
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', width: '400px' }}>
+        <InputField
+          label="Custom Styled Input"
+          placeholder="All parts can be styled"
+          helperText="Each part has its own className prop"
+          className="custom-container"
+          labelClassName="custom-label"
+          wrapperClassName="custom-wrapper"
+          inputClassName="custom-input"
+          helperTextClassName="custom-helper"
+          style={{ marginBottom: '20px' }}
+        />
+      </div>
+      
+      <div style={{ 
+        padding: '12px', 
+        background: '#f5f5f5', 
+        borderRadius: '4px'
+      }}>
+        <Typography variant="caption" weight="semibold" style={{ marginBottom: '8px', display: 'block' }}>
+          Available className Props:
+        </Typography>
+        <Typography variant="caption" style={{ display: 'block', marginBottom: '4px' }}>• className - Root container</Typography>
+        <Typography variant="caption" style={{ display: 'block', marginBottom: '4px' }}>• labelClassName - Label element</Typography>
+        <Typography variant="caption" style={{ display: 'block', marginBottom: '4px' }}>• wrapperClassName - Input wrapper</Typography>
+        <Typography variant="caption" style={{ display: 'block', marginBottom: '4px' }}>• inputClassName - Input element</Typography>
+        <Typography variant="caption" style={{ display: 'block' }}>• helperTextClassName - Helper text</Typography>
+      </div>
+    </div>
+  ),
+  parameters: {
+    docs: {
+      description: {
+        story: 'Use multiple className props to customize different parts of the component.',
+      },
+    },
+  },
+};
+
+// Polymorphic 'as' prop
+export const PolymorphicRendering: Story = {
+  render: () => (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', padding: '20px' }}>
+      <Typography variant="headingM" weight="semibold">Polymorphic Rendering</Typography>
+      <Typography variant="body">Render as different element types using the 'as' prop.</Typography>
+      
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', width: '400px' }}>
+        <InputField
+          as="input"
+          label="Default (as='input')"
+          placeholder="Rendered as input element"
+        />
+      </div>
+      
+      <div style={{ 
+        padding: '12px', 
+        background: '#f5f5f5', 
+        borderRadius: '4px',
+        marginTop: '16px'
+      }}>
+        <Typography variant="caption" style={{ color: '#666' }}>
+          The 'as' prop allows rendering as different HTML elements while maintaining the same API.
+        </Typography>
+      </div>
+    </div>
+  ),
+  parameters: {
+    docs: {
+      description: {
+        story: 'Use the `as` prop for advanced use cases where you need to render as a different element.',
+      },
+    },
+  },
+};
+
 export const AccessibilityDemo: Story = {
   render: () => (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '24px', width: '400px' }}>
@@ -991,8 +1199,8 @@ export const AccessibilityDemo: Story = {
 ### Keyboard Navigation
 - **Tab**: Move focus to the input field
 - **Shift + Tab**: Move focus to previous element
-- **Enter**: Submit form (if in a form)
-- **Escape**: Clear input (browser default)
+- **Enter**: Submit form (if in a form) or trigger onEnter callback
+- **Escape**: Trigger onEscape callback
 
 ### Screen Reader Support
 - Labels are properly associated with inputs
@@ -1000,6 +1208,7 @@ export const AccessibilityDemo: Story = {
 - Error messages use role="alert" for immediate announcement
 - Required fields are announced as required
 - Disabled state is properly communicated
+- Loading state announced with aria-busy
 
 ### Focus Management
 - Clear focus indicators (2px outline with offset)
@@ -1007,6 +1216,61 @@ export const AccessibilityDemo: Story = {
 - Logical tab order maintained
 - Focus visible on keyboard navigation only
         `,
+      },
+    },
+  },
+};
+
+// Component Maturity Summary
+export const ComponentMaturity: Story = {
+  render: () => (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', padding: '20px', maxWidth: '800px' }}>
+      <Typography variant="headingL" weight="semibold">Component Maturity Enhancements</Typography>
+      <Typography variant="body">InputField now meets enterprise-grade standards with the following enhancements:</Typography>
+      
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginTop: '16px' }}>
+        <div style={{ padding: '16px', background: '#f5f5f5', borderRadius: '8px' }}>
+          <Typography variant="headingS" weight="semibold" style={{ marginBottom: '12px' }}>✅ API & Composition</Typography>
+          <Typography variant="caption" style={{ display: 'block', marginBottom: '4px' }}>• forwardRef support</Typography>
+          <Typography variant="caption" style={{ display: 'block', marginBottom: '4px' }}>• Polymorphic 'as' prop</Typography>
+          <Typography variant="caption" style={{ display: 'block' }}>• ...restProps passthrough</Typography>
+        </div>
+        
+        <div style={{ padding: '16px', background: '#f5f5f5', borderRadius: '8px' }}>
+          <Typography variant="headingS" weight="semibold" style={{ marginBottom: '12px' }}>✅ States & Behavior</Typography>
+          <Typography variant="caption" style={{ display: 'block', marginBottom: '4px' }}>• isLoading state</Typography>
+          <Typography variant="caption" style={{ display: 'block', marginBottom: '4px' }}>• isEmpty state</Typography>
+          <Typography variant="caption" style={{ display: 'block' }}>• isInvalid alias</Typography>
+        </div>
+        
+        <div style={{ padding: '16px', background: '#f5f5f5', borderRadius: '8px' }}>
+          <Typography variant="headingS" weight="semibold" style={{ marginBottom: '12px' }}>✅ Overrides & Theming</Typography>
+          <Typography variant="caption" style={{ display: 'block', marginBottom: '4px' }}>• style prop</Typography>
+          <Typography variant="caption" style={{ display: 'block', marginBottom: '4px' }}>• 4 className overrides</Typography>
+          <Typography variant="caption" style={{ display: 'block' }}>• Full customization</Typography>
+        </div>
+        
+        <div style={{ padding: '16px', background: '#f5f5f5', borderRadius: '8px' }}>
+          <Typography variant="headingS" weight="semibold" style={{ marginBottom: '12px' }}>✅ Event Callbacks</Typography>
+          <Typography variant="caption" style={{ display: 'block', marginBottom: '4px' }}>• onAfterFocus/Blur</Typography>
+          <Typography variant="caption" style={{ display: 'block', marginBottom: '4px' }}>• onEnter/Escape</Typography>
+          <Typography variant="caption" style={{ display: 'block' }}>• onClear</Typography>
+        </div>
+      </div>
+      
+      <div style={{ marginTop: '16px', padding: '16px', background: '#e3f2fd', borderRadius: '8px', borderLeft: '4px solid #2196f3' }}>
+        <Typography variant="body" weight="semibold" style={{ marginBottom: '8px' }}>📊 Total Enhancements</Typography>
+        <Typography variant="caption" style={{ display: 'block', marginBottom: '4px' }}>• 9 new props</Typography>
+        <Typography variant="caption" style={{ display: 'block', marginBottom: '4px' }}>• 5 new event callbacks</Typography>
+        <Typography variant="caption" style={{ display: 'block', marginBottom: '4px' }}>• 4 className override points</Typography>
+        <Typography variant="caption" style={{ display: 'block' }}>• Zero breaking changes</Typography>
+      </div>
+    </div>
+  ),
+  parameters: {
+    docs: {
+      description: {
+        story: 'Summary of all Component Maturity Checklist enhancements applied to InputField.',
       },
     },
   },
