@@ -106,7 +106,7 @@
     "@storybook/addon-interactions": "^8.5.3",
     "@storybook/addon-links": "^8.5.3",
     "@storybook/blocks": "^8.5.3",
-    "@storybook/react": "^8.5.3",
+    "@storybook/react": "^10.5.5",
     "@storybook/react-vite": "^8.5.3",
     "@storybook/test-runner": "^0.19.1",
     "@types/react": "^18.3.18",
