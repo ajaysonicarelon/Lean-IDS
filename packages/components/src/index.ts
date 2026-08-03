@@ -48,6 +48,9 @@ export type { BadgeProps, BadgeType, BadgeStyle } from './Badge';
 export { Breadcrumb } from './Breadcrumb';
 export type { BreadcrumbProps } from './Breadcrumb';
 
+export { SegmentController, SegmentControllerGroup } from './SegmentController';
+export type { SegmentControllerProps, SegmentControllerGroupProps, SegmentControllerItemProps, SegmentControllerSize } from './SegmentController';
+
 export { BreadcrumbSeparator } from './BreadcrumbSeparator';
 export type { BreadcrumbSeparatorProps, SeparatorVariant } from './BreadcrumbSeparator';
 
@@ -163,6 +166,9 @@ export type { BarChartProps, BarChartData, BarChartOrientation, BarMetric } from
 
 export { Typography } from './Typography';
 export type { TypographyProps, TypographyVariant, TypographyWeight, TypographyCodeSize, TypographyAlign, TypographyElement } from './Typography';
+
+export { ProgressBar } from './ProgressBar';
+export type { ProgressBarProps, ProgressBarSize, ProgressBarType } from './ProgressBar';
 
 export { Popover } from './Popover';
 export type { PopoverProps, PopoverPlacement } from './Popover';

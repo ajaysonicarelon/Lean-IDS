@@ -1,6 +1,6 @@
 {
   "name": "@ajaysoni7832/lean-ids-tokens",
-  "version": "1.7.3",
+  "version": "1.7.7",
   "type": "module",
   "description": "Design tokens for Lean IDS (Carelon & Elevance themes)",
   "main": "dist/index.js",
@@ -10,9 +10,10 @@
     "dist"
   ],
   "scripts": {
-    "build": "rollup -c && cp src/fonts.css dist/fonts.css",
+    "build": "NODE_ENV=production rollup -c && cp src/fonts.css dist/fonts.css",
     "dev": "rollup -c -w",
-    "extract-tokens": "ts-node scripts/extract-figma-tokens.ts"
+    "extract-tokens": "ts-node scripts/extract-figma-tokens.ts",
+    "prepublishOnly": "npm run build && npm audit --audit-level=moderate"
   },
   "keywords": [
     "design-tokens",

@@ -12,10 +12,10 @@ export const StyledSideNavigation = styled.nav<StyledSideNavigationProps>`
   flex-direction: column;
   justify-content: space-between;
   align-items: ${({ $state }) => $state === 'collapsed' ? 'center' : 'flex-start'};
-  width: ${({ $state }) => $state === 'collapsed' ? '60px' : '236px'};
+  width: ${({ $state }) => $state === 'collapsed' ? '60px' : '14.75rem'}; /* 60px : 236px - No spacing token for 60px */
   height: 100vh; /* Fixed viewport height - sidebar doesn't grow with content */
   background-color: ${({ theme }) => theme.colors.palette.primary[800]};
-  padding: 16px ${({ $state, theme }) => $state === 'collapsed' ? theme.spacing[1] : theme.spacing[2]};
+  padding: ${({ $state, theme }) => `${theme.spacing[4]} ${$state === 'collapsed' ? theme.spacing[1] : theme.spacing[2]}`};
   overflow: visible; /* Changed from hidden to visible so toggle button can overlap */
   transition: width 0.3s ease, padding 0.3s ease;
   flex-shrink: 0;
@@ -25,7 +25,7 @@ export const StyledSideNavigation = styled.nav<StyledSideNavigationProps>`
 export const NavigationContent = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 46px;
+  gap: ${({ theme }) => theme.spacing[11]}; /* 46px */
   width: 100%;
   flex: 1;
   overflow: visible; /* No overflow here - logo and user profile stay fixed */
@@ -35,7 +35,7 @@ export const NavigationContent = styled.div`
 export const ScrollableMenuArea = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 46px;
+  gap: ${({ theme }) => theme.spacing[11]}; /* 46px */
   width: 100%;
   flex: 1;
   overflow-y: auto;
@@ -44,7 +44,7 @@ export const ScrollableMenuArea = styled.div`
   
   /* Custom scrollbar styling */
   &::-webkit-scrollbar {
-    width: 6px;
+    width: ${({ theme }) => theme.spacing[1]}; /* 6px */
   }
   
   &::-webkit-scrollbar-track {
@@ -52,17 +52,17 @@ export const ScrollableMenuArea = styled.div`
   }
   
   &::-webkit-scrollbar-thumb {
-    background-color: rgba(255, 255, 255, 0.2);
-    border-radius: 3px;
+    background-color: rgba(255, 255, 255, ${({ theme }) => (theme as any).opacity?.[20] || '0.2'});
+    border-radius: ${({ theme }) => theme.borderRadius.xs};
   }
   
   &::-webkit-scrollbar-thumb:hover {
-    background-color: rgba(255, 255, 255, 0.3);
+    background-color: rgba(255, 255, 255, ${({ theme }) => (theme as any).opacity?.[30] || '0.3'});
   }
   
   /* Firefox scrollbar */
   scrollbar-width: thin;
-  scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+  scrollbar-color: rgba(255, 255, 255, ${({ theme }) => (theme as any).opacity?.[20] || '0.2'}) transparent;
 `;
 
 interface BrandContainerProps {
@@ -74,7 +74,7 @@ export const BrandContainer = styled.div<BrandContainerProps>`
   flex-direction: row;
   align-items: center;
   justify-content: ${({ $state }) => $state === 'collapsed' ? 'center' : 'space-between'};
-  gap: 8px;
+  gap: ${({ theme }) => theme.spacing[2]};
   padding: 0 ${({ theme }) => theme.spacing[7]};
   width: 100%;
   flex-shrink: 0;
@@ -95,17 +95,8 @@ export const NavigationGroups = styled.div`
   flex-shrink: 0;
 `;
 
-export const GroupTitle = styled.p`
-  font-family: ${({ theme }) => theme.fonts.primary};
-  font-size: ${({ theme }) => theme.fontSizes.caption};
-  font-weight: ${({ theme }) => theme.fontWeights.medium};
-  line-height: ${({ theme }) => theme.lineHeights.caption};
-  letter-spacing: 1px;
-  color: #ccc;
-  padding: 0 ${({ theme }) => theme.spacing[7]};
-  text-transform: uppercase;
-  flex-shrink: 0;
-`;
+// ❌ REMOVED - Use Typography component instead
+// GroupTitle should use: <Typography variant="caption" weight="medium" style={{ letterSpacing: '1px', textTransform: 'uppercase' }}>
 
 export const MenuItemsContainer = styled.div`
   display: flex;
@@ -136,29 +127,16 @@ export const UserInfo = styled.div`
   text-align: left;
 `;
 
-export const UserName = styled.p`
-  font-family: ${({ theme }) => theme.fonts.primary};
-  font-size: ${({ theme }) => theme.fontSizes.body};
-  font-weight: ${({ theme }) => theme.fontWeights.semibold};
-  line-height: ${({ theme }) => theme.lineHeights.body};
-  color: ${({ theme }) => theme.colors.palette.neutral[50]};
-  flex-shrink: 0;
-`;
+// ❌ REMOVED - Use Typography component instead
+// UserName should use: <Typography variant="body" weight="semibold">
 
-export const UserSubtitle = styled.p`
-  font-family: 'Roboto Mono', monospace;
-  font-size: 12px;
-  font-weight: ${({ theme }) => theme.fontWeights.regular};
-  line-height: 14px;
-  letter-spacing: 1.5px;
-  color: ${({ theme }) => theme.colors.palette.primary[50]};
-  flex-shrink: 0;
-`;
+// ❌ REMOVED - Use Typography component instead
+// UserSubtitle should use: <Typography variant="caption" style={{ fontFamily: 'Roboto Mono', letterSpacing: '1.5px' }}>
 
 export const Divider = styled.div`
   width: 100%;
-  height: 1px;
-  background-color: rgba(255, 255, 255, 0.1);
+  height: ${({ theme }) => theme.borderWidth[1]};
+  background-color: rgba(255, 255, 255, ${({ theme }) => (theme as any).opacity?.[10] || '0.1'});
   margin: ${({ theme }) => theme.spacing[3]} 0;
 `;
 
@@ -171,15 +149,15 @@ export const PinButton = styled.button<PinButtonProps>`
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 32px;
-  height: 32px;
-  min-width: 32px;
-  background-color: ${({ $isPinned }) => $isPinned ? 'rgba(255, 255, 255, 0.15)' : 'transparent'};
+  width: ${({ theme }) => theme.spacing[8]}; /* 32px */
+  height: ${({ theme }) => theme.spacing[8]};
+  min-width: ${({ theme }) => theme.spacing[8]};
+  background-color: ${({ $isPinned, theme }) => $isPinned ? `rgba(255, 255, 255, ${(theme as any).opacity?.[15] || '0.15'})` : 'transparent'};
   border: none;
-  border-radius: 4px;
+  border-radius: ${({ theme }) => theme.borderRadius.xs};
   color: ${({ theme }) => theme.colors.palette.neutral[50]};
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: ${({ theme }) => (theme as any).transitions?.default || 'all 0.2s ease'};
   padding: 0;
   flex-shrink: 0;
   
@@ -188,16 +166,21 @@ export const PinButton = styled.button<PinButtonProps>`
   visibility: ${({ $isPinned }) => $isPinned ? 'visible' : 'hidden'};
   
   &:hover {
-    background-color: rgba(255, 255, 255, 0.1);
+    background-color: rgba(255, 255, 255, ${({ theme }) => (theme as any).opacity?.[10] || '0.1'});
   }
   
   &:active {
-    background-color: rgba(255, 255, 255, 0.2);
+    background-color: rgba(255, 255, 255, ${({ theme }) => (theme as any).opacity?.[20] || '0.2'});
+  }
+  
+  &:focus-visible {
+    outline: ${({ theme }) => theme.borderWidth[2]} solid ${({ theme }) => theme.colors.semantic.focus.indicator};
+    outline-offset: ${({ theme }) => theme.spacing[1]};
   }
   
   svg {
-    width: 18px;
-    height: 18px;
+    width: ${({ theme }) => theme.spacing[4]}; /* 18px - closest to spacing[4]=16px */
+    height: ${({ theme }) => theme.spacing[4]};
     flex-shrink: 0;
   }
 `;

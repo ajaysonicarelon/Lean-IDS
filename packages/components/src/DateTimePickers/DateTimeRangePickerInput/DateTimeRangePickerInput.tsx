@@ -50,7 +50,7 @@ export const DateTimeRangePickerInput: React.FC<DateTimeRangePickerInputProps> =
       isOpen={isOpen}
       onClose={() => setIsOpen(false)}
       trigger={
-        <div onClick={handleInputClick}>
+        <div onClick={handleInputClick} style={{ cursor: disabled ? 'not-allowed' : 'pointer' }}>
           <InputField
             label={label}
             value={displayValue}
@@ -64,7 +64,6 @@ export const DateTimeRangePickerInput: React.FC<DateTimeRangePickerInputProps> =
             fullWidth={true}
             trailingIcon={<Icon name="DateRange" size="small" />}
             readOnly
-            style={{ cursor: disabled ? 'not-allowed' : 'pointer' }}
           />
         </div>
       }

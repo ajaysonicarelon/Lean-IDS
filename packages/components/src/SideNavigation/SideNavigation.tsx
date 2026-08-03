@@ -34,7 +34,8 @@
  * - Scrollable content area within fixed viewport height
  */
 
-import React from 'react';
+import React, { forwardRef, useRef, useEffect } from 'react';
+import { useTheme } from 'styled-components';
 import { SideNavigationProps, SideNavigationState, NavigationItem } from './SideNavigation.types';
 import {
   StyledSideNavigation,
@@ -42,44 +43,68 @@ import {
   ScrollableMenuArea,
   BrandContainer,
   NavigationGroups,
-  GroupTitle,
   MenuItemsContainer,
   MenuItemWrapper,
   UserProfileContainer,
   UserInfo,
-  UserName,
-  UserSubtitle,
   Divider,
   PinButton,
   ToggleButton,
 } from './SideNavigation.styles';
 import { Brand } from '../Brand';
 import { MenuItem } from '../MenuItem';
+import { Typography } from '../Typography';
 import { Avatar } from '../Avatar';
 import { NestedMenuOverlay } from '../NestedMenuOverlay';
 import type { NestedMenuItem } from '../NestedMenuOverlay';
 
-export const SideNavigation: React.FC<SideNavigationProps> = ({
-  groups = [],
-  user,
-  className,
-  children,
-  onPinChange,
-  isPinned: externalIsPinned,
-  expandMode = 'hover',
-  toggleButtonPosition = 'top',
-  toggleButtonOffset = 24, // Default: align with brand logo center
-  toggleButtonSize = 'large',
-  toggleButtonIcon,
-  customLogoUrl,
-  customSymbolUrl,
-  logoAlignment = 'left',
-  logoPadding,
-  showLabelsWhenCollapsed = true,
-}) => {
+export const SideNavigation = forwardRef<HTMLElement, SideNavigationProps>((
+  {
+    as,
+    groups = [],
+    user,
+    className,
+    style,
+    brandClassName,
+    groupsClassName,
+    userClassName,
+    toggleButtonClassName,
+    pinButtonClassName,
+    children,
+    isLoading = false,
+    isEmpty = false,
+    isInvalid = false,
+    disabled = false,
+    errorMessage,
+    emptyMessage = 'No navigation items available',
+    onPinChange,
+    isPinned: externalIsPinned,
+    expandMode = 'hover',
+    toggleButtonPosition = 'top',
+    toggleButtonOffset = 24,
+    toggleButtonSize = 'large',
+    toggleButtonIcon,
+    customLogoUrl,
+    customSymbolUrl,
+    logoAlignment = 'left',
+    logoPadding,
+    showLabelsWhenCollapsed = true,
+    onExpand,
+    onCollapse,
+    onAfterExpand,
+    onAfterCollapse,
+    onMenuItemClick,
+    onMenuItemHover,
+    ...restProps
+  },
+  ref
+) => {
+  const theme = useTheme();
+  const Container = as || 'nav';
   const [isHovered, setIsHovered] = React.useState(false);
   const [isExpanded, setIsExpanded] = React.useState(false);
   const [internalIsPinned, setInternalIsPinned] = React.useState(false);
+  const prevStateRef = useRef<SideNavigationState>('collapsed');
   const [nestedMenuState, setNestedMenuState] = React.useState<{
     items: NestedMenuItem[];
     position: { top: number; left: number };
@@ -102,6 +127,36 @@ export const SideNavigation: React.FC<SideNavigationProps> = ({
   };
   
   const effectiveState = getEffectiveState();
+  
+  // Track state changes and trigger callbacks
+  useEffect(() => {
+    const prevState = prevStateRef.current;
+    const currentState = effectiveState;
+    
+    if (prevState !== currentState) {
+      if (prevState === 'collapsed' && currentState === 'expanded') {
+        onExpand?.();
+        
+        // Trigger after-expand callback after animation completes
+        const timer = setTimeout(() => {
+          onAfterExpand?.();
+        }, 300); // Match transition duration from styles
+        
+        return () => clearTimeout(timer);
+      } else if (prevState === 'expanded' && currentState === 'collapsed') {
+        onCollapse?.();
+        
+        // Trigger after-collapse callback after animation completes
+        const timer = setTimeout(() => {
+          onAfterCollapse?.();
+        }, 300);
+        
+        return () => clearTimeout(timer);
+      }
+    }
+    
+    prevStateRef.current = currentState;
+  }, [effectiveState, onExpand, onCollapse, onAfterExpand, onAfterCollapse]);
   
   const handlePinToggle = () => {
     const newPinnedState = !isPinned;
@@ -152,6 +207,9 @@ export const SideNavigation: React.FC<SideNavigationProps> = ({
 
   // Handle menu item hover to show nested menu
   const handleMenuItemHover = (item: NavigationItem, event: React.MouseEvent<HTMLDivElement>) => {
+    // Trigger callback
+    onMenuItemHover?.(item);
+    
     // Clear any existing timeout
     if (hoverTimeoutRef.current) {
       clearTimeout(hoverTimeoutRef.current);
@@ -181,6 +239,14 @@ export const SideNavigation: React.FC<SideNavigationProps> = ({
     }
   };
 
+  // Handle menu item click
+  const handleMenuItemClick = (item: NavigationItem) => {
+    // Trigger item's own onClick first
+    item.onClick?.();
+    // Then trigger the component's callback
+    onMenuItemClick?.(item);
+  };
+  
   const handleMenuItemLeave = () => {
     // Clear hover timeout if mouse leaves before delay completes
     if (hoverTimeoutRef.current) {
@@ -201,13 +267,186 @@ export const SideNavigation: React.FC<SideNavigationProps> = ({
 
   const shouldEnableHover = expandMode === 'hover' || expandMode === 'both';
 
+  // Keyboard navigation handler
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLElement>) => {
+    if (disabled) return;
+    
+    // Escape key - collapse sidebar
+    if (e.key === 'Escape' && effectiveState === 'expanded') {
+      e.preventDefault();
+      
+      if (isPinned) {
+        // If pinned, unpin to collapse
+        handlePinToggle();
+      } else if (expandMode === 'button' || expandMode === 'both') {
+        // If using button mode, collapse via button state
+        setIsExpanded(false);
+      }
+      // Note: hover mode will collapse naturally when mouse leaves
+    }
+    
+    // Pass through to parent
+    restProps.onKeyDown?.(e);
+  };
+
+  // Loading State
+  if (isLoading) {
+    return (
+      <StyledSideNavigation
+        as={Container}
+        ref={ref}
+        $state="collapsed"
+        className={className}
+        style={style}
+        aria-busy="true"
+        aria-label="Loading navigation"
+        {...restProps}
+      >
+        <NavigationContent>
+          <div style={{ 
+            display: 'flex', 
+            flexDirection: 'column', 
+            alignItems: 'center', 
+            justifyContent: 'center',
+            height: '100%',
+            gap: theme.spacing[4]
+          }}>
+            {/* Loading Spinner */}
+            <svg 
+              width="32" 
+              height="32" 
+              viewBox="0 0 32 32" 
+              fill="none" 
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <circle 
+                cx="16" 
+                cy="16" 
+                r="12" 
+                stroke={theme.colors.palette.neutral[50]}
+                strokeWidth="3" 
+                strokeLinecap="round" 
+                strokeDasharray="18.84 18.84"
+              >
+                <animateTransform
+                  attributeName="transform"
+                  type="rotate"
+                  from="0 16 16"
+                  to="360 16 16"
+                  dur="1s"
+                  repeatCount="indefinite"
+                />
+              </circle>
+            </svg>
+            <Typography 
+              variant="body" 
+              style={{ color: theme.colors.palette.neutral[50] }}
+            >
+              Loading...
+            </Typography>
+          </div>
+        </NavigationContent>
+      </StyledSideNavigation>
+    );
+  }
+
+  // Empty State
+  if (isEmpty || (groups.length === 0 && !children)) {
+    return (
+      <StyledSideNavigation
+        as={Container}
+        ref={ref}
+        $state="collapsed"
+        className={className}
+        style={style}
+        aria-label={emptyMessage}
+        {...restProps}
+      >
+        <NavigationContent>
+          <div style={{ 
+            display: 'flex', 
+            flexDirection: 'column', 
+            alignItems: 'center', 
+            justifyContent: 'center',
+            height: '100%',
+            padding: theme.spacing[4],
+            textAlign: 'center'
+          }}>
+            <Typography 
+              variant="body" 
+              style={{ color: theme.colors.palette.neutral[300] }}
+            >
+              {emptyMessage}
+            </Typography>
+          </div>
+        </NavigationContent>
+      </StyledSideNavigation>
+    );
+  }
+
+  // Error State
+  if (isInvalid && errorMessage) {
+    return (
+      <StyledSideNavigation
+        as={Container}
+        ref={ref}
+        $state="collapsed"
+        className={className}
+        style={style}
+        aria-invalid="true"
+        aria-label={errorMessage}
+        {...restProps}
+      >
+        <NavigationContent>
+          <div style={{ 
+            display: 'flex', 
+            flexDirection: 'column', 
+            alignItems: 'center', 
+            justifyContent: 'center',
+            height: '100%',
+            padding: theme.spacing[4],
+            textAlign: 'center',
+            gap: theme.spacing[2]
+          }}>
+            <Typography 
+              variant="body" 
+              weight="semibold"
+              style={{ color: theme.colors.semantic.text.error }}
+            >
+              Error
+            </Typography>
+            <Typography 
+              variant="caption" 
+              style={{ color: theme.colors.palette.neutral[300] }}
+            >
+              {errorMessage}
+            </Typography>
+          </div>
+        </NavigationContent>
+      </StyledSideNavigation>
+    );
+  }
+
+  // Default State
   return (
     <StyledSideNavigation
+      as={Container}
+      ref={ref}
       $state={effectiveState}
       className={className}
+      style={{
+        ...style,
+        opacity: disabled ? 0.5 : 1,
+        pointerEvents: disabled ? 'none' : 'auto'
+      }}
       aria-label="Side navigation"
-      onMouseEnter={() => !isPinned && shouldEnableHover && setIsHovered(true)}
+      aria-busy={isLoading}
+      aria-disabled={disabled}
+      tabIndex={-1}
+      onKeyDown={handleKeyDown}
+      onMouseEnter={() => !isPinned && shouldEnableHover && !disabled && setIsHovered(true)}
       onMouseLeave={() => !isPinned && shouldEnableHover && setIsHovered(false)}
+      {...restProps}
     >
       {/* Toggle Button - Positioned absolutely relative to sidebar, outside scrollable content */}
       {(expandMode === 'button' || expandMode === 'both') && !isPinned && (
@@ -215,9 +454,12 @@ export const SideNavigation: React.FC<SideNavigationProps> = ({
           $position={toggleButtonPosition}
           $offset={toggleButtonOffset}
           $size={toggleButtonSize}
+          className={toggleButtonClassName}
           onClick={handleToggleClick}
-          aria-label={isExpanded ? 'Collapse sidebar' : 'Expand sidebar'}
-          title={isExpanded ? 'Collapse sidebar' : 'Expand sidebar'}
+          aria-label={isExpanded ? 'Collapse sidebar (Escape)' : 'Expand sidebar'}
+          aria-keyshortcuts="Escape"
+          title={isExpanded ? 'Collapse sidebar (Press Escape)' : 'Expand sidebar'}
+          disabled={disabled}
         >
           {toggleButtonIcon ? (
             toggleButtonIcon
@@ -237,7 +479,7 @@ export const SideNavigation: React.FC<SideNavigationProps> = ({
 
       <NavigationContent>
         {/* Brand Logo and Pin Button */}
-        <BrandContainer $state={effectiveState}>
+        <BrandContainer $state={effectiveState} className={brandClassName}>
           {/* Brand Logo - Left side */}
           <Brand 
             variant={effectiveState === 'collapsed' ? 'symbol' : 'logo'}
@@ -253,9 +495,12 @@ export const SideNavigation: React.FC<SideNavigationProps> = ({
             <PinButton 
               $isPinned={isPinned} 
               $state={effectiveState}
+              className={pinButtonClassName}
               onClick={handlePinToggle}
-              aria-label={isPinned ? 'Unpin sidebar' : 'Pin sidebar'}
-              title={isPinned ? 'Unpin sidebar' : 'Pin sidebar'}
+              aria-label={isPinned ? 'Unpin sidebar (Escape to close)' : 'Pin sidebar'}
+              aria-keyshortcuts="Escape"
+              title={isPinned ? 'Unpin sidebar (Press Escape to close)' : 'Pin sidebar'}
+              disabled={disabled}
             >
               <svg viewBox="0 0 24 24" fill={isPinned ? "currentColor" : "none"} stroke="currentColor" strokeWidth={isPinned ? "0" : "2"}>
                 {isPinned ? (
@@ -274,10 +519,23 @@ export const SideNavigation: React.FC<SideNavigationProps> = ({
         <ScrollableMenuArea>
           {/* Navigation Groups */}
           {effectiveState === 'expanded' && (
-            <NavigationGroups>
+            <NavigationGroups className={groupsClassName}>
               {children || groups.map((group, groupIndex) => (
                 <React.Fragment key={groupIndex}>
-                  {group.title && <GroupTitle>{group.title}</GroupTitle>}
+                  {group.title && (
+                    <Typography 
+                      variant="caption" 
+                      weight="medium" 
+                      style={{ 
+                        letterSpacing: '1px', 
+                        textTransform: 'uppercase',
+                        color: theme.colors.palette.neutral[300],
+                        padding: `0 ${theme.spacing[4]}`
+                      }}
+                    >
+                      {group.title}
+                    </Typography>
+                  )}
                   
                   <MenuItemsContainer>
                     {group.items.map((item) => (
@@ -296,7 +554,7 @@ export const SideNavigation: React.FC<SideNavigationProps> = ({
                           showLabel={true}
                           showIndicator={item.showIndicator}
                           nestedMenu={!!item.children && item.children.length > 0}
-                          onClick={item.onClick}
+                          onClick={() => handleMenuItemClick(item)}
                         />
                       </MenuItemWrapper>
                     ))}
@@ -331,7 +589,7 @@ export const SideNavigation: React.FC<SideNavigationProps> = ({
                           showLabel={showLabelsWhenCollapsed}
                           showIndicator={item.showIndicator}
                           nestedMenu={!!item.children && item.children.length > 0}
-                          onClick={item.onClick}
+                          onClick={() => handleMenuItemClick(item)}
                         />
                       </MenuItemWrapper>
                     ))}
@@ -358,6 +616,7 @@ export const SideNavigation: React.FC<SideNavigationProps> = ({
       {user && (
         <UserProfileContainer 
           $state={effectiveState}
+          className={userClassName}
           onClick={user.onClick}
           style={{ cursor: user.onClick ? 'pointer' : 'default' }}
         >
@@ -371,12 +630,29 @@ export const SideNavigation: React.FC<SideNavigationProps> = ({
           
           {effectiveState === 'expanded' && (
             <UserInfo>
-              <UserName>{user.name}</UserName>
-              <UserSubtitle>{user.subtitle}</UserSubtitle>
+              <Typography 
+                variant="body" 
+                weight="semibold"
+                style={{ color: theme.colors.palette.neutral[50] }}
+              >
+                {user.name}
+              </Typography>
+              <Typography 
+                variant="caption"
+                style={{ 
+                  fontFamily: 'Roboto Mono, monospace',
+                  letterSpacing: '1.5px',
+                  color: theme.colors.palette.primary[50]
+                }}
+              >
+                {user.subtitle}
+              </Typography>
             </UserInfo>
           )}
         </UserProfileContainer>
       )}
     </StyledSideNavigation>
   );
-};
+});
+
+SideNavigation.displayName = 'SideNavigation';

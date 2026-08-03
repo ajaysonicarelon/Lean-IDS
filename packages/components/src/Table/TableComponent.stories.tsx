@@ -20,32 +20,23 @@ const meta: Meta<typeof Table> = {
       },
       description: {
         component: `
-# Basic Table
+Data table with sorting, filtering, pagination, and column resizing.
 
-Complete data table with sorting, filtering, pagination.
+**Features:** Sorting • Filtering • Pagination • Row selection • Column resizing • Custom cell rendering
 
-## Installation
-\`\`\`bash
-npm install @ajaysoni7832/lean-ids-components
-\`\`\`
-
-## Basic Usage
+## Quick Start
 \`\`\`tsx
 import { Table } from '@ajaysoni7832/lean-ids-components';
 
-const columns = [
-  { key: 'name', header: 'Name', sortable: true },
-  { key: 'email', header: 'Email' },
-];
-
-<Table data={data} columns={columns} />
+<Table 
+  data={data} 
+  columns={columns}
+  sortable
+  resizable
+/>
 \`\`\`
 
-## Features
-✅ Sorting, filtering, pagination
-✅ Row selection
-✅ Custom cell rendering
-✅ Responsive
+See stories below for detailed examples.
         `,
       },
     },
@@ -342,6 +333,7 @@ const advancedColumns: TableColumn[] = [
     label: 'Department',
     accessor: 'department',
     sortable: true,
+    resizable: true,
     width: 150,
     minWidth: 120,
     maxWidth: 200,
@@ -351,6 +343,7 @@ const advancedColumns: TableColumn[] = [
     label: 'Status',
     accessor: 'status',
     sortable: true,
+    resizable: true,
     width: 120,
     minWidth: 100,
     maxWidth: 150,
@@ -358,7 +351,7 @@ const advancedColumns: TableColumn[] = [
       <Badge 
         label={value} 
         type={value === 'Active' ? 'success' : 'error'}
-        style="default"
+        styleVariant="default"
       />
     ),
   },
@@ -468,18 +461,6 @@ export const FixedHeaderScroll: Story = {
         iframeHeight: 700,
       },
     },
-  },
-};
-
-/**
- * Loading state
- */
-export const Loading: Story = {
-  args: {
-    data: sampleData,
-    columns: basicColumns,
-    loading: true,
-    title: 'Tabular View',
   },
 };
 

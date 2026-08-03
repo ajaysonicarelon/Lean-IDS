@@ -7,7 +7,7 @@ import { useEffect } from 'react';
 {`
   // Mark updates as viewed when user visits this page
   if (typeof window !== 'undefined') {
-    const currentVersion = '1.7.1';
+    const currentVersion = '1.7.7';
     const lastViewedVersion = localStorage.getItem('lean-ids-last-viewed-version');
     
     // Mark as viewed
@@ -217,7 +217,7 @@ import { useEffect } from 'react';
     <div className="icon">🔔</div>
     <div className="content">
       <div className="title">New Update Available!</div>
-      <div className="message">Version 1.7.6 has been released. Check out the latest changes below.</div>
+      <div className="message">Version 1.7.7 has been released. Check out the latest changes below.</div>
     </div>
   </div>
 </div>
@@ -225,7 +225,7 @@ import { useEffect } from 'react';
 <script dangerouslySetInnerHTML={{__html: `
   (function() {
     if (typeof window !== 'undefined') {
-      const currentVersion = '1.7.1';
+      const currentVersion = '1.7.7';
       const lastViewedVersion = localStorage.getItem('lean-ids-last-viewed-version');
       
       // Show banner if user hasn't seen this version

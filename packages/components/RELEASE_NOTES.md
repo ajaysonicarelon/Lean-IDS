@@ -1,3 +1,37 @@
+# Release Notes - Lean IDS v1.7.7
+
+**Release Date:** August 3, 2026  
+**Package:** `@ajaysoni7832/lean-ids-components`
+
+---
+
+## 🚀 What's New in v1.7.7
+
+### ✨ Enhancements
+- **Enhanced Table Components** - Improved Table, TableHeader, and TableCell implementations
+- **Pre-Deployment Workflow** - Added comprehensive deployment validation script with 9-phase checks
+- **Documentation Updates** - Added DEPLOYMENT_WORKFLOW.md for complete release process
+
+### 📚 Documentation
+- **New:** DEPLOYMENT_WORKFLOW.md - Complete step-by-step deployment guide
+- **Enhanced:** Pre-deployment script now validates Storybook documentation updates
+- **Updated:** Storybook updates page now shows v1.7.7
+
+### 🔧 Technical Improvements
+- Version synchronization across all packages
+- Improved deployment validation process
+- Enhanced Storybook documentation workflow
+
+---
+
+## 📦 Installation
+
+```bash
+npm install @ajaysoni7832/lean-ids-components@1.7.7 @ajaysoni7832/lean-ids-tokens@1.7.7
+```
+
+---
+
 # Release Notes - Lean IDS v1.7.6
 
 **Release Date:** July 22, 2026  

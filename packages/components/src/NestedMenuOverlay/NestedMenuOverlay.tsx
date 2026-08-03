@@ -323,9 +323,10 @@ export const NestedMenuOverlay = forwardRef<HTMLDivElement, NestedMenuOverlayPro
             onClick={(e) => handleItemClick(item, e)}
             onKeyDown={(e) => handleKeyDown(e, item)}
             role="menuitem"
-            tabIndex={disabled || item.disabled ? -1 : 0}
+            tabIndex={disabled || item.disabled ? -1 : (item.active ? 0 : -1)}
+            aria-selected={item.active || false}
             aria-disabled={item.disabled}
-            aria-haspopup={!!item.children && item.children.length > 0}
+            aria-haspopup={!!item.children && item.children.length > 0 ? 'menu' : undefined}
           >
             {item.icon && (
               <div style={{ 

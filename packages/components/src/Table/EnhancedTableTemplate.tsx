@@ -150,7 +150,7 @@ const getSimpleColumnConfigs = (): ColumnConfig[] => [
 
 // Columns with sub-headers (for WithSubHeaders story)
 export const getNestedColumnConfigs = (): ColumnConfig[] => [
-  { id: 'checkbox', label: 'Select', visible: true, locked: true, order: 0 },
+  { id: 'checkbox', label: 'Select', visible: true, locked: true, order: 0, width: 48, minWidth: 48, maxWidth: 48 },
   { 
     id: 'claimId', 
     label: 'User Details', 
@@ -158,14 +158,14 @@ export const getNestedColumnConfigs = (): ColumnConfig[] => [
     locked: false, 
     order: 1,
     subColumns: [
-      { id: 'firstName', label: 'First Name', visible: true, locked: false, order: 0, parentId: 'claimId' },
-      { id: 'lastName', label: 'Last Name', visible: true, locked: false, order: 1, parentId: 'claimId' },
+      { id: 'firstName', label: 'First Name', visible: true, locked: false, order: 0, parentId: 'claimId', width: 200, minWidth: 120, maxWidth: 300, resizable: true },
+      { id: 'lastName', label: 'Last Name', visible: true, locked: false, order: 1, parentId: 'claimId', width: 200, minWidth: 120, maxWidth: 300, resizable: true },
     ]
   },
-  { id: 'userDetails', label: 'Role', visible: true, locked: false, order: 2 },
-  { id: 'nrCodes', label: 'NR Codes', visible: true, locked: false, order: 3 },
-  { id: 'paidAmount', label: 'Paid Amount', visible: true, locked: false, order: 4 },
-  { id: 'acrLoadDates', label: 'ACR Load Dates', visible: true, locked: false, order: 5 },
+  { id: 'userDetails', label: 'Role', visible: true, locked: false, order: 2, width: 180, minWidth: 100, maxWidth: 250, resizable: true },
+  { id: 'nrCodes', label: 'NR Codes', visible: true, locked: false, order: 3, width: 150, minWidth: 100, maxWidth: 200, resizable: true },
+  { id: 'paidAmount', label: 'Paid Amount', visible: true, locked: false, order: 4, width: 150, minWidth: 100, maxWidth: 200, resizable: true },
+  { id: 'acrLoadDates', label: 'ACR Load Dates', visible: true, locked: false, order: 5, width: 180, minWidth: 120, maxWidth: 250, resizable: true },
   { 
     id: 'address', 
     label: 'Address', 
@@ -173,14 +173,14 @@ export const getNestedColumnConfigs = (): ColumnConfig[] => [
     locked: false, 
     order: 6,
     subColumns: [
-      { id: 'city', label: 'City', visible: true, locked: false, order: 0, parentId: 'address' },
-      { id: 'state', label: 'State', visible: true, locked: false, order: 1, parentId: 'address' },
+      { id: 'city', label: 'City', visible: true, locked: false, order: 0, parentId: 'address', width: 150, minWidth: 100, maxWidth: 200, resizable: true },
+      { id: 'state', label: 'State', visible: true, locked: false, order: 1, parentId: 'address', width: 100, minWidth: 80, maxWidth: 150, resizable: true },
     ]
   },
-  { id: 'contact', label: 'Contact', visible: true, locked: false, order: 7 },
-  { id: 'status', label: 'Status', visible: true, locked: false, order: 8 },
-  { id: 'priority', label: 'Priority', visible: true, locked: false, order: 9 },
-  { id: 'amount', label: 'Amount', visible: true, locked: false, order: 10 },
+  { id: 'contact', label: 'Contact', visible: true, locked: false, order: 7, width: 180, minWidth: 120, maxWidth: 250, resizable: true },
+  { id: 'status', label: 'Status', visible: true, locked: false, order: 8, width: 120, minWidth: 80, maxWidth: 180, resizable: true },
+  { id: 'priority', label: 'Priority', visible: true, locked: false, order: 9, width: 120, minWidth: 80, maxWidth: 180, resizable: true },
+  { id: 'amount', label: 'Amount', visible: true, locked: false, order: 10, width: 150, minWidth: 100, maxWidth: 200, resizable: true },
 ];
 
 interface AdvancedTableProps {
@@ -215,6 +215,10 @@ interface AdvancedTableProps {
   sortDirection?: 'asc' | 'desc' | 'none';
   /** Maximum height for table body (enables fixed header with internal scroll). Example: '400px', '50vh' */
   maxHeight?: string;
+  /** Default minimum width for columns that don't specify minWidth (default: 50px) */
+  defaultMinWidth?: number;
+  /** Default maximum width for columns that don't specify maxWidth (default: 250px) */
+  defaultMaxWidth?: number;
 }
 
 export const AdvancedDataTable: React.FC<AdvancedTableProps> = ({ 
@@ -233,6 +237,8 @@ export const AdvancedDataTable: React.FC<AdvancedTableProps> = ({
   sortColumn: controlledSortColumn,
   sortDirection: controlledSortDirection,
   maxHeight,
+  defaultMinWidth = 50,
+  defaultMaxWidth = 250,
 }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
@@ -389,9 +395,30 @@ export const AdvancedDataTable: React.FC<AdvancedTableProps> = ({
   }, [sidePanelFilters, showColumnSearchByDefault]);
 
   const handleColumnResize = (columnId: string, width: number) => {
+    // Find the column configuration to get min/max constraints
+    let column = columnConfigs.find(c => c.id === columnId);
+    
+    // If not found in parent columns, search in sub-columns
+    if (!column) {
+      for (const parentCol of columnConfigs) {
+        if (parentCol.subColumns) {
+          column = parentCol.subColumns.find(sc => sc.id === columnId);
+          if (column) break;
+        }
+      }
+    }
+    
+    // Apply min/max constraints with defaults from props
+    const minWidth = column?.minWidth !== undefined ? column.minWidth : defaultMinWidth;
+    const maxWidth = column?.maxWidth !== undefined ? column.maxWidth : defaultMaxWidth;
+
+    let constrainedWidth = width;
+    constrainedWidth = Math.max(constrainedWidth, minWidth);
+    constrainedWidth = Math.min(constrainedWidth, maxWidth);
+
     setColumnWidths(prev => ({
       ...prev,
-      [columnId]: width
+      [columnId]: constrainedWidth
     }));
   };
 
@@ -574,6 +601,9 @@ export const AdvancedDataTable: React.FC<AdvancedTableProps> = ({
                 resizable={!col.subColumns}
                 onResize={!col.subColumns ? (width) => handleColumnResize(col.id, width) : undefined}
                 width={currentWidth}
+                minWidth={col.minWidth !== undefined ? col.minWidth : defaultMinWidth}
+                maxWidth={col.maxWidth !== undefined ? col.maxWidth : defaultMaxWidth}
+                initialWidth={typeof col.width === 'number' ? col.width : undefined}
               />
             );
           })}
@@ -609,6 +639,9 @@ export const AdvancedDataTable: React.FC<AdvancedTableProps> = ({
                     resizable={true}
                     onResize={(width) => handleColumnResize(subCol.id, width)}
                     width={currentWidth}
+                    minWidth={subCol.minWidth !== undefined ? subCol.minWidth : defaultMinWidth}
+                    maxWidth={subCol.maxWidth !== undefined ? subCol.maxWidth : defaultMaxWidth}
+                    initialWidth={typeof subCol.width === 'number' ? subCol.width : undefined}
                   />
                 );
               });
@@ -712,16 +745,20 @@ export const AdvancedDataTable: React.FC<AdvancedTableProps> = ({
                   return col.subColumns.map((subCol) => {
                     const dynamicWidth = columnWidths[subCol.id];
                     const width = dynamicWidth ? `${dynamicWidth}px` : (subCol.width || col.width || '150px');
-                    return <col key={subCol.id} style={{ width }} />;
+                    const minWidth = subCol.minWidth ? `${subCol.minWidth}px` : `${defaultMinWidth}px`;
+                    const maxWidth = subCol.maxWidth ? `${subCol.maxWidth}px` : `${defaultMaxWidth}px`;
+                    return <col key={subCol.id} style={{ width, minWidth, maxWidth }} />;
                   });
                 } else if (col.id === 'checkbox') {
                   const dynamicWidth = columnWidths[col.id];
                   const width = dynamicWidth ? `${dynamicWidth}px` : (col.width || '48px');
-                  return <col key={col.id} style={{ width }} />;
+                  return <col key={col.id} style={{ width, minWidth: '48px', maxWidth: '48px' }} />;
                 } else {
                   const dynamicWidth = columnWidths[col.id];
                   const width = dynamicWidth ? `${dynamicWidth}px` : (col.width || '150px');
-                  return <col key={col.id} style={{ width }} />;
+                  const minWidth = col.minWidth ? `${col.minWidth}px` : `${defaultMinWidth}px`;
+                  const maxWidth = col.maxWidth ? `${col.maxWidth}px` : `${defaultMaxWidth}px`;
+                  return <col key={col.id} style={{ width, minWidth, maxWidth }} />;
                 }
               })}
             </colgroup>
@@ -797,6 +834,9 @@ export const AdvancedDataTable: React.FC<AdvancedTableProps> = ({
                       );
                     }
 
+                    const dynamicWidth = columnWidths[col.id];
+                    const currentWidth = dynamicWidth || (typeof col.width === 'number' ? col.width : undefined);
+                    
                     return (
                       <TableCell
                         key={col.id}
@@ -805,6 +845,7 @@ export const AdvancedDataTable: React.FC<AdvancedTableProps> = ({
                         leftOffset={offset}
                         data-locked={isLocked}
                         isFirstColumn={isFirstColumn}
+                        width={currentWidth}
                       >
                         {row[col.id as keyof DataRow]}
                       </TableCell>

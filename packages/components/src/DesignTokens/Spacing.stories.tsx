@@ -7,7 +7,7 @@
 
 import type { Meta, StoryObj } from '@storybook/react';
 import React, { useState } from 'react';
-import { spacing } from '../../../tokens/src';
+import { spacing, carelonSemanticColors, borderRadius, fontSizes, fontWeights } from '../../../tokens/src';
 
 const SpacingToken: React.FC<{
   name: string;
@@ -29,10 +29,10 @@ const SpacingToken: React.FC<{
       style={{
         display: 'flex',
         flexDirection: 'column',
-        gap: '12px',
-        padding: '16px',
-        border: '1px solid #e6e6e6',
-        borderRadius: '8px',
+        gap: spacing['5'],
+        padding: spacing['7'],
+        border: `1px solid ${carelonSemanticColors.border.default}`,
+        borderRadius: borderRadius.md,
         cursor: 'pointer',
         transition: 'all 0.2s',
         backgroundColor: '#ffffff',
@@ -47,44 +47,44 @@ const SpacingToken: React.FC<{
     >
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <div>
-          <div style={{ fontWeight: 600, fontSize: '14px', marginBottom: '4px' }}>
+          <div style={{ fontWeight: fontWeights.semibold, fontSize: fontSizes[14], marginBottom: spacing['1'] }}>
             spacing.{name}
           </div>
           <code
             style={{
-              fontSize: '12px',
-              color: '#6c6c6c',
+              fontSize: fontSizes[12],
+              color: carelonSemanticColors.text.secondary,
               fontFamily: 'monospace',
-              backgroundColor: '#f8f8f8',
-              padding: '2px 6px',
-              borderRadius: '4px',
+              backgroundColor: carelonSemanticColors.background.secondary,
+              padding: `2px ${spacing['2']}`,
+              borderRadius: borderRadius.sm,
             }}
           >
             {value}
           </code>
         </div>
         {copied && (
-          <span style={{ fontSize: '12px', color: '#108808', fontWeight: 500 }}>
+          <span style={{ fontSize: fontSizes[12], color: carelonSemanticColors.text.success, fontWeight: fontWeights.medium }}>
             ✓ Copied
           </span>
         )}
       </div>
       
       {description && (
-        <p style={{ fontSize: '12px', color: '#909090', margin: 0 }}>{description}</p>
+        <p style={{ fontSize: fontSizes[12], color: carelonSemanticColors.text.secondary, margin: 0 }}>{description}</p>
       )}
       
-      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '8px' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: spacing['3'], marginTop: spacing['3'] }}>
         <div
           style={{
             width: pixelValue,
             height: '32px',
-            backgroundColor: '#5009b5',
-            borderRadius: '4px',
+            backgroundColor: carelonSemanticColors.interactive.default,
+            borderRadius: borderRadius.sm,
             transition: 'width 0.3s',
           }}
         />
-        <span style={{ fontSize: '11px', color: '#909090' }}>
+        <span style={{ fontSize: fontSizes[10], color: carelonSemanticColors.text.secondary }}>
           {pixelValue}px visual
         </span>
       </div>
@@ -167,23 +167,23 @@ type Story = StoryObj;
 
 export const AllSpacingTokens: Story = {
   render: () => (
-    <div style={{ padding: '24px', maxWidth: '1200px' }}>
-      <div style={{ marginBottom: '48px' }}>
-        <h1 style={{ fontSize: '32px', fontWeight: 700, marginBottom: '8px' }}>
+    <div style={{ padding: spacing['10'], maxWidth: '1200px' }}>
+      <div style={{ marginBottom: spacing['17'] }}>
+        <h1 style={{ fontSize: fontSizes[32], fontWeight: fontWeights.bold, marginBottom: spacing['3'] }}>
           Spacing Tokens
         </h1>
-        <p style={{ fontSize: '16px', color: '#6c6c6c', marginBottom: '16px' }}>
+        <p style={{ fontSize: fontSizes[16], color: carelonSemanticColors.text.secondary, marginBottom: spacing['7'] }}>
           Based on 8px grid system for consistent spacing
         </p>
         <div
           style={{
-            padding: '12px 16px',
-            backgroundColor: '#f0f4ff',
-            borderRadius: '8px',
-            border: '1px solid #c1d3ff',
+            padding: `${spacing['5']} ${spacing['7']}`,
+            backgroundColor: carelonSemanticColors.background.primary,
+            borderRadius: borderRadius.md,
+            border: `1px solid ${carelonSemanticColors.border.default}`,
           }}
         >
-          <p style={{ fontSize: '14px', color: '#3d5799', margin: 0 }}>
+          <p style={{ fontSize: fontSizes[14], color: carelonSemanticColors.text.primary, margin: 0 }}>
             💡 <strong>Tip:</strong> Click any token to copy its value to clipboard
           </p>
         </div>
@@ -193,7 +193,7 @@ export const AllSpacingTokens: Story = {
         style={{
           display: 'grid',
           gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
-          gap: '24px',
+          gap: spacing['10'],
         }}
       >
         {Object.entries(spacing).map(([key, value]) => {
@@ -220,25 +220,25 @@ export const AllSpacingTokens: Story = {
         })}
       </div>
 
-      <div style={{ marginTop: '64px', padding: '24px', backgroundColor: '#fafafa', borderRadius: '8px' }}>
-        <h2 style={{ fontSize: '20px', fontWeight: 600, marginBottom: '16px' }}>
+      <div style={{ marginTop: spacing['20'], padding: spacing['10'], backgroundColor: carelonSemanticColors.background.secondary, borderRadius: borderRadius.md }}>
+        <h2 style={{ fontSize: fontSizes[20], fontWeight: fontWeights.semibold, marginBottom: spacing['7'] }}>
           Visual Scale Reference
         </h2>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: spacing['7'] }}>
           {Object.entries(spacing).map(([key, value]) => (
-            <div key={key} style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-              <span style={{ fontSize: '14px', fontWeight: 500, minWidth: '100px' }}>
+            <div key={key} style={{ display: 'flex', alignItems: 'center', gap: spacing['7'] }}>
+              <span style={{ fontSize: fontSizes[14], fontWeight: fontWeights.medium, minWidth: '100px' }}>
                 spacing.{key}
               </span>
               <div
                 style={{
                   height: '24px',
                   width: value,
-                  backgroundColor: '#5009b5',
-                  borderRadius: '4px',
+                  backgroundColor: carelonSemanticColors.interactive.default,
+                  borderRadius: borderRadius.sm,
                 }}
               />
-              <span style={{ fontSize: '12px', color: '#6c6c6c' }}>{value}</span>
+              <span style={{ fontSize: fontSizes[12], color: carelonSemanticColors.text.secondary }}>{value}</span>
             </div>
           ))}
         </div>

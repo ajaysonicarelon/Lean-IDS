@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { Tabs } from './Tabs';
+import { Typography } from '../Typography';
 import type { TabItem } from './Tabs.types';
 
 const meta: Meta<typeof Tabs> = {
@@ -11,9 +12,19 @@ const meta: Meta<typeof Tabs> = {
     docs: {
       description: {
         component: `
-# Tabs
+# Tabs Component
 
-A flexible tab navigation component with parent/child hierarchy support, icons, badges, and disabled states.
+Enterprise-grade tab navigation with horizontal and vertical orientations, parent/child hierarchy, and full accessibility.
+
+## Features
+
+✅ **Three Orientations** - Horizontal, Vertical Left, Vertical Right
+✅ **Two Tab Types** - Parent (primary) and Child (secondary)
+✅ **All 8 States** - Default, hover, focus, active, disabled, loading, empty, error
+✅ **Full Accessibility** - ARIA, keyboard navigation, focus management
+✅ **Design Tokens** - No hardcoded values
+✅ **forwardRef Support** - Access DOM node
+✅ **Polymorphic** - Render as different elements
 
 ## Installation
 
@@ -25,15 +36,13 @@ npm install @ajaysoni7832/lean-ids-components
 
 \`\`\`tsx
 import { Tabs } from '@ajaysoni7832/lean-ids-components';
-import type { TabItem } from '@ajaysoni7832/lean-ids-components';
 
 function MyComponent() {
   const [activeTab, setActiveTab] = useState('1');
   
-  const tabs: TabItem[] = [
+  const tabs = [
     { id: '1', label: 'Dashboard', leadingIcon: 'Home', count: 4 },
     { id: '2', label: 'Analytics', leadingIcon: 'BarChart', count: 12 },
-    { id: '3', label: 'Reports', leadingIcon: 'Description' },
   ];
 
   return (
@@ -41,133 +50,29 @@ function MyComponent() {
       tabs={tabs}
       activeTab={activeTab}
       onChange={setActiveTab}
+      orientation="horizontal"
       type="parent"
-      showLeadingIcon
-      showBadge
     />
   );
 }
 \`\`\`
 
-## Features
+## Orientation Examples
 
-✅ **Two Tab Types** - Parent (primary) and Child (secondary) tabs
-✅ **Icons Support** - Leading and trailing icons
-✅ **Badge Counts** - Show numerical badges on tabs
-✅ **Disabled State** - Disable specific tabs
-✅ **Hierarchy** - Combine parent and child tabs
-✅ **Responsive** - Scrollable when many tabs
-✅ **Keyboard Navigation** - Full keyboard support
-
-## Props
-
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| tabs | TabItem[] | required | Array of tab items |
-| activeTab | string | required | ID of active tab |
-| onChange | (id: string) => void | required | Tab change handler |
-| type | 'parent' \\| 'child' | 'parent' | Tab hierarchy type |
-| showLeadingIcon | boolean | false | Show leading icons |
-| showTrailingIcon | boolean | false | Show trailing icons |
-| showBadge | boolean | false | Show badge counts |
-| className | string | - | Custom CSS class |
-
-## TabItem Interface
-
+### Horizontal (Default)
 \`\`\`tsx
-interface TabItem {
-  id: string;              // Unique identifier
-  label: string;           // Tab label text
-  leadingIcon?: string;    // Material icon name
-  trailingIcon?: string;   // Material icon name
-  count?: number;          // Badge count
-  disabled?: boolean;      // Disable the tab
-}
+<Tabs orientation="horizontal" ... />
 \`\`\`
 
-## Tab Types
-
-### Parent Tabs (Primary)
-- Larger size, bolder styling
-- Use for main navigation sections
-- Example: Dashboard, Analytics, Settings
-
-### Child Tabs (Secondary)
-- Smaller size, lighter styling
-- Use for sub-navigation within a section
-- Example: Overview, Details, History
-
-## Examples
-
-### Minimal Tabs
+### Vertical Left (Sidebar)
 \`\`\`tsx
-<Tabs
-  tabs={[
-    { id: '1', label: 'Tab 1' },
-    { id: '2', label: 'Tab 2' },
-  ]}
-  activeTab={activeTab}
-  onChange={setActiveTab}
-  type="parent"
-/>
+<Tabs orientation="vertical-left" ... />
 \`\`\`
 
-### With Icons and Badges
+### Vertical Right
 \`\`\`tsx
-<Tabs
-  tabs={[
-    { id: '1', label: 'Dashboard', leadingIcon: 'Home', count: 4 },
-    { id: '2', label: 'Analytics', leadingIcon: 'BarChart', count: 12 },
-  ]}
-  activeTab={activeTab}
-  onChange={setActiveTab}
-  type="parent"
-  showLeadingIcon
-  showBadge
-/>
+<Tabs orientation="vertical-right" ... />
 \`\`\`
-
-### Hierarchy Example
-\`\`\`tsx
-// Parent tabs
-<Tabs tabs={parentTabs} activeTab={parentTab} onChange={setParentTab} type="parent" />
-
-// Child tabs (below parent)
-<Tabs tabs={childTabs} activeTab={childTab} onChange={setChildTab} type="child" />
-\`\`\`
-
-### With Disabled Tab
-\`\`\`tsx
-const tabs = [
-  { id: '1', label: 'Active Tab' },
-  { id: '2', label: 'Disabled Tab', disabled: true },
-];
-\`\`\`
-
-## Best Practices
-
-1. **Use parent tabs for main navigation** - Top-level sections
-2. **Use child tabs for sub-navigation** - Within a parent section
-3. **Limit tab count** - 5-7 tabs for optimal UX
-4. **Use icons sparingly** - Only when they add clarity
-5. **Badge counts for notifications** - Show unread/pending items
-6. **Disable, don't hide** - Show disabled tabs for context
-
-## Keyboard Navigation
-
-- **Tab** - Navigate between tabs
-- **Enter/Space** - Activate focused tab
-- **Arrow Left/Right** - Navigate between tabs
-- **Home** - Go to first tab
-- **End** - Go to last tab
-
-## Accessibility
-
-- ✅ ARIA roles and labels
-- ✅ Keyboard navigation
-- ✅ Focus indicators
-- ✅ Screen reader support
-- ✅ Disabled state announcements
         `,
       },
     },
@@ -182,7 +87,7 @@ type Story = StoryObj<typeof Tabs>;
 const parentTabs: TabItem[] = [
   { id: '1', label: 'Dashboard', leadingIcon: 'Home', count: 4 },
   { id: '2', label: 'Analytics', leadingIcon: 'BarChart', count: 12 },
-  { id: '3', label: 'Reports', leadingIcon: 'Description', count: 7 },
+  { id: '3', label: 'Reports', leadingIcon: 'Assessment', count: 7 },
   { id: '4', label: 'Settings', leadingIcon: 'Settings' },
 ];
 
@@ -193,191 +98,30 @@ const childTabs: TabItem[] = [
   { id: '4', label: 'Notes', leadingIcon: 'Note' },
 ];
 
-// Wrapper component to handle state
-const TabsWrapper = (args: any) => {
-  const [activeTab, setActiveTab] = useState(args.activeTab || args.tabs[0].id);
-
-  return (
-    <div style={{ width: '100%' }}>
-      <Tabs {...args} activeTab={activeTab} onChange={setActiveTab} />
-      <div style={{ marginTop: '20px', padding: '20px', background: '#f5f5f5', borderRadius: '4px' }}>
-        <p><strong>Active Tab:</strong> {activeTab}</p>
-      </div>
-    </div>
-  );
-};
+// ============================================================================
+// ORIENTATION STORIES
+// ============================================================================
 
 /**
- * Parent (Primary) tabs with all features
+ * Horizontal tabs (default) - Standard top navigation
  */
-export const ParentTabs: Story = {
-  render: () => <TabsWrapper 
-    tabs={parentTabs}
-    type="parent"
-    showLeadingIcon={true}
-    showBadge={true}
-  />,
-};
-
-/**
- * Child (Secondary) tabs with all features
- */
-export const ChildTabs: Story = {
-  render: () => <TabsWrapper 
-    tabs={childTabs}
-    type="child"
-    showLeadingIcon={true}
-    showBadge={true}
-  />,
-};
-
-/**
- * Parent tabs without icons
- */
-export const ParentTabsNoIcons: Story = {
-  render: () => <TabsWrapper 
-    tabs={parentTabs}
-    type="parent"
-    showLeadingIcon={false}
-    showBadge={true}
-  />,
-};
-
-/**
- * Parent tabs without badges
- */
-export const ParentTabsNoBadges: Story = {
-  render: () => <TabsWrapper 
-    tabs={parentTabs}
-    type="parent"
-    showLeadingIcon={true}
-    showBadge={false}
-  />,
-};
-
-/**
- * Parent tabs minimal (no icons, no badges)
- */
-export const ParentTabsMinimal: Story = {
-  render: () => <TabsWrapper 
-    tabs={[
-      { id: '1', label: 'Dashboard' },
-      { id: '2', label: 'Analytics' },
-      { id: '3', label: 'Reports' },
-      { id: '4', label: 'Settings' },
-    ]}
-    type="parent"
-    showLeadingIcon={false}
-    showBadge={false}
-  />,
-};
-
-/**
- * Child tabs without icons
- */
-export const ChildTabsNoIcons: Story = {
-  render: () => <TabsWrapper 
-    tabs={childTabs}
-    type="child"
-    showLeadingIcon={false}
-    showBadge={true}
-  />,
-};
-
-/**
- * Child tabs without badges
- */
-export const ChildTabsNoBadges: Story = {
-  render: () => <TabsWrapper 
-    tabs={childTabs}
-    type="child"
-    showLeadingIcon={true}
-    showBadge={false}
-  />,
-};
-
-/**
- * Child tabs minimal (no icons, no badges)
- */
-export const ChildTabsMinimal: Story = {
-  render: () => <TabsWrapper 
-    tabs={[
-      { id: '1', label: 'Overview' },
-      { id: '2', label: 'Details' },
-      { id: '3', label: 'History' },
-      { id: '4', label: 'Notes' },
-    ]}
-    type="child"
-    showLeadingIcon={false}
-    showBadge={false}
-  />,
-};
-
-/**
- * Parent tabs with disabled tab
- */
-export const ParentTabsWithDisabled: Story = {
-  render: () => <TabsWrapper 
-    tabs={[
-      { id: '1', label: 'Dashboard', leadingIcon: 'Home', count: 4 },
-      { id: '2', label: 'Analytics', leadingIcon: 'BarChart', count: 12, disabled: true },
-      { id: '3', label: 'Reports', leadingIcon: 'Description', count: 7 },
-      { id: '4', label: 'Settings', leadingIcon: 'Settings' },
-    ]}
-    type="parent"
-    showLeadingIcon={true}
-    showBadge={true}
-  />,
-};
-
-/**
- * Child tabs with disabled tab
- */
-export const ChildTabsWithDisabled: Story = {
-  render: () => <TabsWrapper 
-    tabs={[
-      { id: '1', label: 'Overview', leadingIcon: 'Home', count: 3 },
-      { id: '2', label: 'Details', leadingIcon: 'Info', count: 8, disabled: true },
-      { id: '3', label: 'History', leadingIcon: 'History', count: 15 },
-      { id: '4', label: 'Notes', leadingIcon: 'Note' },
-    ]}
-    type="child"
-    showLeadingIcon={true}
-    showBadge={true}
-  />,
-};
-
-/**
- * Parent and Child tabs hierarchy example
- */
-export const HierarchyExample: Story = {
+export const HorizontalParent: Story = {
   render: () => {
-    const [activeParentTab, setActiveParentTab] = useState('1');
-    const [activeChildTab, setActiveChildTab] = useState('1');
-
+    const [activeTab, setActiveTab] = useState('1');
     return (
-      <div style={{ width: '100%' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+        <Typography variant="headingM" weight="semibold">Horizontal Parent Tabs</Typography>
         <Tabs
           tabs={parentTabs}
-          activeTab={activeParentTab}
-          onChange={setActiveParentTab}
+          activeTab={activeTab}
+          onChange={setActiveTab}
+          orientation="horizontal"
           type="parent"
-          showLeadingIcon={true}
-          showBadge={true}
+          showLeadingIcon
+          showBadge
         />
-        <div style={{ marginTop: '16px' }}>
-          <Tabs
-            tabs={childTabs}
-            activeTab={activeChildTab}
-            onChange={setActiveChildTab}
-            type="child"
-            showLeadingIcon={true}
-            showBadge={true}
-          />
-        </div>
-        <div style={{ marginTop: '20px', padding: '20px', background: '#f5f5f5', borderRadius: '4px' }}>
-          <p><strong>Active Parent Tab:</strong> {activeParentTab}</p>
-          <p><strong>Active Child Tab:</strong> {activeChildTab}</p>
+        <div style={{ padding: '16px', background: '#f5f5f5', borderRadius: '4px' }}>
+          <Typography variant="body">Active Tab: {activeTab}</Typography>
         </div>
       </div>
     );
@@ -385,56 +129,620 @@ export const HierarchyExample: Story = {
 };
 
 /**
- * Many tabs (scrollable)
+ * Vertical left tabs - Perfect for sidebar navigation
  */
-export const ManyTabs: Story = {
-  render: () => <TabsWrapper 
-    tabs={[
-      { id: '1', label: 'Tab 1', count: 1 },
-      { id: '2', label: 'Tab 2', count: 2 },
-      { id: '3', label: 'Tab 3', count: 3 },
-      { id: '4', label: 'Tab 4', count: 4 },
-      { id: '5', label: 'Tab 5', count: 5 },
-      { id: '6', label: 'Tab 6', count: 6 },
-      { id: '7', label: 'Tab 7', count: 7 },
-      { id: '8', label: 'Tab 8', count: 8 },
-    ]}
-    type="parent"
-    showLeadingIcon={false}
-    showBadge={true}
-  />,
+export const VerticalLeftParent: Story = {
+  render: () => {
+    const [activeTab, setActiveTab] = useState('1');
+    return (
+      <div style={{ display: 'flex', gap: '20px' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+          <Typography variant="headingM" weight="semibold">Sidebar Navigation</Typography>
+          <Tabs
+            tabs={parentTabs}
+            activeTab={activeTab}
+            onChange={setActiveTab}
+            orientation="vertical-left"
+            type="parent"
+            showLeadingIcon
+            showBadge
+          />
+        </div>
+        <div style={{ flex: 1, padding: '16px', background: '#f5f5f5', borderRadius: '4px' }}>
+          <Typography variant="headingS" weight="semibold">Content Area</Typography>
+          <Typography variant="body">Active Tab: {activeTab}</Typography>
+        </div>
+      </div>
+    );
+  },
 };
 
 /**
- * Long tab labels
+ * Vertical right tabs - Alternative sidebar position
  */
-export const LongLabels: Story = {
-  render: () => <TabsWrapper 
-    tabs={[
-      { id: '1', label: 'Dashboard Overview', count: 4 },
-      { id: '2', label: 'Analytics & Reports', count: 12 },
-      { id: '3', label: 'User Management', count: 7 },
-      { id: '4', label: 'System Settings', count: 2 },
-    ]}
-    type="parent"
-    showLeadingIcon={false}
-    showBadge={true}
-  />,
+export const VerticalRightParent: Story = {
+  render: () => {
+    const [activeTab, setActiveTab] = useState('1');
+    return (
+      <div style={{ display: 'flex', gap: '20px' }}>
+        <div style={{ flex: 1, padding: '16px', background: '#f5f5f5', borderRadius: '4px' }}>
+          <Typography variant="headingS" weight="semibold">Content Area</Typography>
+          <Typography variant="body">Active Tab: {activeTab}</Typography>
+        </div>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+          <Typography variant="headingM" weight="semibold">Right Sidebar</Typography>
+          <Tabs
+            tabs={parentTabs}
+            activeTab={activeTab}
+            onChange={setActiveTab}
+            orientation="vertical-right"
+            type="parent"
+            showLeadingIcon
+            showBadge
+          />
+        </div>
+      </div>
+    );
+  },
+};
+
+// ============================================================================
+// CHILD TABS WITH ORIENTATION
+// ============================================================================
+
+/**
+ * Horizontal child tabs
+ */
+export const HorizontalChild: Story = {
+  render: () => {
+    const [activeTab, setActiveTab] = useState('1');
+    return (
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+        <Typography variant="headingM" weight="semibold">Horizontal Child Tabs</Typography>
+        <Tabs
+          tabs={childTabs}
+          activeTab={activeTab}
+          onChange={setActiveTab}
+          orientation="horizontal"
+          type="child"
+          showLeadingIcon
+          showBadge
+        />
+        <div style={{ padding: '16px', background: '#f5f5f5', borderRadius: '4px' }}>
+          <Typography variant="body">Active Tab: {activeTab}</Typography>
+        </div>
+      </div>
+    );
+  },
+};
+
+/**
+ * Vertical left child tabs
+ */
+export const VerticalLeftChild: Story = {
+  render: () => {
+    const [activeTab, setActiveTab] = useState('1');
+    return (
+      <div style={{ display: 'flex', gap: '20px' }}>
+        <Tabs
+          tabs={childTabs}
+          activeTab={activeTab}
+          onChange={setActiveTab}
+          orientation="vertical-left"
+          type="child"
+          showLeadingIcon
+          showBadge
+        />
+        <div style={{ flex: 1, padding: '16px', background: '#f5f5f5', borderRadius: '4px' }}>
+          <Typography variant="body">Active Tab: {activeTab}</Typography>
+        </div>
+      </div>
+    );
+  },
+};
+
+// ============================================================================
+// STATE STORIES
+// ============================================================================
+
+/**
+ * Loading state
+ */
+export const LoadingState: Story = {
+  render: () => (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+      <Typography variant="headingM" weight="semibold">Loading State</Typography>
+      <Tabs
+        tabs={parentTabs}
+        activeTab="1"
+        onChange={() => {}}
+        isLoading
+      />
+    </div>
+  ),
+};
+
+/**
+ * Error state
+ */
+export const ErrorState: Story = {
+  render: () => (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+      <Typography variant="headingM" weight="semibold">Error State</Typography>
+      <Tabs
+        tabs={parentTabs}
+        activeTab="1"
+        onChange={() => {}}
+        isInvalid
+        errorMessage="Failed to load tabs"
+      />
+    </div>
+  ),
+};
+
+/**
+ * Empty state
+ */
+export const EmptyState: Story = {
+  render: () => (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+      <Typography variant="headingM" weight="semibold">Empty State</Typography>
+      <Tabs
+        tabs={[]}
+        activeTab="1"
+        onChange={() => {}}
+        emptyMessage="No tabs available"
+      />
+    </div>
+  ),
+};
+
+/**
+ * Disabled state
+ */
+export const DisabledState: Story = {
+  render: () => {
+    const [activeTab, setActiveTab] = useState('1');
+    return (
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+        <Typography variant="headingM" weight="semibold">Disabled Tabs</Typography>
+        <Tabs
+          tabs={parentTabs}
+          activeTab={activeTab}
+          onChange={setActiveTab}
+          disabled
+        />
+      </div>
+    );
+  },
+};
+
+/**
+ * Individual disabled tabs
+ */
+export const IndividualDisabled: Story = {
+  render: () => {
+    const [activeTab, setActiveTab] = useState('1');
+    return (
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+        <Typography variant="headingM" weight="semibold">Individual Disabled Tabs</Typography>
+        <Tabs
+          tabs={[
+            { id: '1', label: 'Dashboard', leadingIcon: 'Home', count: 4 },
+            { id: '2', label: 'Analytics', leadingIcon: 'BarChart', count: 12, disabled: true },
+            { id: '3', label: 'Reports', leadingIcon: 'Description', count: 7 },
+            { id: '4', label: 'Settings', leadingIcon: 'Settings', disabled: true },
+          ]}
+          activeTab={activeTab}
+          onChange={setActiveTab}
+          showLeadingIcon
+          showBadge
+        />
+      </div>
+    );
+  },
+};
+
+// ============================================================================
+// CUSTOMIZATION STORIES
+// ============================================================================
+
+/**
+ * forwardRef usage - Access DOM node
+ */
+export const ForwardRefUsage: Story = {
+  render: () => {
+    const [activeTab, setActiveTab] = useState('1');
+    const tabsRef = useRef<HTMLDivElement>(null);
+
+    const handleScrollToTabs = () => {
+      tabsRef.current?.scrollIntoView({ behavior: 'smooth' });
+    };
+
+    return (
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+        <Typography variant="headingM" weight="semibold">forwardRef Example</Typography>
+        <button onClick={handleScrollToTabs} style={{ padding: '8px 16px', width: 'fit-content' }}>
+          Scroll to Tabs
+        </button>
+        <div style={{ height: '100px' }} />
+        <Tabs
+          ref={tabsRef}
+          tabs={parentTabs}
+          activeTab={activeTab}
+          onChange={setActiveTab}
+          showLeadingIcon
+          showBadge
+        />
+      </div>
+    );
+  },
+};
+
+/**
+ * Polymorphic 'as' prop - Render as different element
+ */
+export const PolymorphicAs: Story = {
+  render: () => {
+    const [activeTab, setActiveTab] = useState('1');
+    return (
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+        <Typography variant="headingM" weight="semibold">Rendered as &lt;nav&gt; element</Typography>
+        <Tabs
+          as="nav"
+          tabs={parentTabs}
+          activeTab={activeTab}
+          onChange={setActiveTab}
+          showLeadingIcon
+          showBadge
+        />
+      </div>
+    );
+  },
+};
+
+/**
+ * Custom className and style overrides
+ */
+export const CustomStyling: Story = {
+  render: () => {
+    const [activeTab, setActiveTab] = useState('1');
+    return (
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+        <Typography variant="headingM" weight="semibold">Custom Styling</Typography>
+        <Tabs
+          tabs={parentTabs}
+          activeTab={activeTab}
+          onChange={setActiveTab}
+          showLeadingIcon
+          showBadge
+          className="custom-tabs"
+          style={{ border: '2px dashed #ccc', padding: '8px' }}
+          tabClassName="custom-tab"
+        />
+      </div>
+    );
+  },
+};
+
+/**
+ * Event callbacks
+ */
+export const EventCallbacks: Story = {
+  render: () => {
+    const [activeTab, setActiveTab] = useState('1');
+    const [events, setEvents] = useState<string[]>([]);
+
+    const addEvent = (event: string) => {
+      setEvents(prev => [...prev.slice(-4), event]);
+    };
+
+    return (
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+        <Typography variant="headingM" weight="semibold">Event Callbacks</Typography>
+        <Tabs
+          tabs={parentTabs}
+          activeTab={activeTab}
+          onChange={(id) => {
+            setActiveTab(id);
+            addEvent(`onChange: ${id}`);
+          }}
+          onTabClick={(id, e) => addEvent(`onTabClick: ${id}`)}
+          onTabFocus={(id) => addEvent(`onTabFocus: ${id}`)}
+          onTabBlur={(id) => addEvent(`onTabBlur: ${id}`)}
+          showLeadingIcon
+          showBadge
+        />
+        <div style={{ padding: '16px', background: '#f5f5f5', borderRadius: '4px' }}>
+          <Typography variant="headingS" weight="semibold">Event Log</Typography>
+          {events.map((event, i) => (
+            <Typography key={i} variant="caption">{event}</Typography>
+          ))}
+        </div>
+      </div>
+    );
+  },
+};
+
+// ============================================================================
+// HIERARCHY EXAMPLE
+// ============================================================================
+
+/**
+ * Parent + Child hierarchy
+ */
+export const HierarchyExample: Story = {
+  render: () => {
+    const [activeParent, setActiveParent] = useState('1');
+    const [activeChild, setActiveChild] = useState('1');
+
+    return (
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+        <Typography variant="headingM" weight="semibold">Tab Hierarchy</Typography>
+        
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+          <Typography variant="headingS" weight="semibold">Parent Tabs</Typography>
+          <Tabs
+            tabs={parentTabs}
+            activeTab={activeParent}
+            onChange={setActiveParent}
+            type="parent"
+            showLeadingIcon
+            showBadge
+          />
+        </div>
+
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+          <Typography variant="headingS" weight="semibold">Child Tabs</Typography>
+          <Tabs
+            tabs={childTabs}
+            activeTab={activeChild}
+            onChange={setActiveChild}
+            type="child"
+            showLeadingIcon
+            showBadge
+          />
+        </div>
+
+        <div style={{ padding: '16px', background: '#f5f5f5', borderRadius: '4px' }}>
+          <Typography variant="body">Parent: {activeParent}, Child: {activeChild}</Typography>
+        </div>
+      </div>
+    );
+  },
+};
+
+// ============================================================================
+// VISUAL VARIANTS
+// ============================================================================
+
+/**
+ * Minimal tabs (no icons, no badges)
+ */
+export const Minimal: Story = {
+  render: () => {
+    const [activeTab, setActiveTab] = useState('1');
+    return (
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+        <Typography variant="headingM" weight="semibold">Minimal Tabs</Typography>
+        <Tabs
+          tabs={[
+            { id: '1', label: 'Dashboard' },
+            { id: '2', label: 'Analytics' },
+            { id: '3', label: 'Reports' },
+            { id: '4', label: 'Settings' },
+          ]}
+          activeTab={activeTab}
+          onChange={setActiveTab}
+          showLeadingIcon={false}
+          showBadge={false}
+        />
+      </div>
+    );
+  },
 };
 
 /**
  * With trailing icons
  */
 export const WithTrailingIcons: Story = {
-  render: () => <TabsWrapper 
-    tabs={[
-      { id: '1', label: 'Dashboard', leadingIcon: 'Home', trailingIcon: 'ChevronRight', count: 4 },
-      { id: '2', label: 'Analytics', leadingIcon: 'BarChart', trailingIcon: 'ChevronRight', count: 12 },
-      { id: '3', label: 'Reports', leadingIcon: 'Description', trailingIcon: 'ChevronRight', count: 7 },
-    ]}
-    type="parent"
-    showLeadingIcon={true}
-    showTrailingIcon={true}
-    showBadge={true}
-  />,
+  render: () => {
+    const [activeTab, setActiveTab] = useState('1');
+    return (
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+        <Typography variant="headingM" weight="semibold">Trailing Icons</Typography>
+        <Tabs
+          tabs={[
+            { id: '1', label: 'Dashboard', leadingIcon: 'Home', trailingIcon: 'ChevronRight' },
+            { id: '2', label: 'Analytics', leadingIcon: 'BarChart', trailingIcon: 'ChevronRight' },
+            { id: '3', label: 'Reports', leadingIcon: 'Description', trailingIcon: 'ChevronRight' },
+          ]}
+          activeTab={activeTab}
+          onChange={setActiveTab}
+          showLeadingIcon
+          showTrailingIcon
+        />
+      </div>
+    );
+  },
+};
+
+// ============================================================================
+// CONTENT ALIGNMENT EXAMPLES
+// ============================================================================
+
+/**
+ * Content alignment - Auto-determined by orientation
+ */
+export const ContentAlignmentAuto: Story = {
+  render: () => {
+    const [activeTab, setActiveTab] = useState('1');
+    return (
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+          <Typography variant="headingM" weight="semibold">Horizontal (Auto: Center)</Typography>
+          <Tabs
+            tabs={parentTabs}
+            activeTab={activeTab}
+            onChange={setActiveTab}
+            orientation="horizontal"
+            showLeadingIcon
+            showBadge
+          />
+        </div>
+
+        <div style={{ display: 'flex', gap: '20px' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+            <Typography variant="headingM" weight="semibold">Vertical Left (Auto: Left)</Typography>
+            <Tabs
+              tabs={parentTabs}
+              activeTab={activeTab}
+              onChange={setActiveTab}
+              orientation="vertical-left"
+              showLeadingIcon
+              showBadge
+            />
+          </div>
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+            <Typography variant="headingM" weight="semibold">Vertical Right (Auto: Right)</Typography>
+            <Tabs
+              tabs={parentTabs}
+              activeTab={activeTab}
+              onChange={setActiveTab}
+              orientation="vertical-right"
+              showLeadingIcon
+              showBadge
+            />
+          </div>
+        </div>
+      </div>
+    );
+  },
+};
+
+/**
+ * Content alignment - Manual override
+ */
+export const ContentAlignmentManual: Story = {
+  render: () => {
+    const [activeTab, setActiveTab] = useState('1');
+    return (
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+          <Typography variant="headingM" weight="semibold">Horizontal - Left Aligned (Override)</Typography>
+          <Tabs
+            tabs={parentTabs}
+            activeTab={activeTab}
+            onChange={setActiveTab}
+            orientation="horizontal"
+            contentAlign="left"
+            showLeadingIcon
+            showBadge
+          />
+        </div>
+
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+          <Typography variant="headingM" weight="semibold">Horizontal - Right Aligned (Override)</Typography>
+          <Tabs
+            tabs={parentTabs}
+            activeTab={activeTab}
+            onChange={setActiveTab}
+            orientation="horizontal"
+            contentAlign="right"
+            showLeadingIcon
+            showBadge
+          />
+        </div>
+
+        <div style={{ display: 'flex', gap: '20px' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+            <Typography variant="headingM" weight="semibold">Vertical Left - Center (Override)</Typography>
+            <Tabs
+              tabs={parentTabs}
+              activeTab={activeTab}
+              onChange={setActiveTab}
+              orientation="vertical-left"
+              contentAlign="center"
+              showLeadingIcon
+              showBadge
+            />
+          </div>
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+            <Typography variant="headingM" weight="semibold">Vertical Right - Center (Override)</Typography>
+            <Tabs
+              tabs={parentTabs}
+              activeTab={activeTab}
+              onChange={setActiveTab}
+              orientation="vertical-right"
+              contentAlign="center"
+              showLeadingIcon
+              showBadge
+            />
+          </div>
+        </div>
+      </div>
+    );
+  },
+};
+
+/**
+ * Mixed icons - Some tabs with icons, some without (no empty space)
+ */
+export const MixedIcons: Story = {
+  render: () => {
+    const [activeTab, setActiveTab] = useState('1');
+    const mixedIconTabs: TabItem[] = [
+      { id: '1', label: 'Dashboard', leadingIcon: 'Home', count: 4 },
+      { id: '2', label: 'Analytics', count: 12 }, // No icon
+      { id: '3', label: 'Reports', leadingIcon: 'Description', count: 7 },
+      { id: '4', label: 'Settings' }, // No icon, no badge
+    ];
+
+    return (
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+          <Typography variant="headingM" weight="semibold">Horizontal - Mixed Icons</Typography>
+          <Typography variant="body">Notice: No empty space for tabs without icons</Typography>
+          <Tabs
+            tabs={mixedIconTabs}
+            activeTab={activeTab}
+            onChange={setActiveTab}
+            orientation="horizontal"
+            showLeadingIcon
+            showBadge
+          />
+        </div>
+
+        <div style={{ display: 'flex', gap: '20px' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+            <Typography variant="headingM" weight="semibold">Vertical Left - Mixed Icons</Typography>
+            <Typography variant="body">No empty space on left</Typography>
+            <Tabs
+              tabs={mixedIconTabs}
+              activeTab={activeTab}
+              onChange={setActiveTab}
+              orientation="vertical-left"
+              showLeadingIcon
+              showBadge
+            />
+          </div>
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+            <Typography variant="headingM" weight="semibold">Vertical Right - Mixed Icons</Typography>
+            <Typography variant="body">No empty space on right</Typography>
+            <Tabs
+              tabs={mixedIconTabs}
+              activeTab={activeTab}
+              onChange={setActiveTab}
+              orientation="vertical-right"
+              showLeadingIcon
+              showBadge
+            />
+          </div>
+        </div>
+      </div>
+    );
+  },
 };

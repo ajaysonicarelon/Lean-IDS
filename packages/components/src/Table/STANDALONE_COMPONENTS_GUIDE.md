@@ -240,10 +240,10 @@ function AdvancedCustomTable() {
                 
                 <TableCell>
                   <div style={{ display: 'flex', gap: '8px' }}>
-                    <Button variant="secondary" size="small" showLabel={false}>
+                    <Button variant="secondary" size="small" showLabel={false} aria-label="Edit">
                       <Icon name="Edit" />
                     </Button>
-                    <Button variant="secondary" size="small" showLabel={false}>
+                    <Button variant="secondary" size="small" showLabel={false} aria-label="Delete">
                       <Icon name="Delete" />
                     </Button>
                   </div>

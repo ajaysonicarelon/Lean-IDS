@@ -13,6 +13,21 @@ interface StyledMenuItemProps {
   $isInvalid?: boolean;
 }
 
+/**
+ * StyledMenuItem
+ * 
+ * ARIA Attributes for Custom Styling:
+ * - Use [aria-selected="true"] to target active/selected menu items
+ * - Use [aria-disabled="true"] to target disabled menu items
+ * - Use [aria-haspopup="menu"] to target items with submenus
+ * 
+ * Example:
+ * ```css
+ * [aria-selected="true"] {
+ *   background: custom-color;
+ * }
+ * ```
+ */
 export const StyledMenuItem = styled.div<StyledMenuItemProps>`
   display: flex;
   align-items: center; /* Vertically center icon and text */
@@ -247,7 +262,7 @@ export const ChildrenArrow = styled.div<ChildrenArrowProps>`
   justify-content: center;
   margin-left: ${({ theme }) => theme.spacing[2]};
   flex-shrink: 0;
-  color: ${({ $mode, theme }) => 
+  color: ${({ $mode }) => 
     $mode === 'dark' ? '#FFFFFF' : '#1A1A1A'};
   
   svg {

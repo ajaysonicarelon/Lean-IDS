@@ -44,7 +44,7 @@ export const DateTimePickerInput: React.FC<DateTimePickerInputProps> = ({
       isOpen={isOpen}
       onClose={() => setIsOpen(false)}
       trigger={
-        <div onClick={handleInputClick}>
+        <div onClick={handleInputClick} style={{ cursor: disabled ? 'not-allowed' : 'pointer' }}>
           <InputField
             label={label}
             value={displayValue}
@@ -58,7 +58,6 @@ export const DateTimePickerInput: React.FC<DateTimePickerInputProps> = ({
             fullWidth={true}
             trailingIcon={<Icon name="CalendarToday" size="small" />}
             readOnly
-            style={{ cursor: disabled ? 'not-allowed' : 'pointer' }}
           />
         </div>
       }

@@ -57,22 +57,42 @@ export const Component = forwardRef<HTMLDivElement, ComponentProps>(
 - [ ] **Absolutely NO hardcoded pixel widths or heights**
   - Use: `rem`, `%`, `vw`, `vh`, `auto`, `min()`, `max()`
   - ❌ Never: `400px`, `600px`, `16px`
+- [ ] **Width control props for responsive design**
+  - Add `width`, `maxWidth`, `minWidth` props
+  - Accept string values: px, rem, %, vw, vh, min(), max()
+  - Default to fluid/auto width if not specified
+  - Improves developer experience and responsive design
 - [ ] **Use Flexbox or CSS Grid** with explicit gap and alignment rules
 - [ ] **Use CSS variables/design tokens** for colors, spacing, typography
 - [ ] **Use Typography component for all text** instead of custom `<h1>`, `<h2>`, `<p>` tags
   - Use: `<Typography variant="headingL">` instead of `<h2>`
   - Use: `<Typography variant="body">` instead of `<p>`
   - ❌ Never create custom styled text components
+- [ ] **Icon containers must be minimum 16px (spacing[7])**
+  - Use: `width: ${({ theme }) => theme.spacing[7]}` (16px)
+  - ❌ Never use spacing[3] (8px) or spacing[4] (10px) for icon wrappers
+  - Ensures proper touch targets and accessibility
 - [ ] **Ensure fluid layout** that adapts automatically to container
 
 #### Implementation:
 ```typescript
 import { Typography } from '../Typography';
 
-const Container = styled.div`
-  /* ✅ CORRECT - Use design tokens */
-  width: ${({ $width }) => $width || 'min(90vw, 37.5rem)'};
-  max-width: ${({ $maxWidth }) => $maxWidth || '90vw'};
+// Add width props to interface
+interface ComponentProps {
+  /** Custom width (e.g., '200px', '50%', 'min(90vw, 600px)') */
+  width?: string;
+  /** Maximum width constraint */
+  maxWidth?: string;
+  /** Minimum width constraint */
+  minWidth?: string;
+}
+
+const Container = styled.div<{ $width?: string; $maxWidth?: string; $minWidth?: string }>`
+  /* ✅ CORRECT - Use design tokens and width props */
+  width: ${({ $width }) => $width || 'auto'};
+  max-width: ${({ $maxWidth }) => $maxWidth};
+  min-width: ${({ $minWidth }) => $minWidth};
   padding: ${({ theme }) => theme.spacing[4]};
   gap: ${({ theme }) => theme.spacing[2]};
   
@@ -80,6 +100,9 @@ const Container = styled.div`
   /* width: 600px; */
   /* padding: 16px; */
 `;
+
+// Usage
+<Component width="min(90vw, 37.5rem)" maxWidth="600px" />
 
 // ✅ CORRECT - Use Typography component
 <Typography variant="headingL" weight="semibold" as="h2">
@@ -93,6 +116,21 @@ const Container = styled.div`
 const Title = styled.h2`
   font-size: 20px;
   font-weight: 600;
+`;
+
+// ✅ CORRECT - Icon container minimum 16px
+const IconWrapper = styled.span`
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: ${({ theme }) => theme.spacing[7]}; /* 16px minimum */
+  height: ${({ theme }) => theme.spacing[7]}; /* 16px minimum */
+`;
+
+// ❌ WRONG - Icon container too small
+const IconWrapper = styled.span`
+  width: ${({ theme }) => theme.spacing[3]}; /* 8px - too small! */
+  height: ${({ theme }) => theme.spacing[4]}; /* 10px - too small! */
 `;
 ```
 
@@ -207,55 +245,398 @@ const StyledButton = styled.button`
 ### 5. ACCESSIBILITY
 
 #### Required:
-- [ ] **Apply proper ARIA attributes**
-  - `role`, `aria-label`, `aria-labelledby`, `aria-describedby`
-  - `aria-modal`, `aria-expanded`, `aria-selected`, etc.
-- [ ] **Use semantic HTML elements**
-  - `<button>` not `<div onClick>`
-  - `<h1>-<h6>` for headings
-  - `<nav>`, `<main>`, `<section>`, etc.
-- [ ] **Keyboard navigation support**
-  - Tab, Shift+Tab, Enter, Space, Escape, Arrow keys
-  - Focus trap for modals/dialogs
-- [ ] **Focus management**
-  - Auto-focus on open
-  - Return focus on close
-  - Visible focus indicators
+- [ ] **Apply proper ARIA attributes** following the 5 Rules of ARIA
+- [ ] **Use semantic HTML elements** (prefer native over ARIA when possible)
+- [ ] **Keyboard navigation support** (Tab, Enter, Space, Escape, Arrows)
+- [ ] **Focus management** (auto-focus, focus trap, visible indicators)
+- [ ] **Accessible names** for all interactive elements
+- [ ] **State communication** via ARIA attributes for assistive technologies
 
-#### Implementation:
+---
+
+#### **THE 5 RULES OF ARIA** (MUST FOLLOW)
+
+**Rule 1: Don't use ARIA if native HTML works**
 ```typescript
-// ARIA attributes
-<Component
+// ❌ BAD - Unnecessary ARIA
+<div role="button" onClick={handleClick}>Click</div>
+
+// ✅ GOOD - Use native HTML
+<button onClick={handleClick}>Click</button>
+```
+
+**Rule 2: Don't change native semantics**
+```typescript
+// ❌ BAD - Conflicting semantics
+<h1 role="button">Title</h1>
+<button role="heading">Action</button>
+
+// ✅ GOOD - Preserve native semantics
+<h1>Title</h1>
+<button>Action</button>
+```
+
+**Rule 3: All interactive elements must be keyboard accessible**
+```typescript
+// ❌ BAD - Not keyboard accessible
+<div onClick={handleClick}>Click</div>
+
+// ✅ GOOD - Keyboard accessible
+<div 
+  role="button" 
+  tabIndex={0} 
+  onClick={handleClick}
+  onKeyDown={(e) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      handleClick();
+    }
+  }}
+>
+  Click
+</div>
+
+// ✅ BETTER - Use native button
+<button onClick={handleClick}>Click</button>
+```
+
+**Rule 4: Don't hide focusable elements with aria-hidden**
+```typescript
+// ❌ BAD - Focusable but hidden from screen readers
+<button aria-hidden="true">Click</button>
+
+// ✅ GOOD - Properly hidden
+<button style={{ display: 'none' }}>Click</button>
+```
+
+**Rule 5: All interactive elements must have accessible names**
+```typescript
+// ❌ BAD - No accessible name
+<button><CloseIcon /></button>
+
+// ✅ GOOD - Has accessible name (choose one method)
+<button aria-label="Close dialog"><CloseIcon /></button>
+<button aria-labelledby="close-label"><CloseIcon /></button>
+<button>Close</button>
+```
+
+---
+
+#### **ARIA ATTRIBUTES BY COMPONENT TYPE**
+
+**Navigation & Menus:**
+```typescript
+// SideMenu, MenuItem, Tabs
+<nav role="navigation" aria-label="Main navigation">
+  <ul role="menu">
+    <li 
+      role="menuitem" 
+      aria-selected={isActive}  // ✅ Use aria-selected for menu items
+      tabIndex={isActive ? 0 : -1}
+    >
+      Dashboard
+    </li>
+  </ul>
+</nav>
+
+// ❌ WRONG - Don't use aria-current for menu selection state
+<li role="menuitem" aria-current="page">Dashboard</li>
+
+// ✅ CORRECT - Use aria-selected for menu items
+<li role="menuitem" aria-selected={true}>Dashboard</li>
+
+// Tabs
+<div role="tablist" aria-label="Settings tabs">
+  <button 
+    role="tab" 
+    aria-selected={activeTab === 'general'}
+    aria-controls="general-panel"
+    id="general-tab"
+  >
+    General
+  </button>
+</div>
+<div 
+  role="tabpanel" 
+  aria-labelledby="general-tab"
+  id="general-panel"
+>
+  Content
+</div>
+```
+
+**Form Controls:**
+```typescript
+// Input, Select, Checkbox
+<label htmlFor="email-input">Email</label>
+<input
+  id="email-input"
+  type="email"
+  aria-required={true}
+  aria-invalid={hasError}
+  aria-describedby={hasError ? "email-error" : undefined}
+/>
+{hasError && (
+  <span id="email-error" role="alert">
+    {errorMessage}
+  </span>
+)}
+
+// Checkbox with description
+<input
+  type="checkbox"
+  id="terms"
+  aria-describedby="terms-description"
+/>
+<label htmlFor="terms">Accept terms</label>
+<span id="terms-description">
+  By checking this, you agree to our terms of service
+</span>
+```
+
+**Dialogs & Modals:**
+```typescript
+<div
   role="dialog"
   aria-modal={true}
-  aria-labelledby={titleId}
-  aria-describedby={descriptionId}
+  aria-labelledby="dialog-title"
+  aria-describedby="dialog-description"
 >
+  <h2 id="dialog-title">Confirm Action</h2>
+  <p id="dialog-description">Are you sure you want to proceed?</p>
+  <button onClick={onConfirm}>Confirm</button>
+  <button onClick={onCancel}>Cancel</button>
+</div>
+```
 
-// Semantic HTML
-<button onClick={handleClick}>  {/* ✅ */}
-<div onClick={handleClick}>     {/* ❌ */}
+**Alerts & Status:**
+```typescript
+// AlertBanner, Toast
+<div 
+  role="alert"  // Announces immediately
+  aria-live="assertive"  // Interrupts screen reader
+>
+  Error: Failed to save
+</div>
 
-// Keyboard navigation
-useEffect(() => {
-  const handleKeyDown = (e: KeyboardEvent) => {
-    if (e.key === 'Escape') onClose();
-    if (e.key === 'Enter') onSubmit();
-  };
-  document.addEventListener('keydown', handleKeyDown);
-  return () => document.removeEventListener('keydown', handleKeyDown);
-}, []);
+<div 
+  role="status"  // Announces politely
+  aria-live="polite"  // Waits for screen reader pause
+  aria-atomic="true"  // Reads entire content
+>
+  Saving... 3 items remaining
+</div>
 
-// Focus management
+// ProgressBar
+<div
+  role="progressbar"
+  aria-valuenow={progress}
+  aria-valuemin={0}
+  aria-valuemax={100}
+  aria-label="Upload progress"
+>
+  {progress}%
+</div>
+```
+
+**Expandable/Collapsible:**
+```typescript
+// Accordion, Dropdown
+<button
+  aria-expanded={isOpen}
+  aria-controls="content-id"
+  onClick={toggleOpen}
+>
+  Show Details
+</button>
+<div id="content-id" hidden={!isOpen}>
+  Content
+</div>
+```
+
+**Data Display:**
+```typescript
+// Table
+<table role="table" aria-label="User data">
+  <thead>
+    <tr role="row">
+      <th role="columnheader" aria-sort="ascending">Name</th>
+      <th role="columnheader">Email</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr role="row">
+      <td role="cell">John Doe</td>
+      <td role="cell">john@example.com</td>
+    </tr>
+  </tbody>
+</table>
+```
+
+---
+
+#### **KEYBOARD NAVIGATION PATTERNS**
+
+```typescript
+// Standard keyboard handlers
+const handleKeyDown = (e: React.KeyboardEvent) => {
+  switch (e.key) {
+    case 'Enter':
+    case ' ':  // Space
+      e.preventDefault();
+      handleActivate();
+      break;
+    case 'Escape':
+      handleClose();
+      break;
+    case 'ArrowDown':
+      e.preventDefault();
+      focusNext();
+      break;
+    case 'ArrowUp':
+      e.preventDefault();
+      focusPrevious();
+      break;
+    case 'Home':
+      e.preventDefault();
+      focusFirst();
+      break;
+    case 'End':
+      e.preventDefault();
+      focusLast();
+      break;
+    case 'Tab':
+      // Let default behavior work, but track focus
+      if (e.shiftKey) {
+        handleShiftTab();
+      } else {
+        handleTab();
+      }
+      break;
+  }
+};
+```
+
+---
+
+#### **FOCUS MANAGEMENT**
+
+```typescript
+// Auto-focus on open
 useEffect(() => {
   if (isOpen) {
-    previousFocus.current = document.activeElement;
+    // Store previous focus
+    previousFocusRef.current = document.activeElement as HTMLElement;
+    
+    // Focus first focusable element
+    const firstFocusable = containerRef.current?.querySelector(
+      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+    ) as HTMLElement;
+    
     firstFocusable?.focus();
   } else {
-    previousFocus.current?.focus();
+    // Return focus on close
+    previousFocusRef.current?.focus();
   }
 }, [isOpen]);
+
+// Focus trap for modals
+useEffect(() => {
+  if (!isOpen) return;
+  
+  const handleKeyDown = (e: KeyboardEvent) => {
+    if (e.key !== 'Tab') return;
+    
+    const focusableElements = containerRef.current?.querySelectorAll(
+      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+    );
+    
+    if (!focusableElements || focusableElements.length === 0) return;
+    
+    const firstElement = focusableElements[0] as HTMLElement;
+    const lastElement = focusableElements[focusableElements.length - 1] as HTMLElement;
+    
+    if (e.shiftKey && document.activeElement === firstElement) {
+      e.preventDefault();
+      lastElement.focus();
+    } else if (!e.shiftKey && document.activeElement === lastElement) {
+      e.preventDefault();
+      firstElement.focus();
+    }
+  };
+  
+  document.addEventListener('keydown', handleKeyDown);
+  return () => document.removeEventListener('keydown', handleKeyDown);
+}, [isOpen]);
+
+// Visible focus indicators
+const StyledButton = styled.button`
+  &:focus-visible {
+    outline: 2px solid ${({ theme }) => theme.colors.semantic.focus.indicator};
+    outline-offset: 2px;
+  }
+  
+  /* Remove default outline, but keep for :focus-visible */
+  &:focus:not(:focus-visible) {
+    outline: none;
+  }
+`;
 ```
+
+---
+
+#### **COMMON ARIA PATTERNS REFERENCE**
+
+| Component Type | Role | Key Attributes |
+|----------------|------|----------------|
+| Button | `button` | `aria-label`, `aria-pressed`, `aria-expanded` |
+| Menu Item | `menuitem` | `aria-selected`, `tabIndex` |
+| Tab | `tab` | `aria-selected`, `aria-controls` |
+| Dialog | `dialog` | `aria-modal`, `aria-labelledby`, `aria-describedby` |
+| Alert | `alert` | `aria-live="assertive"` |
+| Status | `status` | `aria-live="polite"`, `aria-atomic` |
+| Checkbox | `checkbox` | `aria-checked`, `aria-labelledby` |
+| Radio | `radio` | `aria-checked`, `aria-labelledby` |
+| Switch | `switch` | `aria-checked`, `aria-label` |
+| Tooltip | `tooltip` | `aria-describedby` (on trigger) |
+| Combobox | `combobox` | `aria-expanded`, `aria-controls`, `aria-activedescendant` |
+
+---
+
+#### **TESTING ACCESSIBILITY**
+
+```typescript
+// Test with keyboard only
+// - Can you reach all interactive elements with Tab?
+// - Can you activate with Enter/Space?
+// - Can you close with Escape?
+// - Does focus trap work in modals?
+
+// Test with screen reader (VoiceOver, NVDA, JAWS)
+// - Are all elements announced correctly?
+// - Are states communicated (selected, expanded, etc.)?
+// - Are relationships clear (labels, descriptions)?
+
+// Automated testing
+import { render, screen } from '@testing-library/react';
+
+test('has proper ARIA attributes', () => {
+  render(<MenuItem state="active" label="Dashboard" />);
+  
+  const menuItem = screen.getByRole('menuitem', { name: 'Dashboard' });
+  expect(menuItem).toHaveAttribute('aria-selected', 'true');
+  expect(menuItem).toHaveAttribute('tabIndex', '0');
+});
+```
+
+---
+
+#### **WHY THIS MATTERS**
+
+- **Users**: 15% of world population has disabilities - ARIA makes your product usable
+- **Developers**: Semantic attributes enable better styling (`[aria-selected="true"]`) and testing
+- **Business**: Legal compliance (WCAG 2.1, ADA, Section 508), broader market reach
+- **Quality**: Forces you to think about component states and behavior clearly
 
 ---
 
@@ -308,10 +689,14 @@ Before finalizing, verify:
 - [ ] Empty state works
 
 ### Accessibility
-- [ ] ARIA attributes
-- [ ] Semantic HTML
-- [ ] Keyboard navigation
-- [ ] Focus management
+- [ ] Follows 5 Rules of ARIA (prefer native HTML, no semantic conflicts, keyboard accessible, no aria-hidden on focusable, accessible names)
+- [ ] Proper ARIA roles for component type (menuitem, dialog, tab, etc.)
+- [ ] Correct ARIA state attributes (aria-selected for menus, NOT aria-current)
+- [ ] Semantic HTML elements (button, nav, main, etc.)
+- [ ] Full keyboard navigation (Tab, Enter, Space, Escape, Arrows, Home, End)
+- [ ] Focus management (auto-focus, focus trap, return focus, visible indicators)
+- [ ] Accessible names for all interactive elements (aria-label, aria-labelledby, or text content)
+- [ ] Proper relationships (aria-describedby, aria-controls, aria-labelledby)
 
 ### Storybook Documentation
 - [ ] Typography imported in stories file

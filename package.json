@@ -11,10 +11,16 @@
     "build": "npm run build --workspaces",
     "storybook": "npm run storybook -w @ajaysoni7832/lean-ids-components",
     "build-storybook": "npm run build-storybook -w @ajaysoni7832/lean-ids-components",
+    "test-storybook": "npm run test-storybook -w @ajaysoni7832/lean-ids-components",
+    "test-storybook:watch": "npm run test-storybook:watch -w @ajaysoni7832/lean-ids-components",
+    "test:a11y": "npm run test:a11y -w @ajaysoni7832/lean-ids-components",
     "lint": "eslint packages --ext .ts,.tsx",
+    "lint:security": "eslint packages --ext .ts,.tsx --plugin security --rule 'security/*: error'",
     "format": "prettier --write \"packages/**/*.{ts,tsx,json,md}\"",
     "clean": "rm -rf packages/*/dist packages/*/node_modules node_modules",
-    "pre-deploy-check": "./scripts/pre-deploy-check.sh"
+    "pre-deploy-check": "./scripts/pre-deploy-check.sh",
+    "security:audit": "npm audit --audit-level=moderate",
+    "security:check": "npm run lint:security && npm run security:audit"
   },
   "keywords": [
     "design-system",
@@ -26,7 +32,16 @@
   ],
   "author": "Ajay Soni <ajay@carelon.com>",
   "license": "UNLICENSED",
-  "devDependencies": {},
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^6.21.0",
+    "@typescript-eslint/parser": "^6.21.0",
+    "eslint": "^8.56.0",
+    "eslint-plugin-react": "^7.33.2",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-security": "^2.1.0",
+    "eslint-plugin-jsx-a11y": "^6.8.0",
+    "prettier": "^3.2.4"
+  },
   "engines": {
     "node": ">=18.0.0",
     "npm": ">=9.0.0"

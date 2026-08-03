@@ -4,19 +4,35 @@
 
 import React, { ElementType } from 'react';
 
+/**
+ * Column configuration for Table component
+ */
 export interface TableColumn {
+  /** Unique identifier for the column */
   id: string;
+  /** Display label for column header */
   label: string;
+  /** Data accessor - property name or function to extract value from row */
   accessor?: string | ((row: any) => any);
+  /** Enable sorting for this column */
   sortable?: boolean;
+  /** Enable search/filter for this column */
   searchable?: boolean;
+  /** Enable column resizing by dragging column border */
   resizable?: boolean;
+  /** Initial/preferred column width in pixels */
   width?: number;
+  /** Minimum width constraint - prevents resizing below this value */
   minWidth?: number;
+  /** Maximum width constraint - prevents resizing above this value */
   maxWidth?: number;
+  /** Initial visibility state (default: true) */
   visible?: boolean;
+  /** Lock column to left side (sticky) */
   locked?: boolean;
+  /** Custom cell renderer function */
   renderCell?: (value: any, row: any, rowIndex: number) => React.ReactNode;
+  /** Sub-columns for nested/grouped column headers (Advanced Table only) */
   subColumns?: TableColumn[];
 }
 

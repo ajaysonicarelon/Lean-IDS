@@ -57,7 +57,7 @@ export const TableCell: React.FC<TableCellProps> = ({
   badgeStyle = 'default',
   showChip = false,
   chipLabel,
-  chipType = 'primary',
+  chipType = 'default',
   chipVariant = 'filled',
   onChipRemove,
   showButton = false,
@@ -70,6 +70,9 @@ export const TableCell: React.FC<TableCellProps> = ({
   onClick,
   align = 'left',
   className,
+  width,
+  minWidth,
+  maxWidth,
   selected = false,
   isFirstColumn = false,
   locked = false,
@@ -128,7 +131,14 @@ export const TableCell: React.FC<TableCellProps> = ({
       className={className}
       data-locked={locked ? 'true' : undefined}
       onClick={onClick}
-      style={{ cursor: onClick ? 'pointer' : 'default' }}
+      style={{
+        cursor: onClick ? 'pointer' : 'default',
+        ...(width !== undefined && {
+          width: typeof width === 'number' ? `${width}px` : width,
+          minWidth: typeof width === 'number' ? `${width}px` : width,
+          maxWidth: typeof width === 'number' ? `${width}px` : width,
+        }),
+      }}
     >
       <CellContent>
         {showCheckbox && (
@@ -163,7 +173,7 @@ export const TableCell: React.FC<TableCellProps> = ({
         {showText && text && <RegularText>{text}</RegularText>}
 
         {showBadge && badgeLabel && (
-          <Badge label={badgeLabel} type={badgeType} style={badgeStyle} />
+          <Badge label={badgeLabel} type={badgeType} styleVariant={badgeStyle} />
         )}
 
         {showChip && chipLabel && (

@@ -1,6 +1,6 @@
 {
   "name": "@ajaysoni7832/lean-ids-components",
-  "version": "1.7.6",
+  "version": "1.7.7",
   "type": "module",
   "description": "React components for Lean IDS design system",
   "main": "dist/index.js",
@@ -37,11 +37,16 @@
     "scripts/postinstall.cjs"
   ],
   "scripts": {
-    "build": "rollup -c",
+    "build": "NODE_ENV=production rollup -c",
     "dev": "rollup -c -w",
-    "storybook": "storybook dev -p 6006 --config-dir ../../.storybook",
+    "storybook": "storybook dev -p 6007 --config-dir ../../.storybook",
     "build-storybook": "storybook build -o ../../storybook-static --config-dir ../../.storybook",
-    "postinstall": "node scripts/postinstall.cjs || true"
+    "test-storybook": "test-storybook --config-dir ../../.storybook --url http://localhost:6007",
+    "test-storybook:watch": "test-storybook --watch --config-dir ../../.storybook --url http://localhost:6007",
+    "test-storybook:ci": "concurrently -k -s first -n \"SB,TEST\" -c \"magenta,blue\" \"npm run build-storybook -- --quiet\" \"wait-on tcp:6007 && npm run test-storybook\"",
+    "test:a11y": "test-storybook --config-dir ../../.storybook --url http://localhost:6007 --maxWorkers=2",
+    "postinstall": "node scripts/postinstall.cjs || true",
+    "prepublishOnly": "npm run build && npm audit --audit-level=moderate"
   },
   "keywords": [
     "react",
@@ -61,11 +66,11 @@
     "access": "public"
   },
   "peerDependencies": {
+    "@mui/icons-material": ">=5.0.0",
+    "@mui/material": ">=5.0.0",
     "react": ">=16.8.0 <20.0.0",
     "react-dom": ">=16.8.0 <20.0.0",
-    "styled-components": "^6.0.0",
-    "@mui/icons-material": ">=5.0.0",
-    "@mui/material": ">=5.0.0"
+    "styled-components": "^6.0.0"
   },
   "peerDependenciesMeta": {
     "react": {
@@ -85,7 +90,7 @@
     }
   },
   "dependencies": {
-    "@ajaysoni7832/lean-ids-tokens": "^1.7.3",
+    "@ajaysoni7832/lean-ids-tokens": "^1.7.7",
     "date-fns": "^4.4.0"
   },
   "devDependencies": {
@@ -93,6 +98,7 @@
     "@emotion/styled": "^11.14.1",
     "@mui/icons-material": "^9.0.0",
     "@mui/material": "^9.0.0",
+    "@playwright/test": "^1.62.1",
     "@rollup/plugin-typescript": "^12.1.2",
     "@rollup/plugin-url": "^8.0.2",
     "@storybook/addon-a11y": "^8.5.3",
@@ -102,9 +108,12 @@
     "@storybook/blocks": "^8.5.3",
     "@storybook/react": "^8.5.3",
     "@storybook/react-vite": "^8.5.3",
+    "@storybook/test-runner": "^0.19.1",
     "@types/react": "^18.3.18",
     "@types/react-dom": "^18.3.5",
     "@types/styled-components": "^5.1.34",
+    "axe-core": "^4.12.1",
+    "axe-playwright": "^2.2.2",
     "lucide-react": "^1.8.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",

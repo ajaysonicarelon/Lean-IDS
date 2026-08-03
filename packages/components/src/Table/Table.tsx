@@ -28,8 +28,9 @@ import styled from 'styled-components';
 import { TableHeader } from '../TableHeader';
 import { TableCell } from '../TableCell';
 import { Pagination } from '../Pagination';
-import { Icon } from '../Icon';
 import { Button } from '../Button';
+import ErrorIcon from '@mui/icons-material/Error';
+import CloudOffIcon from '@mui/icons-material/CloudOff';
 import { Checkbox } from '../Checkbox';
 import { TableSettings, ColumnConfig } from '../TableSettings';
 import { TableToolbar } from './TableToolbar';
@@ -155,6 +156,8 @@ const TableContainer = styled.div`
 const ScrollContainer = styled.div<{ $maxHeight?: string }>`
   overflow-x: auto;
   overflow-y: hidden; /* Prevent rows from appearing outside during animation */
+  width: min-content; /* Allow table to use natural width based on column widths */
+  min-width: 100%; /* But don't shrink below container width */
   ${({ $maxHeight }) => $maxHeight && `
     max-height: ${$maxHeight};
     overflow-y: auto;
@@ -169,7 +172,7 @@ const StyledTable = styled.table<{ $hasMaxHeight?: boolean }>`
   width: 100%;
   border-collapse: separate;
   border-spacing: 0;
-  table-layout: auto;
+  table-layout: fixed;
   
   ${({ $hasMaxHeight }) => $hasMaxHeight && `
     thead {
@@ -341,7 +344,23 @@ export const Table = forwardRef<HTMLDivElement, TableProps>(({  as: Component = 
   const [lockWarning, setLockWarning] = useState(false);
   const [animateSorting, setAnimateSorting] = useState(false);
   const [searchValues, setSearchValues] = useState<{ [key: string]: string }>({});
-  const [columnWidths, setColumnWidths] = useState<{ [key: string]: number }>({});
+  const [columnWidths, setColumnWidths] = useState<{ [key: string]: number }>(() => {
+    // Initialize with column widths from props, respecting min/max constraints
+    const initialWidths: { [key: string]: number } = {};
+    columns.forEach(col => {
+      if (col.width) {
+        let width = typeof col.width === 'number' ? col.width : parseInt(col.width, 10);
+        
+        // Clamp to minWidth and maxWidth if provided
+        const minWidth = col.minWidth ? (typeof col.minWidth === 'number' ? col.minWidth : parseInt(col.minWidth, 10)) : 0;
+        const maxWidth = col.maxWidth ? (typeof col.maxWidth === 'number' ? col.maxWidth : parseInt(col.maxWidth, 10)) : Infinity;
+        
+        const clampedWidth = Math.max(minWidth, Math.min(maxWidth, width));
+        initialWidths[col.id] = clampedWidth;
+      }
+    });
+    return initialWidths;
+  });
   const [globalSearch, setGlobalSearch] = useState('');
   
   // FLIP animation refs
@@ -418,7 +437,6 @@ export const Table = forwardRef<HTMLDivElement, TableProps>(({  as: Component = 
   const handleSort = (columnId: string) => {
     // CAPTURE positions BEFORE sorting for CLIENT-SIDE mode
     if (sortMode === 'client' && tbodyRef.current) {
-      console.log('🔵 CLIENT-SIDE: Capturing positions before sort...');
       const rows = Array.from(tbodyRef.current.querySelectorAll('tr')) as HTMLElement[];
       // Capture current positions (don't clear - keep positions of rows not currently visible)
       rows.forEach((row, index) => {
@@ -426,7 +444,6 @@ export const Table = forwardRef<HTMLDivElement, TableProps>(({  as: Component = 
         if (rowId) {
           const position = row.getBoundingClientRect().top;
           rowPositionsRef.current.set(rowId, position);
-          console.log(`🔵 Row ${index} (ID: ${rowId}): position = ${position}px`);
         }
       });
     }
@@ -439,14 +456,11 @@ export const Table = forwardRef<HTMLDivElement, TableProps>(({  as: Component = 
       newDirection = 'asc';
     }
 
-    console.log(`🟣 Sort state changing: column=${columnId}, direction=${newDirection}`);
-
     if (sortMode === 'server' && onSort) {
       // Server-side sorting: call the callback (parent manages state)
       onSort(columnId, newDirection);
     } else {
       // Client-side sorting: update internal state
-      console.log('🟣 Setting internal sort state...');
       setInternalSortColumn(columnId);
       setInternalSortDirection(newDirection);
     }
@@ -506,7 +520,6 @@ export const Table = forwardRef<HTMLDivElement, TableProps>(({  as: Component = 
   // ============================================================================
 
   const processedData = useMemo(() => {
-    console.log(`🟠 Processing data - sortMode=${sortMode}, sortColumn=${sortColumn}, sortDirection=${sortDirection}`);
     let result = [...data];
 
     // Apply search filters
@@ -582,28 +595,22 @@ export const Table = forwardRef<HTMLDivElement, TableProps>(({  as: Component = 
         // Only capture if we don't have this row's position yet
         const position = row.getBoundingClientRect().top;
         rowPositionsRef.current.set(rowId, position);
-        console.log(`🔵 SERVER-SIDE: Initial capture Row ${index} (ID: ${rowId}): position = ${position}px`);
       }
     });
   }); // Run on every render for server-side
 
   // FLIP animation for row reordering
   useLayoutEffect(() => {
-    console.log('🟢 AFTER SORT - useLayoutEffect running...');
-    
     // Prevent multiple animations from running simultaneously
     if (isAnimatingRef.current) {
-      console.log('⏸️ Animation already in progress, skipping...');
       return;
     }
     
     if (!tbodyRef.current) {
-      console.log('🔴 No tbody ref!');
       return;
     }
 
     const rows = Array.from(tbodyRef.current.querySelectorAll('tr')) as HTMLElement[];
-    console.log('🟢 Found rows in DOM:', rows.length);
     
     let hasAnimation = false;
     
@@ -615,16 +622,12 @@ export const Table = forwardRef<HTMLDivElement, TableProps>(({  as: Component = 
       const oldPosition = rowPositionsRef.current.get(rowId);
       const newPosition = row.getBoundingClientRect().top;
 
-      console.log(`🟢 Row ${index} (ID: ${rowId}): old=${oldPosition}px, new=${newPosition}px`);
-
       if (oldPosition !== undefined && oldPosition !== newPosition) {
         const delta = oldPosition - newPosition;
         
         // Clamp delta to prevent rows from going too far outside viewport
         const maxDelta = 1000; // Maximum pixels to animate
         const clampedDelta = Math.max(-maxDelta, Math.min(maxDelta, delta));
-        
-        console.log(`🟡 ANIMATING Row ${rowId}: delta=${delta}px (clamped: ${clampedDelta}px)`);
         
         hasAnimation = true;
         
@@ -641,8 +644,6 @@ export const Table = forwardRef<HTMLDivElement, TableProps>(({  as: Component = 
           row.style.transition = 'transform 0.6s cubic-bezier(0.4, 0, 0.2, 1)';
           row.style.transform = 'translateY(0)';
         });
-      } else {
-        console.log(`⚪ Row ${rowId}: No animation (same position or first render)`);
       }
 
       // Store new position for next render
@@ -654,7 +655,6 @@ export const Table = forwardRef<HTMLDivElement, TableProps>(({  as: Component = 
       isAnimatingRef.current = true;
       setTimeout(() => {
         isAnimatingRef.current = false;
-        console.log('✅ Animation complete, lock released');
       }, 600); // Match animation duration
     }
   }, [paginatedData, rowKey]);
@@ -764,13 +764,13 @@ export const Table = forwardRef<HTMLDivElement, TableProps>(({  as: Component = 
       
       <EmptyStateContainer 
         className={emptyStateClassName} 
-        style={emptyStateStyle}
+        style={safeEmptyStateStyle}
         role="status"
         aria-live="polite"
       >
         <EmptyStateContent>
           <EmptyStateIconWrapper>
-            <Icon name={emptyIcon} size="large" style={{ width: '60px', height: '60px' }} />
+            <CloudOffIcon sx={{ fontSize: 64, color: 'text.secondary' }} />
           </EmptyStateIconWrapper>
           
           <EmptyStateTextWrapper>
@@ -796,8 +796,13 @@ export const Table = forwardRef<HTMLDivElement, TableProps>(({  as: Component = 
     </ScrollContainer>
   );
 
+  // Ensure style is an object, not a string
+  const safeStyle = typeof style === 'object' ? style : undefined;
+  const safeScrollContainerStyle = typeof scrollContainerStyle === 'object' ? scrollContainerStyle : undefined;
+  const safeEmptyStateStyle = typeof emptyStateStyle === 'object' ? emptyStateStyle : undefined;
+
   return (
-    <Component ref={ref} style={style} {...restProps}>
+    <Component ref={ref} style={safeStyle} {...restProps}>
       <TableContainer 
         className={className}
         role="region"
@@ -808,7 +813,7 @@ export const Table = forwardRef<HTMLDivElement, TableProps>(({  as: Component = 
       {/* Error state */}
       {isInvalid && errorMessage && (
         <ErrorContainer role="alert" aria-live="polite">
-          <Icon name="Error" size="small" />
+          <ErrorIcon sx={{ fontSize: 20 }} />
           <Typography variant="body" color="error">
             {errorMessage}
           </Typography>
@@ -826,7 +831,7 @@ export const Table = forwardRef<HTMLDivElement, TableProps>(({  as: Component = 
           showDownload={showDownload}
           onDownload={onDownload}
           showFilter={showFilter}
-          onFilter={() => console.log('Filter clicked')}
+          onFilter={() => {}}
           showSettings={showSettings}
           onSettingsClick={() => setSettingsOpen(true)}
           showGlobalSearch={showGlobalSearch}
@@ -840,7 +845,7 @@ export const Table = forwardRef<HTMLDivElement, TableProps>(({  as: Component = 
           data-scroll-container 
           $maxHeight={maxHeight}
           className={scrollContainerClassName}
-          style={scrollContainerStyle}
+          style={safeScrollContainerStyle}
         >
           <StyledTable 
             $hasMaxHeight={!!maxHeight}
@@ -848,6 +853,34 @@ export const Table = forwardRef<HTMLDivElement, TableProps>(({  as: Component = 
             aria-label={title || 'Data table'}
             aria-rowcount={totalItems}
           >
+          <colgroup>
+            {visibleColumns.map((colConfig) => {
+              const column = columns.find(col => col.id === colConfig.id);
+              const dynamicWidth = columnWidths[colConfig.id];
+              
+              // Use dynamic width if available, otherwise use column width with clamping, otherwise default
+              let widthValue: string;
+              if (dynamicWidth) {
+                widthValue = `${dynamicWidth}px`;
+              } else if (column?.width) {
+                // Clamp the width to min/max constraints even on initial render
+                let width = typeof column.width === 'number' ? column.width : parseInt(column.width, 10);
+                const minWidth = column.minWidth ? (typeof column.minWidth === 'number' ? column.minWidth : parseInt(column.minWidth, 10)) : 0;
+                const maxWidth = column.maxWidth ? (typeof column.maxWidth === 'number' ? column.maxWidth : parseInt(column.maxWidth, 10)) : Infinity;
+                width = Math.max(minWidth, Math.min(maxWidth, width));
+                widthValue = `${width}px`;
+              } else if (colConfig.id === 'checkbox') {
+                widthValue = '48px';
+              } else if (colConfig.id === 'actions') {
+                widthValue = '120px';
+              } else {
+                widthValue = '150px'; // Default width
+              }
+              
+              // Set width as both attribute and style for better browser compatibility
+              return <col key={colConfig.id} width={widthValue} style={{ width: widthValue }} />;
+            })}
+          </colgroup>
           <thead>
             <tr>
               {visibleColumns.map((colConfig, index) => {
@@ -916,6 +949,7 @@ export const Table = forwardRef<HTMLDivElement, TableProps>(({  as: Component = 
                     width={columnWidths[column.id] || column.width}
                     minWidth={column.minWidth}
                     maxWidth={column.maxWidth}
+                    initialWidth={typeof column.width === 'number' ? column.width : undefined}
                     onLockToggle={() => handleColumnLock(column.id, !isLocked)}
                     locked={isLocked}
                     leftOffset={offset}
@@ -976,6 +1010,7 @@ export const Table = forwardRef<HTMLDivElement, TableProps>(({  as: Component = 
                           leftOffset={offset}
                           data-locked={isLocked}
                           isFirstColumn={isFirstCell}
+                          width={48}
                         >
                           <div
                             onClick={(e) => {
@@ -1002,6 +1037,7 @@ export const Table = forwardRef<HTMLDivElement, TableProps>(({  as: Component = 
                           locked={isLocked}
                           leftOffset={offset}
                           data-locked={isLocked}
+                          width={120}
                         >
                           <div style={{ display: 'flex', gap: '8px' }}>
                             {actions.map((action, actionIndex) => (
@@ -1010,7 +1046,7 @@ export const Table = forwardRef<HTMLDivElement, TableProps>(({  as: Component = 
                                 variant="tertiary"
                                 size="small"
                                 showLabel={false}
-                                leadingIcon={<Icon name={action.icon} size="small" />}
+                                leadingIcon={action.icon}
                                 onClick={() => action.onClick(row)}
                                 aria-label={action.label}
                               >
@@ -1041,6 +1077,7 @@ export const Table = forwardRef<HTMLDivElement, TableProps>(({  as: Component = 
                           leftOffset={offset}
                           data-locked={isLocked}
                           isFirstColumn={isFirstCell}
+                          width={columnWidths[column.id] || column.width}
                         >
                           {column.renderCell(value, row, rowIndex)}
                         </TableCell>
@@ -1056,6 +1093,7 @@ export const Table = forwardRef<HTMLDivElement, TableProps>(({  as: Component = 
                         leftOffset={offset}
                         data-locked={isLocked}
                         isFirstColumn={isFirstCell}
+                        width={columnWidths[column.id] || column.width}
                       >
                         {String(value || '')}
                       </TableCell>

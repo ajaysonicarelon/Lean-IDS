@@ -39,6 +39,21 @@ interface NestedMenuItemProps {
   $disabled?: boolean;
 }
 
+/**
+ * NestedMenuItemContainer
+ * 
+ * ARIA Attributes for Custom Styling:
+ * - Use [aria-selected="true"] to target active/selected nested menu items
+ * - Use [aria-disabled="true"] to target disabled nested menu items
+ * - Use [aria-haspopup="menu"] to target items with submenus
+ * 
+ * Example:
+ * ```css
+ * [aria-selected="true"] {
+ *   background: custom-color;
+ * }
+ * ```
+ */
 export const NestedMenuItemContainer = styled.div<NestedMenuItemProps>`
   display: flex;
   align-items: center;

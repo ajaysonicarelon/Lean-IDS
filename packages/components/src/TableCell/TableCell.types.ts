@@ -59,6 +59,9 @@ export interface TableCellProps {
   // Styling
   align?: 'left' | 'center' | 'right';
   className?: string;
+  width?: number | string;
+  minWidth?: number | string;
+  maxWidth?: number | string;
   
   // Row state
   selected?: boolean;

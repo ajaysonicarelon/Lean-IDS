@@ -8,14 +8,42 @@ import { AlertBannerType, AlertBannerStyle } from './AlertBanner.types';
 export const StyledAlertBanner = styled.div<{
   $type: AlertBannerType;
   $style: AlertBannerStyle;
+  $width?: string;
+  $maxWidth?: string;
+  $disabled?: boolean;
+  $isLoading?: boolean;
 }>`
   display: flex;
   align-items: center;
   gap: ${({ theme }) => theme.spacing[4]};
   padding: ${({ theme }) => theme.spacing[3]};
   border-radius: ${({ theme }) => theme.borderRadius.sm};
-  min-height: 48px;
-  width: 100%;
+  min-height: ${({ theme }) => theme.spacing[12]};
+  width: ${({ $width }) => $width || '100%'};
+  max-width: ${({ $maxWidth }) => $maxWidth};
+  position: relative;
+  transition: opacity 0.2s ease;
+
+  ${({ $disabled, $isLoading }) => 
+    ($disabled || $isLoading) && `
+      opacity: 0.6;
+      pointer-events: ${$disabled ? 'none' : 'auto'};
+      cursor: ${$disabled ? 'not-allowed' : 'default'};
+    `
+  }
+
+  &:hover {
+    ${({ $disabled, $isLoading }) => 
+      !$disabled && !$isLoading && `
+        opacity: 0.95;
+      `
+    }
+  }
+
+  &:focus-visible {
+    outline: 2px solid ${({ theme }) => theme.colors.semantic.focus.indicator};
+    outline-offset: 2px;
+  }
 
   ${({ theme, $type, $style }) => {
     // Default style
@@ -115,16 +143,6 @@ export const MessageContainer = styled.div`
   min-width: 0;
 `;
 
-export const MessageText = styled.p`
-  font-family: ${({ theme }) => theme.fonts.primary};
-  font-size: ${({ theme }) => theme.fontSizes[16]};
-  font-weight: ${({ theme }) => theme.fontWeights.medium};
-  line-height: ${({ theme }) => theme.lineHeights[19]};
-  flex: 1;
-  min-width: 0;
-  margin: 0;
-`;
-
 export const ActionsContainer = styled.div`
   display: flex;
   align-items: center;
@@ -132,22 +150,56 @@ export const ActionsContainer = styled.div`
   flex-shrink: 0;
 `;
 
-export const IconWrapper = styled.span`
+export const IconWrapper = styled.span<{ $clickable?: boolean }>`
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  width: 16px;
-  height: 16px;
-  cursor: pointer;
-  transition: opacity 0.2s;
+  width: ${({ theme }) => theme.spacing[7]}; /* 16px minimum for icons */
+  height: ${({ theme }) => theme.spacing[7]}; /* 16px minimum for icons */
+  cursor: ${({ $clickable }) => $clickable ? 'pointer' : 'default'};
+  transition: opacity 0.2s ease;
 
-  &:hover {
-    opacity: 0.8;
-  }
+  ${({ $clickable }) => $clickable && `
+    &:hover {
+      opacity: 0.8;
+    }
+
+    &:focus-visible {
+      outline: 2px solid currentColor;
+      outline-offset: 2px;
+      border-radius: 2px;
+    }
+
+    &:active {
+      opacity: 0.6;
+    }
+  `}
 
   svg {
     width: 100%;
     height: 100%;
   }
+`;
+
+export const LoadingOverlay = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(255, 255, 255, 0.8);
+  border-radius: ${({ theme }) => theme.borderRadius.sm};
+  z-index: 1;
+`;
+
+export const StateMessage = styled.div`
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: ${({ theme }) => theme.spacing[2]};
+  min-width: 0;
 `;

@@ -37,19 +37,36 @@ export interface UserProfile {
   onClick?: () => void;
 }
 
-export interface SideNavigationProps {
+export interface SideNavigationProps extends React.HTMLAttributes<HTMLElement> {
+  // ========== POLYMORPHISM ==========
+  /** Render as different HTML element (default: 'nav') */
+  as?: React.ElementType;
+  
+  // ========== CONTENT ==========
   /** Navigation groups */
   groups?: NavigationGroup[];
   /** User profile information */
   user?: UserProfile;
-  /** Additional CSS class */
-  className?: string;
   /** Custom content (overrides default groups) */
   children?: React.ReactNode;
-  /** Callback when pin state changes */
-  onPinChange?: (isPinned: boolean) => void;
+  
+  // ========== STATES (Component Maturity Checklist) ==========
   /** Whether sidebar is pinned (locked in expanded state) */
   isPinned?: boolean;
+  /** Loading state - shows spinner */
+  isLoading?: boolean;
+  /** Empty state - shows empty message */
+  isEmpty?: boolean;
+  /** Error state - shows error message */
+  isInvalid?: boolean;
+  /** Error message to display when isInvalid is true */
+  errorMessage?: string;
+  /** Empty message to display when isEmpty is true */
+  emptyMessage?: string;
+  /** Disabled state - prevents all interactions */
+  disabled?: boolean;
+  
+  // ========== BEHAVIOR ==========
   /** Expand/collapse mode - 'hover', 'button', or 'both' */
   expandMode?: 'hover' | 'button' | 'both';
   /** Position of toggle button - 'top' or 'bottom' */
@@ -60,6 +77,10 @@ export interface SideNavigationProps {
   toggleButtonSize?: 'small' | 'large';
   /** Custom icon for toggle button (collapsed state) */
   toggleButtonIcon?: React.ReactNode;
+  /** Whether to show menu item labels when sidebar is collapsed */
+  showLabelsWhenCollapsed?: boolean;
+  
+  // ========== BRANDING ==========
   /** Custom logo URL for expanded state (full logo) */
   customLogoUrl?: string;
   /** Custom symbol URL for collapsed state (icon only) */
@@ -68,6 +89,36 @@ export interface SideNavigationProps {
   logoAlignment?: 'left' | 'center' | 'right';
   /** Custom padding for logo (CSS padding value) */
   logoPadding?: string;
-  /** Whether to show menu item labels when sidebar is collapsed */
-  showLabelsWhenCollapsed?: boolean;
+  
+  // ========== STYLE OVERRIDES (Component Maturity Checklist) ==========
+  /** Additional CSS class */
+  className?: string;
+  /** Inline styles */
+  style?: React.CSSProperties;
+  /** CSS class for brand container */
+  brandClassName?: string;
+  /** CSS class for navigation groups */
+  groupsClassName?: string;
+  /** CSS class for user profile section */
+  userClassName?: string;
+  /** CSS class for toggle button */
+  toggleButtonClassName?: string;
+  /** CSS class for pin button */
+  pinButtonClassName?: string;
+  
+  // ========== EVENT CALLBACKS (Component Maturity Checklist) ==========
+  /** Callback when pin state changes */
+  onPinChange?: (isPinned: boolean) => void;
+  /** Callback when sidebar expands */
+  onExpand?: () => void;
+  /** Callback when sidebar collapses */
+  onCollapse?: () => void;
+  /** Callback after expand animation completes */
+  onAfterExpand?: () => void;
+  /** Callback after collapse animation completes */
+  onAfterCollapse?: () => void;
+  /** Callback when menu item is clicked */
+  onMenuItemClick?: (item: NavigationItem) => void;
+  /** Callback when menu item is hovered */
+  onMenuItemHover?: (item: NavigationItem) => void;
 }

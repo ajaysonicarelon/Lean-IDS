@@ -7,7 +7,7 @@
 
 import type { Meta, StoryObj } from '@storybook/react';
 import React, { useState } from 'react';
-import { borderRadius, borderWidth, shadows } from '../../../tokens/src';
+import { borderRadius, borderWidth, shadows, carelonSemanticColors, spacing, fontSizes, fontWeights } from '../../../tokens/src';
 
 const BorderRadiusExample: React.FC<{
   name: string;
@@ -71,7 +71,7 @@ const BorderRadiusExample: React.FC<{
         style={{
           width: '100%',
           height: '80px',
-          backgroundColor: '#5009b5',
+          backgroundColor: carelonSemanticColors.interactive.default,
           borderRadius: value,
           marginTop: '8px',
         }}

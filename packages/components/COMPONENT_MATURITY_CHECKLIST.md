@@ -49,10 +49,14 @@ Build [ComponentName] according to the Component Maturity Checklist
 - [ ] Empty state with message
 
 ### 5. ACCESSIBILITY ♿
-- [ ] Proper ARIA attributes (role, aria-label, aria-modal, etc.)
-- [ ] Semantic HTML elements (button, nav, main, etc.)
-- [ ] Keyboard navigation (Tab, Enter, Escape, Arrows)
-- [ ] Focus management (auto-focus, return focus, focus trap)
+- [ ] **Follow 5 Rules of ARIA** (prefer native HTML, no semantic conflicts, keyboard accessible, no aria-hidden on focusable, accessible names)
+- [ ] **Proper ARIA roles** for component type (menuitem, dialog, tab, etc.)
+- [ ] **Correct ARIA state attributes** (aria-selected for menus, NOT aria-current)
+- [ ] **Semantic HTML elements** (button, nav, main, etc.)
+- [ ] **Full keyboard navigation** (Tab, Enter, Space, Escape, Arrows, Home, End)
+- [ ] **Focus management** (auto-focus, return focus, focus trap, visible indicators)
+- [ ] **Accessible names** for all interactive elements
+- [ ] **Proper relationships** (aria-describedby, aria-controls, aria-labelledby)
 
 ### 6. STORYBOOK DOCUMENTATION 📚
 - [ ] **Typography component in ALL stories** (no `<h1>`, `<p>`, etc.)
@@ -98,17 +102,144 @@ font-size: ${({ theme }) => theme.fontSizes[14]};
 
 ### ❌ Poor Accessibility
 ```typescript
-// ❌ WRONG
+// ❌ WRONG - No semantic HTML, no ARIA
 <div onClick={handleClick}>Click me</div>
 
-// ✅ CORRECT
-<button
-  onClick={handleClick}
-  aria-label="Submit form"
-  role="button"
->
+// ✅ CORRECT - Native HTML (preferred)
+<button onClick={handleClick} aria-label="Submit form">
   Click me
 </button>
+
+// ❌ WRONG - Using aria-current for menu selection
+<li role="menuitem" aria-current="page">Dashboard</li>
+
+// ✅ CORRECT - Use aria-selected for menu items
+<li role="menuitem" aria-selected={true} tabIndex={0}>Dashboard</li>
+
+// ❌ WRONG - Unnecessary ARIA (violates Rule 1)
+<div role="button" onClick={handleClick}>Click</div>
+
+// ✅ CORRECT - Use native HTML
+<button onClick={handleClick}>Click</button>
+```
+
+### 🎯 THE 5 RULES OF ARIA (MUST FOLLOW)
+
+**Rule 1: Don't use ARIA if native HTML works**
+```typescript
+// ❌ BAD
+<div role="button" onClick={handleClick}>Click</div>
+
+// ✅ GOOD
+<button onClick={handleClick}>Click</button>
+```
+
+**Rule 2: Don't change native semantics**
+```typescript
+// ❌ BAD
+<h1 role="button">Title</h1>
+
+// ✅ GOOD
+<h1>Title</h1>
+<button>Action</button>
+```
+
+**Rule 3: All interactive elements must be keyboard accessible**
+```typescript
+// ❌ BAD
+<div onClick={handleClick}>Click</div>
+
+// ✅ GOOD
+<div 
+  role="button" 
+  tabIndex={0} 
+  onClick={handleClick}
+  onKeyDown={(e) => {
+    if (e.key === 'Enter' || e.key === ' ') handleClick();
+  }}
+>
+  Click
+</div>
+
+// ✅ BETTER - Use native button
+<button onClick={handleClick}>Click</button>
+```
+
+**Rule 4: Don't hide focusable elements with aria-hidden**
+```typescript
+// ❌ BAD
+<button aria-hidden="true">Click</button>
+
+// ✅ GOOD
+<button style={{ display: 'none' }}>Click</button>
+```
+
+**Rule 5: All interactive elements must have accessible names**
+```typescript
+// ❌ BAD
+<button><CloseIcon /></button>
+
+// ✅ GOOD (choose one method)
+<button aria-label="Close dialog"><CloseIcon /></button>
+<button aria-labelledby="close-label"><CloseIcon /></button>
+<button>Close</button>
+```
+
+### 📋 ARIA BY COMPONENT TYPE
+
+**Menu Items:**
+```typescript
+// ✅ CORRECT
+<li 
+  role="menuitem" 
+  aria-selected={isActive}  // Use aria-selected
+  tabIndex={isActive ? 0 : -1}
+>
+  Dashboard
+</li>
+
+// ❌ WRONG - Don't use aria-current for menu selection
+<li role="menuitem" aria-current="page">Dashboard</li>
+```
+
+**Tabs:**
+```typescript
+<div role="tablist">
+  <button 
+    role="tab" 
+    aria-selected={activeTab === 'general'}
+    aria-controls="general-panel"
+  >
+    General
+  </button>
+</div>
+<div role="tabpanel" id="general-panel">Content</div>
+```
+
+**Dialogs:**
+```typescript
+<div
+  role="dialog"
+  aria-modal={true}
+  aria-labelledby="dialog-title"
+  aria-describedby="dialog-description"
+>
+  <h2 id="dialog-title">Confirm</h2>
+  <p id="dialog-description">Are you sure?</p>
+</div>
+```
+
+**Alerts:**
+```typescript
+// Immediate announcement
+<div role="alert" aria-live="assertive">
+  Error: Failed to save
+</div>
+
+// Polite announcement
+<div role="status" aria-live="polite" aria-atomic="true">
+  Saving... 3 items remaining
+</div>
 ```
 
 ---
@@ -199,10 +330,14 @@ Component.displayName = 'Component';
 | **style prop** | Inline style override | ⬜ |
 | **8 states** | All implemented | ⬜ |
 | **Event callbacks** | All exposed | ⬜ |
-| **ARIA attributes** | Proper accessibility | ⬜ |
-| **Semantic HTML** | Correct elements | ⬜ |
-| **Keyboard nav** | Full support | ⬜ |
-| **Focus management** | Auto-focus, return focus | ⬜ |
+| **5 Rules of ARIA** | All rules followed | ⬜ |
+| **ARIA roles** | Correct for component type | ⬜ |
+| **ARIA state attributes** | aria-selected (not aria-current) for menus | ⬜ |
+| **Semantic HTML** | Native elements preferred | ⬜ |
+| **Keyboard nav** | Tab, Enter, Space, Escape, Arrows | ⬜ |
+| **Focus management** | Auto-focus, trap, return, indicators | ⬜ |
+| **Accessible names** | All interactive elements | ⬜ |
+| **ARIA relationships** | describedby, controls, labelledby | ⬜ |
 | **Storybook stories** | All states & variants | ⬜ |
 | **No HTML tags in stories** | Only Typography | ⬜ |
 | **Copy-paste examples** | Ready to use | ⬜ |

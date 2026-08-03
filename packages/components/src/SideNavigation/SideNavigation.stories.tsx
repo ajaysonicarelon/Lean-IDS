@@ -1,6 +1,10 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { SideNavigation } from './SideNavigation';
 import { Icon } from '../Icon';
+import AccountCircle from '@mui/icons-material/AccountCircle';
+import Tune from '@mui/icons-material/Tune';
+import ShoppingCart from '@mui/icons-material/ShoppingCart';
+import Receipt from '@mui/icons-material/Receipt';
 
 const meta: Meta<typeof SideNavigation> = {
   title: 'Components/SideNavigation',
@@ -237,12 +241,12 @@ const sampleGroups = [
       {
         id: 'profile',
         label: 'Profile',
-        icon: <Icon name="AccountCircle" size="medium" />,
+        icon: <AccountCircle />,
       },
       {
         id: 'preferences',
         label: 'Preferences',
-        icon: <Icon name="Tune" size="medium" />,
+        icon: <Tune />,
       },
     ],
   },
@@ -534,7 +538,7 @@ export const MultipleGroups: Story = {
           {
             id: 'users',
             label: 'Users',
-            icon: <Icon name="AccountCircle" size="medium" />,
+            icon: <AccountCircle />,
           },
           {
             id: 'settings',
@@ -585,7 +589,7 @@ const navigationGroups = [
   {
     title: 'MANAGEMENT',
     items: [
-      { id: 'users', label: 'Users', icon: <Icon name="AccountCircle" size="medium" /> },
+      { id: 'users', label: 'Users', icon: <AccountCircle /> },
       { id: 'settings', label: 'Settings', icon: <Icon name="Settings" size="medium" /> },
     ],
   },
@@ -771,7 +775,7 @@ export const WithManyItems: Story = {
       {
         title: 'USERS',
         items: [
-          { id: 'all-users', label: 'All Users', icon: <Icon name="AccountCircle" size="medium" /> },
+          { id: 'all-users', label: 'All Users', icon: <AccountCircle /> },
           { id: 'add-user', label: 'Add New', icon: <Icon name="Add" size="medium" /> },
           { id: 'roles', label: 'Roles', icon: <Icon name="Settings" size="medium" /> },
         ],
@@ -883,7 +887,7 @@ export const CompleteExample: Story = {
           {
             id: 'profile',
             label: 'Profile',
-            icon: <Icon name="AccountCircle" size="medium" />,
+            icon: <AccountCircle />,
           },
           {
             id: 'preferences',
@@ -977,7 +981,7 @@ function App() {
         {
           id: 'profile',
           label: 'Profile',
-          icon: <Icon name="AccountCircle" size="medium" />,
+          icon: <AccountCircle />,
           active: activeId === 'profile',
           onClick: () => setActiveId('profile'),
         },
@@ -1042,7 +1046,7 @@ export const WithNestedMenus: Story = {
           {
             id: 'products',
             label: 'Products',
-            icon: <Icon name="ShoppingCart" size="medium" />,
+            icon: <ShoppingCart />,
             children: [
               {
                 id: 'products-all',
@@ -1075,7 +1079,7 @@ export const WithNestedMenus: Story = {
           {
             id: 'orders',
             label: 'Orders',
-            icon: <Icon name="Receipt" size="medium" />,
+            icon: <Receipt />,
             showIndicator: true,
             children: [
               {
@@ -1167,6 +1171,7 @@ export const WithNestedMenus: Story = {
       },
       source: {
         code: `import { SideNavigation, Icon } from '@lean-ids/components';
+import ShoppingCart from '@mui/icons-material/ShoppingCart';
 
 function App() {
   const navigationGroups = [
@@ -1182,7 +1187,7 @@ function App() {
         {
           id: 'products',
           label: 'Products',
-          icon: <Icon name="ShoppingCart" size="medium" />,
+          icon: <ShoppingCart />,
           children: [
             {
               id: 'products-all',

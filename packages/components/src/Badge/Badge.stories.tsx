@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { Badge } from './Badge';
 import React from 'react';
+import { fn } from '@storybook/test';
 
 const meta: Meta<typeof Badge> = {
   title: 'Components/Badge',
@@ -31,19 +32,19 @@ The Badge is designed to display status indicators, category labels, notificatio
 \`\`\`tsx
 import { Badge } from '@lean-ids/components';
 
-<Badge label="Active" type="success" style="default" />
+<Badge label="Active" type="success" styleVariant="default" />
 
 <Badge 
   label="New" 
   type="info" 
-  style="subdued"
+  styleVariant="subdued"
   showLeadingIcon={true}
 />
 
 <Badge 
   label="Removable" 
   type="neutral" 
-  style="outlined"
+  styleVariant="outlined"
   showTrailingIcon={true}
 />
 \`\`\`
@@ -76,6 +77,14 @@ import { Badge } from '@lean-ids/components';
     },
   },
   tags: ['autodocs'],
+  args: {
+    onClick: fn(),
+    onRemove: fn(),
+    onMount: fn(),
+    onUnmount: fn(),
+    onFocus: fn(),
+    onBlur: fn(),
+  },
   argTypes: {
     label: {
       control: 'text',
@@ -86,7 +95,7 @@ import { Badge } from '@lean-ids/components';
       options: ['info', 'success', 'warning', 'error', 'neutral'],
       description: 'The semantic type of the badge',
     },
-    style: {
+    styleVariant: {
       control: 'select',
       options: ['default', 'subdued', 'outlined'],
       description: 'The visual style of the badge',
@@ -109,7 +118,7 @@ export const Default: Story = {
   args: {
     label: 'Label',
     type: 'info',
-    style: 'default',
+    styleVariant: 'default',
     showLeadingIcon: false,
     showTrailingIcon: false,
   },
@@ -119,7 +128,7 @@ export const WithLeadingIcon: Story = {
   args: {
     label: 'Label',
     type: 'info',
-    style: 'default',
+    styleVariant: 'default',
     showLeadingIcon: true,
     showTrailingIcon: false,
   },
@@ -129,7 +138,7 @@ export const WithTrailingIcon: Story = {
   args: {
     label: 'Label',
     type: 'info',
-    style: 'default',
+    styleVariant: 'default',
     showLeadingIcon: false,
     showTrailingIcon: true,
   },
@@ -139,7 +148,7 @@ export const WithBothIcons: Story = {
   args: {
     label: 'Label',
     type: 'info',
-    style: 'default',
+    styleVariant: 'default',
     showLeadingIcon: true,
     showTrailingIcon: true,
   },
@@ -148,11 +157,11 @@ export const WithBothIcons: Story = {
 export const AllTypesDefault: Story = {
   render: () => (
     <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
-      <Badge label="Info" type="info" style="default" showLeadingIcon />
-      <Badge label="Success" type="success" style="default" showLeadingIcon />
-      <Badge label="Warning" type="warning" style="default" showLeadingIcon />
-      <Badge label="Error" type="error" style="default" showLeadingIcon />
-      <Badge label="Neutral" type="neutral" style="default" showLeadingIcon />
+      <Badge label="Info" type="info" styleVariant="default" showLeadingIcon />
+      <Badge label="Success" type="success" styleVariant="default" showLeadingIcon />
+      <Badge label="Warning" type="warning" styleVariant="default" showLeadingIcon />
+      <Badge label="Error" type="error" styleVariant="default" showLeadingIcon />
+      <Badge label="Neutral" type="neutral" styleVariant="default" showLeadingIcon />
     </div>
   ),
 };
@@ -160,11 +169,11 @@ export const AllTypesDefault: Story = {
 export const AllTypesSubdued: Story = {
   render: () => (
     <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
-      <Badge label="Info" type="info" style="subdued" showLeadingIcon />
-      <Badge label="Success" type="success" style="subdued" showLeadingIcon />
-      <Badge label="Warning" type="warning" style="subdued" showLeadingIcon />
-      <Badge label="Error" type="error" style="subdued" showLeadingIcon />
-      <Badge label="Neutral" type="neutral" style="subdued" showLeadingIcon />
+      <Badge label="Info" type="info" styleVariant="subdued" showLeadingIcon />
+      <Badge label="Success" type="success" styleVariant="subdued" showLeadingIcon />
+      <Badge label="Warning" type="warning" styleVariant="subdued" showLeadingIcon />
+      <Badge label="Error" type="error" styleVariant="subdued" showLeadingIcon />
+      <Badge label="Neutral" type="neutral" styleVariant="subdued" showLeadingIcon />
     </div>
   ),
 };
@@ -172,11 +181,11 @@ export const AllTypesSubdued: Story = {
 export const AllTypesOutlined: Story = {
   render: () => (
     <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
-      <Badge label="Info" type="info" style="outlined" showLeadingIcon />
-      <Badge label="Success" type="success" style="outlined" showLeadingIcon />
-      <Badge label="Warning" type="warning" style="outlined" showLeadingIcon />
-      <Badge label="Error" type="error" style="outlined" showLeadingIcon />
-      <Badge label="Neutral" type="neutral" style="outlined" showLeadingIcon />
+      <Badge label="Info" type="info" styleVariant="outlined" showLeadingIcon />
+      <Badge label="Success" type="success" styleVariant="outlined" showLeadingIcon />
+      <Badge label="Warning" type="warning" styleVariant="outlined" showLeadingIcon />
+      <Badge label="Error" type="error" styleVariant="outlined" showLeadingIcon />
+      <Badge label="Neutral" type="neutral" styleVariant="outlined" showLeadingIcon />
     </div>
   ),
 };
@@ -184,9 +193,9 @@ export const AllTypesOutlined: Story = {
 export const InfoVariants: Story = {
   render: () => (
     <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap', alignItems: 'center' }}>
-      <Badge label="Default" type="info" style="default" showLeadingIcon />
-      <Badge label="Subdued" type="info" style="subdued" showLeadingIcon />
-      <Badge label="Outlined" type="info" style="outlined" showLeadingIcon />
+      <Badge label="Default" type="info" styleVariant="default" showLeadingIcon />
+      <Badge label="Subdued" type="info" styleVariant="subdued" showLeadingIcon />
+      <Badge label="Outlined" type="info" styleVariant="outlined" showLeadingIcon />
     </div>
   ),
 };
@@ -194,9 +203,9 @@ export const InfoVariants: Story = {
 export const SuccessVariants: Story = {
   render: () => (
     <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap', alignItems: 'center' }}>
-      <Badge label="Default" type="success" style="default" showLeadingIcon />
-      <Badge label="Subdued" type="success" style="subdued" showLeadingIcon />
-      <Badge label="Outlined" type="success" style="outlined" showLeadingIcon />
+      <Badge label="Default" type="success" styleVariant="default" showLeadingIcon />
+      <Badge label="Subdued" type="success" styleVariant="subdued" showLeadingIcon />
+      <Badge label="Outlined" type="success" styleVariant="outlined" showLeadingIcon />
     </div>
   ),
 };
@@ -204,9 +213,9 @@ export const SuccessVariants: Story = {
 export const WarningVariants: Story = {
   render: () => (
     <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap', alignItems: 'center' }}>
-      <Badge label="Default" type="warning" style="default" showLeadingIcon />
-      <Badge label="Subdued" type="warning" style="subdued" showLeadingIcon />
-      <Badge label="Outlined" type="warning" style="outlined" showLeadingIcon />
+      <Badge label="Default" type="warning" styleVariant="default" showLeadingIcon />
+      <Badge label="Subdued" type="warning" styleVariant="subdued" showLeadingIcon />
+      <Badge label="Outlined" type="warning" styleVariant="outlined" showLeadingIcon />
     </div>
   ),
 };
@@ -214,9 +223,9 @@ export const WarningVariants: Story = {
 export const ErrorVariants: Story = {
   render: () => (
     <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap', alignItems: 'center' }}>
-      <Badge label="Default" type="error" style="default" showLeadingIcon />
-      <Badge label="Subdued" type="error" style="subdued" showLeadingIcon />
-      <Badge label="Outlined" type="error" style="outlined" showLeadingIcon />
+      <Badge label="Default" type="error" styleVariant="default" showLeadingIcon />
+      <Badge label="Subdued" type="error" styleVariant="subdued" showLeadingIcon />
+      <Badge label="Outlined" type="error" styleVariant="outlined" showLeadingIcon />
     </div>
   ),
 };
@@ -224,9 +233,9 @@ export const ErrorVariants: Story = {
 export const NeutralVariants: Story = {
   render: () => (
     <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap', alignItems: 'center' }}>
-      <Badge label="Default" type="neutral" style="default" showLeadingIcon />
-      <Badge label="Subdued" type="neutral" style="subdued" showLeadingIcon />
-      <Badge label="Outlined" type="neutral" style="outlined" showLeadingIcon />
+      <Badge label="Default" type="neutral" styleVariant="default" showLeadingIcon />
+      <Badge label="Subdued" type="neutral" styleVariant="subdued" showLeadingIcon />
+      <Badge label="Outlined" type="neutral" styleVariant="outlined" showLeadingIcon />
     </div>
   ),
 };
@@ -234,11 +243,11 @@ export const NeutralVariants: Story = {
 export const StatusIndicators: Story = {
   render: () => (
     <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
-      <Badge label="Active" type="success" style="default" showLeadingIcon />
-      <Badge label="Pending" type="warning" style="subdued" showLeadingIcon />
-      <Badge label="Inactive" type="neutral" style="outlined" />
-      <Badge label="Failed" type="error" style="default" showLeadingIcon />
-      <Badge label="New" type="info" style="subdued" showLeadingIcon />
+      <Badge label="Active" type="success" styleVariant="default" showLeadingIcon />
+      <Badge label="Pending" type="warning" styleVariant="subdued" showLeadingIcon />
+      <Badge label="Inactive" type="neutral" styleVariant="outlined" />
+      <Badge label="Failed" type="error" styleVariant="default" showLeadingIcon />
+      <Badge label="New" type="info" styleVariant="subdued" showLeadingIcon />
     </div>
   ),
 };
@@ -246,10 +255,10 @@ export const StatusIndicators: Story = {
 export const CategoryLabels: Story = {
   render: () => (
     <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-      <Badge label="React" type="info" style="subdued" />
-      <Badge label="TypeScript" type="info" style="subdued" />
-      <Badge label="Design System" type="neutral" style="subdued" />
-      <Badge label="Component" type="success" style="subdued" />
+      <Badge label="React" type="info" styleVariant="subdued" />
+      <Badge label="TypeScript" type="info" styleVariant="subdued" />
+      <Badge label="Design System" type="neutral" styleVariant="subdued" />
+      <Badge label="Component" type="success" styleVariant="subdued" />
     </div>
   ),
 };
@@ -261,9 +270,9 @@ export const RemovableTags: Story = {
 
   render: () => (
     <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-      <Badge label="Filter 1" type="neutral" style="outlined" showTrailingIcon />
-      <Badge label="Filter 2" type="neutral" style="outlined" showTrailingIcon />
-      <Badge label="Filter 3" type="neutral" style="outlined" showTrailingIcon />
+      <Badge label="Filter 1" type="neutral" styleVariant="outlined" showTrailingIcon />
+      <Badge label="Filter 2" type="neutral" styleVariant="outlined" showTrailingIcon />
+      <Badge label="Filter 3" type="neutral" styleVariant="outlined" showTrailingIcon />
     </div>
   )
 };
@@ -274,44 +283,44 @@ export const AllVariants: Story = {
       <div>
         <h3 style={{ marginBottom: '12px', fontSize: '14px', fontWeight: 600 }}>Default Style</h3>
         <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
-          <Badge label="Info" type="info" style="default" showLeadingIcon />
-          <Badge label="Success" type="success" style="default" showLeadingIcon />
-          <Badge label="Warning" type="warning" style="default" showLeadingIcon />
-          <Badge label="Error" type="error" style="default" showLeadingIcon />
-          <Badge label="Neutral" type="neutral" style="default" showLeadingIcon />
+          <Badge label="Info" type="info" styleVariant="default" showLeadingIcon />
+          <Badge label="Success" type="success" styleVariant="default" showLeadingIcon />
+          <Badge label="Warning" type="warning" styleVariant="default" showLeadingIcon />
+          <Badge label="Error" type="error" styleVariant="default" showLeadingIcon />
+          <Badge label="Neutral" type="neutral" styleVariant="default" showLeadingIcon />
         </div>
       </div>
       
       <div>
         <h3 style={{ marginBottom: '12px', fontSize: '14px', fontWeight: 600 }}>Subdued Style</h3>
         <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
-          <Badge label="Info" type="info" style="subdued" showLeadingIcon />
-          <Badge label="Success" type="success" style="subdued" showLeadingIcon />
-          <Badge label="Warning" type="warning" style="subdued" showLeadingIcon />
-          <Badge label="Error" type="error" style="subdued" showLeadingIcon />
-          <Badge label="Neutral" type="neutral" style="subdued" showLeadingIcon />
+          <Badge label="Info" type="info" styleVariant="subdued" showLeadingIcon />
+          <Badge label="Success" type="success" styleVariant="subdued" showLeadingIcon />
+          <Badge label="Warning" type="warning" styleVariant="subdued" showLeadingIcon />
+          <Badge label="Error" type="error" styleVariant="subdued" showLeadingIcon />
+          <Badge label="Neutral" type="neutral" styleVariant="subdued" showLeadingIcon />
         </div>
       </div>
       
       <div>
         <h3 style={{ marginBottom: '12px', fontSize: '14px', fontWeight: 600 }}>Outlined Style</h3>
         <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
-          <Badge label="Info" type="info" style="outlined" showLeadingIcon />
-          <Badge label="Success" type="success" style="outlined" showLeadingIcon />
-          <Badge label="Warning" type="warning" style="outlined" showLeadingIcon />
-          <Badge label="Error" type="error" style="outlined" showLeadingIcon />
-          <Badge label="Neutral" type="neutral" style="outlined" showLeadingIcon />
+          <Badge label="Info" type="info" styleVariant="outlined" showLeadingIcon />
+          <Badge label="Success" type="success" styleVariant="outlined" showLeadingIcon />
+          <Badge label="Warning" type="warning" styleVariant="outlined" showLeadingIcon />
+          <Badge label="Error" type="error" styleVariant="outlined" showLeadingIcon />
+          <Badge label="Neutral" type="neutral" styleVariant="outlined" showLeadingIcon />
         </div>
       </div>
       
       <div>
         <h3 style={{ marginBottom: '12px', fontSize: '14px', fontWeight: 600 }}>With Trailing Icons</h3>
         <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
-          <Badge label="Removable" type="info" style="outlined" showTrailingIcon />
-          <Badge label="Removable" type="success" style="outlined" showTrailingIcon />
-          <Badge label="Removable" type="warning" style="outlined" showTrailingIcon />
-          <Badge label="Removable" type="error" style="outlined" showTrailingIcon />
-          <Badge label="Removable" type="neutral" style="outlined" showTrailingIcon />
+          <Badge label="Removable" type="info" styleVariant="outlined" showTrailingIcon />
+          <Badge label="Removable" type="success" styleVariant="outlined" showTrailingIcon />
+          <Badge label="Removable" type="warning" styleVariant="outlined" showTrailingIcon />
+          <Badge label="Removable" type="error" styleVariant="outlined" showTrailingIcon />
+          <Badge label="Removable" type="neutral" styleVariant="outlined" showTrailingIcon />
         </div>
       </div>
     </div>

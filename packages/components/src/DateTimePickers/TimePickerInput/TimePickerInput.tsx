@@ -41,7 +41,7 @@ export const TimePickerInput: React.FC<TimePickerInputProps> = ({
       isOpen={isOpen}
       onClose={() => setIsOpen(false)}
       trigger={
-        <div onClick={handleInputClick}>
+        <div onClick={handleInputClick} style={{ cursor: disabled ? 'not-allowed' : 'pointer' }}>
           <InputField
             label={label}
             value={value || ''}
@@ -55,7 +55,6 @@ export const TimePickerInput: React.FC<TimePickerInputProps> = ({
             fullWidth={true}
             trailingIcon={<Icon name="Schedule" size="small" />}
             readOnly
-            style={{ cursor: disabled ? 'not-allowed' : 'pointer' }}
           />
         </div>
       }

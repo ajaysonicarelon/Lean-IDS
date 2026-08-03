@@ -33,16 +33,10 @@ export const StyledTableHeader = styled.th<StyledTableHeaderProps>`
   user-select: none;
   vertical-align: middle;
   position: relative;
+  overflow: hidden;
+  box-sizing: border-box;
   
-  /* Fixed width for checkbox-only columns */
-  ${({ $showCheckbox, $hasLabel, $sortable }) =>
-    $showCheckbox && !$hasLabel && !$sortable
-      ? `
-    width: 56px;
-    min-width: 56px;
-    max-width: 56px;
-  `
-      : ''}
+  /* Width is set via inline style prop and controlled by <col> elements with table-layout: fixed */
   
   ${({ $side }) => {
     if ($side === 'left') {

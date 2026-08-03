@@ -49,6 +49,7 @@ export const TableHeader: React.FC<TableHeaderProps> = ({
   isChildColumn = false,
   resizable = false,
   onResize,
+  initialWidth,
   searchValue = '',
   searchPlaceholder = 'Search',
   onSearchChange,
@@ -68,6 +69,7 @@ export const TableHeader: React.FC<TableHeaderProps> = ({
   const headerRef = useRef<HTMLTableCellElement>(null);
   const startXRef = useRef(0);
   const startWidthRef = useRef(0);
+  const lastResizedWidthRef = useRef(0);
 
   const handleSortClick = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -95,14 +97,32 @@ export const TableHeader: React.FC<TableHeaderProps> = ({
     }
   };
 
+  const handleResizeDoubleClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    // Reset to initial width on double-click
+    if (initialWidth && onResize) {
+      onResize(initialWidth);
+    }
+  };
+
   const handleResizeStart = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
     setIsResizing(true);
     startXRef.current = e.clientX;
-    if (headerRef.current) {
+    
+    // Use the width prop as the source of truth (controlled by <col> element)
+    // Only fall back to DOM offsetWidth if no width prop is provided
+    if (width !== undefined) {
+      startWidthRef.current = typeof width === 'number' ? width : parseInt(width, 10);
+    } else if (headerRef.current) {
       startWidthRef.current = headerRef.current.offsetWidth;
     }
+    
+    // Initialize last resized width to current width
+    lastResizedWidthRef.current = startWidthRef.current;
   };
 
   React.useEffect(() => {
@@ -114,16 +134,38 @@ export const TableHeader: React.FC<TableHeaderProps> = ({
       const diff = e.clientX - startXRef.current;
       const newWidth = startWidthRef.current + diff;
       
-      // Simple minimum width - don't recalculate content width on every move
-      // This prevents sudden jumps
-      const minWidth = 80; // Absolute minimum
+      // Parse minWidth and maxWidth props
+      const minWidthValue = minWidth 
+        ? (typeof minWidth === 'number' ? minWidth : parseInt(minWidth, 10))
+        : 80; // Default minimum
       
-      // Ensure width doesn't go below minimum
-      onResize(Math.max(minWidth, newWidth));
+      const maxWidthValue = maxWidth
+        ? (typeof maxWidth === 'number' ? maxWidth : parseInt(maxWidth, 10))
+        : Infinity; // No maximum by default
+      
+      // Clamp width between min and max
+      const clampedWidth = Math.max(minWidthValue, Math.min(maxWidthValue, newWidth));
+      
+      // Change cursor style when hitting limits
+      if (clampedWidth === minWidthValue && newWidth < minWidthValue) {
+        document.body.style.cursor = 'w-resize'; // Hit min, can only go right
+      } else if (clampedWidth === maxWidthValue && newWidth > maxWidthValue) {
+        document.body.style.cursor = 'e-resize'; // Hit max, can only go left
+      } else {
+        document.body.style.cursor = 'col-resize'; // Normal resize
+      }
+      
+      // Only call onResize if width actually changed from last resized value
+      // This prevents unnecessary re-renders when dragging beyond limits
+      if (clampedWidth !== lastResizedWidthRef.current) {
+        lastResizedWidthRef.current = clampedWidth;
+        onResize(clampedWidth);
+      }
     };
 
     const handleMouseUp = () => {
       setIsResizing(false);
+      document.body.style.cursor = ''; // Reset cursor
     };
 
     document.addEventListener('mousemove', handleMouseMove);
@@ -133,7 +175,7 @@ export const TableHeader: React.FC<TableHeaderProps> = ({
       document.removeEventListener('mousemove', handleMouseMove);
       document.removeEventListener('mouseup', handleMouseUp);
     };
-  }, [isResizing, onResize]);
+  }, [isResizing, onResize, minWidth, maxWidth]);
 
   const showResizeHandle = (variant === 'resizeable' || variant === 'resizeable-locked') && resizable;
   const isSearchVariant = variant === 'search';
@@ -151,15 +193,15 @@ export const TableHeader: React.FC<TableHeaderProps> = ({
       $sortDirection={sortDirection}
       $showCheckbox={showCheckbox}
       $hasLabel={!!label}
-      style={{ 
-        width: width ? `${width}px` : undefined, 
-        minWidth: minWidth ? `${minWidth}px` : (width ? `${width}px` : undefined), 
-        maxWidth: maxWidth ? `${maxWidth}px` : (width ? `${width}px` : undefined) 
-      }}
       className={className}
       data-locked={locked ? 'true' : undefined}
       colSpan={colSpan}
       rowSpan={rowSpan}
+      style={width !== undefined ? {
+        width: typeof width === 'number' ? `${width}px` : width,
+        minWidth: typeof width === 'number' ? `${width}px` : width,
+        maxWidth: typeof width === 'number' ? `${width}px` : width,
+      } : undefined}
     >
       {isSearchVariant ? (
         <HeaderContent $variant={variant}>
@@ -321,7 +363,11 @@ export const TableHeader: React.FC<TableHeaderProps> = ({
           </HeaderLeftContent>
           {showResizeHandle && (
             <HeaderRightContent>
-              <ResizeHandle onMouseDown={handleResizeStart}>
+              <ResizeHandle 
+                onMouseDown={handleResizeStart}
+                onDoubleClick={handleResizeDoubleClick}
+                title="Double-click to reset width"
+              >
                 <ResizeIcon />
               </ResizeHandle>
             </HeaderRightContent>
@@ -330,7 +376,11 @@ export const TableHeader: React.FC<TableHeaderProps> = ({
       )}
       {/* Resize border - half-height border on right side for resizing */}
       {resizable && (
-        <ResizeBorder onMouseDown={handleResizeStart} />
+        <ResizeBorder 
+          onMouseDown={handleResizeStart}
+          onDoubleClick={handleResizeDoubleClick}
+          title="Double-click to reset width"
+        />
       )}
     </StyledTableHeader>
   );

@@ -255,6 +255,76 @@ else
 fi
 
 # ============================================================================
+# Phase 9: Storybook Documentation Updates
+# ============================================================================
+section "Phase 9: Storybook Documentation Updates"
+
+# Check if updates.mdx exists
+if [ -f ".storybook/updates.mdx" ]; then
+    pass "Storybook updates.mdx exists"
+    
+    # Check if version in updates.mdx matches package version
+    UPDATES_VERSION=$(grep "const currentVersion = " .storybook/updates.mdx | head -1 | sed "s/.*const currentVersion = '\(.*\)'.*/\1/")
+    info "Version in updates.mdx: $UPDATES_VERSION"
+    
+    if [ "$UPDATES_VERSION" == "$COMPONENTS_VERSION" ]; then
+        pass "updates.mdx version matches package version"
+    else
+        fail "updates.mdx version ($UPDATES_VERSION) doesn't match package version ($COMPONENTS_VERSION)"
+        echo -e "${YELLOW}   Update line 10 and 228 in .storybook/updates.mdx${NC}"
+    fi
+else
+    fail "Storybook updates.mdx missing"
+fi
+
+# Check if RELEASE_NOTES.md exists and is updated
+if [ -f "packages/components/RELEASE_NOTES.md" ]; then
+    pass "RELEASE_NOTES.md exists"
+    
+    # Check if version is mentioned in RELEASE_NOTES.md
+    if grep -q "v$COMPONENTS_VERSION" packages/components/RELEASE_NOTES.md; then
+        pass "RELEASE_NOTES.md contains current version"
+    else
+        warn "RELEASE_NOTES.md may not be updated for v$COMPONENTS_VERSION"
+    fi
+else
+    warn "RELEASE_NOTES.md missing"
+fi
+
+# Check if CHANGELOG.md exists and is updated
+if [ -f "packages/tokens/CHANGELOG.md" ]; then
+    pass "Tokens CHANGELOG.md exists"
+    
+    # Check if version is mentioned in CHANGELOG.md
+    if grep -q "\[$TOKENS_VERSION\]" packages/tokens/CHANGELOG.md; then
+        pass "CHANGELOG.md contains current version"
+    else
+        warn "CHANGELOG.md may not be updated for v$TOKENS_VERSION"
+    fi
+else
+    warn "Tokens CHANGELOG.md missing"
+fi
+
+# Check if Storybook has been built recently
+if [ -d "storybook-static" ]; then
+    STORYBOOK_AGE=$(find storybook-static -type f -name "index.html" -mtime +1 2>/dev/null | wc -l)
+    if [ "$STORYBOOK_AGE" -eq 0 ]; then
+        pass "Storybook build is recent"
+    else
+        warn "Storybook build is older than 1 day - consider rebuilding"
+    fi
+else
+    warn "Storybook not built - run 'npm run build-storybook'"
+fi
+
+info "📝 Documentation Update Checklist:"
+echo -e "   ${BLUE}1.${NC} Update .storybook/updates.mdx (lines 10 & 228) with v$COMPONENTS_VERSION"
+echo -e "   ${BLUE}2.${NC} Update packages/components/RELEASE_NOTES.md with release details"
+echo -e "   ${BLUE}3.${NC} Update packages/tokens/CHANGELOG.md with version [$TOKENS_VERSION]"
+echo -e "   ${BLUE}4.${NC} Run 'npm run build-storybook' to rebuild Storybook"
+echo -e "   ${BLUE}5.${NC} Commit all documentation changes before pushing"
+
+# ============================================================================
 # Summary
 # ============================================================================
 echo ""
@@ -289,10 +359,20 @@ else
     echo -e "${GREEN}╚════════════════════════════════════════════════════════╝${NC}"
     echo ""
     echo -e "${BLUE}Next steps:${NC}"
+    echo -e "  ${BLUE}📝 Documentation:${NC}"
+    echo -e "     • Update .storybook/updates.mdx with v$TOKENS_VERSION"
+    echo -e "     • Update packages/components/RELEASE_NOTES.md"
+    echo -e "     • Update packages/tokens/CHANGELOG.md"
+    echo ""
+    echo -e "  ${BLUE}🚀 Deployment:${NC}"
     echo -e "  1. ${GREEN}git add -A && git commit -m 'chore: release v$TOKENS_VERSION'${NC}"
-    echo -e "  2. ${GREEN}git push origin main${NC}"
+    echo -e "  2. ${GREEN}git push origin main${NC} ${YELLOW}(triggers Storybook auto-deploy)${NC}"
     echo -e "  3. ${GREEN}cd packages/tokens && npm publish --access public${NC}"
     echo -e "  4. ${GREEN}cd ../components && npm publish --access public${NC}"
+    echo -e "  5. ${GREEN}git push bitbucket main${NC} ${YELLOW}(sync to internal Elevance repo)${NC}"
+    echo ""
+    echo -e "  ${BLUE}📚 Storybook will auto-deploy to:${NC}"
+    echo -e "     https://ajaysonicarelon.github.io/Lean-IDS/"
 fi
 
 echo ""

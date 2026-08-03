@@ -1,0 +1,100 @@
+{
+  "root": true,
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "ecmaVersion": 2022,
+    "sourceType": "module",
+    "ecmaFeatures": {
+      "jsx": true
+    }
+  },
+  "env": {
+    "browser": true,
+    "es2022": true,
+    "node": true
+  },
+  "extends": [
+    "eslint:recommended",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:react/recommended",
+    "plugin:react-hooks/recommended",
+    "plugin:security/recommended",
+    "plugin:jsx-a11y/recommended"
+  ],
+  "plugins": [
+    "@typescript-eslint",
+    "react",
+    "react-hooks",
+    "security",
+    "jsx-a11y"
+  ],
+  "settings": {
+    "react": {
+      "version": "detect"
+    }
+  },
+  "rules": {
+    // Security Rules
+    "security/detect-object-injection": "warn",
+    "security/detect-non-literal-regexp": "warn",
+    "security/detect-unsafe-regex": "error",
+    "security/detect-buffer-noassert": "error",
+    "security/detect-child-process": "error",
+    "security/detect-disable-mustache-escape": "error",
+    "security/detect-eval-with-expression": "error",
+    "security/detect-no-csrf-before-method-override": "error",
+    "security/detect-non-literal-fs-filename": "warn",
+    "security/detect-non-literal-require": "warn",
+    "security/detect-possible-timing-attacks": "warn",
+    "security/detect-pseudoRandomBytes": "error",
+
+    // React Security
+    "react/no-danger": "error",
+    "react/no-danger-with-children": "error",
+    "react/jsx-no-script-url": "error",
+    "react/jsx-no-target-blank": ["error", { "enforceDynamicLinks": "always" }],
+
+    // Accessibility
+    "jsx-a11y/alt-text": "error",
+    "jsx-a11y/anchor-has-content": "error",
+    "jsx-a11y/aria-props": "error",
+    "jsx-a11y/aria-proptypes": "error",
+    "jsx-a11y/aria-unsupported-elements": "error",
+    "jsx-a11y/click-events-have-key-events": "warn",
+    "jsx-a11y/no-static-element-interactions": "warn",
+
+    // TypeScript
+    "@typescript-eslint/no-explicit-any": "warn",
+    "@typescript-eslint/explicit-module-boundary-types": "off",
+    "@typescript-eslint/no-unused-vars": ["warn", { 
+      "argsIgnorePattern": "^_",
+      "varsIgnorePattern": "^_" 
+    }],
+
+    // General Best Practices
+    "no-console": ["warn", { "allow": ["warn", "error"] }],
+    "no-eval": "error",
+    "no-implied-eval": "error",
+    "no-new-func": "error",
+    "no-script-url": "error",
+    "prefer-const": "warn",
+    "no-var": "error"
+  },
+  "overrides": [
+    {
+      "files": ["*.stories.tsx", "*.test.tsx", "*.spec.tsx"],
+      "rules": {
+        "no-console": "off",
+        "@typescript-eslint/no-explicit-any": "off"
+      }
+    }
+  ],
+  "ignorePatterns": [
+    "node_modules/",
+    "dist/",
+    "build/",
+    "storybook-static/",
+    "*.config.js",
+    "*.config.ts"
+  ]
+}

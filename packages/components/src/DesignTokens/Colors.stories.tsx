@@ -8,7 +8,7 @@
 
 import type { Meta, StoryObj } from '@storybook/react';
 import React, { useState } from 'react';
-import { carelonColors, elevanceColors } from '../../../tokens/src';
+import { carelonColors, elevanceColors, carelonSemanticColors, spacing, borderRadius, fontSizes, fontWeights } from '../../../tokens/src';
 
 const ColorSwatch: React.FC<{
   name: string;
@@ -28,7 +28,7 @@ const ColorSwatch: React.FC<{
       style={{
         display: 'flex',
         flexDirection: 'column',
-        gap: '8px',
+        gap: spacing['3'],
         cursor: 'pointer',
         transition: 'transform 0.2s',
       }}
@@ -45,34 +45,34 @@ const ColorSwatch: React.FC<{
           width: '100%',
           height: '80px',
           backgroundColor: value,
-          borderRadius: '8px',
-          border: '1px solid #e6e6e6',
+          borderRadius: borderRadius.md,
+          border: `1px solid ${carelonSemanticColors.border.default}`,
           boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
         }}
       />
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: spacing['1'] }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <span style={{ fontWeight: 600, fontSize: '14px' }}>{name}</span>
+          <span style={{ fontWeight: fontWeights.semibold, fontSize: fontSizes[14] }}>{name}</span>
           {copied && (
-            <span style={{ fontSize: '12px', color: '#108808', fontWeight: 500 }}>
+            <span style={{ fontSize: fontSizes[12], color: carelonSemanticColors.text.success, fontWeight: fontWeights.medium }}>
               ✓ Copied
             </span>
           )}
         </div>
         <code
           style={{
-            fontSize: '12px',
-            color: '#6c6c6c',
+            fontSize: fontSizes[12],
+            color: carelonSemanticColors.text.secondary,
             fontFamily: 'monospace',
-            backgroundColor: '#f8f8f8',
-            padding: '2px 6px',
-            borderRadius: '4px',
+            backgroundColor: carelonSemanticColors.background.secondary,
+            padding: `2px ${spacing['2']}`,
+            borderRadius: borderRadius.sm,
           }}
         >
           {value}
         </code>
         {description && (
-          <span style={{ fontSize: '11px', color: '#909090' }}>{description}</span>
+          <span style={{ fontSize: fontSizes[10], color: carelonSemanticColors.text.secondary }}>{description}</span>
         )}
       </div>
     </div>
@@ -86,14 +86,14 @@ const ColorPaletteSection: React.FC<{
   prefix?: string;
 }> = ({ title, description, colors, prefix = '' }) => {
   return (
-    <div style={{ marginBottom: '48px' }}>
-      <h2 style={{ fontSize: '24px', fontWeight: 700, marginBottom: '8px' }}>{title}</h2>
-      <p style={{ fontSize: '14px', color: '#6c6c6c', marginBottom: '24px' }}>{description}</p>
+    <div style={{ marginBottom: spacing['17'] }}>
+      <h2 style={{ fontSize: fontSizes[24], fontWeight: fontWeights.bold, marginBottom: spacing['3'] }}>{title}</h2>
+      <p style={{ fontSize: fontSizes[14], color: carelonSemanticColors.text.secondary, marginBottom: spacing['10'] }}>{description}</p>
       <div
         style={{
           display: 'grid',
           gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))',
-          gap: '24px',
+          gap: spacing['10'],
         }}
       >
         {Object.entries(colors).map(([key, value]) => (
@@ -172,12 +172,12 @@ type Story = StoryObj;
 // Carelon Brand Colors
 export const CarelonColors: Story = {
   render: () => (
-    <div style={{ padding: '24px', maxWidth: '1400px' }}>
-      <div style={{ marginBottom: '48px' }}>
-        <h1 style={{ fontSize: '32px', fontWeight: 700, marginBottom: '8px' }}>
+    <div style={{ padding: spacing['10'], maxWidth: '1400px' }}>
+      <div style={{ marginBottom: spacing['17'] }}>
+        <h1 style={{ fontSize: fontSizes[32], fontWeight: fontWeights.bold, marginBottom: spacing['3'] }}>
           Carelon Brand Colors
         </h1>
-        <p style={{ fontSize: '16px', color: '#6c6c6c' }}>
+        <p style={{ fontSize: fontSizes[16], color: carelonSemanticColors.text.secondary }}>
           Purple-based color palette for Carelon brand
         </p>
       </div>
@@ -224,10 +224,10 @@ export const CarelonColors: Story = {
         prefix="info"
       />
 
-      <h2 style={{ fontSize: '28px', fontWeight: 700, marginTop: '64px', marginBottom: '32px' }}>
+      <h2 style={{ fontSize: fontSizes[28], fontWeight: fontWeights.bold, marginTop: spacing['20'], marginBottom: spacing['12'] }}>
         Secondary Colors
       </h2>
-      <p style={{ fontSize: '14px', color: '#6c6c6c', marginBottom: '32px' }}>
+      <p style={{ fontSize: fontSizes[14], color: carelonSemanticColors.text.secondary, marginBottom: spacing['12'] }}>
         Extended palette for data visualization, illustrations, and decorative elements.
       </p>
 
@@ -286,12 +286,12 @@ export const CarelonColors: Story = {
 // Elevance Brand Colors
 export const ElevanceColors: Story = {
   render: () => (
-    <div style={{ padding: '24px', maxWidth: '1400px' }}>
-      <div style={{ marginBottom: '48px' }}>
-        <h1 style={{ fontSize: '32px', fontWeight: 700, marginBottom: '8px' }}>
+    <div style={{ padding: spacing['10'], maxWidth: '1400px' }}>
+      <div style={{ marginBottom: spacing['17'] }}>
+        <h1 style={{ fontSize: fontSizes[32], fontWeight: fontWeights.bold, marginBottom: spacing['3'] }}>
           Elevance Brand Colors
         </h1>
-        <p style={{ fontSize: '16px', color: '#6c6c6c' }}>
+        <p style={{ fontSize: fontSizes[16], color: carelonSemanticColors.text.secondary }}>
           Blue-based color palette for Elevance brand
         </p>
       </div>
@@ -338,7 +338,7 @@ export const ElevanceColors: Story = {
         prefix="info"
       />
 
-      <h2 style={{ fontSize: '28px', fontWeight: 700, marginTop: '64px', marginBottom: '32px' }}>
+      <h2 style={{ fontSize: fontSizes[28], fontWeight: fontWeights.bold, marginTop: spacing['20'], marginBottom: spacing['12'] }}>
         Secondary Colors
       </h2>
 

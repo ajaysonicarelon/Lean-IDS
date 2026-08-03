@@ -692,6 +692,7 @@ export const FullyCustomized: Story = {
                         showLabel={false}
                         leadingIcon={<Icon name="Edit" size="small" />}
                         onClick={() => console.log('Edit:', employee)}
+                        aria-label="Edit"
                       >
                         Edit
                       </Button>
@@ -701,6 +702,7 @@ export const FullyCustomized: Story = {
                         showLabel={false}
                         leadingIcon={<Icon name="Delete" size="small" />}
                         onClick={() => console.log('Delete:', employee)}
+                        aria-label="Delete"
                       >
                         Delete
                       </Button>

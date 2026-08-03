@@ -4,6 +4,7 @@
 
 import type { Meta, StoryObj } from '@storybook/react';
 import React from 'react';
+import { fn } from '@storybook/test';
 import { AlertBanner } from './AlertBanner';
 
 const meta: Meta<typeof AlertBanner> = {
@@ -32,7 +33,7 @@ import { AlertBanner } from '@lean-ids/components';
 
 <AlertBanner
   type="warning"
-  style="default"
+  styleVariant="default"
   text="This is a sample message text"
   onActionClick={() => console.log('Action clicked')}
   onClose={() => console.log('Closed')}
@@ -43,6 +44,15 @@ import { AlertBanner } from '@lean-ids/components';
     },
   },
   tags: ['autodocs'],
+  args: {
+    onActionClick: fn(),
+    onClose: fn(),
+    onMount: fn(),
+    onUnmount: fn(),
+    onClick: fn(),
+    onFocus: fn(),
+    onBlur: fn(),
+  },
   argTypes: {
     type: {
       control: 'select',
@@ -54,7 +64,7 @@ import { AlertBanner } from '@lean-ids/components';
         category: 'Appearance',
       },
     },
-    style: {
+    styleVariant: {
       control: 'select',
       options: ['default', 'subdued', 'accentBorder'],
       description: 'Visual style variant',
@@ -117,7 +127,7 @@ type Story = StoryObj<typeof AlertBanner>;
 export const Playground: Story = {
   args: {
     type: 'warning',
-    style: 'default',
+    styleVariant: 'default',
     text: 'This is a sample message text',
     showLeadingIcon: true,
     showTrailingIcon: true,
@@ -130,7 +140,7 @@ export const Playground: Story = {
 export const WarningDefault: Story = {
   args: {
     type: 'warning',
-    style: 'default',
+    styleVariant: 'default',
     text: 'This is a warning message',
   },
 };
@@ -138,7 +148,7 @@ export const WarningDefault: Story = {
 export const SuccessDefault: Story = {
   args: {
     type: 'success',
-    style: 'default',
+    styleVariant: 'default',
     text: 'Operation completed successfully',
   },
 };
@@ -146,7 +156,7 @@ export const SuccessDefault: Story = {
 export const ErrorDefault: Story = {
   args: {
     type: 'error',
-    style: 'default',
+    styleVariant: 'default',
     text: 'An error occurred',
   },
 };
@@ -154,7 +164,7 @@ export const ErrorDefault: Story = {
 export const InfoDefault: Story = {
   args: {
     type: 'info',
-    style: 'default',
+    styleVariant: 'default',
     text: 'Here is some important information',
   },
 };
@@ -163,7 +173,7 @@ export const InfoDefault: Story = {
 export const WarningSubdued: Story = {
   args: {
     type: 'warning',
-    style: 'subdued',
+    styleVariant: 'subdued',
     text: 'This is a warning message',
   },
 };
@@ -171,7 +181,7 @@ export const WarningSubdued: Story = {
 export const SuccessSubdued: Story = {
   args: {
     type: 'success',
-    style: 'subdued',
+    styleVariant: 'subdued',
     text: 'Operation completed successfully',
   },
 };
@@ -179,7 +189,7 @@ export const SuccessSubdued: Story = {
 export const ErrorSubdued: Story = {
   args: {
     type: 'error',
-    style: 'subdued',
+    styleVariant: 'subdued',
     text: 'An error occurred',
   },
 };
@@ -187,7 +197,7 @@ export const ErrorSubdued: Story = {
 export const InfoSubdued: Story = {
   args: {
     type: 'info',
-    style: 'subdued',
+    styleVariant: 'subdued',
     text: 'Here is some important information',
   },
 };
@@ -196,7 +206,7 @@ export const InfoSubdued: Story = {
 export const WarningAccentBorder: Story = {
   args: {
     type: 'warning',
-    style: 'accentBorder',
+    styleVariant: 'accentBorder',
     text: 'This is a warning message',
   },
 };
@@ -204,7 +214,7 @@ export const WarningAccentBorder: Story = {
 export const SuccessAccentBorder: Story = {
   args: {
     type: 'success',
-    style: 'accentBorder',
+    styleVariant: 'accentBorder',
     text: 'Operation completed successfully',
   },
 };
@@ -212,7 +222,7 @@ export const SuccessAccentBorder: Story = {
 export const ErrorAccentBorder: Story = {
   args: {
     type: 'error',
-    style: 'accentBorder',
+    styleVariant: 'accentBorder',
     text: 'An error occurred',
   },
 };
@@ -220,7 +230,7 @@ export const ErrorAccentBorder: Story = {
 export const InfoAccentBorder: Story = {
   args: {
     type: 'info',
-    style: 'accentBorder',
+    styleVariant: 'accentBorder',
     text: 'Here is some important information',
   },
 };
@@ -229,7 +239,7 @@ export const InfoAccentBorder: Story = {
 export const WithoutIcons: Story = {
   args: {
     type: 'warning',
-    style: 'default',
+    styleVariant: 'default',
     text: 'Alert without icons',
     showLeadingIcon: false,
     showTrailingIcon: false,
@@ -240,7 +250,7 @@ export const WithoutIcons: Story = {
 export const WithoutAction: Story = {
   args: {
     type: 'info',
-    style: 'default',
+    styleVariant: 'default',
     text: 'Alert without action button',
     action: false,
   },
@@ -253,30 +263,30 @@ export const AllVariants: Story = {
       <div>
         <h3 style={{ marginBottom: '16px', fontSize: '18px', fontWeight: 600 }}>Default Style</h3>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-          <AlertBanner type="warning" style="default" text="Warning: This is a warning message" />
-          <AlertBanner type="success" style="default" text="Success: Operation completed successfully" />
-          <AlertBanner type="error" style="default" text="Error: An error occurred" />
-          <AlertBanner type="info" style="default" text="Info: Here is some important information" />
+          <AlertBanner type="warning" styleVariant="default" text="Warning: This is a warning message" />
+          <AlertBanner type="success" styleVariant="default" text="Success: Operation completed successfully" />
+          <AlertBanner type="error" styleVariant="default" text="Error: An error occurred" />
+          <AlertBanner type="info" styleVariant="default" text="Info: Here is some important information" />
         </div>
       </div>
 
       <div>
         <h3 style={{ marginBottom: '16px', fontSize: '18px', fontWeight: 600 }}>Subdued Style</h3>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-          <AlertBanner type="warning" style="subdued" text="Warning: This is a warning message" />
-          <AlertBanner type="success" style="subdued" text="Success: Operation completed successfully" />
-          <AlertBanner type="error" style="subdued" text="Error: An error occurred" />
-          <AlertBanner type="info" style="subdued" text="Info: Here is some important information" />
+          <AlertBanner type="warning" styleVariant="subdued" text="Warning: This is a warning message" />
+          <AlertBanner type="success" styleVariant="subdued" text="Success: Operation completed successfully" />
+          <AlertBanner type="error" styleVariant="subdued" text="Error: An error occurred" />
+          <AlertBanner type="info" styleVariant="subdued" text="Info: Here is some important information" />
         </div>
       </div>
 
       <div>
         <h3 style={{ marginBottom: '16px', fontSize: '18px', fontWeight: 600 }}>Accent Border Style</h3>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-          <AlertBanner type="warning" style="accentBorder" text="Warning: This is a warning message" />
-          <AlertBanner type="success" style="accentBorder" text="Success: Operation completed successfully" />
-          <AlertBanner type="error" style="accentBorder" text="Error: An error occurred" />
-          <AlertBanner type="info" style="accentBorder" text="Info: Here is some important information" />
+          <AlertBanner type="warning" styleVariant="accentBorder" text="Warning: This is a warning message" />
+          <AlertBanner type="success" styleVariant="accentBorder" text="Success: Operation completed successfully" />
+          <AlertBanner type="error" styleVariant="accentBorder" text="Error: An error occurred" />
+          <AlertBanner type="info" styleVariant="accentBorder" text="Info: Here is some important information" />
         </div>
       </div>
     </div>

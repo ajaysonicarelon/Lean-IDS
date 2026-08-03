@@ -1,0 +1,28 @@
+# CODEOWNERS - Automatically request reviews from code owners
+# https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+
+# Default owner for everything in the repo
+*                                   @ajaysonicarelon
+
+# Package owners
+/packages/components/               @ajaysonicarelon
+/packages/tokens/                   @ajaysonicarelon
+/packages/angular-components/       @ajaysonicarelon
+/packages/icons/                    @ajaysonicarelon
+
+# Security-sensitive files (require review)
+/SECURITY.md                        @ajaysonicarelon
+/.github/workflows/                 @ajaysonicarelon
+/.github/dependabot.yml             @ajaysonicarelon
+/package.json                       @ajaysonicarelon
+/package-lock.json                  @ajaysonicarelon
+/packages/*/package.json            @ajaysonicarelon
+
+# Build and deployment
+/scripts/                           @ajaysonicarelon
+rollup.config.js                    @ajaysonicarelon
+tsconfig.json                       @ajaysonicarelon
+
+# Documentation
+*.md                                @ajaysonicarelon
+/.storybook/                        @ajaysonicarelon

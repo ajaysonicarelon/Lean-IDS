@@ -19,6 +19,8 @@ export const StyledTableCell = styled.td<StyledTableCellProps>`
   text-align: ${({ $align }) => $align || 'left'};
   vertical-align: middle;
   transition: background-color 0.2s ease, box-shadow 0.2s ease;
+  box-sizing: border-box;
+  overflow: hidden;
   
   ${({ $locked, $leftOffset, theme }) =>
     $locked
@@ -40,6 +42,8 @@ export const CellContent = styled.div`
   align-items: center;
   gap: ${({ theme }) => theme.spacing[7]};
   flex-wrap: nowrap;
+  min-width: 0; /* Allow flex children to shrink below content size */
+  overflow: hidden; /* Hide overflow content */
 `;
 
 export const CheckboxWrapper = styled.div`
@@ -80,7 +84,8 @@ export const UserInfo = styled.div`
   display: flex;
   flex-direction: column;
   gap: ${({ theme }) => theme.spacing[1]};
-  flex-shrink: 0;
+  min-width: 0; /* Allow shrinking */
+  overflow: hidden; /* Hide overflow */
 `;
 
 export const UserName = styled.div`
@@ -90,6 +95,8 @@ export const UserName = styled.div`
   line-height: 16px;
   color: ${({ theme }) => theme.colors.palette.neutral[900]};
   white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 `;
 
 export const UserRole = styled.div`
@@ -100,6 +107,8 @@ export const UserRole = styled.div`
   letter-spacing: 1px;
   color: ${({ theme }) => theme.colors.palette.neutral[600]};
   white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 `;
 
 export const NumberText = styled.div`
@@ -110,7 +119,9 @@ export const NumberText = styled.div`
   letter-spacing: ${({ theme }) => theme.typography.code['regular-14'].letterSpacing};
   color: ${({ theme }) => theme.colors.palette.neutral[900]};
   white-space: nowrap;
-  flex-shrink: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0; /* Allow shrinking */
 `;
 
 export const AmountText = styled(NumberText)`
@@ -124,7 +135,9 @@ export const DateText = styled.div`
   line-height: 16px;
   color: ${({ theme }) => theme.colors.palette.neutral[800]};
   white-space: nowrap;
-  flex-shrink: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0; /* Allow shrinking */
 `;
 
 export const RegularText = styled.div`
@@ -134,7 +147,9 @@ export const RegularText = styled.div`
   line-height: 16px;
   color: ${({ theme }) => theme.colors.palette.neutral[800]};
   white-space: nowrap;
-  flex-shrink: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0; /* Allow shrinking */
 `;
 
 export const ActionsWrapper = styled.div`

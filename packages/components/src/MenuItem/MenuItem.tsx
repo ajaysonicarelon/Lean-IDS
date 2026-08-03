@@ -190,7 +190,7 @@ export const MenuItem = forwardRef<HTMLDivElement, MenuItemProps>((
           $label={label}
           $disabled={true}
           $isLoading={true}
-          role="button"
+          role="menuitem"
           aria-busy="true"
           aria-disabled="true"
           aria-label={label}
@@ -238,7 +238,7 @@ export const MenuItem = forwardRef<HTMLDivElement, MenuItemProps>((
           $type={type}
           $label={label}
           $disabled={true}
-          role="button"
+          role="menuitem"
           aria-disabled="true"
           aria-label={emptyMessage}
           id={menuItemId}
@@ -270,7 +270,7 @@ export const MenuItem = forwardRef<HTMLDivElement, MenuItemProps>((
           $label={label}
           $disabled={true}
           $isInvalid={true}
-          role="button"
+          role="menuitem"
           aria-disabled="true"
           aria-invalid="true"
           aria-label={errorMessage}
@@ -310,11 +310,12 @@ export const MenuItem = forwardRef<HTMLDivElement, MenuItemProps>((
         onFocus={onFocus}
         onBlur={onBlur}
         onKeyDown={handleKeyDown}
-        role="button"
-        tabIndex={disabled ? -1 : 0}
-        aria-current={state === 'active' ? 'page' : undefined}
+        role="menuitem"
+        tabIndex={disabled ? -1 : (state === 'active' ? 0 : -1)}
+        aria-selected={state === 'active'}
         aria-disabled={disabled}
         aria-label={!showLabel ? label : undefined}
+        aria-haspopup={hasChildren || nestedMenu ? 'menu' : undefined}
         id={menuItemId}
       >
         {renderIcon()}

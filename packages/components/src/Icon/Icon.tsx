@@ -42,6 +42,10 @@ import DateRangeIcon from '@mui/icons-material/DateRange';
 import ScheduleIcon from '@mui/icons-material/Schedule';
 import CloudOffIcon from '@mui/icons-material/CloudOff';
 import BarChartIcon from '@mui/icons-material/BarChart';
+import AssessmentIcon from '@mui/icons-material/Assessment';
+import DescriptionIcon from '@mui/icons-material/Description';
+import HistoryIcon from '@mui/icons-material/History';
+import NoteIcon from '@mui/icons-material/Note';
 
 // Icon map for quick lookup
 const ICON_MAP: Record<string, React.ComponentType<any>> = {
@@ -84,6 +88,10 @@ const ICON_MAP: Record<string, React.ComponentType<any>> = {
   Schedule: ScheduleIcon,
   CloudOff: CloudOffIcon,
   BarChart: BarChartIcon,
+  Assessment: AssessmentIcon,
+  Description: DescriptionIcon,
+  History: HistoryIcon,
+  Note: NoteIcon,
 };
 
 const sizeMap = {

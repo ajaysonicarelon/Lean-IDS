@@ -25,6 +25,7 @@ export interface TableHeaderProps {
   // Resizable column feature
   resizable?: boolean;
   onResize?: (width: number) => void;
+  initialWidth?: number; // Original width to reset to on double-click
   
   // Search feature
   searchable?: boolean;

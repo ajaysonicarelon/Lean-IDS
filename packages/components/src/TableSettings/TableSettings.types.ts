@@ -6,6 +6,9 @@ export interface ColumnConfig {
   order: number;
   filterable?: boolean; // Whether column can have filter (default: true)
   width?: string | number; // Custom column width (e.g., '150px', '20%', 200)
+  minWidth?: number; // Minimum width constraint in pixels
+  maxWidth?: number; // Maximum width constraint in pixels
+  resizable?: boolean; // Enable column resizing by dragging column border
   subColumns?: ColumnConfig[];
   parentId?: string;
 }
