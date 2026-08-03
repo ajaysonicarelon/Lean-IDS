@@ -7,10 +7,20 @@
 
 ## 🚀 What's New in v1.7.7
 
-### ✨ Enhancements
-- **Enhanced Table Components** - Improved Table, TableHeader, and TableCell implementations
+### 🎉 New Components
+- **ProgressBar** - New component with linear/circular variants, 4 sizes (xs, sm, md, lg), label positioning, and smooth animations
+- **SegmentController** - New iOS-style segmented control with single/multi-select modes, width control, and full accessibility support
+
+### ✨ Component Enhancements
+- **Tabs** - Complete refactor with forwardRef, polymorphic 'as' prop, icon support, and enhanced accessibility
+- **Table Components** - Improved Table, TableHeader, and TableCell with column resizing and width controls
+- **SideNavigation** - Enhanced with better icon handling and state management
+- **AlertBanner, Badge, Chip** - Applied Component Maturity Checklist improvements
+
+### 🔧 Developer Experience
 - **Pre-Deployment Workflow** - Added comprehensive deployment validation script with 9-phase checks
 - **Documentation Updates** - Added DEPLOYMENT_WORKFLOW.md for complete release process
+- **Version Synchronization** - Improved version consistency across all packages
 
 ### 📚 Documentation
 - **New:** DEPLOYMENT_WORKFLOW.md - Complete step-by-step deployment guide
