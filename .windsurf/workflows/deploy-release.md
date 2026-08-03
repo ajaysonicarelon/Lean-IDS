@@ -40,9 +40,57 @@ Update version in both packages:
 # Change: "@ajaysoni7832/lean-ids-tokens": "^X.X.X"
 ```
 
-## Step 3: Update Documentation
+## Step 3: Update All Documentation
 
-### 3.1 Update Storybook updates.mdx
+**Files to update:**
+- ✅ Main README.md (root)
+- ✅ Storybook updates.mdx
+- ✅ RELEASE_NOTES.md (components)
+- ✅ CHANGELOG.md (tokens)
+- ✅ CHANGELOG.md (components)
+- ✅ README.md (components package)
+- ✅ GitHub Release Notes
+
+### 3.1 Update Main README.md
+
+**File:** `/Users/AM07832/CascadeProjects/lean-ids/README.md`
+
+Update the version badges and latest version reference:
+
+```markdown
+# Lean IDS - Design System
+
+[![npm version](https://img.shields.io/npm/v/@ajaysoni7832/lean-ids-components.svg)](https://www.npmjs.com/package/@ajaysoni7832/lean-ids-components)
+[![npm downloads](https://img.shields.io/npm/dm/@ajaysoni7832/lean-ids-components.svg)](https://www.npmjs.com/package/@ajaysoni7832/lean-ids-components)
+
+## 📦 Latest Version: vX.X.X
+
+[Update installation instructions if needed]
+```
+
+### 3.2 Update Components Package README
+
+**File:** `/Users/AM07832/CascadeProjects/lean-ids/packages/components/README.md`
+
+Update version references and what's new section:
+
+```markdown
+# @ajaysoni7832/lean-ids-components
+
+Current Version: **X.X.X**
+
+## What's New in vX.X.X
+
+[Add brief summary of new features/components]
+
+## Installation
+
+\`\`\`bash
+npm install @ajaysoni7832/lean-ids-components@X.X.X @ajaysoni7832/lean-ids-tokens@X.X.X
+\`\`\`
+```
+
+### 3.3 Update Storybook updates.mdx
 
 **File:** `/Users/AM07832/CascadeProjects/lean-ids/.storybook/updates.mdx`
 
@@ -103,7 +151,7 @@ Update in **3 locations**:
 [Keep existing content below]
 ```
 
-### 3.2 Update RELEASE_NOTES.md
+### 3.4 Update Components RELEASE_NOTES.md
 
 **File:** `/Users/AM07832/CascadeProjects/lean-ids/packages/components/RELEASE_NOTES.md`
 
@@ -144,11 +192,11 @@ npm install @ajaysoni7832/lean-ids-components@X.X.X @ajaysoni7832/lean-ids-token
 [Keep previous versions below]
 ```
 
-### 3.3 Update CHANGELOG.md
+### 3.5 Update Tokens CHANGELOG.md
 
 **File:** `/Users/AM07832/CascadeProjects/lean-ids/packages/tokens/CHANGELOG.md`
 
-Add new version entry:
+Add new version entry at the top:
 
 ```markdown
 ## [X.X.X] - YYYY-MM-DD
@@ -160,6 +208,34 @@ Add new version entry:
 
 ### 🚀 [Category]
 - List of changes
+
+[Keep previous versions below]
+```
+
+### 3.6 Update Components CHANGELOG.md
+
+**File:** `/Users/AM07832/CascadeProjects/lean-ids/packages/components/CHANGELOG.md`
+
+Add new version entry at the top:
+
+```markdown
+## [X.X.X] - YYYY-MM-DD
+
+### 🎉 New Components
+- **ComponentName** - Description
+
+### ✨ Enhancements
+- **ComponentName** - Description of improvements
+
+### 🐛 Bug Fixes
+- **ComponentName** - Description of fix
+
+### 📚 Documentation
+- Updated README.md with vX.X.X
+- Updated Storybook documentation
+
+### 🔧 Technical
+- Version alignment with tokens package
 
 [Keep previous versions below]
 ```
@@ -228,16 +304,35 @@ npm publish --access public --ignore-scripts
 
 **Verify:** Check that components published successfully.
 
-## Step 9: Push to Bitbucket (Internal Elevance)
+## Step 9: Trigger Artifactory Cache (Elevance Internal Registry)
+
+Force Artifactory to fetch and cache the new versions immediately:
+
+// turbo
+```bash
+cd /Users/AM07832/CascadeProjects/lean-ids
+npm view @ajaysoni7832/lean-ids-tokens@X.X.X --registry=https://artifactory.elevancehealth.com/artifactory/api/npm/npm/
+npm view @ajaysoni7832/lean-ids-components@X.X.X --registry=https://artifactory.elevancehealth.com/artifactory/api/npm/npm/
+```
+
+**Why this is needed:** Artifactory only fetches packages from public NPM on-demand. This step triggers the fetch immediately so internal users don't have to wait hours for the cache to update.
+
+**Expected:** Both commands should display package information, confirming Artifactory has cached the new versions.
+
+**Verify in Artifactory UI:**
+- Tokens: https://artifactory.elevancehealth.com/ui/packages/npm:%2F%2F@ajaysoni7832%2Flean-ids-tokens/X.X.X
+- Components: https://artifactory.elevancehealth.com/ui/packages/npm:%2F%2F@ajaysoni7832%2Flean-ids-components/X.X.X
+
+## Step 10: Push to Bitbucket (Internal Elevance)
 
 ```bash
 cd /Users/AM07832/CascadeProjects/lean-ids
 git push bitbucket main
 ```
 
-## Step 10: Update Storybook Repository
+## Step 11: Update Storybook Repository
 
-### 10.1 Copy Built Storybook
+### 11.1 Copy Built Storybook
 
 // turbo
 ```bash
@@ -245,7 +340,7 @@ cd /Users/AM07832/CascadeProjects/lean-ids
 rsync -av --delete --exclude='.git' storybook-static/ /Users/AM07832/CascadeProjects/lean-ids-storybook/
 ```
 
-### 10.2 Commit and Push Storybook Repo
+### 11.2 Commit and Push Storybook Repo
 
 ```bash
 cd /Users/AM07832/CascadeProjects/lean-ids-storybook
@@ -255,7 +350,7 @@ git pull origin main --rebase || git rebase --abort
 git push origin main --force
 ```
 
-## Step 11: Verification
+## Step 12: Verification
 
 Verify the deployment across all platforms:
 
@@ -285,7 +380,12 @@ npm view @ajaysoni7832/lean-ids-components version
 - Visit: https://github.com/ajaysonicarelon/lean-ids-storybook
 - Check latest commit shows Storybook update
 
-## Step 12: Post-Deployment
+### Artifactory (Elevance Internal)
+- Visit: https://artifactory.elevancehealth.com/ui/packages/npm:%2F%2F@ajaysoni7832%2Flean-ids-tokens/X.X.X
+- Visit: https://artifactory.elevancehealth.com/ui/packages/npm:%2F%2F@ajaysoni7832%2Flean-ids-components/X.X.X
+- Verify both packages show the new version
+
+## Step 13: Post-Deployment
 
 ### Create GitHub Release (Optional)
 1. Go to: https://github.com/ajaysonicarelon/Lean-IDS/releases/new
@@ -313,6 +413,17 @@ npm view @ajaysoni7832/lean-ids-components version
 ### Version Mismatch Error
 **Solution:** Ensure tokens and components have matching versions
 
+### Artifactory Not Showing New Version
+**Problem:** New version published to NPM but not visible in Artifactory after several hours
+
+**Solution:** Artifactory caches packages on-demand. Manually trigger the cache:
+```bash
+npm view @ajaysoni7832/lean-ids-tokens@X.X.X --registry=https://artifactory.elevancehealth.com/artifactory/api/npm/npm/
+npm view @ajaysoni7832/lean-ids-components@X.X.X --registry=https://artifactory.elevancehealth.com/artifactory/api/npm/npm/
+```
+
+**Alternative:** Contact Artifactory admin to clear the cache or reduce cache TTL
+
 ## Quick Reference
 
 **Repositories:**
@@ -325,6 +436,10 @@ npm view @ajaysoni7832/lean-ids-components version
 - Tokens: https://www.npmjs.com/package/@ajaysoni7832/lean-ids-tokens
 - Components: https://www.npmjs.com/package/@ajaysoni7832/lean-ids-components
 
+**Artifactory (Elevance Internal):**
+- Base URL: https://artifactory.elevancehealth.com
+- Registry: https://artifactory.elevancehealth.com/artifactory/api/npm/npm/
+
 **NPM User:** ajaysoni7832
 
 ---
@@ -332,13 +447,21 @@ npm view @ajaysoni7832/lean-ids-components version
 ## Success Criteria
 
 ✅ Version updated in both package.json files  
-✅ Documentation updated (updates.mdx, RELEASE_NOTES.md, CHANGELOG.md)  
+✅ **All documentation updated:**
+   - Main README.md (root)
+   - Components README.md
+   - Storybook updates.mdx
+   - Components RELEASE_NOTES.md
+   - Tokens CHANGELOG.md
+   - Components CHANGELOG.md
 ✅ Packages built successfully  
 ✅ Pre-deployment checks passed  
 ✅ Committed and pushed to GitHub  
 ✅ Published to NPM (tokens first, then components)  
+✅ Artifactory cache triggered for new versions  
 ✅ Pushed to Bitbucket  
 ✅ Storybook repository updated  
 ✅ All verification checks passed  
+✅ GitHub Release created (optional)  
 
 **Deployment Complete! 🎉**
