@@ -91,7 +91,10 @@
   },
   "dependencies": {
     "@ajaysoni7832/lean-ids-tokens": "^1.7.7",
-    "date-fns": "^4.4.0"
+    "@angular/compiler-cli": "21.2.19",
+    "@typescript-eslint/parser": "8.65.0",
+    "date-fns": "^4.4.0",
+    "ng-packagr": "21.2.6"
   },
   "devDependencies": {
     "@emotion/react": "^11.14.0",
@@ -102,13 +105,13 @@
     "@rollup/plugin-typescript": "^12.1.2",
     "@rollup/plugin-url": "^8.0.2",
     "@storybook/addon-a11y": "^8.5.3",
-    "@storybook/addon-essentials": "^8.5.3",
+    "@storybook/addon-essentials": "^7.0.6",
     "@storybook/addon-interactions": "^8.5.3",
     "@storybook/addon-links": "^8.5.3",
     "@storybook/blocks": "^8.5.3",
     "@storybook/react": "^8.5.3",
     "@storybook/react-vite": "^8.5.3",
-    "@storybook/test-runner": "^0.19.1",
+    "@storybook/test-runner": "^0.6.3",
     "@types/react": "^18.3.18",
     "@types/react-dom": "^18.3.5",
     "@types/styled-components": "^5.1.34",
