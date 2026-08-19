@@ -74,7 +74,7 @@ import { Button } from '@lean-ids/components';
   variant="primary"
   buttonType="default"
   size="medium"
-  onClick={() => console.log('Clicked')}
+  onClick={() => {}}
 >
   Click me
 </Button>
@@ -104,9 +104,9 @@ import { Button } from '@lean-ids/components';
 ### Event Callbacks
 \`\`\`tsx
 <Button
-  onClick={() => console.log('clicked')}
-  onMouseEnter={() => console.log('hover')}
-  onFocus={() => console.log('focused')}
+  onClick={() => {}}
+  onMouseEnter={() => {}}
+  onFocus={() => {}}
 >
   Interactive
 </Button>

@@ -24,6 +24,20 @@ export interface AccordionProps extends Omit<HTMLAttributes<HTMLDivElement>, 'on
   heading?: string;
   
   /**
+   * Typography variant for the heading.
+   * @default 'headingM'
+   * @example headingVariant="headingL"
+   */
+  headingVariant?: 'displayL' | 'displayM' | 'displayS' | 'headingXL' | 'headingL' | 'headingM' | 'headingS' | 'body' | 'paragraph' | 'caption' | 'code';
+  
+  /**
+   * Typography weight for the heading.
+   * @default 'semibold'
+   * @example headingWeight="bold"
+   */
+  headingWeight?: 'regular' | 'medium' | 'semibold' | 'bold';
+  
+  /**
    * Description text below heading.
    * Optional secondary text for additional context.
    */
@@ -48,6 +62,13 @@ export interface AccordionProps extends Omit<HTMLAttributes<HTMLDivElement>, 'on
    * @default true
    */
   showLeadIcon?: boolean;
+  
+  /**
+   * Position of the expand/collapse icon.
+   * @default 'right'
+   * @example expandIconPosition="left"
+   */
+  expandIconPosition?: 'left' | 'right';
   
   /**
    * Custom content for labels and metadata area.
@@ -177,7 +198,7 @@ export interface AccordionProps extends Omit<HTMLAttributes<HTMLDivElement>, 'on
   /**
    * Callback when expand/collapse state changes.
    * @param expanded - New expanded state
-   * @example onExpandChange={(expanded) => console.log('Expanded:', expanded)}
+   * @example onExpandChange={(expanded) => {}}
    */
   onExpandChange?: (expanded: boolean) => void;
   

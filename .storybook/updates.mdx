@@ -7,7 +7,7 @@ import { useEffect } from 'react';
 {`
   // Mark updates as viewed when user visits this page
   if (typeof window !== 'undefined') {
-    const currentVersion = '1.7.7';
+    const currentVersion = '1.7.8';
     const lastViewedVersion = localStorage.getItem('lean-ids-last-viewed-version');
     
     // Mark as viewed
@@ -217,7 +217,7 @@ import { useEffect } from 'react';
     <div className="icon">🔔</div>
     <div className="content">
       <div className="title">New Update Available!</div>
-      <div className="message">Version 1.7.7 has been released. Check out the latest changes below.</div>
+      <div className="message">Version 1.7.8 has been released. Check out the latest changes below.</div>
     </div>
   </div>
 </div>
@@ -225,7 +225,7 @@ import { useEffect } from 'react';
 <script dangerouslySetInnerHTML={{__html: `
   (function() {
     if (typeof window !== 'undefined') {
-      const currentVersion = '1.7.7';
+      const currentVersion = '1.7.8';
       const lastViewedVersion = localStorage.getItem('lean-ids-last-viewed-version');
       
       // Show banner if user hasn't seen this version
@@ -254,7 +254,7 @@ Stay up to date with the latest changes, improvements, and fixes to the Lean IDS
 
 <div className="stats-container">
   <div className="stat-card">
-    <div className="stat-number">1.7.7</div>
+    <div className="stat-number">1.7.8</div>
     <div className="stat-label">Current Version</div>
   </div>
   <div className="stat-card">
@@ -274,6 +274,73 @@ Stay up to date with the latest changes, improvements, and fixes to the Lean IDS
 ---
 
 ## 🚀 Current Version
+
+<div className="version-container">
+  <div className="version-header">
+    <div className="version-number">v1.7.8</div>
+    <div className="version-date">August 19, 2026</div>
+  </div>
+  <div className="version-content">
+
+    <div className="change-section">
+      <div className="change-title">
+        <span className="change-icon">✨</span>
+        Component Enhancements
+      </div>
+      <ul className="change-list">
+        <li className="change-item critical">
+          <strong>Checkbox</strong> - Added indeterminate state with minus icon and aria-checked="mixed" for "select all" table scenarios
+        </li>
+        <li className="change-item">
+          <strong>Select</strong> - Added onSearchInput (immediate), searchDebounceDelay, virtual scrolling support, and performance props (Pillar 7)
+        </li>
+        <li className="change-item">
+          <strong>Accordion</strong> - Added headingVariant, headingWeight, and expandIconPosition props
+        </li>
+        <li className="change-item">
+          <strong>Drawer</strong> - Complete refactor with polymorphic 'as' prop and extended API
+        </li>
+        <li className="change-item">
+          <strong>Table</strong> - Added TableGroupHeader and types module; refactored composition stories
+        </li>
+        <li className="change-item">
+          <strong>BarChart / DonutChart</strong> - Props and styles enhancements
+        </li>
+        <li className="change-item">
+          <strong>AlertBanner, SideNavigation, Toast</strong> - Story and accessibility improvements
+        </li>
+      </ul>
+    </div>
+
+    <div className="change-section">
+      <div className="change-title">
+        <span className="change-icon">🔧</span>
+        Developer Experience
+      </div>
+      <ul className="change-list">
+        <li className="change-item">
+          Removed redundant markdown documentation files — keeping repository lean
+        </li>
+        <li className="change-item">
+          Updated Figma token parsing script
+        </li>
+        <li className="change-item">
+          Version synchronization across all packages
+        </li>
+      </ul>
+    </div>
+
+    <div className="migration-note">
+      <strong>📦 Installation</strong>
+      <code>npm install @ajaysoni7832/lean-ids-components@1.7.8 @ajaysoni7832/lean-ids-tokens@1.7.8</code>
+    </div>
+
+  </div>
+</div>
+
+---
+
+## 📋 Previous Versions
 
 <div className="version-container">
   <div className="version-header">
@@ -336,42 +403,6 @@ Stay up to date with the latest changes, improvements, and fixes to the Lean IDS
       </ul>
     </div>
 
-    <div className="change-section">
-      <div className="change-title">
-        <span className="change-icon">📚</span>
-        Documentation
-      </div>
-      <ul className="change-list">
-        <li className="change-item">
-          <strong>New:</strong> DEPLOYMENT_WORKFLOW.md - Complete step-by-step deployment guide
-        </li>
-        <li className="change-item">
-          <strong>Enhanced:</strong> Pre-deployment script now validates Storybook documentation updates
-        </li>
-        <li className="change-item">
-          <strong>Updated:</strong> Storybook updates page now shows v1.7.7
-        </li>
-      </ul>
-    </div>
-
-    <div className="change-section">
-      <div className="change-title">
-        <span className="change-icon">🔧</span>
-        Technical Improvements
-      </div>
-      <ul className="change-list">
-        <li className="change-item">
-          Version synchronization across all packages
-        </li>
-        <li className="change-item">
-          Improved deployment validation process
-        </li>
-        <li className="change-item">
-          Enhanced Storybook documentation workflow
-        </li>
-      </ul>
-    </div>
-
     <div className="migration-note">
       <strong>📦 Installation</strong>
       <code>npm install @ajaysoni7832/lean-ids-components@1.7.7 @ajaysoni7832/lean-ids-tokens@1.7.7</code>
@@ -379,10 +410,6 @@ Stay up to date with the latest changes, improvements, and fixes to the Lean IDS
 
   </div>
 </div>
-
----
-
-## 📋 Previous Versions
 
 <div className="version-container">
   <div className="version-header">

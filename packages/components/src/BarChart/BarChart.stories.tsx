@@ -11,7 +11,7 @@
  */
 
 import type { Meta, StoryObj } from '@storybook/react';
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import { fn } from '@storybook/test';
 import { BarChart } from './BarChart';
 import { DataVisualizationCard } from '../DataVisualizationCard';
@@ -35,7 +35,18 @@ Enterprise-grade bar chart component with full accessibility and customization s
 - ✅ **Design tokens only** - No hardcoded pixels, colors, or spacing
 - ✅ **Full accessibility** - ARIA attributes, keyboard navigation
 - ✅ **Customization slots** - Custom header, tooltip, legend, states
-- ✅ **Event callbacks** - onLoad, onError, onBarClick, onBarHover, onLegendClick
+- ✅ **Event callbacks** - onLoad, onError, onBarClick, onBarHover, onSegmentClick, onLegendClick
+- ✅ **Granular interactions** - Click individual segments in stacked bars for filtering/drill-down
+- ✅ **Layout customization** - Chart padding, bar gaps, label spacing, bar widths, label rotation
+
+## Layout Customization
+Control chart layout with these props:
+- **chartPadding** - Control left/right/top/bottom padding
+- **barGap** - Space between bars
+- **xAxisLabelSpacing** / **yAxisLabelSpacing** - Label spacing
+- **axisLabelMargin** - Distance from axis to labels
+- **minBarWidth** / **maxBarWidth** - Bar width constraints
+- **xAxisLabelRotation** - Rotate labels (e.g., 45°)
 
 ## Usage
 \`\`\`tsx
@@ -49,6 +60,9 @@ import { BarChart } from '@lean-ids/components';
   showLegend
   yAxisLabel="Revenue ($K)"
   xAxisLabel="Month"
+  chartPadding={{ left: '2rem', right: '2rem' }}
+  barGap="1rem"
+  xAxisLabelRotation={45}
 />
 \`\`\`
         `,
@@ -62,6 +76,7 @@ import { BarChart } from '@lean-ids/components';
     onError: fn(),
     onBarClick: fn(),
     onBarHover: fn(),
+    onSegmentClick: fn(),
     onLegendClick: fn(),
     onInfoClick: fn(),
   },
@@ -94,6 +109,38 @@ import { BarChart } from '@lean-ids/components';
     disabled: {
       control: 'boolean',
       description: 'Disabled state',
+    },
+    chartPadding: {
+      control: 'object',
+      description: 'Control chart padding (left, right, top, bottom)',
+    },
+    barGap: {
+      control: 'text',
+      description: 'Space between bars (responsive units: rem, px, or number)',
+    },
+    xAxisLabelSpacing: {
+      control: 'text',
+      description: 'Horizontal spacing between X-axis labels',
+    },
+    yAxisLabelSpacing: {
+      control: 'text',
+      description: 'Vertical spacing between Y-axis labels',
+    },
+    axisLabelMargin: {
+      control: 'object',
+      description: 'Distance from axis to labels (x and y)',
+    },
+    minBarWidth: {
+      control: 'text',
+      description: 'Minimum bar width (responsive units)',
+    },
+    maxBarWidth: {
+      control: 'text',
+      description: 'Maximum bar width (responsive units)',
+    },
+    xAxisLabelRotation: {
+      control: 'number',
+      description: 'Rotate X-axis labels in degrees (e.g., 45)',
     },
   },
 };
@@ -622,6 +669,61 @@ export const EventCallbacks: Story = {
   },
 };
 
+/**
+ * **Segment Click Handler** - Click individual segments for filtering/drill-down
+ */
+export const SegmentClickHandler: Story = {
+  args: {
+    orientation: "horizontal"
+  },
+
+  render: () => {
+    const [selectedSegment, setSelectedSegment] = useState<string | null>(null);
+
+    return (
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+        <div>
+          <Typography variant="headingM" weight="semibold" style={{ marginBottom: '8px' }}>
+            Segment Click Example
+          </Typography>
+          <Typography variant="body" style={{ marginBottom: '12px' }}>
+            Click on individual colored segments in the stacked bars to filter or drill down. 
+            Each segment is independently clickable for granular data interaction.
+          </Typography>
+          {selectedSegment && (
+            <div style={{ padding: '12px', background: '#EFE6F8', borderRadius: '8px' }}>
+              <Typography variant="body" weight="semibold" color="#6222BC">
+                Selected: {selectedSegment}
+              </Typography>
+            </div>
+          )}
+        </div>
+        <BarChart
+          data={stackedClaimData}
+          yAxisLabel="Claim Count"
+          xAxisLabel="Month"
+          showGrid
+          showLegend
+          legendTitle="Claim Status"
+          height="18.75rem"
+          onSegmentClick={(metric, barData, barIndex, metricIndex) => {
+            setSelectedSegment(`${metric.name} in ${barData.label} (Value: ${metric.value})`);
+          }}
+          onBarClick={(data, index) => {}}
+        />
+      </div>
+    );
+  },
+
+  parameters: {
+    docs: {
+      description: {
+        story: 'Demonstrates `onSegmentClick` for individual segment interactions. Perfect for filtering data by specific metrics or implementing drill-down functionality. Click segments to see the callback in action.',
+      },
+    },
+  }
+};
+
 // ============================================================================
 // FORWARD REF STORY
 // ============================================================================
@@ -702,6 +804,203 @@ export const Polymorphic: Story = {
       />
     </div>
   ),
+};
+
+// ============================================================================
+// LAYOUT CUSTOMIZATION STORIES
+// ============================================================================
+
+/**
+ * **Custom Chart Padding** - Control padding around the chart area
+ */
+export const CustomPadding: Story = {
+  args: {
+    data: revenueData,
+    yAxisLabel: 'Revenue',
+    xAxisLabel: 'Month',
+    showGrid: true,
+    height: '18.75rem',
+    chartPadding: {
+      left: '2rem',
+      right: '3rem',
+      top: '2rem',
+      bottom: '0.5rem',
+    },
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Customize the padding inside the chart area using the `chartPadding` prop.',
+      },
+    },
+  },
+};
+
+/**
+ * **Custom Bar Gap** - Adjust spacing between bars
+ */
+export const CustomBarGap: Story = {
+  args: {
+    data: revenueData,
+    yAxisLabel: 'Revenue',
+    xAxisLabel: 'Month',
+    showGrid: true,
+    height: '18.75rem',
+    barGap: '1.5rem',
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Control the gap between bars using the `barGap` prop (accepts rem, px, or numbers).',
+      },
+    },
+  },
+};
+
+/**
+ * **Custom Bar Width** - Set minimum and maximum bar widths
+ */
+export const CustomBarWidth: Story = {
+  args: {
+    data: revenueData,
+    yAxisLabel: 'Revenue',
+    xAxisLabel: 'Month',
+    showGrid: true,
+    height: '18.75rem',
+    minBarWidth: '3rem',
+    maxBarWidth: '6rem',
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Control bar width constraints using `minBarWidth` and `maxBarWidth` props.',
+      },
+    },
+  },
+};
+
+/**
+ * **Rotated X-Axis Labels** - Rotate labels for better readability
+ */
+export const RotatedLabels: Story = {
+  args: {
+    data: [
+      { label: 'January', metrics: [{ name: 'Revenue', value: 45000, color: '#6222BC' }] },
+      { label: 'February', metrics: [{ name: 'Revenue', value: 52000, color: '#6222BC' }] },
+      { label: 'March', metrics: [{ name: 'Revenue', value: 48000, color: '#6222BC' }] },
+      { label: 'April', metrics: [{ name: 'Revenue', value: 61000, color: '#6222BC' }] },
+      { label: 'May', metrics: [{ name: 'Revenue', value: 55000, color: '#6222BC' }] },
+      { label: 'June', metrics: [{ name: 'Revenue', value: 67000, color: '#6222BC' }] },
+    ],
+    yAxisLabel: 'Revenue',
+    xAxisLabel: 'Month',
+    showGrid: true,
+    height: '18.75rem',
+    xAxisLabelRotation: 45,
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Rotate X-axis labels using `xAxisLabelRotation` prop (in degrees) for long labels.',
+      },
+    },
+  },
+};
+
+/**
+ * **Custom Label Spacing** - Adjust spacing between axis labels
+ */
+export const CustomLabelSpacing: Story = {
+  args: {
+    data: stackedClaimData,
+    yAxisLabel: 'Claim Count',
+    xAxisLabel: 'Month',
+    showGrid: true,
+    showLegend: true,
+    height: '18.75rem',
+    xAxisLabelSpacing: '2rem',
+    yAxisLabelSpacing: '0.5rem',
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Control spacing between labels using `xAxisLabelSpacing` and `yAxisLabelSpacing` props.',
+      },
+    },
+  },
+};
+
+/**
+ * **Custom Axis Label Margins** - Adjust distance from axis to labels
+ */
+export const CustomAxisMargins: Story = {
+  args: {
+    data: revenueData,
+    yAxisLabel: 'Revenue',
+    xAxisLabel: 'Month',
+    showGrid: true,
+    height: '18.75rem',
+    axisLabelMargin: {
+      x: '1rem',
+      y: '0.5rem',
+    },
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Adjust the distance from axis to labels using `axisLabelMargin` prop.',
+      },
+    },
+  },
+};
+
+/**
+ * **Complete Layout Customization** - All layout props combined
+ */
+export const CompleteLayoutCustomization: Story = {
+  render: () => (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+      <div>
+        <Typography variant="headingM" weight="semibold" style={{ marginBottom: '8px' }}>
+          Fully Customized Layout
+        </Typography>
+        <Typography variant="body" style={{ marginBottom: '12px' }}>
+          This example demonstrates all layout customization props working together.
+        </Typography>
+      </div>
+      <BarChart
+        data={stackedClaimData}
+        yAxisLabel="Claim Count"
+        xAxisLabel="Month"
+        showGrid
+        showLegend
+        legendTitle="Claim Status"
+        height="25rem"
+        chartPadding={{
+          left: '2rem',
+          right: '2rem',
+          top: '1.5rem',
+          bottom: '0.5rem',
+        }}
+        barGap="1rem"
+        minBarWidth="2.5rem"
+        maxBarWidth="5rem"
+        xAxisLabelSpacing="1.5rem"
+        yAxisLabelSpacing="0.5rem"
+        axisLabelMargin={{
+          x: '0.75rem',
+          y: '0.5rem',
+        }}
+      />
+    </div>
+  ),
+  parameters: {
+    docs: {
+      description: {
+        story: 'Complete example showing all layout customization props: padding, gaps, widths, spacing, and margins.',
+      },
+    },
+  },
 };
 
 // ============================================================================

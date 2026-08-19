@@ -5,6 +5,27 @@ All notable changes to the Lean IDS Design System will be documented in this fil
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.7.8] - 2026-08-19
+
+### ✨ Component Enhancements
+- **Checkbox** - Added `indeterminate` prop with minus icon, `aria-checked="mixed"` WCAG 2.1 AA compliant
+- **Select** - Added `onSearchInput`, `searchDebounceDelay`, virtual scrolling support (performance props)
+- **Accordion** - New `headingVariant`, `headingWeight`, `expandIconPosition` props
+- **Drawer** - Complete refactor with polymorphic `as` prop and extended API
+- **Table** - Added `TableGroupHeader`, `types` module; refactored composition stories
+- **BarChart / DonutChart** - Props and styles enhancements
+- **AlertBanner, SideNavigation, Toast** - Story and accessibility improvements
+
+### 🔧 Developer Experience
+- Removed redundant markdown documentation files
+- Updated Figma token parsing script
+- Version synchronization across all packages
+
+### 📚 Documentation
+- Updated README.md with v1.7.8
+- Updated Storybook updates.mdx to v1.7.8
+- Added RELEASE_NOTES.md entry for v1.7.8
+
 ## [1.7.6] - 2026-07-22
 
 ### 🎯 **Component Maturity Initiative - Complete Refactoring**

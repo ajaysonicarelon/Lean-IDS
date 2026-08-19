@@ -31,7 +31,7 @@ function App() {
       version="1.0"
       feedbackUrl="#"
       feedbackText="Send us a Feedback here"
-      onFeedbackClick={() => console.log('Feedback clicked')}
+      onFeedbackClick={() => {}}
     />
   );
 }

@@ -1,4 +1,5 @@
 ---
+name: mature-component
 description: Component Maturity Checklist - Refactor any component to enterprise standards
 ---
 
@@ -10,7 +11,7 @@ Use this checklist to refactor any component to meet enterprise-grade standards 
 
 **Prompt:** "Refactor [ComponentName] using the Component Maturity Checklist"
 
-Or use the shortcut: `/component-maturity-checklist [ComponentName]`
+Or use the shortcut: `/mature-component [ComponentName]`
 
 ---
 

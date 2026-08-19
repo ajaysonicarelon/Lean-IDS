@@ -3,6 +3,7 @@ import React from 'react';
 import { Table } from './Table';
 import type { TableColumn } from './Table.types';
 import { Badge } from '../Badge';
+import { Chip } from '../Chip';
 import { TableToolbar, TableToolbarSection, TableToolbarTitle, TableToolbarActions } from './TableToolbar';
 import { Button } from '../Button';
 import { Icon } from '../Icon';
@@ -412,15 +413,15 @@ export const Complete: Story = {
       {
         icon: 'Edit',
         label: 'Edit',
-        onClick: (row) => console.log('Edit:', row),
+        onClick: (row) => {},
       },
       {
         icon: 'Delete',
         label: 'Delete',
-        onClick: (row) => console.log('Delete:', row),
+        onClick: (row) => {},
       },
     ],
-    onRowSelect: (ids) => console.log('Selected:', ids),
+    onRowSelect: (ids) => {},
   },
   parameters: {
     docs: {
@@ -517,7 +518,7 @@ export const CustomToolbar: Story = {
               size="medium"
               showLabel={false}
               leadingIcon={<Icon name="Download" size="medium" />}
-              onClick={() => console.log('Export clicked')}
+              onClick={() => {}}
               aria-label="Export"
             >
               Export
@@ -527,7 +528,7 @@ export const CustomToolbar: Story = {
               size="medium"
               showLabel={false}
               leadingIcon={<Icon name="FilterAlt" size="medium" />}
-              onClick={() => console.log('Filter clicked')}
+              onClick={() => {}}
               aria-label="Filter"
             >
               Filter
@@ -535,7 +536,7 @@ export const CustomToolbar: Story = {
             <Button
               variant="primary"
               size="medium"
-              onClick={() => console.log('Add Employee clicked')}
+              onClick={() => {}}
             >
               Add Employee
             </Button>
@@ -640,7 +641,7 @@ export const Empty: Story = {
     emptyTitle: 'Not able to sync',
     emptyDescription: 'Please check your internet connection',
     emptyActionLabel: 'Refresh',
-    onEmptyAction: () => console.log('Refresh clicked'),
+    onEmptyAction: () => {},
   },
 };
 
@@ -651,7 +652,7 @@ export const ErrorState: Story = {
     showToolbar: true,
     title: 'Employee Directory',
     isInvalid: true,
-    errorMessage: 'Failed to load data. Please try again later.',
+    errorMessage: 'Failed to load data.',
   },
   parameters: {
     docs: {
@@ -692,7 +693,6 @@ export const WithForwardRef: Story = {
             onClick={() => {
               if (tableRef.current) {
                 tableRef.current.scrollIntoView({ behavior: 'smooth' });
-                console.log('Table ref:', tableRef.current);
               }
             }}
           >
@@ -701,14 +701,7 @@ export const WithForwardRef: Story = {
           <Button
             variant="secondary"
             size="small"
-            onClick={() => {
-              if (tableRef.current) {
-                console.log('Table dimensions:', {
-                  width: tableRef.current.offsetWidth,
-                  height: tableRef.current.offsetHeight,
-                });
-              }
-            }}
+            onClick={() => {}}
           >
             Log Dimensions
           </Button>
@@ -886,6 +879,102 @@ export const PolymorphicAs: Story = {
     docs: {
       description: {
         story: 'Table rendered as a different HTML element using the `as` prop. In this example, the table is rendered as a `<section>` instead of a `<div>`.',
+      },
+    },
+  },
+};
+
+export const WithGrouping: Story = {
+  args: {
+    columns: basicColumns.map(col => ({ ...col, sortable: true })),
+    groups: [
+      {
+        id: 'active',
+        groupName: 'Active Claims',
+        groupDescription: 'Claims currently being processed',
+        defaultExpanded: true,
+        rows: [
+          { id: '1', name: 'John Doe', email: 'john@example.com', role: 'Developer', status: 'Active' },
+          { id: '2', name: 'Jane Smith', email: 'jane@example.com', role: 'Designer', status: 'Active' },
+          { id: '3', name: 'Bob Johnson', email: 'bob@example.com', role: 'Manager', status: 'Active' },
+        ],
+        customContent: (
+          <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+            <Chip label="3 items" size="small" />
+            <Button variant="tertiary" size="small">View All</Button>
+          </div>
+        ),
+      },
+      {
+        id: 'pending',
+        groupName: 'Pending Review',
+        groupDescription: 'Awaiting approval',
+        defaultExpanded: true,
+        rows: [
+          { id: '4', name: 'Alice Williams', email: 'alice@example.com', role: 'Developer', status: 'Pending' },
+          { id: '5', name: 'Charlie Brown', email: 'charlie@example.com', role: 'Designer', status: 'Pending' },
+        ],
+        customContent: (
+          <Chip label="2 items" size="small" />
+        ),
+      },
+      {
+        id: 'completed',
+        groupName: 'Completed',
+        groupDescription: 'Successfully processed',
+        defaultExpanded: false,
+        rows: [
+          { id: '6', name: 'David Lee', email: 'david@example.com', role: 'Manager', status: 'Completed' },
+          { id: '7', name: 'Emma Davis', email: 'emma@example.com', role: 'Developer', status: 'Completed' },
+          { id: '8', name: 'Frank Miller', email: 'frank@example.com', role: 'Designer', status: 'Completed' },
+          { id: '9', name: 'Grace Wilson', email: 'grace@example.com', role: 'Manager', status: 'Completed' },
+        ],
+        customContent: (
+          <Chip label="4 items" size="small" />
+        ),
+      },
+    ],
+    groupConfig: {
+      expandPosition: 'left',
+      onGroupToggle: (groupId, isExpanded) => {},
+    },
+    showToolbar: true,
+    title: 'Grouped Table',
+    selectable: true,
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: `
+Group table rows into collapsible sections with custom headers.
+
+**Features:**
+- Expand/collapse groups
+- Custom content slot (chips, buttons, etc.)
+- Group-level selection
+- Configurable expand button position
+- Callbacks for group toggle events
+
+**Usage:**
+\`\`\`tsx
+<Table
+  groups={[
+    {
+      id: 'group1',
+      groupName: 'Section Name',
+      groupDescription: 'Short description',
+      rows: [...],
+      defaultExpanded: true,
+      customContent: <Badge label="5 items" />,
+    },
+  ]}
+  groupConfig={{
+    expandPosition: 'left',
+    onGroupToggle: (id, expanded) => {},
+  }}
+/>
+\`\`\`
+        `,
       },
     },
   },

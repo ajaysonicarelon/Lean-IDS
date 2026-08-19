@@ -36,9 +36,9 @@ import { InlineMessage } from '@lean-ids/components';
   text="Title"
   descriptionText="Lorem ipsum dolor sit amet, consectetur adipiscing elit"
   linkText="Learn more"
-  onLinkClick={() => console.log('Link clicked')}
-  onActionClick={() => console.log('Action clicked')}
-  onClose={() => console.log('Closed')}
+  onLinkClick={() => {}}
+  onActionClick={() => {}}
+  onClose={() => {}}
 />
 \`\`\`
         `,

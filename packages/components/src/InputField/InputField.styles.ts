@@ -94,20 +94,20 @@ const sizeStyles = {
 export const InputWrapper = styled.div<StyledInputWrapperProps>`
   display: flex;
   align-items: center;
-  background-color: ${({ theme, $disabled, $readOnly }) => {
-    if ($disabled) return theme.colors.palette.neutral[100];
-    if ($readOnly) return theme.colors.palette.primary[50]; // primary-50 for non-editable only
-    return theme.colors.palette.neutral[50]; // white/neutral-50 for all other states including filled
+  background-color: ${({ theme, $disabled, $readOnly, $filled }) => {
+    if ($disabled) return `${theme.colors.palette.neutral[100]} !important`;
+    if ($filled) return '#FFFFFF !important'; // white when filled (check before readOnly for Select)
+    if ($readOnly) return `${theme.colors.palette.primary[50]} !important`; // primary-50 for truly non-editable fields
+    return `${theme.colors.palette.neutral[200]} !important`; // gray-200 when empty (neutral[50] is white in tokens)
   }};
   border-width: ${({ $isFocused }) => ($isFocused ? '2px' : '1px')};
   border-style: solid;
   border-color: ${({ theme, $error, $disabled, $readOnly, $isFocused }) => {
     if ($disabled) return theme.colors.palette.neutral[300];
-    if ($readOnly) return theme.colors.palette.neutral[300];
     if ($error && $isFocused) return theme.colors.palette.error[500];
     if ($error) return theme.colors.palette.error[500];
     if ($isFocused) return theme.colors.semantic.focus.input; // Input fields use semantic focus.input color
-    return theme.colors.palette.neutral[500]; // Updated from 400 to 500
+    return theme.colors.palette.neutral[500]; // Same for readOnly (Select) and normal inputs
   }};
   border-radius: ${({ theme }) => theme.borderRadius.sm};
   transition: all 0.2s ease-in-out;

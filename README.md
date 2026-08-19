@@ -31,7 +31,7 @@ This monorepo contains the following packages:
 
 #### React Projects (16.8+ to 19.x)
 ```bash
-npm install @ajaysoni7832/lean-ids-components @ajaysoni7832/lean-ids-tokens
+npm install @ajaysoni7832/lean-ids-components@1.7.8 @ajaysoni7832/lean-ids-tokens@1.7.8
 ```
 
 #### Angular Projects (15+ to 19.x)

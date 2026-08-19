@@ -61,6 +61,35 @@ export interface BarChartProps extends Omit<HTMLAttributes<HTMLDivElement>, 'tit
   xAxisLabel?: string;
   
   // ============================================================================
+  // LAYOUT CUSTOMIZATION
+  // ============================================================================
+  
+  /** Control chart padding (left, right, top, bottom) */
+  chartPadding?: {
+    left?: string;
+    right?: string;
+    top?: string;
+    bottom?: string;
+  };
+  /** Space between bars (responsive units: rem, px, or theme spacing token) */
+  barGap?: string | number;
+  /** Horizontal spacing between X-axis labels (responsive units) */
+  xAxisLabelSpacing?: string | number;
+  /** Vertical spacing between Y-axis labels (responsive units) */
+  yAxisLabelSpacing?: string | number;
+  /** Distance from axis to labels */
+  axisLabelMargin?: {
+    x?: string;
+    y?: string;
+  };
+  /** Minimum bar width (responsive units) */
+  minBarWidth?: string | number;
+  /** Maximum bar width (responsive units) */
+  maxBarWidth?: string | number;
+  /** Rotate X-axis labels in degrees (e.g., 45 for diagonal labels) */
+  xAxisLabelRotation?: number;
+  
+  // ============================================================================
   // LEGEND
   // ============================================================================
   
@@ -109,10 +138,12 @@ export interface BarChartProps extends Omit<HTMLAttributes<HTMLDivElement>, 'tit
   onLoad?: () => void;
   /** Called when chart encounters an error */
   onError?: (error: Error) => void;
-  /** Called when a bar is clicked */
+  /** Called when a bar is clicked (entire bar) */
   onBarClick?: (data: BarChartData, index: number) => void;
   /** Called when a bar is hovered */
   onBarHover?: (data: BarChartData, index: number) => void;
+  /** Called when a specific segment/metric in a bar is clicked (for filtering or drill-down) */
+  onSegmentClick?: (metric: BarMetric, barData: BarChartData, barIndex: number, metricIndex: number) => void;
   /** Called when legend item is clicked */
   onLegendClick?: (metricName: string, isActive: boolean) => void;
   

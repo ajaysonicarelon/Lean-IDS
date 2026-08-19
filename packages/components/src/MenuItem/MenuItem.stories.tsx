@@ -722,7 +722,7 @@ export const NestedMenu: Story = {
         id: '1',
         label: 'Home',
         icon: <HomeIcon />,
-        onClick: () => console.log('Home clicked'),
+        onClick: () => {},
       },
       {
         id: '2',
@@ -732,7 +732,7 @@ export const NestedMenu: Story = {
           {
             id: '2-1',
             label: 'Web Development',
-            onClick: () => console.log('Web Development clicked'),
+            onClick: () => {},
           },
           {
             id: '2-2',
@@ -741,24 +741,24 @@ export const NestedMenu: Story = {
               {
                 id: '2-2-1',
                 label: 'iOS Apps',
-                onClick: () => console.log('iOS Apps clicked'),
+                onClick: () => {},
               },
               {
                 id: '2-2-2',
                 label: 'Android Apps',
-                onClick: () => console.log('Android Apps clicked'),
+                onClick: () => {},
               },
               {
                 id: '2-2-3',
                 label: 'React Native',
-                onClick: () => console.log('React Native clicked'),
+                onClick: () => {},
               },
             ],
           },
           {
             id: '2-3',
             label: 'Design Systems',
-            onClick: () => console.log('Design Systems clicked'),
+            onClick: () => {},
           },
         ],
       },
@@ -770,7 +770,7 @@ export const NestedMenu: Story = {
           {
             id: '3-1',
             label: 'Reports',
-            onClick: () => console.log('Reports clicked'),
+            onClick: () => {},
           },
           {
             id: '3-2',
@@ -779,19 +779,19 @@ export const NestedMenu: Story = {
               {
                 id: '3-2-1',
                 label: 'Q1 Review',
-                onClick: () => console.log('Q1 Review clicked'),
+                onClick: () => {},
               },
               {
                 id: '3-2-2',
                 label: 'Q2 Planning',
-                onClick: () => console.log('Q2 Planning clicked'),
+                onClick: () => {},
               },
             ],
           },
           {
             id: '3-3',
             label: 'Spreadsheets',
-            onClick: () => console.log('Spreadsheets clicked'),
+            onClick: () => {},
           },
         ],
       },
@@ -803,12 +803,12 @@ export const NestedMenu: Story = {
           {
             id: '4-1',
             label: 'Images',
-            onClick: () => console.log('Images clicked'),
+            onClick: () => {},
           },
           {
             id: '4-2',
             label: 'Videos',
-            onClick: () => console.log('Videos clicked'),
+            onClick: () => {},
           },
         ],
       },
@@ -816,7 +816,7 @@ export const NestedMenu: Story = {
         id: '5',
         label: 'Settings',
         icon: <SettingsIcon />,
-        onClick: () => console.log('Settings clicked'),
+        onClick: () => {},
       },
     ];
 
@@ -840,7 +840,7 @@ export const NestedMenu: Story = {
             mode="dark"
             onClose={() => setShowOverlay(false)}
             onItemClick={(item) => {
-              console.log('Item clicked:', item.label);
+
               setShowOverlay(false);
             }}
           />
@@ -880,7 +880,7 @@ export const NestedMenuClick: Story = {
         id: '1',
         label: 'Home',
         icon: <HomeIcon />,
-        onClick: () => console.log('Home clicked'),
+        onClick: () => {},
       },
       {
         id: '2',
@@ -890,7 +890,7 @@ export const NestedMenuClick: Story = {
           {
             id: '2-1',
             label: 'Web Development',
-            onClick: () => console.log('Web Development clicked'),
+            onClick: () => {},
           },
           {
             id: '2-2',
@@ -899,12 +899,12 @@ export const NestedMenuClick: Story = {
               {
                 id: '2-2-1',
                 label: 'iOS Apps',
-                onClick: () => console.log('iOS Apps clicked'),
+                onClick: () => {},
               },
               {
                 id: '2-2-2',
                 label: 'Android Apps',
-                onClick: () => console.log('Android Apps clicked'),
+                onClick: () => {},
               },
             ],
           },
@@ -918,12 +918,12 @@ export const NestedMenuClick: Story = {
           {
             id: '3-1',
             label: 'Reports',
-            onClick: () => console.log('Reports clicked'),
+            onClick: () => {},
           },
           {
             id: '3-2',
             label: 'Presentations',
-            onClick: () => console.log('Presentations clicked'),
+            onClick: () => {},
           },
         ],
       },
@@ -950,7 +950,7 @@ export const NestedMenuClick: Story = {
             triggerMode="click"
             onClose={() => setShowOverlay(false)}
             onItemClick={(item) => {
-              console.log('Item clicked:', item.label);
+
               setShowOverlay(false);
             }}
           />

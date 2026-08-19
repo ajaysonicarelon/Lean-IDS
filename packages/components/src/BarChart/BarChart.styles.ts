@@ -85,30 +85,44 @@ export const YAxisLabelText = styled.div`
   transform: rotate(-90deg);
 `;
 
-export const YValuesContainer = styled.div`
+export const YValuesContainer = styled.div<{
+  $labelSpacing?: string;
+  $labelMargin?: string;
+}>`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   height: 100%;
   flex-shrink: 0;
   text-align: right;
+  gap: ${({ $labelSpacing }) => $labelSpacing || '0'};
+  margin-right: ${({ $labelMargin }) => $labelMargin || '0'};
 `;
 
 // ============================================================================
 // BARS CONTAINER
 // ============================================================================
 
-export const BarsContainer = styled.div`
+export const BarsContainer = styled.div<{
+  $paddingLeft?: string;
+  $paddingRight?: string;
+  $paddingTop?: string;
+  $paddingBottom?: string;
+  $barGap?: string;
+}>`
   flex: 1;
   height: 100%;
   border-left: 2px solid ${({ theme }) => theme.colors.semantic.text.primary};
   border-bottom: 2px solid ${({ theme }) => theme.colors.semantic.text.primary};
-  padding: ${({ theme }) => `${theme.spacing[7]} ${theme.spacing[5]} 0 ${theme.spacing[5]}`};
+  padding-left: ${({ $paddingLeft, theme }) => $paddingLeft || theme.spacing[5]};
+  padding-right: ${({ $paddingRight, theme }) => $paddingRight || theme.spacing[5]};
+  padding-top: ${({ $paddingTop, theme }) => $paddingTop || theme.spacing[7]};
+  padding-bottom: ${({ $paddingBottom }) => $paddingBottom || '0'};
   display: flex;
   justify-content: space-evenly;
   align-items: flex-end;
   position: relative;
-  gap: ${({ theme }) => theme.spacing[3]};
+  gap: ${({ $barGap, theme }) => $barGap || theme.spacing[3]};
 `;
 
 export const GridLinesContainer = styled.div`
@@ -133,15 +147,19 @@ export const DottedGridLine = styled.div`
   background-repeat: repeat-x;
 `;
 
-export const BarColumn = styled.div<{ $height: string }>`
+export const BarColumn = styled.div<{
+  $height: string;
+  $minWidth?: string;
+  $maxWidth?: string;
+}>`
   display: flex;
   flex-direction: column;
   gap: 2px;
   align-items: center;
   justify-content: flex-end;
   width: ${({ theme }) => theme.spacing[8]};
-  min-width: ${({ theme }) => theme.spacing[8]};
-  max-width: ${({ theme }) => theme.spacing[12]};
+  min-width: ${({ $minWidth, theme }) => $minWidth || theme.spacing[8]};
+  max-width: ${({ $maxWidth, theme }) => $maxWidth || theme.spacing[12]};
   height: ${({ $height }) => $height};
   flex: 1 1 ${({ theme }) => theme.spacing[8]};
   cursor: pointer;
@@ -159,14 +177,28 @@ export const BarColumn = styled.div<{ $height: string }>`
   }
 `;
 
-export const BarSegment = styled.div<{ $color: string; $height: string }>`
+export const BarSegment = styled.div<{ $color: string; $height: string; $clickable?: boolean }>`
   width: 100%;
   height: ${({ $height }) => $height};
   background: ${({ $color }) => $color};
   border-radius: ${({ theme }) => theme.borderRadius.xs};
   flex-shrink: 0;
-  transition: height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: height 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.2s ease;
   will-change: height;
+  cursor: ${({ $clickable }) => $clickable ? 'pointer' : 'default'};
+  position: relative;
+  
+  ${({ $clickable }) => $clickable && `
+    &:hover {
+      opacity: 0.8;
+    }
+    
+    &:focus-visible {
+      outline: 2px solid currentColor;
+      outline-offset: 2px;
+      z-index: 2;
+    }
+  `}
 `;
 
 // ============================================================================
@@ -201,23 +233,38 @@ export const HorizontalYValuesContainer = styled.div`
   padding-bottom: 1.75rem;
 `;
 
-export const HorizontalBarsContainer = styled.div`
+export const HorizontalBarsContainer = styled.div<{
+  $paddingLeft?: string;
+  $paddingRight?: string;
+  $paddingTop?: string;
+  $paddingBottom?: string;
+  $barGap?: string;
+}>`
   flex: 1;
   height: 100%;
   border-left: 2px solid ${({ theme }) => theme.colors.semantic.text.primary};
   border-bottom: 2px solid ${({ theme }) => theme.colors.semantic.text.primary};
-  padding-right: ${({ theme }) => theme.spacing[5]};
+  padding-left: ${({ $paddingLeft }) => $paddingLeft || '0'};
+  padding-right: ${({ $paddingRight, theme }) => $paddingRight || theme.spacing[5]};
+  padding-top: ${({ $paddingTop }) => $paddingTop || '0'};
+  padding-bottom: ${({ $paddingBottom }) => $paddingBottom || '0'};
   display: flex;
   flex-direction: column;
   justify-content: space-evenly;
   align-items: flex-start;
   position: relative;
+  gap: ${({ $barGap }) => $barGap || '0'};
 `;
 
-export const HorizontalBarRow = styled.div`
+export const HorizontalBarRow = styled.div<{
+  $minHeight?: string;
+  $maxHeight?: string;
+}>`
   display: flex;
   align-items: center;
   height: 1.875rem;
+  min-height: ${({ $minHeight }) => $minHeight || 'auto'};
+  max-height: ${({ $maxHeight }) => $maxHeight || 'none'};
   width: 100%;
   flex-shrink: 0;
   position: relative;
@@ -247,28 +294,47 @@ export const HorizontalBarTrack = styled.div<{ $width: number }>`
   }
 `;
 
-export const HorizontalBarSegment = styled.div<{ $color: string; $width: number }>`
+export const HorizontalBarSegment = styled.div<{ $color: string; $width: number; $clickable?: boolean }>`
   height: 100%;
   width: ${({ $width }) => $width}%;
   background: ${({ $color }) => $color};
   border-radius: ${({ theme }) => theme.borderRadius.xs};
   flex-shrink: 0;
-  transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.2s ease;
   will-change: width;
+  cursor: ${({ $clickable }) => $clickable ? 'pointer' : 'default'};
+  position: relative;
+  
+  ${({ $clickable }) => $clickable && `
+    &:hover {
+      opacity: 0.8;
+    }
+    
+    &:focus-visible {
+      outline: 2px solid currentColor;
+      outline-offset: 2px;
+      z-index: 2;
+    }
+  `}
 `;
 
 // ============================================================================
 // AXIS CONTAINERS
 // ============================================================================
 
-export const XAxisContainer = styled.div<{ $paddingLeft?: string }>`
+export const XAxisContainer = styled.div<{
+  $paddingLeft?: string;
+  $labelSpacing?: string;
+  $labelMargin?: string;
+}>`
   display: flex;
   flex-direction: column;
-  gap: ${({ theme }) => theme.spacing[2]};
+  gap: ${({ $labelSpacing, theme }) => $labelSpacing || theme.spacing[2]};
   align-items: center;
   width: 100%;
   padding-left: ${({ $paddingLeft }) => $paddingLeft || '0'};
   padding-right: ${({ theme }) => theme.spacing[5]};
+  margin-top: ${({ $labelMargin }) => $labelMargin || '0'};
 `;
 
 export const HorizontalXAxisContainer = styled.div<{ $paddingLeft?: string }>`
@@ -280,15 +346,15 @@ export const HorizontalXAxisContainer = styled.div<{ $paddingLeft?: string }>`
   padding-left: ${({ $paddingLeft }) => $paddingLeft || '0'};
 `;
 
-export const XValuesContainer = styled.div`
+export const XValuesContainer = styled.div<{ $labelSpacing?: string }>`
   display: flex;
   justify-content: space-evenly;
   align-items: center;
   width: 100%;
-  gap: ${({ theme }) => theme.spacing[3]};
+  gap: ${({ $labelSpacing, theme }) => $labelSpacing || theme.spacing[3]};
 `;
 
-export const XValueLabel = styled.div`
+export const XValueLabel = styled.div<{ $rotation?: number }>`
   width: auto;
   min-width: ${({ theme }) => theme.spacing[8]};
   max-width: ${({ theme }) => theme.spacing[12]};
@@ -297,6 +363,8 @@ export const XValueLabel = styled.div`
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  transform: ${({ $rotation }) => $rotation ? `rotate(${$rotation}deg)` : 'none'};
+  transform-origin: center;
 `;
 
 export const HorizontalXValueLabel = styled.div<{ $flex?: boolean }>`

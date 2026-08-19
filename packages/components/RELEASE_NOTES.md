@@ -1,3 +1,36 @@
+# Release Notes - Lean IDS v1.7.8
+
+**Release Date:** August 19, 2026  
+**Package:** `@ajaysoni7832/lean-ids-components`
+
+---
+
+## 🚀 What's New in v1.7.8
+
+### ✨ Component Enhancements
+- **Checkbox** - Added `indeterminate` prop: shows minus icon and sets `aria-checked="mixed"` for "select all" table scenarios (WCAG 2.1 AA compliant)
+- **Select** - Added `onSearchInput` (immediate keystroke callback), `searchDebounceDelay`, and virtual scrolling support for large datasets (Pillar 7 performance props)
+- **Accordion** - New `headingVariant`, `headingWeight`, and `expandIconPosition` props for flexible heading customization
+- **Drawer** - Complete refactor with polymorphic `as` prop and extended content/layout API
+- **Table** - Added `TableGroupHeader` component and `types` module; refactored composition and template stories
+- **BarChart / DonutChart** - Props and styles enhancements
+- **AlertBanner, SideNavigation, Toast** - Story improvements and accessibility refinements
+
+### 🔧 Developer Experience
+- Removed redundant markdown documentation files, keeping the repository lean
+- Updated Figma token parsing script
+- Version synchronization across all packages
+
+---
+
+## 📦 Installation
+
+```bash
+npm install @ajaysoni7832/lean-ids-components@1.7.8 @ajaysoni7832/lean-ids-tokens@1.7.8
+```
+
+---
+
 # Release Notes - Lean IDS v1.7.7
 
 **Release Date:** August 3, 2026  

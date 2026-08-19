@@ -17,8 +17,8 @@
  * <Table
  *   data={myData}
  *   columns={myColumns}
- *   onRowSelect={(selectedIds) => console.log(selectedIds)}
- *   onRowAction={(action, rowId) => console.log(action, rowId)}
+ *   onRowSelect={(selectedIds) => {}}
+ *   onRowAction={(action, rowId) => {}}
  * />
  * ```
  */
@@ -31,10 +31,16 @@ import { Pagination } from '../Pagination';
 import { Button } from '../Button';
 import ErrorIcon from '@mui/icons-material/Error';
 import CloudOffIcon from '@mui/icons-material/CloudOff';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { Checkbox } from '../Checkbox';
 import { TableSettings, ColumnConfig } from '../TableSettings';
 import { TableToolbar } from './TableToolbar';
 import { Typography } from '../Typography';
+import { TableGroupHeader } from './TableGroupHeader';
+import { TableGroup, TableGroupConfig } from './types';
 
 // ============================================================================
 // TYPES
@@ -140,6 +146,10 @@ export interface TableProps extends React.HTMLAttributes<HTMLDivElement> {
   emptyStateClassName?: string;
   /** Override style for empty state */
   emptyStateStyle?: React.CSSProperties;
+  /** Grouped data - when provided, data prop is ignored */
+  groups?: TableGroup[];
+  /** Group configuration */
+  groupConfig?: TableGroupConfig;
 }
 
 // ============================================================================
@@ -219,17 +229,6 @@ const EmptyStateTextWrapper = styled.div`
   text-align: center;
 `;
 
-const ErrorContainer = styled.div`
-  display: flex;
-  align-items: center;
-  gap: ${({ theme }) => theme.spacing[2]};
-  padding: ${({ theme }) => theme.spacing[3]} ${({ theme }) => theme.spacing[4]};
-  background: ${({ theme }) => theme.colors.palette.error[50]};
-  border: ${({ theme }) => theme.borderWidth[1]} solid ${({ theme }) => theme.colors.semantic.border.error};
-  border-radius: ${({ theme }) => theme.borderRadius.md};
-  margin-bottom: ${({ theme }) => theme.spacing[4]};
-`;
-
 // Removed custom styled text components - using Typography component instead
 
 const SkeletonRow = styled.tr``;
@@ -277,6 +276,45 @@ const SkeletonBox = styled.div<{ width?: string; height?: string }>`
   }
 `;
 
+const ActionButton = styled.button`
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: ${({ theme }) => theme.colors.palette.neutral[600]};
+  cursor: pointer;
+  border-radius: ${({ theme }) => theme.borderRadius.sm};
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: ${({ theme }) => theme.colors.palette.neutral[100]};
+    color: ${({ theme }) => theme.colors.palette.primary[600]};
+  }
+
+  &:active {
+    background: ${({ theme }) => theme.colors.palette.neutral[200]};
+  }
+
+  &:focus-visible {
+    outline: ${({ theme }) => theme.borderWidth[2]} solid ${({ theme }) => theme.colors.palette.primary[400]};
+    outline-offset: 2px;
+  }
+
+  svg {
+    font-size: 20px;
+  }
+`;
+
+const ActionsContainer = styled.div`
+  display: flex;
+  align-items: center;
+  gap: ${({ theme }) => theme.spacing[2]};
+`;
+
 // ============================================================================
 // MAIN COMPONENT
 // ============================================================================
@@ -321,9 +359,28 @@ export const Table = forwardRef<HTMLDivElement, TableProps>(({  as: Component = 
   scrollContainerStyle,
   emptyStateClassName,
   emptyStateStyle,
+  groups,
+  groupConfig,
   style,
   ...restProps
 }, ref) => {
+  // ============================================================================
+  // HELPER FUNCTIONS
+  // ============================================================================
+
+  // Map icon name string to Material Icon component
+  const getIconComponent = (iconName: string) => {
+    const iconMap: { [key: string]: React.ComponentType } = {
+      'Edit': EditIcon,
+      'Delete': DeleteIcon,
+      'Visibility': VisibilityIcon,
+      'View': VisibilityIcon,
+      'MoreVert': MoreVertIcon,
+      'More': MoreVertIcon,
+    };
+    return iconMap[iconName] || MoreVertIcon;
+  };
+
   // ============================================================================
   // STATE
   // ============================================================================
@@ -336,7 +393,6 @@ export const Table = forwardRef<HTMLDivElement, TableProps>(({  as: Component = 
   // Use controlled props in server mode, internal state in client mode
   const sortColumn = sortMode === 'server' ? (controlledSortColumn || '') : internalSortColumn;
   const sortDirection = sortMode === 'server' ? (controlledSortDirection || 'none') : internalSortDirection;
-  const [allChecked, setAllChecked] = useState(false);
   const [selectedRows, setSelectedRows] = useState<string[]>([]);
   const [lastSelectedIndex, setLastSelectedIndex] = useState<number | null>(null);
   const [settingsOpen, setSettingsOpen] = useState(false);
@@ -361,7 +417,13 @@ export const Table = forwardRef<HTMLDivElement, TableProps>(({  as: Component = 
     });
     return initialWidths;
   });
-  const [globalSearch, setGlobalSearch] = useState('');
+  
+  // Group expand/collapse state
+  const [expandedGroups, setExpandedGroups] = useState<Set<string>>(() => {
+    if (!groups) return new Set();
+    // Initialize with groups that have defaultExpanded=true
+    return new Set(groups.filter(g => g.defaultExpanded !== false).map(g => g.id));
+  });
   
   // FLIP animation refs
   const rowPositionsRef = useRef<Map<string, number>>(new Map());
@@ -471,8 +533,8 @@ export const Table = forwardRef<HTMLDivElement, TableProps>(({  as: Component = 
   };
 
   const handleSelectAll = (checked: boolean) => {
-    setAllChecked(checked);
-    const newSelectedRows = checked ? data.map(row => row[rowKey]) : [];
+    // Use flatData which includes both grouped and non-grouped data
+    const newSelectedRows = checked ? flatData.map(row => row[rowKey]) : [];
     setSelectedRows(newSelectedRows);
     onRowSelect?.(newSelectedRows);
   };
@@ -486,13 +548,11 @@ export const Table = forwardRef<HTMLDivElement, TableProps>(({  as: Component = 
         const rangeIds = paginatedData.slice(start, end + 1).map(row => row[rowKey]);
         const newSelectedRows = Array.from(new Set([...selectedRows, ...rangeIds]));
         setSelectedRows(newSelectedRows);
-        setAllChecked(newSelectedRows.length === data.length);
         onRowSelect?.(newSelectedRows);
       } else {
         // Normal click: Add single row
         const newSelectedRows = [...selectedRows, id];
         setSelectedRows(newSelectedRows);
-        setAllChecked(newSelectedRows.length === data.length);
         setLastSelectedIndex(rowIndex);
         onRowSelect?.(newSelectedRows);
       }
@@ -500,7 +560,6 @@ export const Table = forwardRef<HTMLDivElement, TableProps>(({  as: Component = 
       // Uncheck: Remove row
       const newSelectedRows = selectedRows.filter(rowId => rowId !== id);
       setSelectedRows(newSelectedRows);
-      setAllChecked(false);
       setLastSelectedIndex(rowIndex);
       onRowSelect?.(newSelectedRows);
     }
@@ -515,57 +574,297 @@ export const Table = forwardRef<HTMLDivElement, TableProps>(({  as: Component = 
     setColumnWidths(prev => ({ ...prev, [columnId]: width }));
   };
 
-  // ============================================================================
-  // DATA PROCESSING
-  // ============================================================================
-
-  const processedData = useMemo(() => {
-    let result = [...data];
-
-    // Apply search filters
-    Object.entries(searchValues).forEach(([columnId, searchValue]) => {
-      if (searchValue) {
-        const column = columns.find(col => col.id === columnId);
-        if (column) {
-          result = result.filter(row => {
-            const value = column.accessor
-              ? typeof column.accessor === 'function'
-                ? column.accessor(row)
-                : row[column.accessor]
-              : row[columnId];
-            
-            return String(value).toLowerCase().includes(searchValue.toLowerCase());
-          });
-        }
+  const handleGroupToggle = (groupId: string) => {
+    setExpandedGroups(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(groupId)) {
+        newSet.delete(groupId);
+      } else {
+        newSet.add(groupId);
       }
+      return newSet;
     });
+    
+    // Call callback if provided
+    if (groupConfig?.onGroupToggle) {
+      const isExpanded = !expandedGroups.has(groupId);
+      groupConfig.onGroupToggle(groupId, isExpanded);
+    }
+  };
 
-    // Apply sorting (only for client-side mode)
-    if (sortMode === 'client' && sortColumn && sortDirection !== 'none') {
-      const column = columns.find(col => col.id === sortColumn);
+  const handleGroupSelect = (groupId: string, checked: boolean) => {
+    const group = processedGroups?.find(g => g.id === groupId);
+    if (!group) return;
+    
+    const groupRowIds = group.rows.map(row => row[rowKey]);
+    
+    if (checked) {
+      // Select all rows in group
+      setSelectedRows(prev => [...new Set([...prev, ...groupRowIds])]);
+    } else {
+      // Deselect all rows in group
+      setSelectedRows(prev => prev.filter(id => !groupRowIds.includes(id)));
+    }
+  };
+
+  // Helper to check if all rows in a group are selected
+  const isGroupSelected = (group: TableGroup) => {
+    if (group.rows.length === 0) return false;
+    const groupRowIds = group.rows.map(row => row[rowKey]);
+    return groupRowIds.every(id => selectedRows.includes(id));
+  };
+
+  // Helper function to render a single row (reused for flat and grouped rendering)
+  const renderRow = (row: any, rowIndex: number) => {
+    const rowId = row[rowKey];
+    const isSelected = selectedRows.includes(rowId);
+    
+    const handleRowClick = (e: React.MouseEvent<HTMLTableRowElement>) => {
+      if (onRowClick) {
+        onRowClick(row, rowIndex, e);
+      }
+    };
+
+    const cells = (
+      <React.Fragment>
+        {visibleColumns.map((colConfig, colIndex) => {
+          const column = columns.find(col => col.id === colConfig.id);
+          const isLocked = colConfig.locked;
+          const offset = columnOffsets[colConfig.id];
+          const isFirstCell = colIndex === 0;
+
+          // Checkbox cell
+          if (colConfig.id === 'checkbox') {
+            return (
+              <TableCell
+                key={colConfig.id}
+                selected={isSelected}
+                locked={isLocked}
+                leftOffset={offset}
+                data-locked={isLocked}
+                isFirstColumn={isFirstCell}
+                width={48}
+              >
+                <div
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleRowSelect(rowId, !isSelected, rowIndex, e.shiftKey);
+                  }}
+                  style={{ cursor: 'pointer', display: 'inline-flex' }}
+                >
+                  <Checkbox
+                    checked={isSelected}
+                    onChange={() => {}} // Controlled by wrapper click
+                  />
+                </div>
+              </TableCell>
+            );
+          }
+
+          // Actions cell
+          if (colConfig.id === 'actions') {
+            return (
+              <TableCell
+                key={colConfig.id}
+                selected={isSelected}
+                locked={isLocked}
+                leftOffset={offset}
+                data-locked={isLocked}
+                width={120}
+              >
+                <ActionsContainer>
+                  {actions.map((action, actionIndex) => {
+                    const IconComponent = getIconComponent(action.icon);
+                    return (
+                      <ActionButton
+                        key={actionIndex}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          action.onClick(row);
+                          if (onRowAction) {
+                            onRowAction(action.label, row);
+                          }
+                        }}
+                        aria-label={action.label}
+                        title={action.label}
+                      >
+                        <IconComponent />
+                      </ActionButton>
+                    );
+                  })}
+                </ActionsContainer>
+              </TableCell>
+            );
+          }
+
+          // Regular cell
+          if (!column) return null;
+
+          const value = column.accessor
+            ? typeof column.accessor === 'function'
+              ? column.accessor(row)
+              : row[column.accessor]
+            : row[column.id];
+
+          // If column has custom renderCell, render it directly
+          if (column.renderCell) {
+            return (
+              <TableCell
+                key={colConfig.id}
+                selected={isSelected}
+                locked={isLocked}
+                leftOffset={offset}
+                data-locked={isLocked}
+                isFirstColumn={isFirstCell}
+                width={columnWidths[column.id] || column.width}
+              >
+                {column.renderCell(value, row, rowIndex)}
+              </TableCell>
+            );
+          }
+
+          // Otherwise use showText prop
+          return (
+            <TableCell
+              key={colConfig.id}
+              selected={isSelected}
+              locked={isLocked}
+              leftOffset={offset}
+              data-locked={isLocked}
+              isFirstColumn={isFirstCell}
+              width={columnWidths[column.id] || column.width}
+            >
+              {String(value || '')}
+            </TableCell>
+          );
+        })}
+      </React.Fragment>
+    );
+
+    // Use animated row when sorting, regular row otherwise
+    return animateSorting ? (
+      <AnimatedTableRow 
+        key={rowId} 
+        $animationDelay={rowIndex * 30}
+        onClick={handleRowClick}
+        style={{ cursor: onRowClick ? 'pointer' : 'default' }}
+      >
+        {cells}
+      </AnimatedTableRow>
+    ) : (
+      <tr 
+        key={rowId}
+        onClick={handleRowClick}
+        style={{ cursor: onRowClick ? 'pointer' : 'default' }}
+      >
+        {cells}
+      </tr>
+    );
+  };
+
+// Helper function to sort rows
+const sortRows = (rows: any[], columnId: string, direction: 'asc' | 'desc' | 'none') => {
+  if (sortMode !== 'client' || !columnId || direction === 'none') {
+    return rows;
+  }
+
+  const column = columns.find(col => col.id === columnId);
+  if (!column) return rows;
+
+  return [...rows].sort((a, b) => {
+    const aValue = column.accessor
+      ? typeof column.accessor === 'function'
+        ? column.accessor(a)
+        : a[column.accessor]
+      : a[columnId];
+    
+    const bValue = column.accessor
+      ? typeof column.accessor === 'function'
+        ? column.accessor(b)
+        : b[column.accessor]
+      : b[columnId];
+
+    if (aValue < bValue) return direction === 'asc' ? -1 : 1;
+    if (aValue > bValue) return direction === 'asc' ? 1 : -1;
+    return 0;
+  });
+};
+
+// Helper function to filter rows
+const filterRows = (rows: any[], searchVals: { [key: string]: string }) => {
+  let result = [...rows];
+  
+  Object.entries(searchVals).forEach(([columnId, searchValue]) => {
+    if (searchValue) {
+      const column = columns.find(col => col.id === columnId);
       if (column) {
-        result.sort((a, b) => {
-          const aValue = column.accessor
+        result = result.filter(row => {
+          const value = column.accessor
             ? typeof column.accessor === 'function'
-              ? column.accessor(a)
-              : a[column.accessor]
-            : a[sortColumn];
+              ? column.accessor(row)
+              : row[column.accessor]
+            : row[columnId];
           
-          const bValue = column.accessor
-            ? typeof column.accessor === 'function'
-              ? column.accessor(b)
-              : b[column.accessor]
-            : b[sortColumn];
-
-          if (aValue < bValue) return sortDirection === 'asc' ? -1 : 1;
-          if (aValue > bValue) return sortDirection === 'asc' ? 1 : -1;
-          return 0;
+          return String(value).toLowerCase().includes(searchValue.toLowerCase());
         });
       }
     }
+  });
+  
+  return result;
+};
 
-    return result;
-  }, [data, columns, searchValues, sortColumn, sortDirection, rowKey]);
+// Process groups: filter and sort within each group
+const processedGroups = useMemo(() => {
+  if (!groups || groups.length === 0) return null;
+
+  return groups.map(group => {
+    // Apply search filters within group
+    let filteredRows = filterRows(group.rows, searchValues);
+    
+    // Apply sorting within group
+    let sortedRows = sortRows(filteredRows, sortColumn, sortDirection);
+    
+    return {
+      ...group,
+      rows: sortedRows,
+    };
+  });
+}, [groups, columns, searchValues, sortColumn, sortDirection]);
+
+// Flatten grouped data if groups are provided
+const flatData = useMemo(() => {
+  if (processedGroups) {
+    return processedGroups.flatMap(group => group.rows);
+  }
+  return data;
+}, [processedGroups, data]);
+
+// Process data: filter, sort (for non-grouped tables)
+const processedData = useMemo(() => {
+  if (processedGroups) {
+    // For grouped tables, use flattened processed groups
+    return flatData;
+  }
+
+  // For non-grouped tables, apply filters and sorting
+  let result = filterRows(data, searchValues);
+  result = sortRows(result, sortColumn, sortDirection);
+  return result;
+}, [processedGroups, flatData, data, searchValues, sortColumn, sortDirection]);
+
+  // Compute if all rows are selected
+  const allChecked = useMemo(() => {
+    if (flatData.length === 0) return false;
+    return flatData.every(row => selectedRows.includes(row[rowKey]));
+  }, [flatData, selectedRows, rowKey]);
+
+  // Compute indeterminate state (some but not all rows selected)
+  const isIndeterminate = useMemo(() => {
+    if (flatData.length === 0 || selectedRows.length === 0) return false;
+    const selectedCount = flatData.filter(row => selectedRows.includes(row[rowKey])).length;
+    return selectedCount > 0 && selectedCount < flatData.length;
+  }, [flatData, selectedRows, rowKey]);
 
   // Pagination
   const totalItems = processedData.length;
@@ -796,6 +1095,61 @@ export const Table = forwardRef<HTMLDivElement, TableProps>(({  as: Component = 
     </ScrollContainer>
   );
 
+  // Error state - show full table structure with centered error content
+  const renderErrorState = () => (
+    <ScrollContainer data-scroll-container $maxHeight={maxHeight}>
+      <StyledTable $hasMaxHeight={!!maxHeight}>
+        <thead>
+          <tr>
+            {visibleColumns.map((colConfig, index) => {
+              const column = columns.find(col => col.id === colConfig.id);
+              const side = index === 0 ? 'left' : index === visibleColumns.length - 1 ? 'right' : undefined;
+
+              return (
+                <TableHeader
+                  key={colConfig.id}
+                  label={column?.label || colConfig.id}
+                  variant="default"
+                  side={side}
+                />
+              );
+            })}
+          </tr>
+        </thead>
+      </StyledTable>
+      
+      <EmptyStateContainer 
+        role="alert"
+        aria-live="assertive"
+      >
+        <EmptyStateContent>
+          <EmptyStateIconWrapper>
+            <ErrorIcon sx={{ fontSize: 64, color: 'error.main' }} />
+          </EmptyStateIconWrapper>
+          
+          <EmptyStateTextWrapper>
+            <Typography variant="headingL" weight="semibold" as="h3" color="error">
+              {errorMessage || 'Crazy'}
+            </Typography>
+            <Typography variant="body" color="secondary">
+              There was a problem loading the table data.
+            </Typography>
+          </EmptyStateTextWrapper>
+          
+          {onEmptyAction && (
+            <Button
+              variant="primary"
+              size="medium"
+              onClick={onEmptyAction}
+            >
+              {emptyActionLabel || 'Retry'}
+            </Button>
+          )}
+        </EmptyStateContent>
+      </EmptyStateContainer>
+    </ScrollContainer>
+  );
+
   // Ensure style is an object, not a string
   const safeStyle = typeof style === 'object' ? style : undefined;
   const safeScrollContainerStyle = typeof scrollContainerStyle === 'object' ? scrollContainerStyle : undefined;
@@ -810,15 +1164,6 @@ export const Table = forwardRef<HTMLDivElement, TableProps>(({  as: Component = 
         aria-busy={loading}
         aria-invalid={isInvalid}
       >
-      {/* Error state */}
-      {isInvalid && errorMessage && (
-        <ErrorContainer role="alert" aria-live="polite">
-          <ErrorIcon sx={{ fontSize: 20 }} />
-          <Typography variant="body" color="error">
-            {errorMessage}
-          </Typography>
-        </ErrorContainer>
-      )}
       
       {/* Custom toolbar takes precedence */}
       {toolbar ? (
@@ -838,7 +1183,9 @@ export const Table = forwardRef<HTMLDivElement, TableProps>(({  as: Component = 
         />
       ) : null}
       
-      {data.length === 0 && !loading ? (
+      {isInvalid ? (
+        renderErrorState()
+      ) : flatData.length === 0 && !loading ? (
         renderEmptyState()
       ) : (
         <ScrollContainer 
@@ -902,6 +1249,7 @@ export const Table = forwardRef<HTMLDivElement, TableProps>(({  as: Component = 
                       data-locked={isLocked}
                       showCheckbox={true}
                       checked={allChecked}
+                      indeterminate={isIndeterminate}
                       onCheckChange={handleSelectAll}
                     />
                   );
@@ -981,147 +1329,41 @@ export const Table = forwardRef<HTMLDivElement, TableProps>(({  as: Component = 
                   ))}
                 </SkeletonRow>
               ))
+            ) : processedGroups && processedGroups.length > 0 ? (
+              // GROUPED RENDERING
+              processedGroups.map(group => {
+                const isExpanded = expandedGroups.has(group.id);
+                
+                return (
+                  <React.Fragment key={group.id}>
+                    {/* Group Header */}
+                    <TableGroupHeader
+                      groupName={group.groupName}
+                      groupDescription={group.groupDescription}
+                      isExpanded={isExpanded}
+                      onToggle={() => handleGroupToggle(group.id)}
+                      colSpan={visibleColumns.length}
+                      expandPosition={groupConfig?.expandPosition || 'left'}
+                      customContent={
+                        groupConfig?.renderGroupContent 
+                          ? groupConfig.renderGroupContent(group)
+                          : group.customContent
+                      }
+                      className={group.className}
+                      style={group.style}
+                      showCheckbox={selectable}
+                      isSelected={isGroupSelected(group)}
+                      onCheckboxChange={(checked) => handleGroupSelect(group.id, checked)}
+                    />
+                    
+                    {/* Group Rows (only if expanded) */}
+                    {isExpanded && group.rows.map((row, rowIndex) => renderRow(row, rowIndex))}
+                  </React.Fragment>
+                );
+              })
             ) : (
-              paginatedData.map((row, rowIndex) => {
-              const rowId = row[rowKey];
-              const isSelected = selectedRows.includes(rowId);
-              
-              const handleRowClick = (e: React.MouseEvent<HTMLTableRowElement>) => {
-                if (onRowClick) {
-                  onRowClick(row, rowIndex, e);
-                }
-              };
-
-              const cells = (
-                <React.Fragment>
-                  {visibleColumns.map((colConfig, colIndex) => {
-                    const column = columns.find(col => col.id === colConfig.id);
-                    const isLocked = colConfig.locked;
-                    const offset = columnOffsets[colConfig.id];
-                    const isFirstCell = colIndex === 0;
-
-                    // Checkbox cell
-                    if (colConfig.id === 'checkbox') {
-                      return (
-                        <TableCell
-                          key={colConfig.id}
-                          selected={isSelected}
-                          locked={isLocked}
-                          leftOffset={offset}
-                          data-locked={isLocked}
-                          isFirstColumn={isFirstCell}
-                          width={48}
-                        >
-                          <div
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleRowSelect(rowId, !isSelected, rowIndex, e.shiftKey);
-                            }}
-                            style={{ cursor: 'pointer', display: 'inline-flex' }}
-                          >
-                            <Checkbox
-                              checked={isSelected}
-                              onChange={() => {}} // Controlled by wrapper click
-                            />
-                          </div>
-                        </TableCell>
-                      );
-                    }
-
-                    // Actions cell
-                    if (colConfig.id === 'actions') {
-                      return (
-                        <TableCell
-                          key={colConfig.id}
-                          selected={isSelected}
-                          locked={isLocked}
-                          leftOffset={offset}
-                          data-locked={isLocked}
-                          width={120}
-                        >
-                          <div style={{ display: 'flex', gap: '8px' }}>
-                            {actions.map((action, actionIndex) => (
-                              <Button
-                                key={actionIndex}
-                                variant="tertiary"
-                                size="small"
-                                showLabel={false}
-                                leadingIcon={action.icon}
-                                onClick={() => action.onClick(row)}
-                                aria-label={action.label}
-                              >
-                                {action.label}
-                              </Button>
-                            ))}
-                          </div>
-                        </TableCell>
-                      );
-                    }
-
-                    // Regular cell
-                    if (!column) return null;
-
-                    const value = column.accessor
-                      ? typeof column.accessor === 'function'
-                        ? column.accessor(row)
-                        : row[column.accessor]
-                      : row[column.id];
-
-                    // If column has custom renderCell, render it directly
-                    if (column.renderCell) {
-                      return (
-                        <TableCell
-                          key={colConfig.id}
-                          selected={isSelected}
-                          locked={isLocked}
-                          leftOffset={offset}
-                          data-locked={isLocked}
-                          isFirstColumn={isFirstCell}
-                          width={columnWidths[column.id] || column.width}
-                        >
-                          {column.renderCell(value, row, rowIndex)}
-                        </TableCell>
-                      );
-                    }
-
-                    // Otherwise use showText prop
-                    return (
-                      <TableCell
-                        key={colConfig.id}
-                        selected={isSelected}
-                        locked={isLocked}
-                        leftOffset={offset}
-                        data-locked={isLocked}
-                        isFirstColumn={isFirstCell}
-                        width={columnWidths[column.id] || column.width}
-                      >
-                        {String(value || '')}
-                      </TableCell>
-                    );
-                  })}
-                </React.Fragment>
-              );
-
-              // Use animated row when sorting, regular row otherwise
-              return animateSorting ? (
-                <AnimatedTableRow 
-                  key={rowId} 
-                  $animationDelay={rowIndex * 30}
-                  onClick={handleRowClick}
-                  style={{ cursor: onRowClick ? 'pointer' : 'default' }}
-                >
-                  {cells}
-                </AnimatedTableRow>
-              ) : (
-                <tr 
-                  key={rowId}
-                  onClick={handleRowClick}
-                  style={{ cursor: onRowClick ? 'pointer' : 'default' }}
-                >
-                  {cells}
-                </tr>
-              );
-            })
+              // FLAT RENDERING
+              paginatedData.map((row, rowIndex) => renderRow(row, rowIndex))
             )}
           </tbody>
         </StyledTable>

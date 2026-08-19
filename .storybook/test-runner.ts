@@ -34,8 +34,6 @@ const config: TestRunnerConfig = {
         });
         console.error('');
       });
-    } else {
-      console.log(`✅ No accessibility violations in: ${storyName}`);
     }
   },
   

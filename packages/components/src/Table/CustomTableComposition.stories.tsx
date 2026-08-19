@@ -438,7 +438,7 @@ export const WithSortingAndSelection: Story = {
                   hoverable
                   clickable
                   selected={selectedIds.includes(employee.id)}
-                  onClick={() => console.log('Row clicked:', employee)}
+                  onClick={() => {}}
                 >
                   <TableCell>
                     <Checkbox 
@@ -552,7 +552,7 @@ function InteractiveTable() {
             hoverable
             clickable
             selected={selectedIds.includes(employee.id)}
-            onClick={() => console.log('Row clicked:', employee)}
+            onClick={() => {}}
           >
             <TableCell>
               <Checkbox 
@@ -691,7 +691,7 @@ export const FullyCustomized: Story = {
                         size="small"
                         showLabel={false}
                         leadingIcon={<Icon name="Edit" size="small" />}
-                        onClick={() => console.log('Edit:', employee)}
+                        onClick={() => {}}
                         aria-label="Edit"
                       >
                         Edit
@@ -701,7 +701,7 @@ export const FullyCustomized: Story = {
                         size="small"
                         showLabel={false}
                         leadingIcon={<Icon name="Delete" size="small" />}
-                        onClick={() => console.log('Delete:', employee)}
+                        onClick={() => {}}
                         aria-label="Delete"
                       >
                         Delete

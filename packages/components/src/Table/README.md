@@ -132,12 +132,12 @@ const AdvancedTable = () => {
     {
       icon: 'Edit',
       label: 'Edit',
-      onClick: (row) => console.log('Edit', row),
+      onClick: (row) => {},
     },
     {
       icon: 'Delete',
       label: 'Delete',
-      onClick: (row) => console.log('Delete', row),
+      onClick: (row) => {},
     },
   ];
 
@@ -151,7 +151,7 @@ const AdvancedTable = () => {
       showSettings
       showActions
       actions={actions}
-      onRowSelect={(selectedIds) => console.log('Selected:', selectedIds)}
+      onRowSelect={(selectedIds) => {}}
       rowKey="id"
     />
   );

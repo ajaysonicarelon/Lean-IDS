@@ -1,10 +1,211 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { fn } from '@storybook/test';
 import { AdvancedDataTable, getNestedColumnConfigs } from './EnhancedTableTemplate';
+import { Chip } from '../Chip';
+import { Button } from '../Button';
 
 const meta: Meta<typeof AdvancedDataTable> = {
   title: 'Components/Table/Advanced Table',
   component: AdvancedDataTable,
+  argTypes: {
+    // Polymorphism
+    as: {
+      control: 'select',
+      options: ['div', 'section', 'article', 'main'],
+      description: 'Polymorphic component type',
+      table: { category: 'Polymorphism' },
+    },
+    className: {
+      control: 'text',
+      description: 'Custom CSS class',
+      table: { category: 'Polymorphism' },
+    },
+    
+    // Data & Columns
+    initialColumns: {
+      control: false,
+      description: 'Column configuration',
+      table: { category: 'Data & Columns' },
+    },
+    data: {
+      control: false,
+      description: 'Table data rows',
+      table: { category: 'Data & Columns' },
+    },
+    rowKey: {
+      control: 'text',
+      description: 'Row key accessor',
+      table: { category: 'Data & Columns' },
+    },
+    
+    // Layout & Display
+    useSidePanel: {
+      control: 'boolean',
+      description: 'Show side panel',
+      table: { category: 'Layout & Display' },
+    },
+    useModal: {
+      control: 'boolean',
+      description: 'Show modal for settings',
+      table: { category: 'Layout & Display' },
+    },
+    showToolbar: {
+      control: 'boolean',
+      description: 'Show toolbar',
+      table: { category: 'Layout & Display' },
+    },
+    toolbarTitle: {
+      control: 'text',
+      description: 'Toolbar title',
+      table: { category: 'Layout & Display' },
+    },
+    description: {
+      control: 'text',
+      description: 'Table description',
+      table: { category: 'Layout & Display' },
+    },
+    showGlobalSearch: {
+      control: 'boolean',
+      description: 'Show global search',
+      table: { category: 'Layout & Display' },
+    },
+    showFilter: {
+      control: 'boolean',
+      description: 'Show filter button',
+      table: { category: 'Layout & Display' },
+    },
+    showDownload: {
+      control: 'boolean',
+      description: 'Show download button',
+      table: { category: 'Layout & Display' },
+    },
+    maxHeight: {
+      control: 'text',
+      description: 'Max height for table body',
+      table: { category: 'Layout & Display' },
+    },
+    showColumnSearchByDefault: {
+      control: 'boolean',
+      description: 'Show column search bars',
+      table: { category: 'Layout & Display' },
+    },
+    
+    // Selection
+    selectable: {
+      control: 'boolean',
+      description: 'Enable row selection',
+      table: { category: 'Selection' },
+    },
+    
+    // Pagination
+    paginated: {
+      control: 'boolean',
+      description: 'Enable pagination',
+      table: { category: 'Pagination' },
+    },
+    itemsPerPage: {
+      control: 'number',
+      description: 'Items per page',
+      table: { category: 'Pagination' },
+    },
+    
+    // Sorting
+    sortMode: {
+      control: 'select',
+      options: ['client', 'server'],
+      description: 'Sorting mode',
+      table: { category: 'Sorting' },
+    },
+    
+    // Column Resizing
+    defaultMinWidth: {
+      control: 'number',
+      description: 'Default min width for columns',
+      table: { category: 'Column Resizing' },
+    },
+    defaultMaxWidth: {
+      control: 'number',
+      description: 'Default max width for columns',
+      table: { category: 'Column Resizing' },
+    },
+    
+    // States
+    loading: {
+      control: 'boolean',
+      description: 'Loading state',
+      table: { category: 'States' },
+    },
+    isInvalid: {
+      control: 'boolean',
+      description: 'Error state',
+      table: { category: 'States' },
+    },
+    errorMessage: {
+      control: 'text',
+      description: 'Error message',
+      table: { category: 'States' },
+    },
+    
+    // Empty State
+    emptyTitle: {
+      control: 'text',
+      description: 'Empty state title',
+      table: { category: 'Empty State' },
+    },
+    emptyDescription: {
+      control: 'text',
+      description: 'Empty state description',
+      table: { category: 'Empty State' },
+    },
+    emptyActionLabel: {
+      control: 'text',
+      description: 'Empty action button label',
+      table: { category: 'Empty State' },
+    },
+    emptyIcon: {
+      control: 'text',
+      description: 'Empty state icon',
+      table: { category: 'Empty State' },
+    },
+    
+    // Customization
+    containerClassName: {
+      control: 'text',
+      description: 'Container class',
+      table: { category: 'Customization' },
+    },
+    scrollContainerClassName: {
+      control: 'text',
+      description: 'Scroll container class',
+      table: { category: 'Customization' },
+    },
+    emptyStateClassName: {
+      control: 'text',
+      description: 'Empty state class',
+      table: { category: 'Customization' },
+    },
+    loadingClassName: {
+      control: 'text',
+      description: 'Loading state class',
+      table: { category: 'Customization' },
+    },
+    errorClassName: {
+      control: 'text',
+      description: 'Error state class',
+      table: { category: 'Customization' },
+    },
+    
+    // Events (actions)
+    onRowClick: { action: 'row clicked', table: { category: 'Events' } },
+    onRowSelect: { action: 'rows selected', table: { category: 'Events' } },
+    onSort: { action: 'sorted', table: { category: 'Events' } },
+    onDownload: { action: 'download clicked', table: { category: 'Events' } },
+    onEmptyAction: { action: 'empty action clicked', table: { category: 'Events' } },
+    onOpen: { action: 'panel opened', table: { category: 'Events' } },
+    onClose: { action: 'panel closed', table: { category: 'Events' } },
+    onAfterOpen: { action: 'after open', table: { category: 'Events' } },
+    onAfterClose: { action: 'after close', table: { category: 'Events' } },
+  },
   parameters: {
     layout: 'padded',
     docs: {
@@ -14,27 +215,112 @@ const meta: Meta<typeof AdvancedDataTable> = {
       },
       description: {
         component: `
-Advanced table with nested columns, side panel, and column resizing. **Component Maturity: 100% Compliant**
+Advanced enterprise-grade table with **40+ props** for maximum flexibility. **Component Maturity: 100% Compliant**
 
-**Features:** Nested headers • Column resizing • Side panel • Drag-and-drop • Sorting • Filtering • Pagination • Row selection
+## ✨ Features
 
-## Quick Start
+**Core Features:**
+- 🎯 Nested headers with sub-columns
+- 📏 Column resizing with min/max constraints
+- 🎨 Side panel & modal for settings
+- 🔄 Drag-and-drop column reordering
+- 🔍 Sorting & filtering
+- 📄 Pagination
+- ✅ Row selection
+- 🎭 8 States (default, hover, focus, active, disabled, loading, empty, error)
+
+**Enterprise Features:**
+- 🔧 **forwardRef** support
+- 🎨 **Polymorphic 'as' prop** - render as any element
+- 📊 **Loading state** with customization
+- ❌ **Error state** with custom messages
+- 📭 **Empty state** with 7 customization props
+- 🎛️ **10+ override points** for styling
+- 🎨 **Typography component** integration
+- 🔔 **Lifecycle callbacks** (onOpen, onClose, onAfterOpen, onAfterClose)
+- 🛠️ **Custom toolbar** support
+- 📦 **40+ props** for complete control
+
+## 🚀 Quick Start
 
 \`\`\`tsx
 import { AdvancedDataTable, getNestedColumnConfigs } from '@ajaysoni7832/lean-ids-components';
 
+// Basic usage
 <AdvancedDataTable
   initialColumns={getNestedColumnConfigs()}
   useSidePanel={true}
   showToolbar={true}
   toolbarTitle="My Table"
 />
+
+// With states
+<AdvancedDataTable
+  initialColumns={getNestedColumnConfigs()}
+  loading={isLoading}
+  isInvalid={hasError}
+  errorMessage="Failed to load"
+/>
+
+// Full customization
+<AdvancedDataTable
+  as="section"
+  ref={tableRef}
+  initialColumns={getNestedColumnConfigs()}
+  selectable={true}
+  paginated={true}
+  itemsPerPage={20}
+  onRowSelect={(ids) => {}}
+  containerClassName="custom-table"
+/>
 \`\`\`
 
-See stories below for detailed examples.
+## 📚 Props Overview
+
+| Category | Props |
+|----------|-------|
+| **Polymorphism** | \`as\`, \`ref\` (forwardRef) |
+| **Data** | \`initialColumns\`, \`data\`, \`rowKey\` |
+| **Layout** | \`useSidePanel\`, \`useModal\`, \`showToolbar\`, \`toolbar\`, \`maxHeight\` |
+| **Toolbar** | \`toolbarTitle\`, \`description\`, \`showGlobalSearch\`, \`showFilter\`, \`showDownload\` |
+| **Selection** | \`selectable\`, \`onRowSelect\` |
+| **Pagination** | \`paginated\`, \`itemsPerPage\` |
+| **Sorting** | \`sortMode\`, \`onSort\`, \`sortColumn\`, \`sortDirection\` |
+| **Resizing** | \`defaultMinWidth\`, \`defaultMaxWidth\` |
+| **Events** | \`onRowClick\`, \`onOpen\`, \`onClose\`, \`onAfterOpen\`, \`onAfterClose\` |
+| **States** | \`loading\`, \`isInvalid\`, \`errorMessage\` |
+| **Empty State** | \`emptyTitle\`, \`emptyDescription\`, \`emptyActionLabel\`, \`onEmptyAction\` |
+| **Customization** | 10+ className/style override props |
+
+See stories below for detailed examples of each feature.
         `,
       },
     },
+  },
+  args: {
+    // Default args for all stories
+    initialColumns: getNestedColumnConfigs(),
+    useSidePanel: false,
+    useModal: false,
+    showToolbar: true,
+    toolbarTitle: 'Data Table',
+    showGlobalSearch: true,
+    showFilter: false,
+    showDownload: false,
+    showColumnSearchByDefault: false,
+    selectable: false,
+    paginated: true,
+    itemsPerPage: 10,
+    sortMode: 'client',
+    defaultMinWidth: 50,
+    defaultMaxWidth: 250,
+    loading: false,
+    isInvalid: false,
+    errorMessage: '',
+    emptyTitle: 'No Results Found',
+    emptyDescription: 'Try adjusting your search criteria or filters',
+    emptyActionLabel: '',
+    rowKey: 'id',
   },
   tags: ['autodocs'],
 };
@@ -441,7 +727,7 @@ const columns = [
  *   showToolbar={true}
  *   toolbarTitle="Table with Filters"
  *   columnFilters={filters}
- *   onFiltersChange={(filters) => console.log('Filters:', filters)}
+ *   onFiltersChange={(filters) => {}}
  * />
  * ```
  * 
@@ -505,7 +791,7 @@ const filters = [
   showToolbar={true}
   toolbarTitle="Table with Filters"
   columnFilters={filters}
-  onFiltersChange={(filters) => console.log('Filters:', filters)}
+  onFiltersChange={(filters) => {}}
 />`,
       },
       story: {
@@ -706,6 +992,633 @@ export const WithUnsavedChangesProtection: Story = {
       story: {
         inline: false,
         iframeHeight: 600,
+      },
+    },
+  },
+};
+
+/**
+ * ## Loading State
+ * 
+ * Display a loading state while data is being fetched.
+ * 
+ * **Usage:**
+ * ```tsx
+ * <AdvancedDataTable
+ *   initialColumns={getNestedColumnConfigs()}
+ *   loading={true}
+ *   loadingClassName="custom-loading"
+ *   loadingStyle={{ backgroundColor: '#f5f5f5' }}
+ * />
+ * ```
+ */
+export const LoadingState: Story = {
+  args: {
+    initialColumns: getNestedColumnConfigs(),
+    loading: true,
+    showToolbar: true,
+    toolbarTitle: 'Loading Data',
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Shows a loading state with Typography component. Customize with `loadingClassName` and `loadingStyle` props.',
+      },
+    },
+  },
+};
+
+/**
+ * ## Error State
+ * 
+ * Display an error state when data fails to load.
+ * 
+ * **Usage:**
+ * ```tsx
+ * <AdvancedDataTable
+ *   initialColumns={getNestedColumnConfigs()}
+ *   isInvalid={true}
+ *   errorMessage="Failed to load data. Please try again."
+ *   errorClassName="custom-error"
+ *   errorStyle={{ color: 'red' }}
+ * />
+ * ```
+ */
+export const ErrorState: Story = {
+  args: {
+    initialColumns: getNestedColumnConfigs(),
+    isInvalid: true,
+    errorMessage: 'Failed to load data.',
+    showToolbar: true,
+    toolbarTitle: 'Error Loading Data',
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Shows an error state with custom error message using Typography component. Customize with `errorClassName` and `errorStyle` props.',
+      },
+    },
+  },
+};
+
+/**
+ * ## Empty State
+ * 
+ * Display a custom empty state when no data is available.
+ * 
+ * **Usage:**
+ * ```tsx
+ * <AdvancedDataTable
+ *   initialColumns={getNestedColumnConfigs()}
+ *   data={[]}
+ *   emptyTitle="No Claims Found"
+ *   emptyDescription="Try adjusting your search criteria or filters"
+ *   emptyActionLabel="Clear Filters"
+ *   onEmptyAction={() => {}}
+ *   emptyStateClassName="custom-empty"
+ *   emptyStateStyle={{ padding: '60px' }}
+ * />
+ * ```
+ */
+export const EmptyState: Story = {
+  args: {
+    initialColumns: getNestedColumnConfigs(),
+    data: [],
+    emptyTitle: 'No Claims Found',
+    emptyDescription: 'Try adjusting your search criteria or filters',
+    emptyActionLabel: 'Clear Filters',
+    onEmptyAction: fn(),
+    showToolbar: true,
+    toolbarTitle: 'Empty State Demo',
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Shows a custom empty state with title, description, and action button. All text uses Typography component. Customize with `emptyStateClassName` and `emptyStateStyle` props.',
+      },
+    },
+  },
+};
+
+/**
+ * ## With Selection
+ * 
+ * Enable row selection with callback.
+ * 
+ * **Usage:**
+ * ```tsx
+ * <AdvancedDataTable
+ *   initialColumns={getNestedColumnConfigs()}
+ *   selectable={true}
+ *   onRowSelect={(selectedIds) => {}}
+ * />
+ * ```
+ */
+export const WithSelection: Story = {
+  args: {
+    initialColumns: getNestedColumnConfigs(),
+    selectable: true,
+    onRowSelect: fn(),
+    showToolbar: true,
+    toolbarTitle: 'Selectable Table',
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Enable row selection with checkboxes. Use `onRowSelect` callback to handle selection changes.',
+      },
+    },
+  },
+};
+
+/**
+ * ## Custom Pagination
+ * 
+ * Control pagination settings.
+ * 
+ * **Usage:**
+ * ```tsx
+ * <AdvancedDataTable
+ *   initialColumns={getNestedColumnConfigs()}
+ *   paginated={true}
+ *   itemsPerPage={25}
+ * />
+ * ```
+ */
+export const CustomPagination: Story = {
+  args: {
+    initialColumns: getNestedColumnConfigs(),
+    paginated: true,
+    itemsPerPage: 5,
+    showToolbar: true,
+    toolbarTitle: 'Custom Pagination (5 per page)',
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Customize pagination with `itemsPerPage` prop. This example shows 5 items per page.',
+      },
+    },
+  },
+};
+
+/**
+ * ## Polymorphic Rendering
+ * 
+ * Render as any HTML element using the `as` prop.
+ * 
+ * **Usage:**
+ * ```tsx
+ * const tableRef = useRef<HTMLDivElement>(null);
+ * 
+ * <AdvancedDataTable
+ *   as="section"
+ *   ref={tableRef}
+ *   className="my-table-section"
+ *   initialColumns={getNestedColumnConfigs()}
+ * />
+ * ```
+ */
+export const PolymorphicRendering: Story = {
+  args: {
+    as: 'section',
+    initialColumns: getNestedColumnConfigs(),
+    className: 'enterprise-table-section',
+    showToolbar: true,
+    toolbarTitle: 'Rendered as <section>',
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Use the `as` prop to render as any HTML element. This example renders as a `<section>` element. Supports forwardRef for accessing the DOM element.',
+      },
+    },
+  },
+};
+
+/**
+ * ## Custom Toolbar
+ * 
+ * Replace the default toolbar with custom content.
+ * 
+ * **Usage:**
+ * ```tsx
+ * <AdvancedDataTable
+ *   initialColumns={getNestedColumnConfigs()}
+ *   toolbar={
+ *     <div style={{ padding: '16px', background: '#f5f5f5' }}>
+ *       <Typography variant="headingM">Custom Toolbar</Typography>
+ *       <Button>Export</Button>
+ *       <Button>Import</Button>
+ *     </div>
+ *   }
+ * />
+ * ```
+ */
+export const CustomToolbar: Story = {
+  args: {
+    initialColumns: getNestedColumnConfigs(),
+    toolbar: (
+      <div style={{ padding: '16px', background: '#f5f5f5', borderBottom: '1px solid #ddd' }}>
+        <h3 style={{ margin: 0, fontSize: '18px', fontWeight: 600 }}>Custom Toolbar Content</h3>
+        <p style={{ margin: '8px 0 0', fontSize: '14px', color: '#666' }}>
+          You can pass any React component as the toolbar prop
+        </p>
+      </div>
+    ),
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Replace the default toolbar with custom content using the `toolbar` prop. Pass any React component.',
+      },
+    },
+  },
+};
+
+/**
+ * ## Toolbar Customization
+ * 
+ * Customize the default toolbar with various options.
+ * 
+ * **Usage:**
+ * ```tsx
+ * <AdvancedDataTable
+ *   initialColumns={getNestedColumnConfigs()}
+ *   showToolbar={true}
+ *   toolbarTitle="Claims Management"
+ *   description="View and manage all claims"
+ *   showGlobalSearch={true}
+ *   showFilter={true}
+ *   showDownload={true}
+ *   onDownload={() => {}}
+ * />
+ * ```
+ */
+export const ToolbarCustomization: Story = {
+  args: {
+    initialColumns: getNestedColumnConfigs(),
+    showToolbar: true,
+    toolbarTitle: 'Claims Management',
+    description: 'View and manage all claims in the system',
+    showGlobalSearch: true,
+    showFilter: true,
+    showDownload: true,
+    onDownload: fn(),
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Customize the default toolbar with title, description, and toggle various features like global search, filter, and download buttons.',
+      },
+    },
+  },
+};
+
+/**
+ * ## Full Customization
+ * 
+ * Demonstrates all customization options together.
+ * 
+ * **Usage:**
+ * ```tsx
+ * <AdvancedDataTable
+ *   as="section"
+ *   className="enterprise-table"
+ *   initialColumns={getNestedColumnConfigs()}
+ *   
+ *   // Layout
+ *   showToolbar={true}
+ *   toolbarTitle="Enterprise Table"
+ *   description="Full customization example"
+ *   maxHeight="500px"
+ *   
+ *   // Selection
+ *   selectable={true}
+ *   onRowSelect={(ids) => {}}
+ *   
+ *   // Pagination
+ *   paginated={true}
+ *   itemsPerPage={10}
+ *   
+ *   // Customization
+ *   containerClassName="custom-container"
+ *   scrollContainerClassName="custom-scroll"
+ *   emptyStateClassName="custom-empty"
+ * />
+ * ```
+ */
+export const FullCustomization: Story = {
+  args: {
+    as: 'section',
+    className: 'enterprise-table',
+    initialColumns: getNestedColumnConfigs(),
+    
+    // Layout
+    showToolbar: true,
+    toolbarTitle: 'Enterprise Table',
+    description: 'Demonstrating all customization options',
+    showGlobalSearch: true,
+    showFilter: true,
+    showDownload: true,
+    onDownload: fn(),
+    maxHeight: '500px',
+    
+    // Selection
+    selectable: true,
+    onRowSelect: fn(),
+    
+    // Pagination
+    paginated: true,
+    itemsPerPage: 10,
+    
+    // Events
+    onRowClick: fn(),
+    onOpen: fn(),
+    onClose: fn(),
+    
+    // Customization
+    containerClassName: 'custom-container',
+    scrollContainerClassName: 'custom-scroll',
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Complete example showing all customization options: polymorphic rendering, selection, pagination, toolbar customization, event callbacks, and style overrides.',
+      },
+    },
+  },
+};
+
+/**
+ * ## Table with Row Grouping
+ * 
+ * Group table rows into collapsible sections with custom headers.
+ * 
+ * **Features:**
+ * - ✅ Expand/collapse groups
+ * - ✅ Sorting within each group
+ * - ✅ Group-level selection (checkbox in header)
+ * - ✅ Custom content (chips, buttons, etc.)
+ * - ✅ Works with all table features
+ * 
+ * **Usage:**
+ * ```tsx
+ * const groups = [
+ *   {
+ *     id: 'active',
+ *     groupName: 'Active Claims',
+ *     groupDescription: 'Currently processing',
+ *     defaultExpanded: true,
+ *     rows: [...],
+ *     customContent: <Chip label="5 items" />
+ *   }
+ * ];
+ * 
+ * <AdvancedDataTable
+ *   groups={groups}
+ *   initialColumns={columns}
+ *   selectable
+ *   groupConfig={{
+ *     expandPosition: 'left',
+ *     onGroupToggle: (id, expanded) => {}
+ *   }}
+ * />
+ * ```
+ */
+export const WithGrouping: Story = {
+  args: {
+    groups: [
+      {
+        id: 'high-priority',
+        groupName: 'High Priority Claims',
+        groupDescription: 'Urgent claims requiring immediate attention',
+        defaultExpanded: true,
+        rows: [
+          { 
+            id: '1001', 
+            claimId: 'CLM-1001', 
+            firstName: 'Sarah', 
+            lastName: 'Johnson', 
+            userDetails: 'Senior Analyst',
+            nrCodes: 'NR-H001',
+            paidAmount: '$15,200',
+            acrLoadDates: 'March 10, 2025',
+            contact: '(555) 100-1001',
+            amount: '$15,200',
+            avatar: 'https://i.pravatar.cc/32?img=1',
+            city: 'New York',
+            state: 'NY',
+            status: 'Pending',
+            priority: 'High'
+          },
+          { 
+            id: '1002', 
+            claimId: 'CLM-1002', 
+            firstName: 'Michael', 
+            lastName: 'Chen', 
+            userDetails: 'Lead Processor',
+            nrCodes: 'NR-H002',
+            paidAmount: '$22,500',
+            acrLoadDates: 'March 12, 2025',
+            contact: '(555) 100-1002',
+            amount: '$22,500',
+            avatar: 'https://i.pravatar.cc/32?img=2',
+            city: 'Los Angeles',
+            state: 'CA',
+            status: 'Approved',
+            priority: 'High'
+          },
+          { 
+            id: '1003', 
+            claimId: 'CLM-1003', 
+            firstName: 'Emily', 
+            lastName: 'Rodriguez', 
+            userDetails: 'Manager',
+            nrCodes: 'NR-H003',
+            paidAmount: '$18,900',
+            acrLoadDates: 'March 14, 2025',
+            contact: '(555) 100-1003',
+            amount: '$18,900',
+            avatar: 'https://i.pravatar.cc/32?img=3',
+            city: 'Chicago',
+            state: 'IL',
+            status: 'Pending',
+            priority: 'High'
+          },
+        ],
+        customContent: (
+          <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+            <Chip label="3 claims" size="small" />
+            <Chip label="Urgent" size="small" />
+            <Button variant="tertiary" size="small">Process All</Button>
+          </div>
+        ),
+      },
+      {
+        id: 'medium-priority',
+        groupName: 'Medium Priority Claims',
+        groupDescription: 'Standard processing timeline',
+        defaultExpanded: true,
+        rows: [
+          { 
+            id: '2001', 
+            claimId: 'CLM-2001', 
+            firstName: 'David', 
+            lastName: 'Thompson', 
+            userDetails: 'Associate',
+            nrCodes: 'NR-M001',
+            paidAmount: '$8,400',
+            acrLoadDates: 'March 16, 2025',
+            contact: '(555) 200-2001',
+            amount: '$8,400',
+            avatar: 'https://i.pravatar.cc/32?img=4',
+            city: 'Houston',
+            state: 'TX',
+            status: 'Approved',
+            priority: 'Medium'
+          },
+          { 
+            id: '2002', 
+            claimId: 'CLM-2002', 
+            firstName: 'Jessica', 
+            lastName: 'Martinez', 
+            userDetails: 'Specialist',
+            nrCodes: 'NR-M002',
+            paidAmount: '$12,100',
+            acrLoadDates: 'March 18, 2025',
+            contact: '(555) 200-2002',
+            amount: '$12,100',
+            avatar: 'https://i.pravatar.cc/32?img=5',
+            city: 'Phoenix',
+            state: 'AZ',
+            status: 'Pending',
+            priority: 'Medium'
+          },
+        ],
+        customContent: (
+          <Chip label="2 claims" size="small" />
+        ),
+      },
+      {
+        id: 'completed',
+        groupName: 'Completed Claims',
+        groupDescription: 'Successfully processed and closed',
+        defaultExpanded: false,
+        rows: [
+          { 
+            id: '3001', 
+            claimId: 'CLM-3001', 
+            firstName: 'Robert', 
+            lastName: 'Wilson', 
+            userDetails: 'Senior Associate',
+            nrCodes: 'NR-C001',
+            paidAmount: '$9,750',
+            acrLoadDates: 'March 5, 2025',
+            contact: '(555) 300-3001',
+            amount: '$9,750',
+            avatar: 'https://i.pravatar.cc/32?img=6',
+            city: 'Philadelphia',
+            state: 'PA',
+            status: 'Approved',
+            priority: 'Low'
+          },
+          { 
+            id: '3002', 
+            claimId: 'CLM-3002', 
+            firstName: 'Amanda', 
+            lastName: 'Taylor', 
+            userDetails: 'Analyst',
+            nrCodes: 'NR-C002',
+            paidAmount: '$6,800',
+            acrLoadDates: 'March 7, 2025',
+            contact: '(555) 300-3002',
+            amount: '$6,800',
+            avatar: 'https://i.pravatar.cc/32?img=7',
+            city: 'San Antonio',
+            state: 'TX',
+            status: 'Approved',
+            priority: 'Low'
+          },
+          { 
+            id: '3003', 
+            claimId: 'CLM-3003', 
+            firstName: 'Christopher', 
+            lastName: 'Anderson', 
+            userDetails: 'Lead',
+            nrCodes: 'NR-C003',
+            paidAmount: '$14,300',
+            acrLoadDates: 'March 8, 2025',
+            contact: '(555) 300-3003',
+            amount: '$14,300',
+            avatar: 'https://i.pravatar.cc/32?img=8',
+            city: 'San Diego',
+            state: 'CA',
+            status: 'Approved',
+            priority: 'Low'
+          },
+          { 
+            id: '3004', 
+            claimId: 'CLM-3004', 
+            firstName: 'Jennifer', 
+            lastName: 'White', 
+            userDetails: 'Supervisor',
+            nrCodes: 'NR-C004',
+            paidAmount: '$11,200',
+            acrLoadDates: 'March 9, 2025',
+            contact: '(555) 300-3004',
+            amount: '$11,200',
+            avatar: 'https://i.pravatar.cc/32?img=9',
+            city: 'Dallas',
+            state: 'TX',
+            status: 'Approved',
+            priority: 'Low'
+          },
+        ],
+        customContent: (
+          <Chip label="4 claims" size="small" />
+        ),
+      },
+    ],
+    groupConfig: {
+      expandPosition: 'left',
+      onGroupToggle: fn(),
+    },
+    initialColumns: [
+      { id: 'checkbox', label: 'Select', visible: true, locked: true, order: 0, width: 48 },
+      { id: 'claimId', label: 'Claim ID', visible: true, locked: false, order: 1, width: 120 },
+      { id: 'firstName', label: 'First Name', visible: true, locked: false, order: 2, width: 150 },
+      { id: 'lastName', label: 'Last Name', visible: true, locked: false, order: 3, width: 150 },
+      { id: 'userDetails', label: 'Role', visible: true, locked: false, order: 4, width: 180 },
+      { id: 'paidAmount', label: 'Amount', visible: true, locked: false, order: 5, width: 120 },
+      { id: 'status', label: 'Status', visible: true, locked: false, order: 6, width: 100 },
+      { id: 'priority', label: 'Priority', visible: true, locked: false, order: 7, width: 100 },
+    ],
+    showToolbar: true,
+    toolbarTitle: 'Claims Management',
+    description: 'Grouped by priority level',
+    selectable: true,
+    paginated: false,
+    showGlobalSearch: true,
+    showFilter: true,
+    onRowSelect: fn(),
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: `
+Advanced Table with row grouping feature. Groups can be expanded/collapsed, and support:
+- **Sorting within groups** - Click column headers to sort rows within each group independently
+- **Group-level selection** - Checkbox in group header selects all rows in that group
+- **Custom content** - Add chips, buttons, or any components to group headers
+- **All table features** - Works seamlessly with selection, filtering, sorting, etc.
+
+**Try it:**
+1. Click column headers to sort within groups
+2. Click group checkboxes to select all rows in a group
+3. Expand/collapse groups with the arrow button
+4. Use global search to filter across all groups
+        `,
       },
     },
   },

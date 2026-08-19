@@ -359,12 +359,12 @@ export type TypographyKey = keyof typeof typography;
 const carelonPath = path.join(__dirname, '../../../Carelon.tokens.json');
 const elevancePath = path.join(__dirname, '../../../Elevance.tokens.json');
 
-console.log('📖 Parsing Figma token files...');
+
 
 const carelonTokens = parseTokenFile(carelonPath);
 const elevanceTokens = parseTokenFile(elevancePath);
 
-console.log('✅ Tokens parsed successfully!');
+
 
 // Generate TypeScript files
 const srcDir = path.join(__dirname, '../src');
@@ -372,16 +372,11 @@ const srcDir = path.join(__dirname, '../src');
 // Generate colors.ts
 const colorsContent = generateColorFile(carelonTokens.colors, elevanceTokens.colors);
 fs.writeFileSync(path.join(srcDir, 'colors.ts'), colorsContent);
-console.log('✅ Generated colors.ts');
 
 // Generate spacing.ts
 const spacingContent = generateSpacingFile(carelonTokens.spacing);
 fs.writeFileSync(path.join(srcDir, 'spacing.ts'), spacingContent);
-console.log('✅ Generated spacing.ts');
 
 // Generate typography.ts
 const typographyContent = generateTypographyFile(carelonTokens.typography);
 fs.writeFileSync(path.join(srcDir, 'typography.ts'), typographyContent);
-console.log('✅ Generated typography.ts');
-
-console.log('\n🎉 All token files generated successfully!');

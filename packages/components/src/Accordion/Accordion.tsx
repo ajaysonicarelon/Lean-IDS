@@ -55,7 +55,7 @@ import {
  *   description="Optional description"
  *   leadIcon={<CheckCircleOutlined />}
  *   isLoading={loading}
- *   onExpandChange={(expanded) => console.log(expanded)}
+ *   onExpandChange={(expanded) => {}}
  * >
  *   Content goes here
  * </Accordion>
@@ -69,12 +69,15 @@ export const Accordion = forwardRef<HTMLDivElement, AccordionProps>(
       
       // Content
       heading = 'Accordion Heading',
+      headingVariant = 'headingM',
+      headingWeight = 'semibold',
       description,
       children,
       
       // Icons & Metadata
       leadIcon,
       showLeadIcon = true,
+      expandIconPosition = 'right',
       labelsAndMetadata,
       
       // Footer
@@ -223,6 +226,13 @@ export const Accordion = forwardRef<HTMLDivElement, AccordionProps>(
           id={headerId}
         >
           <HeaderTopRow>
+            {/* Expand/Collapse Icon - Left Position */}
+            {expandIconPosition === 'left' && (
+              <ExpandIconWrapper $isExpanded={isExpanded} aria-hidden="true">
+                <ExpandMore />
+              </ExpandIconWrapper>
+            )}
+            
             <HeaderLeftContent>
               {/* Icon and Heading */}
               <IconAndHeading>
@@ -230,8 +240,8 @@ export const Accordion = forwardRef<HTMLDivElement, AccordionProps>(
                   <LeadIconWrapper aria-hidden="true">{leadIcon}</LeadIconWrapper>
                 )}
                 <Typography 
-                  variant="headingM" 
-                  weight="semibold" 
+                  variant={headingVariant}
+                  weight={headingWeight}
                   as="span"
                   style={{ whiteSpace: 'nowrap' }}
                 >
@@ -247,10 +257,12 @@ export const Accordion = forwardRef<HTMLDivElement, AccordionProps>(
               )}
             </HeaderLeftContent>
             
-            {/* Expand/Collapse Icon */}
-            <ExpandIconWrapper $isExpanded={isExpanded} aria-hidden="true">
-              <ExpandMore />
-            </ExpandIconWrapper>
+            {/* Expand/Collapse Icon - Right Position */}
+            {expandIconPosition === 'right' && (
+              <ExpandIconWrapper $isExpanded={isExpanded} aria-hidden="true">
+                <ExpandMore />
+              </ExpandIconWrapper>
+            )}
           </HeaderTopRow>
           
           {/* Description */}

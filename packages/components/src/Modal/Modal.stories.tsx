@@ -43,7 +43,7 @@ function MyComponent() {
         onClose={() => setIsOpen(false)}
         title="Your Title"
         description="Optional description"
-        onSubmit={() => console.log('Submit')}
+        onSubmit={() => {}}
       >
         {/* Your modal content */}
       </Modal>
@@ -170,8 +170,8 @@ export const Default: Story = {
           onClose={() => setIsOpen(false)}
           title="Popup Example"
           description="This is a modal popup with header, body, and footer sections."
-          onSubmit={() => console.log('Submit clicked')}
-          onReset={() => console.log('Reset clicked')}
+          onSubmit={() => {}}
+          onReset={() => {}}
         >
           <div style={{ padding: '20px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
             <Typography variant="headingM" weight="semibold">Modal Body Content</Typography>
@@ -207,7 +207,7 @@ export const WithForm: Story = {
           title="Edit Profile"
           description="Update your profile information"
           submitLabel="Save Changes"
-          onSubmit={() => console.log('Form submitted')}
+          onSubmit={() => {}}
         >
           <div style={{ padding: '20px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
             <InputField
@@ -254,7 +254,7 @@ export const NoReset: Story = {
           showReset={false}
           cancelLabel="No, Cancel"
           submitLabel="Yes, Proceed"
-          onSubmit={() => console.log('Confirmed')}
+          onSubmit={() => {}}
         >
           <div style={{ padding: '20px' }}>
             <Typography variant="body">This action cannot be undone. Please confirm that you want to continue.</Typography>
@@ -284,7 +284,7 @@ export const WarningAction: Story = {
           showReset={false}
           submitLabel="Delete"
           submitType="alert"
-          onSubmit={() => console.log('Deleted')}
+          onSubmit={() => {}}
         >
           <div style={{ padding: '20px' }}>
             <Typography variant="body">Are you sure you want to delete this item? This action cannot be undone.</Typography>
@@ -637,7 +637,6 @@ export const RenderPropsFooter: Story = {
                     variant="primary"
                     size="medium"
                     onClick={() => {
-                      console.log('Wizard completed');
                       onClose();
                       setStep(1);
                     }}
@@ -672,13 +671,6 @@ export const WithRef: Story = {
     const handleOpen = () => {
       setIsOpen(true);
       setTimeout(() => {
-        if (modalRef.current) {
-          console.log('Modal DOM node:', modalRef.current);
-          console.log('Modal dimensions:', {
-            width: modalRef.current.offsetWidth,
-            height: modalRef.current.offsetHeight,
-          });
-        }
       }, 100);
     };
 

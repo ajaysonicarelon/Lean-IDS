@@ -119,12 +119,97 @@ export interface SelectProps extends Omit<HTMLAttributes<HTMLDivElement>, 'onCha
   /** Callback fired after dropdown close animation completes */
   onAfterClose?: () => void;
   
-  /** Callback fired when search query changes */
+  /** Callback fired when search query changes (debounced) */
   onSearchChange?: (query: string) => void;
+  
+  /**
+   * Callback fired on every keystroke (immediate, not debounced)
+   * Use this for real-time UI updates
+   */
+  onSearchInput?: (query: string) => void;
   
   /** Callback fired on Enter key press */
   onEnter?: (event: React.KeyboardEvent) => void;
   
   /** Callback fired on Escape key press */
   onEscape?: (event: React.KeyboardEvent) => void;
+  
+  // ============================================================================
+  // PERFORMANCE PROPS (Pillar 7)
+  // ============================================================================
+  
+  /**
+   * Debounce delay for search input (ms)
+   * Reduces API calls and re-renders
+   * @default 300
+   */
+  searchDebounceDelay?: number;
+  
+  /**
+   * Enable virtual scrolling for large datasets
+   * Recommended for 100+ options
+   * Requires react-window to be installed
+   * @default false
+   */
+  enableVirtualization?: boolean;
+  
+  /**
+   * Height of each item in pixels (required for virtualization)
+   * @default 40
+   */
+  itemHeight?: number;
+  
+  /**
+   * Maximum items to render without virtualization warning
+   * Shows console warning if exceeded and virtualization disabled
+   * @default 100
+   */
+  maxItemsBeforeWarning?: number;
+  
+  /**
+   * Disable performance warnings in development
+   * @default false
+   */
+  disablePerformanceWarnings?: boolean;
+  
+  // ============================================================================
+  // CHIPS DISPLAY (Multi-Select Enhancement)
+  // ============================================================================
+  
+  /**
+   * Show selected items as chips (multi-select only)
+   * @default false
+   */
+  showChips?: boolean;
+  
+  /**
+   * Position of chips
+   * 'inline' - Inside input field with smart overflow (shows "+N More")
+   * 'below' - Below input field (all chips visible, wrapping)
+   * @default 'below'
+   */
+  chipsPosition?: 'inline' | 'below';
+  
+  /**
+   * Maximum visible chips in inline mode before showing "+N More"
+   * Set to 0 for auto-calculation based on available width
+   * @default 0 (auto)
+   */
+  maxInlineChips?: number;
+  
+  /**
+   * Custom className for chips container
+   */
+  chipsClassName?: string;
+  
+  /**
+   * Callback when chip is removed
+   */
+  onChipRemove?: (value: string) => void;
+  
+  /**
+   * Callback when "+N More" chip is clicked in inline mode
+   * Can be used to show a modal/popover with all selections
+   */
+  onMoreChipsClick?: () => void;
 }

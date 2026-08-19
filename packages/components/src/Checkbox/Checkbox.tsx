@@ -6,6 +6,7 @@
  * Features:
  * - ✅ forwardRef + polymorphic 'as' prop
  * - ✅ All 8 states (default, hover, focus, active, disabled, loading, empty, error)
+ * - ✅ Indeterminate state for "select all" scenarios
  * - ✅ Typography component (NO custom styled text)
  * - ✅ Design tokens (NO hardcoded values)
  * - ✅ Multiple className overrides
@@ -15,10 +16,19 @@
  * 
  * @example
  * ```tsx
+ * // Basic checkbox
  * <Checkbox
  *   label="Accept terms"
  *   checked={accepted}
  *   onChange={handleChange}
+ * />
+ * 
+ * // Indeterminate state (for "select all" in tables)
+ * <Checkbox
+ *   label="Select all"
+ *   checked={allSelected}
+ *   indeterminate={someSelected && !allSelected}
+ *   onChange={handleSelectAll}
  * />
  * ```
  */
@@ -48,6 +58,19 @@ const CheckIcon = () => (
   </svg>
 );
 
+// Minus icon SVG (for indeterminate state)
+const MinusIcon = () => (
+  <svg viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path
+      d="M2 6H10"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
+
 // Info icon SVG
 const InfoIcon = () => (
   <svg viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
@@ -62,6 +85,7 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
       label,
       size = 'default',
       checked = false,
+      indeterminate = false,
       disabled = false,
       isLoading = false,
       isEmpty = false,
@@ -175,6 +199,12 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
           : customIcon;
       }
       
+      // Show minus icon for indeterminate state
+      if (indeterminate) {
+        return <MinusIcon />;
+      }
+      
+      // Show check icon for checked state
       return checked && <CheckIcon />;
     };
 
@@ -296,7 +326,7 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
             onKeyDown={onKeyDown}
             name={name}
             value={value}
-            aria-checked={checked}
+            aria-checked={indeterminate ? 'mixed' : checked}
             aria-invalid={isInvalid}
             aria-disabled={disabled}
             $size={size}
@@ -306,7 +336,7 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
           
           <StyledCheckbox
             $size={size}
-            $checked={checked}
+            $checked={checked || indeterminate}
             $disabled={disabled}
             $isInvalid={isInvalid}
             onClick={handleCheckboxClick}

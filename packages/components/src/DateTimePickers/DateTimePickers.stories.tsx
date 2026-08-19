@@ -284,12 +284,7 @@ const [dateRange, setDateRange] = useState<DateRange>({ start: null, end: null }
     });
 
     const handleSubmit = () => {
-      console.log('Form submitted:', {
-        time,
-        dateTime,
-        dateRange,
-      });
-      alert('Check console for submitted values');
+      alert('Form submitted');
     };
 
     const handleReset = () => {
@@ -396,7 +391,6 @@ export const TimeInput: StoryObj<typeof TimePickerInput> = {
           value={time}
           onChange={(newTime) => {
             setTime(newTime);
-            console.log('Time selected:', newTime);
           }}
           placeholder="hh:mm AM/PM"
           helperText="Click to open time picker"
@@ -426,7 +420,6 @@ export const DateTimeInput: StoryObj<typeof DateTimePickerInput> = {
           value={dateTime}
           onChange={(newDate) => {
             setDateTime(newDate);
-            console.log('DateTime selected:', newDate);
           }}
           placeholder="MMM dd, yyyy hh:mm AM/PM"
           helperText="Click to open date and time picker"

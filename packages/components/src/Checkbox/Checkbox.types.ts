@@ -51,6 +51,13 @@ export interface CheckboxProps extends Omit<React.HTMLAttributes<HTMLInputElemen
   checked?: boolean;
   
   /**
+   * Indeterminate state - shows minus icon (for "select all" scenarios)
+   * Used when some (but not all) child items are selected
+   * @default false
+   */
+  indeterminate?: boolean;
+  
+  /**
    * Input name attribute
    */
   name?: string;

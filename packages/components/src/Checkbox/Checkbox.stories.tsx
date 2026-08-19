@@ -29,12 +29,13 @@ Enterprise-grade checkbox following Component Maturity Checklist.
 
 - ✅ **forwardRef** + polymorphic 'as' prop
 - ✅ **All 8 States**: default, hover, focus, active, disabled, loading, empty, error
+- ✅ **Indeterminate State**: For "select all" scenarios in tables/lists
 - ✅ **Typography Component**: NO custom styled text
 - ✅ **100% Design Tokens**: NO hardcoded values
 - ✅ **Two Sizes**: Default (16px) and Large (24px)
 - ✅ **Event Callbacks**: onChange, onFocus, onBlur, onKeyDown, onCheck, onUncheck
 - ✅ **Render Props**: customLabel, customIcon, customTrailingIcon
-- ✅ **Full Accessibility**: WCAG 2.1 AA compliant
+- ✅ **Full Accessibility**: WCAG 2.1 AA compliant (aria-checked="mixed")
 
 ## Usage
 
@@ -432,7 +433,7 @@ export const CustomLabel: Story = {
       
       <Checkbox
         checked={true}
-        customLabel={({ checked }) => (
+        customLabel={() => (
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             <Typography variant="body" weight="semibold" style={{ color: '#16A34A' }}>
               Premium Plan
@@ -471,6 +472,104 @@ export const PolymorphicAs: Story = {
     docs: {
       description: {
         story: 'Polymorphic "as" prop allows changing the root element type. Default is div.',
+      },
+    },
+  },
+};
+
+/**
+ * Indeterminate State - "Select All" Pattern
+ */
+export const IndeterminateState: Story = {
+  render: () => {
+    const [items, setItems] = useState([
+      { id: 1, name: 'Item 1', selected: false },
+      { id: 2, name: 'Item 2', selected: false },
+      { id: 3, name: 'Item 3', selected: false },
+      { id: 4, name: 'Item 4', selected: false },
+    ]);
+
+    const selectedCount = items.filter(item => item.selected).length;
+    const allSelected = selectedCount === items.length;
+    const someSelected = selectedCount > 0 && selectedCount < items.length;
+
+    const handleSelectAll = () => {
+      setItems(items.map(item => ({ ...item, selected: !allSelected })));
+    };
+
+    const handleItemToggle = (id: number) => {
+      setItems(items.map(item => 
+        item.id === id ? { ...item, selected: !item.selected } : item
+      ));
+    };
+
+    return (
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', minWidth: '300px' }}>
+        <Typography variant="headingS" weight="semibold">
+          Table Selection Example
+        </Typography>
+        
+        {/* Header checkbox with indeterminate state */}
+        <div style={{ 
+          padding: '12px', 
+          borderBottom: '2px solid #E5E5E5',
+          backgroundColor: '#F5F5F5'
+        }}>
+          <Checkbox
+            label="Select All"
+            checked={allSelected}
+            indeterminate={someSelected}
+            onChange={handleSelectAll}
+          />
+        </div>
+
+        {/* Individual item checkboxes */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+          {items.map(item => (
+            <div key={item.id} style={{ padding: '8px 12px' }}>
+              <Checkbox
+                label={item.name}
+                checked={item.selected}
+                onChange={() => handleItemToggle(item.id)}
+              />
+            </div>
+          ))}
+        </div>
+
+        {/* Status */}
+        <Typography variant="caption" style={{ color: '#737373' }}>
+          {selectedCount === 0 && 'No items selected'}
+          {someSelected && `${selectedCount} of ${items.length} items selected (indeterminate)`}
+          {allSelected && 'All items selected'}
+        </Typography>
+      </div>
+    );
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: `
+**Indeterminate State** is used for "select all" scenarios in tables or lists.
+
+The header checkbox shows three states:
+- **Unchecked** (☐): No items selected
+- **Indeterminate** (☑ with minus): Some items selected
+- **Checked** (☑ with checkmark): All items selected
+
+This provides clear visual feedback about partial selections.
+
+\`\`\`tsx
+const someSelected = selectedCount > 0 && selectedCount < items.length;
+const allSelected = selectedCount === items.length;
+
+<Checkbox
+  label="Select All"
+  checked={allSelected}
+  indeterminate={someSelected}
+  onChange={handleSelectAll}
+/>
+\`\`\`
+        `,
       },
     },
   },

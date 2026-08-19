@@ -2,6 +2,16 @@
 
 All notable changes to the Lean IDS Tokens package will be documented in this file.
 
+## [1.7.8] - 2026-08-19
+
+### 📦 Version Alignment
+
+- **Version bump to 1.7.8** to align with `@ajaysoni7832/lean-ids-components@1.7.8`
+- No functional changes to tokens in this release
+- Updated Figma token parsing script (`parse-figma-tokens.ts`)
+
+**Recommended pairing:** `lean-ids-components@1.7.8` + `lean-ids-tokens@1.7.8`
+
 ## [1.7.7] - 2026-08-03
 
 ### 📦 Version Alignment

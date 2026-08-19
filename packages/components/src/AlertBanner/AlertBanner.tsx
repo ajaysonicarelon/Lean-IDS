@@ -12,7 +12,7 @@
  *   type="warning"
  *   styleVariant="default"
  *   text="This is a warning message"
- *   onClose={() => console.log('Closed')}
+ *   onClose={() => {}}
  * />
  * ```
  */

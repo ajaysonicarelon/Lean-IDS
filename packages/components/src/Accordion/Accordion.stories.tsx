@@ -58,7 +58,9 @@ Enterprise-grade collapsible content container with full customization, accessib
 ## Features
 
 - **Collapsed and expanded states** with smooth transitions
+- **Customizable heading typography** - Control variant and weight
 - **Customizable lead icon** (24px Material Icons)
+- **Expand icon position** - Place expand/collapse icon on left or right side
 - **Flexible labels and metadata** area (badges, chips, counters, custom content)
 - **Optional description text**
 - **Expandable content area** with loading, error, and empty states
@@ -82,7 +84,7 @@ import { CheckCircleOutlined } from '@mui/icons-material';
   leadIcon={<CheckCircleOutlined />}
   labelsAndMetadata={
     <>
-      <Badge variant="info">Label</Badge>
+      <Badge type="info" label="Label" />
       <Chip label="Label" />
     </>
   }
@@ -91,6 +93,23 @@ import { CheckCircleOutlined } from '@mui/icons-material';
   footerActions={<Button variant="primary">Button</Button>}
 >
   <Typography variant="body">Your content here</Typography>
+</Accordion>
+
+// Expand icon on left
+<Accordion
+  heading="Expand Icon on Left"
+  expandIconPosition="left"
+>
+  <Typography variant="body">Content</Typography>
+</Accordion>
+
+// Custom heading typography
+<Accordion
+  heading="Large Bold Heading"
+  headingVariant="headingL"
+  headingWeight="bold"
+>
+  <Typography variant="body">Content</Typography>
 </Accordion>
 
 // With loading state
@@ -150,6 +169,16 @@ Accordions can be nested inside other accordions:
       control: 'text',
       description: 'Accordion heading text',
     },
+    headingVariant: {
+      control: 'select',
+      options: ['displayL', 'displayM', 'displayS', 'headingXL', 'headingL', 'headingM', 'headingS', 'body', 'paragraph', 'caption', 'code'],
+      description: 'Typography variant for the heading',
+    },
+    headingWeight: {
+      control: 'select',
+      options: ['regular', 'medium', 'semibold', 'bold'],
+      description: 'Typography weight for the heading',
+    },
     description: {
       control: 'text',
       description: 'Description text below heading',
@@ -161,6 +190,11 @@ Accordions can be nested inside other accordions:
     showLeadIcon: {
       control: 'boolean',
       description: 'Show/hide lead icon',
+    },
+    expandIconPosition: {
+      control: 'radio',
+      options: ['left', 'right'],
+      description: 'Position of the expand/collapse icon',
     },
     labelsAndMetadata: {
       control: false,
@@ -194,6 +228,34 @@ Accordions can be nested inside other accordions:
       control: 'boolean',
       description: 'Disable the accordion',
     },
+    isLoading: {
+      control: 'boolean',
+      description: 'Show loading state',
+    },
+    loadingMessage: {
+      control: 'text',
+      description: 'Loading message text',
+    },
+    isInvalid: {
+      control: 'boolean',
+      description: 'Show error state',
+    },
+    errorMessage: {
+      control: 'text',
+      description: 'Error message text',
+    },
+    isEmpty: {
+      control: 'boolean',
+      description: 'Show empty state',
+    },
+    emptyMessage: {
+      control: 'text',
+      description: 'Empty state message text',
+    },
+    as: {
+      control: 'text',
+      description: 'Polymorphic element type (e.g., "div", "section", "article")',
+    },
   },
 };
 
@@ -209,6 +271,7 @@ export const Default: Story = {
     description: 'Put a short description related to the accordion heading',
     leadIcon: <CheckCircleOutlined />,
     showLeadIcon: true,
+    expandIconPosition: 'right',
     labelsAndMetadata: (
       <>
         <Badge type="info" label="Label" />
@@ -249,6 +312,54 @@ export const WithoutLeadIcon: Story = {
   args: {
     ...Default.args,
     showLeadIcon: false,
+  },
+};
+
+// Expand Icon on Left
+export const ExpandIconLeft: Story = {
+  args: {
+    heading: 'Expand Icon on Left',
+    description: 'The expand/collapse icon is positioned on the left side',
+    leadIcon: <CheckCircleOutlined />,
+    showLeadIcon: true,
+    expandIconPosition: 'left',
+    labelsAndMetadata: (
+      <>
+        <Badge type="info" label="New Layout" />
+      </>
+    ),
+    children: (
+      <div style={{ padding: '20px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
+        <Typography variant="body">
+          Notice the expand icon is now on the left side of the header instead of the right.
+        </Typography>
+        <Typography variant="body">
+          This can be useful for different design patterns or RTL layouts.
+        </Typography>
+      </div>
+    ),
+  },
+};
+
+// Custom Heading Typography
+export const CustomHeadingTypography: Story = {
+  args: {
+    heading: 'Large Bold Heading',
+    description: 'Custom typography variant and weight for the heading',
+    headingVariant: 'headingL',
+    headingWeight: 'bold',
+    leadIcon: <CheckCircleOutlined />,
+    showLeadIcon: true,
+    children: (
+      <div style={{ padding: '20px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
+        <Typography variant="body">
+          The heading uses headingL variant with bold weight instead of the default headingM with semibold.
+        </Typography>
+        <Typography variant="body">
+          You can customize the heading typography to match your design requirements.
+        </Typography>
+      </div>
+    ),
   },
 };
 
@@ -477,6 +588,49 @@ export const MultipleAccordions: Story = {
           <Typography variant="body">Content for third accordion</Typography>
         </div>
       </Accordion>
+    </div>
+  ),
+};
+
+// Expand Icon Position Comparison
+export const ExpandIconPositionComparison: Story = {
+  render: () => (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+      <div>
+        <Typography variant="headingS" weight="semibold" style={{ marginBottom: '12px' }}>
+          Expand Icon on Right (Default)
+        </Typography>
+        <Accordion
+          heading="Default Position"
+          description="Expand icon appears on the right side"
+          leadIcon={<CheckCircleOutlined />}
+          expandIconPosition="right"
+        >
+          <div style={{ padding: '20px' }}>
+            <Typography variant="body">
+              This is the default behavior with the expand icon on the right.
+            </Typography>
+          </div>
+        </Accordion>
+      </div>
+      
+      <div>
+        <Typography variant="headingS" weight="semibold" style={{ marginBottom: '12px' }}>
+          Expand Icon on Left
+        </Typography>
+        <Accordion
+          heading="Left Position"
+          description="Expand icon appears on the left side"
+          leadIcon={<CheckCircleOutlined />}
+          expandIconPosition="left"
+        >
+          <div style={{ padding: '20px' }}>
+            <Typography variant="body">
+              The expand icon is now positioned on the left side of the header.
+            </Typography>
+          </div>
+        </Accordion>
+      </div>
     </div>
   ),
 };

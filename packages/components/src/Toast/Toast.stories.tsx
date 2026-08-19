@@ -34,8 +34,8 @@ import { Toast } from '@lean-ids/components';
   type="success"
   style="default"
   text="Operation completed successfully"
-  onActionClick={() => console.log('Action clicked')}
-  onClose={() => console.log('Closed')}
+  onActionClick={() => {}}
+  onClose={() => {}}
 />
 \`\`\`
         `,

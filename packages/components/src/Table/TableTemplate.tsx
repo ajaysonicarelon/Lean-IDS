@@ -569,10 +569,10 @@ export const AdvancedDataTable: React.FC = () => {
                           data-locked={isLocked}
                         >
                           <div style={{ display: 'flex', gap: '8px' }}>
-                            <button onClick={() => console.log('Edit', row.id)}>
+                            <button onClick={() => {}}>
                               <Icon name="Edit" size="small" />
                             </button>
-                            <button onClick={() => console.log('Delete', row.id)}>
+                            <button onClick={() => {}}>
                               <Icon name="Delete" size="small" />
                             </button>
                           </div>

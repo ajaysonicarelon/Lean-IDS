@@ -168,7 +168,7 @@ interface DonutChartData {
   <DonutChart
     title="Chart Heading"
     showInfoIcon={true}
-    onInfoClick={() => console.log('Info clicked')}
+    onInfoClick={() => {}}
     data={[
       { label: 'Metric A', value: 45, color: '#6222BC' },
       { label: 'Metric B', value: 30, color: '#E3725F' },

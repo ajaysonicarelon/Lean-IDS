@@ -5,7 +5,7 @@
  * Reuses existing Lean IDS components: InputField, Checkbox, RadioButton, Icon, HelpingText, FieldImportance
  * Based on Figma design: node-id=3634-908
  * 
- * Enhanced with Component Maturity Checklist:
+ * Enhanced with Component Maturity Checklist (7 Pillars):
  * - forwardRef support
  * - Polymorphic 'as' prop
  * - Loading and empty states
@@ -13,17 +13,30 @@
  * - Comprehensive event callbacks
  * - Full keyboard navigation
  * - Design tokens (no hardcoded values)
+ * - Performance optimized (memoization, debouncing, virtual scrolling)
  */
 
-import React, { useState, useRef, useEffect, forwardRef, useId } from 'react';
+import React, { useState, useRef, useEffect, forwardRef, useId, useMemo, useCallback } from 'react';
 import styled from 'styled-components';
+import { debounce } from 'lodash';
 import { InputField } from '../InputField';
 import { Checkbox } from '../Checkbox';
 import { RadioButton } from '../RadioButton';
 import { Icon } from '../Icon';
 import { HelpingText } from '../HelpingText';
 import { FieldImportance } from '../FieldImportance';
-import { SelectProps, SelectOption } from './Select.types';
+import { Chip } from '../Chip';
+import { SelectProps } from './Select.types';
+
+// Lazy load react-window for virtual scrolling (optional peer dependency)
+let FixedSizeList: any = null;
+try {
+  // @ts-ignore - dynamic require for optional peer dependency
+  const reactWindow = require('react-window');
+  FixedSizeList = reactWindow.FixedSizeList;
+} catch (e) {
+  // react-window not installed - virtualization will be disabled
+}
 
 // ============================================================================
 // STYLED COMPONENTS
@@ -111,28 +124,133 @@ const Label = styled.label<{ $disabled?: boolean }>`
   color: ${({ theme, $disabled }) => ($disabled ? theme.colors.palette.neutral[400] : theme.colors.palette.neutral[900])};
 `;
 
+const InputFieldWrapper = styled.div`
+  /* InputField component handles its own background */
+`;
+
+// ============================================================================
+// CHIPS STYLED COMPONENTS
+// ============================================================================
+
+// Container for inline chips (inside input field)
+const InlineChipsWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  gap: ${({ theme }) => theme.spacing[1]};
+  flex: 1;
+  flex-wrap: wrap; /* Allow chips to wrap to multiple lines */
+  min-width: 0; /* Important for flex overflow */
+  min-height: 1.5rem; /* Ensure minimum height for placeholder */
+`;
+
+// Container for below chips
+const BelowChipsContainer = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: ${({ theme }) => theme.spacing[1]};
+  padding: ${({ theme }) => theme.spacing[2]};
+  border: ${({ theme }) => theme.borderWidth[1]} solid ${({ theme }) => theme.colors.palette.neutral[300]};
+  border-radius: ${({ theme }) => theme.borderRadius.sm};
+  margin-top: ${({ theme }) => theme.spacing[1]};
+  background: ${({ theme }) => theme.colors.palette.neutral[50]};
+  max-height: 7.5rem; /* 120px - ~3 rows of chips */
+  overflow-y: auto;
+`;
+
+// Standalone input wrapper for inline chips mode (matches InputWrapper but with correct background logic)
+const InputWithChipsWrapper = styled.div<{ $disabled?: boolean; $error?: boolean; $isOpen?: boolean; $filled?: boolean; $size?: 'xsmall' | 'small' | 'default' | 'large' }>`
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  gap: ${({ theme }) => theme.spacing[1]};
+  padding: ${({ theme }) => theme.spacing[2]};
+  border-width: 1px;
+  border-style: solid;
+  border-radius: ${({ theme }) => theme.borderRadius.sm};
+  transition: all 0.2s ease-in-out;
+  
+  /* Dynamic height for wrapping chips */
+  height: auto;
+  min-height: 2.5rem; /* 40px minimum */
+  
+  /* Background: gray-50 when empty, white when filled */
+  background-color: ${({ theme, $disabled, $filled }) => {
+    if ($disabled) {
+      return theme.colors.palette.neutral[100];
+    }
+    if ($filled) {
+      return '#FFFFFF'; // white when filled
+    }
+    return theme.colors.palette.neutral[200]; // gray-200 when empty (neutral[50] is white)
+  }};
+  
+  /* Border color for different states */
+  border-color: ${({ theme, $error, $isOpen, $disabled }) => {
+    if ($disabled) return theme.colors.palette.neutral[300];
+    if ($error) return theme.colors.semantic.border.error;
+    if ($isOpen) return theme.colors.semantic.focus.indicator;
+    return theme.colors.palette.neutral[500];
+  }};
+  
+  &:hover {
+    border-color: ${({ theme, $disabled, $error }) => {
+      if ($disabled) return theme.colors.palette.neutral[300];
+      if ($error) return theme.colors.semantic.border.error;
+      return theme.colors.semantic.focus.indicator;
+    }};
+  }
+  
+  &:focus-visible {
+    border-color: ${({ theme }) => theme.colors.semantic.focus.indicator};
+    outline: 2px solid ${({ theme }) => theme.colors.semantic.focus.indicator};
+    outline-offset: 2px;
+  }
+  
+  ${({ $disabled }) => $disabled && `
+    cursor: not-allowed;
+    opacity: 0.6;
+  `}
+`;
+
+// "+N More" chip (non-removable)
+const MoreChip = styled.div`
+  display: inline-flex;
+  align-items: center;
+  padding: ${({ theme }) => `${theme.spacing[1]} ${theme.spacing[2]}`};
+  background: ${({ theme }) => theme.colors.palette.neutral[200]};
+  border-radius: ${({ theme }) => theme.borderRadius.sm};
+  font-size: ${({ theme }) => theme.fontSizes[12]};
+  font-weight: ${({ theme }) => theme.fontWeights.medium};
+  color: ${({ theme }) => theme.colors.palette.neutral[700]};
+  white-space: nowrap;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background 0.2s ease-in-out;
+  
+  &:hover {
+    background: ${({ theme }) => theme.colors.palette.neutral[300]};
+  }
+`;
+
+// Placeholder text for inline chips
+const PlaceholderText = styled.span`
+  color: ${({ theme }) => theme.colors.palette.neutral[600]};
+  font-size: ${({ theme }) => theme.fontSizes[14]};
+  font-family: ${({ theme }) => theme.fonts.primary};
+  flex: 1; /* Take available space so icon stays on right */
+`;
+
+// Icon wrapper to keep icon on the right
+const TrailingIconWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  flex-shrink: 0; /* Never shrink, always stay on right */
+`;
+
 // ============================================================================
 // COMPONENT
 // ============================================================================
 
-const LoadingOverlay = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: ${({ theme }) => theme.spacing[5]};
-  color: ${({ theme }) => theme.colors.palette.neutral[600]};
-`;
-
-const EmptyStateContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: ${({ theme }) => theme.spacing[5]};
-  gap: ${({ theme }) => theme.spacing[2]};
-  color: ${({ theme }) => theme.colors.palette.neutral[600]};
-  text-align: center;
-`;
 
 export const Select = forwardRef<HTMLDivElement, SelectProps>((
   {
@@ -168,17 +286,32 @@ export const Select = forwardRef<HTMLDivElement, SelectProps>((
     onAfterOpen,
     onAfterClose,
     onSearchChange,
+    onSearchInput,
     onEnter,
     onEscape,
+    // Performance props
+    searchDebounceDelay = 300,
+    enableVirtualization = false,
+    itemHeight = 40,
+    maxItemsBeforeWarning = 100,
+    disablePerformanceWarnings = false,
+    // Chips props
+    showChips = false,
+    chipsPosition = 'below',
+    maxInlineChips = 0,
+    chipsClassName,
+    onChipRemove,
+    onMoreChipsClick,
     ...restProps
   },
   ref
 ) => {
-  const generatedId = useId();
-  const selectId = generatedId;
+  useId();
   const [isOpen, setIsOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [focusedIndex, setFocusedIndex] = useState(-1);
+  
+  const [visibleInlineChips, setVisibleInlineChips] = useState<number>(maxInlineChips || 0);
   const wrapperRef = useRef<HTMLDivElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
   
@@ -188,8 +321,12 @@ export const Select = forwardRef<HTMLDivElement, SelectProps>((
   // Polymorphic component
   const Container = as || 'div';
 
-  // Get selected label(s) for display
-  const getDisplayValue = () => {
+  // ============================================================================
+  // PERFORMANCE: MEMOIZATION
+  // ============================================================================
+  
+  // Memoize display value calculation
+  const displayValue = useMemo(() => {
     if (!value) return '';
     
     if (multiple && Array.isArray(value)) {
@@ -203,17 +340,20 @@ export const Select = forwardRef<HTMLDivElement, SelectProps>((
     
     const option = options.find(opt => opt.value === value);
     return option?.label || '';
-  };
+  }, [value, options, multiple]);
 
-  // Filter options based on search
-  const filteredOptions = searchable && searchQuery
-    ? options.filter(opt =>
-        opt.label.toLowerCase().includes(searchQuery.toLowerCase())
-      )
-    : options;
+  // Memoize filtered options (expensive operation for large lists)
+  const filteredOptions = useMemo(() => {
+    if (!searchable || !searchQuery) return options;
+    
+    const lowerQuery = searchQuery.toLowerCase();
+    return options.filter(opt =>
+      opt.label.toLowerCase().includes(lowerQuery)
+    );
+  }, [options, searchQuery, searchable]);
 
-  // Handle option selection
-  const handleSelect = (optionValue: string) => {
+  // Memoize selection handler
+  const handleSelect = useCallback((optionValue: string) => {
     if (disabled) return;
 
     if (multiple) {
@@ -227,15 +367,15 @@ export const Select = forwardRef<HTMLDivElement, SelectProps>((
       setIsOpen(false);
       setSearchQuery('');
     }
-  };
+  }, [disabled, multiple, value, onChange]);
 
-  // Check if option is selected
-  const isSelected = (optionValue: string) => {
+  // Memoize selection check
+  const isSelected = useCallback((optionValue: string) => {
     if (multiple && Array.isArray(value)) {
       return value.includes(optionValue);
     }
     return value === optionValue;
-  };
+  }, [value, multiple]);
 
   // Handle dropdown open/close with callbacks
   const handleOpen = () => {
@@ -261,12 +401,32 @@ export const Select = forwardRef<HTMLDivElement, SelectProps>((
     }, 200);
   };
   
+  // ============================================================================
+  // PERFORMANCE: DEBOUNCED SEARCH
+  // ============================================================================
+  
+  // Debounced search callback
+  const debouncedSearchChange = useMemo(
+    () => debounce((query: string) => {
+      onSearchChange?.(query);
+    }, searchDebounceDelay),
+    [onSearchChange, searchDebounceDelay]
+  );
+  
+  // Cleanup debounced function on unmount
+  useEffect(() => {
+    return () => {
+      debouncedSearchChange.cancel();
+    };
+  }, [debouncedSearchChange]);
+  
   // Handle search change
-  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleSearchChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const query = e.target.value;
-    setSearchQuery(query);
-    onSearchChange?.(query);
-  };
+    setSearchQuery(query);           // Update UI immediately
+    onSearchInput?.(query);          // Immediate callback
+    debouncedSearchChange(query);    // Debounced callback
+  }, [onSearchInput, debouncedSearchChange]);
   
   // Keyboard navigation
   useEffect(() => {
@@ -310,8 +470,144 @@ export const Select = forwardRef<HTMLDivElement, SelectProps>((
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
-
-  const displayValue = getDisplayValue();
+  
+  // ============================================================================
+  // PERFORMANCE: WARNINGS
+  // ============================================================================
+  
+  useEffect(() => {
+    // @ts-ignore - process.env is available in build environment
+    if (process.env.NODE_ENV === 'development' && !disablePerformanceWarnings) {
+      // Warn about large datasets without virtualization
+      if (options.length > maxItemsBeforeWarning && !enableVirtualization) {
+        console.warn(
+          `⚠️ Performance Warning: Select component has ${options.length} options.\n` +
+          `Consider enabling virtualization for better performance:\n` +
+          `<Select enableVirtualization={true} itemHeight={40} />\n` +
+          `Note: Requires 'react-window' to be installed: npm install react-window`
+        );
+      }
+      
+      // Warn about searchable without debouncing
+      if (searchable && searchDebounceDelay === 0) {
+        console.warn(
+          `⚠️ Performance Warning: Searchable Select should use debouncing.\n` +
+          `Add searchDebounceDelay prop (default: 300ms):\n` +
+          `<Select searchable searchDebounceDelay={300} />`
+        );
+      }
+      
+      // Warn if virtualization enabled but react-window not installed
+      if (enableVirtualization && !FixedSizeList) {
+        console.error(
+          `❌ Error: Virtual scrolling enabled but 'react-window' is not installed.\n` +
+          `Install it with: npm install react-window\n` +
+          `Falling back to non-virtualized rendering.`
+        );
+      }
+    }
+  }, [options.length, enableVirtualization, searchable, searchDebounceDelay, maxItemsBeforeWarning, disablePerformanceWarnings]);
+  
+  // ============================================================================
+  // CHIPS: INLINE OVERFLOW CALCULATION
+  // ============================================================================
+  
+  // Set visible chips based on manual limit only
+  useEffect(() => {
+    if (!showChips || chipsPosition !== 'inline' || !multiple || !Array.isArray(value)) {
+      return;
+    }
+    
+    // Reset if no chips
+    if (value.length === 0) {
+      setVisibleInlineChips(0);
+      return;
+    }
+    
+    // Manual limit mode (required for inline chips)
+    if (maxInlineChips > 0) {
+      setVisibleInlineChips(Math.min(maxInlineChips, value.length));
+    } else {
+      // No limit specified - show all chips
+      setVisibleInlineChips(value.length);
+    }
+  }, [value, showChips, chipsPosition, maxInlineChips, multiple, isOpen]);
+  
+  // ============================================================================
+  // CHIPS: RENDER FUNCTIONS
+  // ============================================================================
+  
+  // Render a single chip
+  const renderChip = useCallback((selectedValue: string) => {
+    const option = options.find(opt => opt.value === selectedValue);
+    if (!option) return null;
+    
+    return (
+      <Chip
+        key={selectedValue}
+        label={option.label}
+        size="small"
+        variant="filled"
+        type="default"
+        trailingIcon={<Icon name="Close" size="small" />}
+        onTrailingIconClick={(e) => {
+          e.stopPropagation();
+          const newValues = (value as string[]).filter(v => v !== selectedValue);
+          onChange?.(newValues);
+          onChipRemove?.(selectedValue);
+        }}
+      />
+    );
+  }, [options, value, onChange, onChipRemove]);
+  
+  // Render inline chips (wrapping or with manual limit)
+  const renderInlineChips = useCallback(() => {
+    if (!multiple || !Array.isArray(value) || value.length === 0) {
+      return <PlaceholderText>{placeholder}</PlaceholderText>;
+    }
+    
+    // If maxInlineChips is set, show limited chips with "+N More"
+    if (maxInlineChips > 0 && visibleInlineChips < value.length) {
+      const visibleChips = value.slice(0, visibleInlineChips);
+      const hiddenCount = value.length - visibleInlineChips;
+      
+      return (
+        <InlineChipsWrapper>
+          {visibleChips.map((val) => renderChip(val))}
+          <MoreChip 
+            onClick={(e) => {
+              e.stopPropagation();
+              onMoreChipsClick?.();
+            }}
+            role="button"
+            aria-label={`${hiddenCount} more items selected`}
+          >
+            +{hiddenCount} More
+          </MoreChip>
+        </InlineChipsWrapper>
+      );
+    }
+    
+    // Otherwise, show all chips with wrapping
+    return (
+      <InlineChipsWrapper>
+        {value.map((val) => renderChip(val))}
+      </InlineChipsWrapper>
+    );
+  }, [multiple, value, placeholder, visibleInlineChips, maxInlineChips, renderChip, onMoreChipsClick]);
+  
+  // Render below chips (all visible, wrapping)
+  const renderBelowChips = useCallback(() => {
+    if (!multiple || !Array.isArray(value) || value.length === 0) {
+      return null;
+    }
+    
+    return (
+      <BelowChipsContainer className={chipsClassName}>
+        {value.map((val) => renderChip(val))}
+      </BelowChipsContainer>
+    );
+  }, [multiple, value, chipsClassName, renderChip]);
   
   // Show loading state
   if (isLoading) {
@@ -402,29 +698,63 @@ export const Select = forwardRef<HTMLDivElement, SelectProps>((
       </LabelContainer>
 
       {/* Input Field (acts as trigger) */}
-      <div onClick={() => !disabled && (isOpen ? handleClose() : handleOpen())}>
-        <InputField
-          value={displayValue}
-          placeholder={placeholder}
-          disabled={disabled}
-          error={hasError}
-          size={size}
-          fullWidth={true}
-          leadingIcon={showLeadingIcon ? <Icon name="Search" size="small" /> : undefined}
-          trailingIcon={
-            showTrailingIcon ? (
+      {showChips && chipsPosition === 'inline' && multiple ? (
+        // Inline chips mode - custom input with chips inside
+        (() => {
+          const filled = !!(Array.isArray(value) && value.length > 0);
+          return (
+            <InputWithChipsWrapper 
+              onClick={() => !disabled && (isOpen ? handleClose() : handleOpen())}
+              $disabled={disabled}
+              $error={hasError}
+              $isOpen={isOpen}
+              $filled={filled}
+              $size={size}
+              role="button"
+          aria-haspopup="listbox"
+          aria-expanded={isOpen}
+          tabIndex={disabled ? -1 : 0}
+        >
+          {renderInlineChips()}
+          {showTrailingIcon && (
+            <TrailingIconWrapper>
               <Icon
                 name={isOpen ? 'ExpandLess' : 'ExpandMore'}
                 size="small"
               />
-            ) : undefined
-          }
-          onKeyDown={(e) => e.preventDefault()}
-          onFocus={(e) => e.target.blur()}
-          style={{ cursor: disabled ? 'not-allowed' : 'pointer' }}
-          readOnly
-        />
-      </div>
+            </TrailingIconWrapper>
+          )}
+        </InputWithChipsWrapper>
+          );
+        })()
+      ) : (
+        // Regular input field mode
+        <InputFieldWrapper>
+          <div onClick={() => !disabled && (isOpen ? handleClose() : handleOpen())}>
+            <InputField
+              value={displayValue}
+              placeholder={placeholder}
+              disabled={disabled}
+              error={hasError}
+              size={size}
+              fullWidth={true}
+              leadingIcon={showLeadingIcon ? <Icon name="Search" size="small" /> : undefined}
+              trailingIcon={
+                showTrailingIcon ? (
+                  <Icon
+                    name={isOpen ? 'ExpandLess' : 'ExpandMore'}
+                    size="small"
+                  />
+                ) : undefined
+              }
+              onKeyDown={(e) => e.preventDefault()}
+              onFocus={(e) => e.target.blur()}
+              style={{ cursor: disabled ? 'not-allowed' : 'pointer' }}
+              readOnly
+            />
+          </div>
+        </InputFieldWrapper>
+      )}
 
       {/* Dropdown Options */}
       <DropdownContainer 
@@ -451,7 +781,55 @@ export const Select = forwardRef<HTMLDivElement, SelectProps>((
 
         {filteredOptions.length === 0 ? (
           <NoResults>No options found</NoResults>
+        ) : enableVirtualization && FixedSizeList ? (
+          // ============================================================================
+          // PERFORMANCE: VIRTUAL SCROLLING
+          // ============================================================================
+          <FixedSizeList
+            height={Math.min(300, filteredOptions.length * itemHeight)}
+            itemCount={filteredOptions.length}
+            itemSize={itemHeight}
+            width="100%"
+          >
+            {({ index, style }: { index: number; style: React.CSSProperties }) => {
+              const option = filteredOptions[index];
+              return (
+                <OptionItem
+                  key={option.value}
+                  style={style}
+                  $selected={isSelected(option.value)}
+                  $disabled={!!option.disabled}
+                  $focused={index === focusedIndex}
+                  onClick={() => !option.disabled && handleSelect(option.value)}
+                  className={optionClassName}
+                  role="option"
+                  aria-selected={isSelected(option.value)}
+                  aria-disabled={option.disabled}
+                >
+                  {showSelectionIndicator && (
+                    multiple ? (
+                      <Checkbox
+                        checked={isSelected(option.value)}
+                        disabled={option.disabled}
+                        size="default"
+                        onChange={() => {}}
+                      />
+                    ) : (
+                      <RadioButton
+                        checked={isSelected(option.value)}
+                        disabled={option.disabled}
+                        size="default"
+                        onChange={() => {}}
+                      />
+                    )
+                  )}
+                  <span>{option.label}</span>
+                </OptionItem>
+              );
+            }}
+          </FixedSizeList>
         ) : (
+          // Non-virtualized rendering (default)
           filteredOptions.map((option, index) => (
             <OptionItem
               key={option.value}
@@ -486,6 +864,9 @@ export const Select = forwardRef<HTMLDivElement, SelectProps>((
           ))
         )}
       </DropdownContainer>
+
+      {/* Below Chips (if enabled) */}
+      {showChips && chipsPosition === 'below' && renderBelowChips()}
 
       {/* Helper Text */}
       {helperText && (

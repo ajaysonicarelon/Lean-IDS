@@ -17,15 +17,20 @@
  * - Resizable columns
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, forwardRef, ElementType, useMemo } from 'react';
 import styled from 'styled-components';
 import { TableHeader } from '../TableHeader';
 import { TableSubHeader } from '../TableSubHeader';
 import { TableCell } from '../TableCell';
 import { Pagination } from '../Pagination';
+import { Button } from '../Button';
 import { TableSettings, ColumnConfig } from '../TableSettings';
 import { TableSidePanel, ColumnFilter, CustomTabConfig } from '../TableSidePanel';
 import { TableToolbar } from './TableToolbar';
+import { Typography } from '../Typography';
+import { TableGroupHeader } from './TableGroupHeader';
+import ErrorIcon from '@mui/icons-material/Error';
+import CloudOffIcon from '@mui/icons-material/CloudOff';
 
 const StyledTable = styled.table<{ $hasMaxHeight?: boolean }>`
   width: 100%;
@@ -87,6 +92,83 @@ const ScrollContainer = styled.div<{ $hasSidePanel?: boolean; $maxHeight?: strin
   position: relative;
   flex: 1;
   ${({ $maxHeight }) => !$maxHeight && 'min-height: 500px;'}
+`;
+
+const SkeletonRow = styled.tr``;
+
+const SkeletonCell = styled.td`
+  padding: ${({ theme }) => theme.spacing[4]};
+  border-bottom: ${({ theme }) => theme.borderWidth[1]} solid ${({ theme }) => theme.colors.palette.neutral[200]};
+`;
+
+const SkeletonBox = styled.div<{ width?: string; height?: string }>`
+  width: ${({ width }) => width || '100%'};
+  height: ${({ height }) => height || '1rem'};
+  background: ${({ theme }) => theme.colors.palette.neutral[200]};
+  border-radius: ${({ theme }) => theme.borderRadius.sm};
+  position: relative;
+  overflow: hidden;
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      ${({ theme }) => theme.colors.palette.neutral[100]} 50%,
+      transparent 100%
+    );
+    animation: shimmer 2s infinite;
+  }
+
+  @keyframes shimmer {
+    0% {
+      transform: translateX(-100%);
+    }
+    100% {
+      transform: translateX(100%);
+    }
+  }
+`;
+
+const EmptyStateContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: ${({ theme }) => theme.spacing[16]} ${({ theme }) => theme.spacing[8]};
+  min-height: 400px;
+  width: 100vw;
+  background: ${({ theme }) => theme.colors.palette.neutral[50]};
+`;
+
+const EmptyStateContent = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: ${({ theme }) => theme.spacing[6]};
+  max-width: min(18.75rem, 90%);
+`;
+
+const EmptyStateIconWrapper = styled.div`
+  width: ${({ theme }) => theme.spacing[20]};
+  height: ${({ theme }) => theme.spacing[20]};
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+`;
+
+const EmptyStateTextWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: ${({ theme }) => theme.spacing[4]};
+  text-align: center;
 `;
 
 interface DataRow {
@@ -183,29 +265,90 @@ export const getNestedColumnConfigs = (): ColumnConfig[] => [
   { id: 'amount', label: 'Amount', visible: true, locked: false, order: 10, width: 150, minWidth: 100, maxWidth: 200, resizable: true },
 ];
 
-interface AdvancedTableProps {
-  /** Table data rows */
+interface AdvancedTableProps extends React.HTMLAttributes<HTMLDivElement> {
+  // ============================================================================
+  // POLYMORPHISM
+  // ============================================================================
+  /** Polymorphic component type (default: 'div') */
+  as?: ElementType;
+  
+  // ============================================================================
+  // DATA & COLUMNS
+  // ============================================================================
+  /** Array of data objects to display */
   data?: DataRow[];
-  /** Table column definitions */
-  columns?: Array<{
-    id: string;
-    label: string;
-    accessor?: string | ((row: any) => any);
-    sortable?: boolean;
-    resizable?: boolean;
-    visible?: boolean;
-    locked?: boolean;
-    order?: number;
-  }>;
-  useSidePanel?: boolean;
-  useModal?: boolean;
-  showToolbar?: boolean;
-  toolbarTitle?: string;
+  /** Column configuration using ColumnConfig interface */
   initialColumns?: ColumnConfig[];
-  onRowClick?: (row: any, rowIndex: number, event: React.MouseEvent<HTMLTableRowElement>) => void;
+  /** Custom row key accessor (default: 'id') */
+  rowKey?: string;
+  /** Table row groups (alternative to data prop for grouped tables) */
+  groups?: Array<{
+    id: string;
+    groupName: string;
+    groupDescription?: string;
+    rows: DataRow[];
+    defaultExpanded?: boolean;
+    customContent?: React.ReactNode;
+    className?: string;
+    style?: React.CSSProperties;
+  }>;
+  /** Group configuration */
+  groupConfig?: {
+    expandPosition?: 'left' | 'right';
+    onGroupToggle?: (groupId: string, isExpanded: boolean) => void;
+    renderGroupContent?: (group: any) => React.ReactNode;
+  };
+  
+  // ============================================================================
+  // LAYOUT & DISPLAY
+  // ============================================================================
+  /** Show side panel for column/filter controls (alternative to modal settings) */
+  useSidePanel?: boolean;
+  /** Show modal for column/filter controls */
+  useModal?: boolean;
+  /** Show default toolbar */
+  showToolbar?: boolean;
+  /** Table title (used in default toolbar) */
+  toolbarTitle?: string;
+  /** Table description (used in default toolbar) */
+  description?: string;
+  /** Custom toolbar content - when provided, renders instead of default toolbar */
+  toolbar?: React.ReactNode;
+  /** Show global search in default toolbar */
+  showGlobalSearch?: boolean;
+  /** Show filter button in default toolbar */
+  showFilter?: boolean;
+  /** Show download button in default toolbar */
+  showDownload?: boolean;
+  /** Download handler */
+  onDownload?: () => void;
+  /** Show column search bars in sub-header (default: false, shows on filter apply) */
   showColumnSearchByDefault?: boolean;
+  /** Custom tabs for side panel */
   customSidePanelTabs?: CustomTabConfig[];
-  /** Sorting mode: 'client' (default) or 'server' */
+  /** Maximum height for table body (enables fixed header with internal scroll). Example: '400px', '50vh' */
+  maxHeight?: string;
+  
+  // ============================================================================
+  // SELECTION
+  // ============================================================================
+  /** Enable row selection */
+  selectable?: boolean;
+  /** Callback when rows are selected */
+  onRowSelect?: (selectedIds: string[]) => void;
+  
+  // ============================================================================
+  // PAGINATION
+  // ============================================================================
+  /** Enable pagination */
+  paginated?: boolean;
+  /** Items per page (default: 10) */
+  itemsPerPage?: number;
+  
+  // ============================================================================
+  // SORTING
+  // ============================================================================
+  /** Sorting mode: 'client' (default) or 'server'. When 'server', use onSort callback to handle sorting */
   sortMode?: 'client' | 'server';
   /** Callback when sort changes (only used when sortMode='server') */
   onSort?: (columnId: string, direction: 'asc' | 'desc' | 'none') => void;
@@ -213,35 +356,164 @@ interface AdvancedTableProps {
   sortColumn?: string;
   /** Controlled sort direction (only used when sortMode='server') */
   sortDirection?: 'asc' | 'desc' | 'none';
-  /** Maximum height for table body (enables fixed header with internal scroll). Example: '400px', '50vh' */
-  maxHeight?: string;
+  
+  // ============================================================================
+  // COLUMN RESIZING
+  // ============================================================================
   /** Default minimum width for columns that don't specify minWidth (default: 50px) */
   defaultMinWidth?: number;
   /** Default maximum width for columns that don't specify maxWidth (default: 250px) */
   defaultMaxWidth?: number;
+  
+  // ============================================================================
+  // EVENTS
+  // ============================================================================
+  /** Callback when a row is clicked */
+  onRowClick?: (row: any, rowIndex: number, event: React.MouseEvent<HTMLTableRowElement>) => void;
+  /** Callback when side panel/modal opens */
+  onOpen?: () => void;
+  /** Callback when side panel/modal closes */
+  onClose?: () => void;
+  /** Callback after side panel/modal open animation completes */
+  onAfterOpen?: () => void;
+  /** Callback after side panel/modal close animation completes */
+  onAfterClose?: () => void;
+  
+  // ============================================================================
+  // STATES (8 States)
+  // ============================================================================
+  /** Loading state */
+  loading?: boolean;
+  /** Invalid/error state */
+  isInvalid?: boolean;
+  /** Error message to display when isInvalid is true */
+  errorMessage?: string;
+  
+  // ============================================================================
+  // EMPTY STATE
+  // ============================================================================
+  /** Custom empty state message */
+  emptyMessage?: string;
+  /** Empty state icon name (Material Icons) */
+  emptyIcon?: string;
+  /** Empty state title */
+  emptyTitle?: string;
+  /** Empty state description */
+  emptyDescription?: string;
+  /** Empty state action button label */
+  emptyActionLabel?: string;
+  /** Empty state action button handler */
+  onEmptyAction?: () => void;
+  
+  // ============================================================================
+  // CUSTOMIZATION & OVERRIDES
+  // ============================================================================
+  /** Override className for container */
+  containerClassName?: string;
+  /** Override style for container */
+  containerStyle?: React.CSSProperties;
+  /** Override className for scroll container */
+  scrollContainerClassName?: string;
+  /** Override style for scroll container */
+  scrollContainerStyle?: React.CSSProperties;
+  /** Override className for empty state */
+  emptyStateClassName?: string;
+  /** Override style for empty state */
+  emptyStateStyle?: React.CSSProperties;
+  /** Override className for loading state */
+  loadingClassName?: string;
+  /** Override style for loading state */
+  loadingStyle?: React.CSSProperties;
+  /** Override className for error state */
+  errorClassName?: string;
+  /** Override style for error state */
+  errorStyle?: React.CSSProperties;
+  /** Custom className */
+  className?: string;
 }
 
-export const AdvancedDataTable: React.FC<AdvancedTableProps> = ({ 
+export const AdvancedDataTable = forwardRef<HTMLDivElement, AdvancedTableProps>(({ 
+  // Polymorphism
+  as: Component = 'div',
+  
+  // Data & Columns
   data: propData,
-  columns: propColumns,
+  initialColumns,
+  rowKey = 'id',
+  groups,
+  groupConfig,
+  
+  // Layout & Display
   useSidePanel = false,
   useModal = false,
   showToolbar = true,
   toolbarTitle = 'Data Table',
-  initialColumns,
-  onRowClick,
+  description,
+  toolbar,
+  showGlobalSearch = true,
+  showFilter = true,
+  showDownload = false,
+  onDownload,
   showColumnSearchByDefault = false,
   customSidePanelTabs = [],
+  maxHeight,
+  
+  // Selection
+  selectable = false,
+  onRowSelect,
+  
+  // Pagination
+  paginated = true,
+  itemsPerPage: propItemsPerPage = 10,
+  
+  // Sorting
   sortMode = 'client',
   onSort,
   sortColumn: controlledSortColumn,
   sortDirection: controlledSortDirection,
-  maxHeight,
+  
+  // Column Resizing
   defaultMinWidth = 50,
   defaultMaxWidth = 250,
-}) => {
+  
+  // Events
+  onRowClick,
+  onOpen,
+  onClose,
+  onAfterOpen,
+  onAfterClose,
+  
+  // States
+  loading = false,
+  isInvalid = false,
+  errorMessage,
+  
+  // Empty State
+  emptyMessage = 'No data available',
+  emptyIcon = 'inbox',
+  emptyTitle = 'No Results Found',
+  emptyDescription = 'Try adjusting your filters or search criteria',
+  emptyActionLabel,
+  onEmptyAction,
+  
+  // Customization & Overrides
+  containerClassName,
+  containerStyle,
+  scrollContainerClassName,
+  scrollContainerStyle,
+  emptyStateClassName,
+  emptyStateStyle,
+  loadingClassName,
+  loadingStyle,
+  errorClassName,
+  errorStyle,
+  className,
+  
+  // Rest props
+  ...restProps
+}, ref) => {
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(10);
+  const [itemsPerPage, setItemsPerPage] = useState(propItemsPerPage);
   const [internalSortColumn, setInternalSortColumn] = useState<string>('');
   const [internalSortDirection, setInternalSortDirection] = useState<'asc' | 'desc' | 'none'>('none');
   
@@ -254,18 +526,16 @@ export const AdvancedDataTable: React.FC<AdvancedTableProps> = ({
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [columnOffsets, setColumnOffsets] = useState<{ [key: string]: number }>({});
   const [lockWarning, setLockWarning] = useState(false);
-  // Convert propColumns to ColumnConfig format if provided
+  
+  // Group expand/collapse state
+  const [expandedGroups, setExpandedGroups] = useState<Set<string>>(() => {
+    if (!groups) return new Set();
+    return new Set(groups.filter(g => g.defaultExpanded !== false).map(g => g.id));
+  });
+  
+  // Use initialColumns or fallback to default
   const getInitialColumns = (): ColumnConfig[] => {
     if (initialColumns) return initialColumns;
-    if (propColumns) {
-      return propColumns.map((col, index) => ({
-        id: col.id,
-        label: col.label,
-        visible: col.visible !== undefined ? col.visible : true,
-        locked: col.locked || false,
-        order: col.order !== undefined ? col.order : index,
-      }));
-    }
     return getSimpleColumnConfigs();
   };
 
@@ -279,6 +549,13 @@ export const AdvancedDataTable: React.FC<AdvancedTableProps> = ({
 
   // Use provided data or fall back to demo data
   const sampleData = propData || getSampleData();
+
+  // Compute indeterminate state (some but not all rows selected)
+  const isIndeterminate = useMemo(() => {
+    const totalRows = sampleData.length;
+    if (totalRows === 0 || selectedRows.length === 0) return false;
+    return selectedRows.length > 0 && selectedRows.length < totalRows;
+  }, [selectedRows.length, sampleData.length]);
 
   const handleColumnLock = (columnId: string) => {
     const column = columnConfigs.find(col => col.id === columnId);
@@ -426,7 +703,122 @@ export const AdvancedDataTable: React.FC<AdvancedTableProps> = ({
     setColumnSearches(prev => ({ ...prev, [columnId]: value }));
   };
 
-  const filteredData = sampleData.filter(row => {
+  const handleGroupToggle = (groupId: string) => {
+    setExpandedGroups(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(groupId)) {
+        newSet.delete(groupId);
+      } else {
+        newSet.add(groupId);
+      }
+      return newSet;
+    });
+    
+    if (groupConfig?.onGroupToggle) {
+      const isExpanded = !expandedGroups.has(groupId);
+      groupConfig.onGroupToggle(groupId, isExpanded);
+    }
+  };
+
+  const handleGroupSelect = (groupId: string, checked: boolean) => {
+    const group = groups?.find(g => g.id === groupId);
+    if (!group) return;
+    
+    const groupRowIndices: number[] = [];
+    let currentIndex = 0;
+    
+    groups?.forEach(g => {
+      if (g.id === groupId) {
+        g.rows.forEach(() => {
+          groupRowIndices.push(currentIndex);
+          currentIndex++;
+        });
+      } else {
+        currentIndex += g.rows.length;
+      }
+    });
+    
+    if (checked) {
+      setSelectedRows(prev => [...new Set([...prev, ...groupRowIndices])]);
+    } else {
+      setSelectedRows(prev => prev.filter(idx => !groupRowIndices.includes(idx)));
+    }
+  };
+
+  const isGroupSelected = (groupId: string) => {
+    const group = groups?.find(g => g.id === groupId);
+    if (!group || group.rows.length === 0) return false;
+    
+    let currentIndex = 0;
+    let groupStartIndex = 0;
+    
+    groups?.forEach(g => {
+      if (g.id === groupId) {
+        groupStartIndex = currentIndex;
+      }
+      currentIndex += g.rows.length;
+    });
+    
+    const groupIndices = Array.from({ length: group.rows.length }, (_, i) => groupStartIndex + i);
+    return groupIndices.every(idx => selectedRows.includes(idx));
+  };
+
+  const filterRows = (rows: DataRow[]) => {
+    return rows.filter(row => {
+      if (globalSearch) {
+        const searchLower = globalSearch.toLowerCase();
+        const matchesGlobalSearch = Object.values(row).some(value => 
+          String(value || '').toLowerCase().includes(searchLower)
+        );
+        if (!matchesGlobalSearch) return false;
+      }
+
+      const matchesColumnSearch = Object.entries(columnSearches).every(([columnId, searchValue]) => {
+        if (!searchValue) return true;
+        const value = row[columnId as keyof DataRow];
+        return String(value).toLowerCase().includes(searchValue.toLowerCase());
+      });
+      if (!matchesColumnSearch) return false;
+
+      const matchesSidePanelFilters = sidePanelFilters.every(filter => {
+        const value = row[filter.columnId as keyof DataRow];
+        return String(value) === filter.value;
+      });
+      
+      return matchesSidePanelFilters;
+    });
+  };
+
+  const sortRows = (rows: DataRow[]) => {
+    if (sortMode !== 'client' || !sortColumn || sortDirection === 'none') {
+      return rows;
+    }
+    return [...rows].sort((a, b) => {
+      let aValue: any = a[sortColumn as keyof typeof a];
+      let bValue: any = b[sortColumn as keyof typeof b];
+      if (aValue < bValue) return sortDirection === 'asc' ? -1 : 1;
+      if (aValue > bValue) return sortDirection === 'asc' ? 1 : -1;
+      return 0;
+    });
+  };
+
+  const processedGroups = useMemo(() => {
+    if (!groups || groups.length === 0) return null;
+
+    return groups.map(group => ({
+      ...group,
+      rows: sortRows(filterRows(group.rows)),
+    }));
+  }, [groups, globalSearch, columnSearches, sidePanelFilters, sortColumn, sortDirection]);
+
+  const flatData = useMemo(() => {
+    if (processedGroups) {
+      return processedGroups.flatMap(group => group.rows);
+    }
+    return sampleData;
+  }, [processedGroups, sampleData]);
+
+  const filteredData = processedGroups ? flatData : sampleData.filter(row => {
     // Global search filter
     if (globalSearch) {
       const searchLower = globalSearch.toLowerCase();
@@ -453,7 +845,7 @@ export const AdvancedDataTable: React.FC<AdvancedTableProps> = ({
     return matchesSidePanelFilters;
   });
 
-  const sortedData = sortMode === 'client' && sortColumn && sortDirection !== 'none'
+  const sortedData = processedGroups ? filteredData : (sortMode === 'client' && sortColumn && sortDirection !== 'none'
     ? [...filteredData].sort((a, b) => {
         let aValue: any = a[sortColumn as keyof typeof a];
         let bValue: any = b[sortColumn as keyof typeof b];
@@ -461,7 +853,7 @@ export const AdvancedDataTable: React.FC<AdvancedTableProps> = ({
         if (aValue > bValue) return sortDirection === 'asc' ? 1 : -1;
         return 0;
       })
-    : filteredData;
+    : filteredData);
 
   const totalItems = sortedData.length;
   const totalPages = Math.ceil(totalItems / itemsPerPage);
@@ -570,6 +962,7 @@ export const AdvancedDataTable: React.FC<AdvancedTableProps> = ({
                   variant="default"
                   showCheckbox
                   checked={allChecked}
+                  indeterminate={isIndeterminate}
                   onCheckChange={handleSelectAll}
                   locked={isLocked}
                   leftOffset={offset}
@@ -716,20 +1109,25 @@ export const AdvancedDataTable: React.FC<AdvancedTableProps> = ({
   };
 
   return (
-    <TableContainer>
+    <Component 
+      ref={ref}
+      className={className}
+      {...restProps}
+    >
+      <TableContainer>
       {showToolbar && (
         <TableToolbar
           title={toolbarTitle}
-          showGlobalSearch={true}
+          showGlobalSearch={showGlobalSearch}
           globalSearchValue={globalSearch}
           onGlobalSearchChange={setGlobalSearch}
           globalSearchPlaceholder="Search across all columns..."
           showDropdown={false}
           dropdownOptions={[]}
-          showDownload={false}
-          onDownload={() => console.log('Download clicked')}
-          showFilter={false}
-          onFilter={() => console.log('Filter clicked')}
+          showDownload={showDownload}
+          onDownload={onDownload}
+          showFilter={showFilter}
+          onFilter={() => {}}
           showSettings={useModal}
           onSettingsClick={() => setSettingsOpen(true)}
         />
@@ -768,23 +1166,117 @@ export const AdvancedDataTable: React.FC<AdvancedTableProps> = ({
             </thead>
 
             <tbody>
-              {paginatedData.length === 0 ? (
+              {loading ? (
+                // Show skeleton rows with shimmer animation when loading
+                Array.from({ length: itemsPerPage }).map((_, skeletonIndex) => (
+                  <SkeletonRow key={`skeleton-${skeletonIndex}`}>
+                    {flatVisibleColumns.map((col) => (
+                      <SkeletonCell key={col.id}>
+                        {col.id === 'checkbox' ? (
+                          <SkeletonBox width="20px" height="20px" />
+                        ) : (
+                          <SkeletonBox width="80%" />
+                        )}
+                      </SkeletonCell>
+                    ))}
+                  </SkeletonRow>
+                ))
+              ) : isInvalid ? (
                 <tr>
-                  <td 
-                    colSpan={flatVisibleColumns.length} 
-                    style={{ 
-                      textAlign: 'center', 
-                      padding: '48px 24px',
-                      color: '#666',
-                      fontSize: '14px',
-                      fontStyle: 'italic'
-                    }}
-                  >
-                    No data available
+                  <td colSpan={flatVisibleColumns.length} style={{ padding: 0, border: 'none' }}>
+                    <EmptyStateContainer 
+                      role="alert"
+                      aria-live="assertive"
+                    >
+                      <EmptyStateContent>
+                        <EmptyStateIconWrapper>
+                          <ErrorIcon sx={{ fontSize: 64, color: 'error.main' }} />
+                        </EmptyStateIconWrapper>
+                        
+                        <EmptyStateTextWrapper>
+                          <Typography variant="headingL" weight="semibold" as="h3" color="error">
+                            {errorMessage || 'Error loading data'}
+                          </Typography>
+                          <Typography variant="body" color="secondary">
+                            There was a problem loading the table data.
+                          </Typography>
+                        </EmptyStateTextWrapper>
+                        
+                        {onEmptyAction && (
+                          <Button
+                            variant="primary"
+                            size="medium"
+                            onClick={onEmptyAction}
+                          >
+                            {emptyActionLabel || 'Retry'}
+                          </Button>
+                        )}
+                      </EmptyStateContent>
+                    </EmptyStateContainer>
                   </td>
                 </tr>
-              ) : (
-                paginatedData.map((row, rowIndex) => {
+              ) : paginatedData.length === 0 ? (
+                <tr>
+                  <td colSpan={flatVisibleColumns.length} style={{ padding: 0, border: 'none' }}>
+                    <EmptyStateContainer 
+                      className={emptyStateClassName}
+                      style={emptyStateStyle}
+                      role="status"
+                      aria-live="polite"
+                    >
+                      <EmptyStateContent>
+                        <EmptyStateIconWrapper>
+                          <CloudOffIcon sx={{ fontSize: 64, color: 'text.secondary' }} />
+                        </EmptyStateIconWrapper>
+                        
+                        <EmptyStateTextWrapper>
+                          <Typography variant="headingL" weight="semibold" as="h3">
+                            {emptyTitle}
+                          </Typography>
+                          <Typography variant="body" color="secondary">
+                            {emptyDescription}
+                          </Typography>
+                        </EmptyStateTextWrapper>
+                        
+                        {emptyActionLabel && onEmptyAction && (
+                          <Button
+                            variant="primary"
+                            size="medium"
+                            onClick={onEmptyAction}
+                          >
+                            {emptyActionLabel}
+                          </Button>
+                        )}
+                      </EmptyStateContent>
+                    </EmptyStateContainer>
+                  </td>
+                </tr>
+              ) : processedGroups && processedGroups.length > 0 ? (
+                processedGroups.map(group => {
+                  const isExpanded = expandedGroups.has(group.id);
+                  
+                  return (
+                    <React.Fragment key={group.id}>
+                      <TableGroupHeader
+                        groupName={group.groupName}
+                        groupDescription={group.groupDescription}
+                        isExpanded={isExpanded}
+                        onToggle={() => handleGroupToggle(group.id)}
+                        colSpan={flatVisibleColumns.length}
+                        expandPosition={groupConfig?.expandPosition || 'left'}
+                        customContent={
+                          groupConfig?.renderGroupContent 
+                            ? groupConfig.renderGroupContent(group)
+                            : group.customContent
+                        }
+                        className={group.className}
+                        style={group.style}
+                        showCheckbox={selectable}
+                        isSelected={isGroupSelected(group.id)}
+                        onCheckboxChange={(checked) => handleGroupSelect(group.id, checked)}
+                      />
+                      
+                      {isExpanded && group.rows.map((row, rowIndex) => {
                   const isSelected = selectedRows.includes(startIndex + rowIndex);
 
                   // Render cells once - used by both animated and regular rows
@@ -878,6 +1370,102 @@ export const AdvancedDataTable: React.FC<AdvancedTableProps> = ({
                       {cells}
                     </tr>
                   );
+                })}
+                    </React.Fragment>
+                  );
+                })
+              ) : (
+                paginatedData.map((row, rowIndex) => {
+                  const isSelected = selectedRows.includes(startIndex + rowIndex);
+
+                  const cells = flatVisibleColumns.map((col, colIndex) => {
+                    const isLocked = col.locked;
+                    const offset = columnOffsets[col.id];
+                    const isFirstColumn = colIndex === 0;
+
+                    if (col.id === 'checkbox') {
+                      return (
+                        <TableCell
+                          key={col.id}
+                          selected={isSelected}
+                          locked={isLocked}
+                          leftOffset={offset}
+                          data-locked={isLocked}
+                          isFirstColumn={isFirstColumn}
+                          showCheckbox
+                          checked={isSelected}
+                          onCheckChange={(checked, shiftKey) => handleRowSelect(startIndex + rowIndex, checked, shiftKey)}
+                        />
+                      );
+                    }
+
+                    if (col.id === 'userDetails') {
+                      return (
+                        <TableCell
+                          key={col.id}
+                          selected={isSelected}
+                          locked={isLocked}
+                          leftOffset={offset}
+                          data-locked={isLocked}
+                          isFirstColumn={isFirstColumn}
+                        >
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                            <img
+                              src={row.avatar}
+                              alt={row.userDetails}
+                              style={{ width: 32, height: 32, borderRadius: '50%' }}
+                            />
+                            <div>
+                              <div style={{ fontWeight: 600 }}>{row.userDetails}</div>
+                              <div style={{ fontSize: '12px', color: '#666' }}>Role</div>
+                            </div>
+                          </div>
+                        </TableCell>
+                      );
+                    }
+
+                    const dynamicWidth = columnWidths[col.id];
+                    const currentWidth = dynamicWidth || (typeof col.width === 'number' ? col.width : undefined);
+                    
+                    return (
+                      <TableCell
+                        key={col.id}
+                        selected={isSelected}
+                        locked={isLocked}
+                        leftOffset={offset}
+                        data-locked={isLocked}
+                        isFirstColumn={isFirstColumn}
+                        width={currentWidth}
+                      >
+                        {row[col.id as keyof DataRow]}
+                      </TableCell>
+                    );
+                  });
+
+                  const handleRowClick = (e: React.MouseEvent<HTMLTableRowElement>) => {
+                    if (onRowClick) {
+                      onRowClick(row, startIndex + rowIndex, e);
+                    }
+                  };
+
+                  return animateSorting ? (
+                    <AnimatedTableRow 
+                      key={row.id} 
+                      $animationDelay={rowIndex * 20}
+                      onClick={handleRowClick}
+                      style={{ cursor: onRowClick ? 'pointer' : 'default' }}
+                    >
+                      {cells}
+                    </AnimatedTableRow>
+                  ) : (
+                    <tr 
+                      key={row.id}
+                      onClick={handleRowClick}
+                      style={{ cursor: onRowClick ? 'pointer' : 'default' }}
+                    >
+                      {cells}
+                    </tr>
+                  );
                 })
               )}
             </tbody>
@@ -903,14 +1491,16 @@ export const AdvancedDataTable: React.FC<AdvancedTableProps> = ({
         )}
       </TableWrapper>
 
-      <Pagination
-        currentPage={currentPage}
-        totalPages={totalPages}
-        totalItems={totalItems}
-        itemsPerPage={itemsPerPage}
-        onPageChange={setCurrentPage}
-        onItemsPerPageChange={setItemsPerPage}
-      />
+      {paginated && (
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          totalItems={totalItems}
+          itemsPerPage={itemsPerPage}
+          onPageChange={setCurrentPage}
+          onItemsPerPageChange={setItemsPerPage}
+        />
+      )}
 
       {useModal && (
         <TableSettings
@@ -926,5 +1516,8 @@ export const AdvancedDataTable: React.FC<AdvancedTableProps> = ({
         />
       )}
     </TableContainer>
+    </Component>
   );
-};
+});
+
+AdvancedDataTable.displayName = 'AdvancedDataTable';

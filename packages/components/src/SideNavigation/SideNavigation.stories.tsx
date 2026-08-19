@@ -62,13 +62,13 @@ function App() {
           label: 'Home',
           icon: <Icon name="Home" size="medium" />,
           active: true,
-          onClick: () => console.log('Home clicked')
+          onClick: () => {}
         },
         {
           id: 'about',
           label: 'About',
           icon: <Icon name="Info" size="medium" />,
-          onClick: () => console.log('About clicked')
+          onClick: () => {}
         }
       ]
     }
@@ -121,7 +121,7 @@ const navigationGroups = [
         label: 'Messages',
         icon: <Icon name="Info" size="medium" />,
         showIndicator: true, // Shows notification dot
-        onClick: () => console.log('Messages clicked')
+        onClick: () => {}
       }
     ]
   }
@@ -706,7 +706,6 @@ function App() {
       isPinned={isPinned}
       onPinChange={(pinned) => {
         setIsPinned(pinned);
-        console.log('Sidebar pinned:', pinned);
       }}
     />
   );
@@ -899,7 +898,7 @@ export const CompleteExample: Story = {
     ],
     user: {
       ...sampleUser,
-      onClick: () => console.log('User profile clicked'),
+      onClick: () => {},
     },
     expandMode: 'both',
     toggleButtonPosition: 'top',
@@ -935,8 +934,8 @@ function App() {
           icon: <Icon name="Home" size="medium" />,
           active: activeId === 'overview',
           onClick: () => setActiveId('overview'),
-          onMouseEnter: () => console.log('Hovered: Overview'),
-          onMouseLeave: () => console.log('Left: Overview'),
+          onMouseEnter: () => {},
+          onMouseLeave: () => {},
         },
         {
           id: 'analytics',
@@ -1001,7 +1000,7 @@ function App() {
     name: 'Ajay Soni',
     subtitle: 'Employee ID',
     avatarUrl: 'https://example.com/avatar.jpg', // Optional
-    onClick: () => console.log('User profile clicked!'),
+    onClick: () => {},
   };
 
   return (

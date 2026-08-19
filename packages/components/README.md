@@ -5,31 +5,26 @@ A comprehensive React component library for building consistent, accessible user
 [![npm version](https://img.shields.io/npm/v/@ajaysoni7832/lean-ids-components.svg)](https://www.npmjs.com/package/@ajaysoni7832/lean-ids-components)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
-## 🎉 What's New in v1.7.6 - Component Maturity Initiative
+## 🎉 What's New in v1.7.8
 
-**MAJOR RELEASE** - Comprehensive refactoring of 14+ core components to enterprise-grade standards!
+Current Version: **1.7.8**
 
-### 🎯 Component Maturity Checklist Applied
-- ✅ **14+ Components Refactored** - Tooltip, Checkbox, RadioButton, Toggle, MenuItem, NestedMenuOverlay, MetricCard, BarChart, Button, Modal, Table, InputField, Textarea, Select, Footer
-- ✅ **Typography Component Enforcement** - Zero custom styled text across all components
-- ✅ **Token-Based Styling** - Zero hardcoded pixels or colors
-- ✅ **8 States Implementation** - Default, Hover, Focus, Active, Disabled, Loading, Error, Empty
-- ✅ **Accessibility Enhancements** - ARIA attributes, keyboard navigation, focus management
-- ✅ **forwardRef + Polymorphic** - All refactored components support ref forwarding and 'as' prop
+### ✨ Component Enhancements
+- ✅ **Checkbox** - `indeterminate` prop with minus icon and `aria-checked="mixed"` (WCAG 2.1 AA)
+- ✅ **Select** - `onSearchInput`, `searchDebounceDelay`, virtual scrolling support for large datasets
+- ✅ **Accordion** - `headingVariant`, `headingWeight`, `expandIconPosition` props
+- ✅ **Drawer** - Polymorphic `as` prop and extended content/layout API
+- ✅ **Table** - New `TableGroupHeader` component and `types` module
+- ✅ **BarChart / DonutChart** - Props and styles enhancements
+- ✅ **AlertBanner, SideNavigation, Toast** - Story and accessibility improvements
 
-### 🆕 New Components & Files
-- **TableRow** - Standalone, composable table row component
-- **BarChart.styles.ts** - Complete styled components for BarChart
-- **MetricCard.styles.ts** - Complete styled components for MetricCard
-- **Table Documentation** - 4 new guides for custom table compositions
+### � Installation
 
-### 📊 Statistics
-- **Components Refactored:** 14+
-- **Files Modified:** 70+
-- **Lines Changed:** 5,000+
-- **Documentation Pages:** 20+
+```bash
+npm install @ajaysoni7832/lean-ids-components@1.7.8 @ajaysoni7832/lean-ids-tokens@1.7.8
+```
 
-📖 **[Read Full Release Notes](./RELEASE_NOTES.md)** | **[Migration Guide](./MIGRATION_GUIDE.md)** | **[Component Maturity Checklist](./COMPONENT_MATURITY_CHECKLIST.md)**
+📖 **[Read Full Release Notes](./RELEASE_NOTES.md)** | **[Migration Guide](./MIGRATION_GUIDE.md)**
 
 ---
 

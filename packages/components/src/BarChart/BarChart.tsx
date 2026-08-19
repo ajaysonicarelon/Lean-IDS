@@ -31,7 +31,7 @@ import React, { useState, useEffect, forwardRef } from 'react';
 import { Typography } from '../Typography';
 import { Icon } from '../Icon';
 import { Tooltip } from '../Tooltip';
-import { BarChartProps, BarChartData } from './BarChart.types';
+import { BarChartProps, BarChartData, BarMetric } from './BarChart.types';
 import * as S from './BarChart.styles';
 
 export const BarChart = forwardRef<HTMLDivElement, BarChartProps>(
@@ -52,6 +52,16 @@ export const BarChart = forwardRef<HTMLDivElement, BarChartProps>(
       // Axis configuration
       yAxisLabel,
       xAxisLabel,
+      
+      // Layout customization
+      chartPadding,
+      barGap,
+      xAxisLabelSpacing,
+      yAxisLabelSpacing,
+      axisLabelMargin,
+      minBarWidth,
+      maxBarWidth,
+      xAxisLabelRotation,
       
       // Legend
       showLegend = false,
@@ -77,6 +87,7 @@ export const BarChart = forwardRef<HTMLDivElement, BarChartProps>(
       onError,
       onBarClick,
       onBarHover,
+      onSegmentClick,
       onLegendClick,
       
       // Customization slots
@@ -99,6 +110,17 @@ export const BarChart = forwardRef<HTMLDivElement, BarChartProps>(
     },
     ref
   ) => {
+    // ============================================================================
+    // HELPERS
+    // ============================================================================
+    
+    // Convert number or string to CSS value
+    const toCSSValue = (value: string | number | undefined, fallback: string = '0'): string => {
+      if (value === undefined) return fallback;
+      if (typeof value === 'number') return `${value}px`;
+      return value;
+    };
+
     // ============================================================================
     // STATE
     // ============================================================================
@@ -157,6 +179,7 @@ export const BarChart = forwardRef<HTMLDivElement, BarChartProps>(
         document.addEventListener('click', handleClickOutside);
         return () => document.removeEventListener('click', handleClickOutside);
       }
+      return undefined;
     }, [infoTooltip.visible]);
 
     // ============================================================================
@@ -233,6 +256,18 @@ export const BarChart = forwardRef<HTMLDivElement, BarChartProps>(
     const handleBarClick = (item: BarChartData, index: number) => {
       if (disabled || !onBarClick) return;
       onBarClick(item, index);
+    };
+
+    const handleSegmentClick = (
+      event: React.MouseEvent,
+      metric: BarMetric,
+      barData: BarChartData,
+      barIndex: number,
+      metricIndex: number
+    ) => {
+      if (disabled || !onSegmentClick) return;
+      event.stopPropagation(); // Prevent bar click from firing
+      onSegmentClick(metric, barData, barIndex, metricIndex);
     };
 
     const handleInfoIconClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -335,7 +370,10 @@ export const BarChart = forwardRef<HTMLDivElement, BarChartProps>(
                   </S.YAxisLabelText>
                 </S.YAxisLabelContainer>
               )}
-              <S.YValuesContainer>
+              <S.YValuesContainer
+                $labelSpacing={yAxisLabelSpacing ? toCSSValue(yAxisLabelSpacing) : undefined}
+                $labelMargin={axisLabelMargin?.y}
+              >
                 {yAxisValues.map((value, index) => (
                   <Typography key={index} variant="caption" weight="semibold">
                     {formatValue(value)}
@@ -345,7 +383,13 @@ export const BarChart = forwardRef<HTMLDivElement, BarChartProps>(
             </S.GraphLabelsContainer>
 
             {/* Vertical Bars Container with Grid */}
-            <S.BarsContainer>
+            <S.BarsContainer
+              $paddingLeft={chartPadding?.left}
+              $paddingRight={chartPadding?.right}
+              $paddingTop={chartPadding?.top}
+              $paddingBottom={chartPadding?.bottom}
+              $barGap={barGap ? toCSSValue(barGap) : undefined}
+            >
               {/* Dotted Grid Lines */}
               {showGrid && (
                 <S.GridLinesContainer>
@@ -366,6 +410,8 @@ export const BarChart = forwardRef<HTMLDivElement, BarChartProps>(
                   <S.BarColumn
                     key={index}
                     $height={barHeight}
+                    $minWidth={minBarWidth ? toCSSValue(minBarWidth) : undefined}
+                    $maxWidth={maxBarWidth ? toCSSValue(maxBarWidth) : undefined}
                     onMouseMove={(e) => handleBarHover(e, item, index)}
                     onMouseLeave={handleBarLeave}
                     onClick={() => handleBarClick(item, index)}
@@ -385,6 +431,11 @@ export const BarChart = forwardRef<HTMLDivElement, BarChartProps>(
                           key={metricIndex}
                           $color={metric.color}
                           $height={segmentHeight}
+                          $clickable={!!onSegmentClick}
+                          onClick={(e) => handleSegmentClick(e, metric, item, index, metricIndex)}
+                          role={onSegmentClick ? 'button' : undefined}
+                          tabIndex={onSegmentClick && !disabled ? 0 : -1}
+                          aria-label={onSegmentClick ? `${metric.name}: ${formatValue(metric.value)}` : undefined}
                         />
                       );
                     })}
@@ -395,10 +446,14 @@ export const BarChart = forwardRef<HTMLDivElement, BarChartProps>(
           </S.GraphContainer>
 
           {/* X-Axis */}
-          <S.XAxisContainer $paddingLeft="3.9rem">
-            <S.XValuesContainer>
+          <S.XAxisContainer
+            $paddingLeft="3.9rem"
+            $labelSpacing={xAxisLabelSpacing ? toCSSValue(xAxisLabelSpacing) : undefined}
+            $labelMargin={axisLabelMargin?.x}
+          >
+            <S.XValuesContainer $labelSpacing={xAxisLabelSpacing ? toCSSValue(xAxisLabelSpacing) : undefined}>
               {data.map((item, index) => (
-                <S.XValueLabel key={index}>
+                <S.XValueLabel key={index} $rotation={xAxisLabelRotation}>
                   <Typography variant="caption" weight="medium">
                     {item.label}
                   </Typography>
@@ -440,7 +495,13 @@ export const BarChart = forwardRef<HTMLDivElement, BarChartProps>(
             </S.HorizontalGraphLabelsContainer>
 
             {/* Horizontal Bars Container */}
-            <S.HorizontalBarsContainer>
+            <S.HorizontalBarsContainer
+              $paddingLeft={chartPadding?.left}
+              $paddingRight={chartPadding?.right}
+              $paddingTop={chartPadding?.top}
+              $paddingBottom={chartPadding?.bottom}
+              $barGap={barGap ? toCSSValue(barGap) : undefined}
+            >
               {data.map((item, index) => {
                 const totalValue = item.metrics
                   .filter(m => activeMetrics.has(m.name))
@@ -448,7 +509,11 @@ export const BarChart = forwardRef<HTMLDivElement, BarChartProps>(
                 const barWidthPercent = totalValue > 0 ? (totalValue / maxValue) * 100 : 0;
 
                 return (
-                  <S.HorizontalBarRow key={index}>
+                  <S.HorizontalBarRow
+                    key={index}
+                    $minHeight={minBarWidth ? toCSSValue(minBarWidth) : undefined}
+                    $maxHeight={maxBarWidth ? toCSSValue(maxBarWidth) : undefined}
+                  >
                     <S.HorizontalBarTrack
                       $width={barWidthPercent}
                       onMouseMove={(e) => handleBarHover(e, item, index)}
@@ -470,6 +535,11 @@ export const BarChart = forwardRef<HTMLDivElement, BarChartProps>(
                             key={metricIndex}
                             $color={metric.color}
                             $width={segmentWidthPercent}
+                            $clickable={!!onSegmentClick}
+                            onClick={(e) => handleSegmentClick(e, metric, item, index, metricIndex)}
+                            role={onSegmentClick ? 'button' : undefined}
+                            tabIndex={onSegmentClick && !disabled ? 0 : -1}
+                            aria-label={onSegmentClick ? `${metric.name}: ${formatValue(metric.value)}` : undefined}
                           />
                         );
                       })}

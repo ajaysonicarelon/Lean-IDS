@@ -68,7 +68,7 @@ function MyTable() {
 <Pagination
   currentPage={1}
   totalPages={10}
-  onPageChange={(page) => console.log(page)}
+  onPageChange={(page) => {}}
 />
 \`\`\`
 

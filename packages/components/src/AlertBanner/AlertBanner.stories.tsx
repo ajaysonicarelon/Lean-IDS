@@ -35,8 +35,8 @@ import { AlertBanner } from '@lean-ids/components';
   type="warning"
   styleVariant="default"
   text="This is a sample message text"
-  onActionClick={() => console.log('Action clicked')}
-  onClose={() => console.log('Closed')}
+  onActionClick={() => {}}
+  onClose={() => {}}
 />
 \`\`\`
         `,

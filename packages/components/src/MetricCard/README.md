@@ -200,7 +200,7 @@ interface MetricData {
   showActionChip={true}
   actionText="Need Action"
   actionType="warning"
-  onActionClick={() => console.log('Action clicked')}
+  onActionClick={() => {}}
 />
 ```
 
@@ -227,8 +227,8 @@ interface MetricData {
   showInfoIcon={true}
   showDropdown={true}
   dropdownValue="Last 7 days"
-  onInfoClick={() => console.log('Info clicked')}
-  onDropdownChange={() => console.log('Dropdown clicked')}
+  onInfoClick={() => {}}
+  onDropdownChange={() => {}}
   metrics={[
     { label: 'Revenue', value: '$12,573,324.89' },
     { label: 'Expenses', value: '$8,234,567.12' },
