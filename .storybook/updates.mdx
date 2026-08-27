@@ -7,7 +7,7 @@ import { useEffect } from 'react';
 {`
   // Mark updates as viewed when user visits this page
   if (typeof window !== 'undefined') {
-    const currentVersion = '1.7.8';
+    const currentVersion = '1.7.9';
     const lastViewedVersion = localStorage.getItem('lean-ids-last-viewed-version');
     
     // Mark as viewed
@@ -217,7 +217,7 @@ import { useEffect } from 'react';
     <div className="icon">🔔</div>
     <div className="content">
       <div className="title">New Update Available!</div>
-      <div className="message">Version 1.7.8 has been released. Check out the latest changes below.</div>
+      <div className="message">Version 1.7.9 has been released. Check out the latest changes below.</div>
     </div>
   </div>
 </div>
@@ -225,7 +225,7 @@ import { useEffect } from 'react';
 <script dangerouslySetInnerHTML={{__html: `
   (function() {
     if (typeof window !== 'undefined') {
-      const currentVersion = '1.7.8';
+      const currentVersion = '1.7.9';
       const lastViewedVersion = localStorage.getItem('lean-ids-last-viewed-version');
       
       // Show banner if user hasn't seen this version
@@ -254,7 +254,7 @@ Stay up to date with the latest changes, improvements, and fixes to the Lean IDS
 
 <div className="stats-container">
   <div className="stat-card">
-    <div className="stat-number">1.7.8</div>
+    <div className="stat-number">1.7.9</div>
     <div className="stat-label">Current Version</div>
   </div>
   <div className="stat-card">
@@ -277,62 +277,83 @@ Stay up to date with the latest changes, improvements, and fixes to the Lean IDS
 
 <div className="version-container">
   <div className="version-header">
-    <div className="version-number">v1.7.8</div>
-    <div className="version-date">August 19, 2026</div>
+    <div className="version-number">v1.7.9</div>
+    <div className="version-date">August 27, 2026</div>
   </div>
   <div className="version-content">
 
     <div className="change-section">
       <div className="change-title">
         <span className="change-icon">✨</span>
-        Component Enhancements
+        New Features - Table Components
       </div>
       <ul className="change-list">
         <li className="change-item critical">
-          <strong>Checkbox</strong> - Added indeterminate state with minus icon and aria-checked="mixed" for "select all" table scenarios
+          <strong>Server-Side Pagination</strong> - Added paginationMode, onPageChange, currentPage, and totalItems props for server-side pagination support
+        </li>
+        <li className="change-item critical">
+          <strong>Column Locking System</strong> - Three-dot menu on column headers with sort, lock, autosize, and reset options
         </li>
         <li className="change-item">
-          <strong>Select</strong> - Added onSearchInput (immediate), searchDebounceDelay, virtual scrolling support, and performance props (Pillar 7)
+          <strong>Always-Visible Scrollbar</strong> - 8px scrollbar with custom theme-based styling (neutral[100], neutral[400], neutral[500])
         </li>
         <li className="change-item">
-          <strong>Accordion</strong> - Added headingVariant, headingWeight, and expandIconPosition props
-        </li>
-        <li className="change-item">
-          <strong>Drawer</strong> - Complete refactor with polymorphic 'as' prop and extended API
-        </li>
-        <li className="change-item">
-          <strong>Table</strong> - Added TableGroupHeader and types module; refactored composition stories
-        </li>
-        <li className="change-item">
-          <strong>BarChart / DonutChart</strong> - Props and styles enhancements
-        </li>
-        <li className="change-item">
-          <strong>AlertBanner, SideNavigation, Toast</strong> - Story and accessibility improvements
+          <strong>Terminology Update</strong> - Changed from "Pin" to "Lock" for better UX clarity
         </li>
       </ul>
     </div>
 
     <div className="change-section">
       <div className="change-title">
-        <span className="change-icon">🔧</span>
-        Developer Experience
+        <span className="change-icon">🐛</span>
+        Bug Fixes
       </div>
       <ul className="change-list">
         <li className="change-item">
-          Removed redundant markdown documentation files — keeping repository lean
+          <strong>Selected Row Styling</strong> - Fixed inconsistent background color (all cells now use primary[50])
         </li>
         <li className="change-item">
-          Updated Figma token parsing script
+          <strong>Render Function Consistency</strong> - Standardized signature across both tables: render(value, row, rowIndex)
+        </li>
+      </ul>
+    </div>
+
+    <div className="change-section">
+      <div className="change-title">
+        <span className="change-icon">�</span>
+        Documentation
+      </div>
+      <ul className="change-list">
+        <li className="change-item">
+          <strong>Storybook</strong> - Added comprehensive prop documentation for all table features
         </li>
         <li className="change-item">
-          Version synchronization across all packages
+          <strong>Server-Side Examples</strong> - Added pagination and sorting examples
+        </li>
+        <li className="change-item">
+          <strong>Custom Cell Rendering</strong> - Added guide with signature: (value, row, rowIndex) => ReactNode
+        </li>
+        <li className="change-item">
+          <strong>11 Categories</strong> - Organized 50+ documented props
+        </li>
+      </ul>
+    </div>
+
+    <div className="change-section">
+      <div className="change-title">
+        <span className="change-icon">🗑️</span>
+        Removed
+      </div>
+      <ul className="change-list">
+        <li className="change-item">
+          <strong>Angular Support</strong> - Removed Angular documentation and build dependencies (fixes Node 20.17.0 compatibility)
         </li>
       </ul>
     </div>
 
     <div className="migration-note">
       <strong>📦 Installation</strong>
-      <code>npm install @ajaysoni7832/lean-ids-components@1.7.8 @ajaysoni7832/lean-ids-tokens@1.7.8</code>
+      <code>npm install @ajaysoni7832/lean-ids-components@1.7.9 @ajaysoni7832/lean-ids-tokens@1.7.9</code>
     </div>
 
   </div>
@@ -341,6 +362,36 @@ Stay up to date with the latest changes, improvements, and fixes to the Lean IDS
 ---
 
 ## 📋 Previous Versions
+
+<div className="version-container">
+  <div className="version-header">
+    <div className="version-number">v1.7.8</div>
+    <div className="version-date">August 19, 2026</div>
+  </div>
+  <div className="version-content">
+    
+    <div className="change-section">
+      <div className="change-title">
+        <span className="change-icon">✨</span>
+        Component Enhancements
+      </div>
+      <ul className="change-list">
+        <li className="change-item">
+          <strong>Checkbox</strong> - Added indeterminate state with minus icon and aria-checked="mixed"
+        </li>
+        <li className="change-item">
+          <strong>Select</strong> - Added onSearchInput, searchDebounceDelay, virtual scrolling support
+        </li>
+        <li className="change-item">
+          <strong>Accordion</strong> - Added headingVariant, headingWeight, expandIconPosition props
+        </li>
+        <li className="change-item">
+          <strong>Drawer</strong> - Complete refactor with polymorphic 'as' prop
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
 
 <div className="version-container">
   <div className="version-header">
@@ -907,6 +958,18 @@ Stay up to date with the latest changes, improvements, and fixes to the Lean IDS
   </thead>
   <tbody>
     <tr style={{ borderBottom: '1px solid #e0e0e0', background: '#fff3cd' }}>
+      <td style={{ padding: '0.75rem', fontWeight: 600 }}>1.7.9</td>
+      <td style={{ padding: '0.75rem' }}>Aug 27, 2026</td>
+      <td style={{ padding: '0.75rem' }}>Minor</td>
+      <td style={{ padding: '0.75rem' }}>Table Enhancements - Server-side pagination, Column locking system, Angular removal</td>
+    </tr>
+    <tr style={{ borderBottom: '1px solid #e0e0e0' }}>
+      <td style={{ padding: '0.75rem', fontWeight: 600 }}>1.7.8</td>
+      <td style={{ padding: '0.75rem' }}>Aug 19, 2026</td>
+      <td style={{ padding: '0.75rem' }}>Minor</td>
+      <td style={{ padding: '0.75rem' }}>Checkbox indeterminate, Select performance, Accordion/Drawer enhancements</td>
+    </tr>
+    <tr style={{ borderBottom: '1px solid #e0e0e0' }}>
       <td style={{ padding: '0.75rem', fontWeight: 600 }}>1.7.6</td>
       <td style={{ padding: '0.75rem' }}>Jul 22, 2026</td>
       <td style={{ padding: '0.75rem' }}>Major</td>
