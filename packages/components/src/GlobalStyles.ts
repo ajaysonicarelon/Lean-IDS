@@ -1,5 +1,5 @@
 /**
- * Global styles for Lean IDS
+ * Global styles for Lean DS
  */
 
 import { createGlobalStyle } from 'styled-components';

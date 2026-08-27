@@ -1,22 +1,22 @@
 #!/usr/bin/env node
 
 /**
- * Lean IDS - Post-install Script
+ * Lean DS - Post-install Script
  * 
  * Automatically copies AI assistant guidelines to the consuming project's root directory.
  * This ensures AI coding assistants (Cursor, Windsurf, GitHub Copilot, etc.) 
- * use Lean IDS components correctly.
+ * use Lean DS components correctly.
  */
 
 const fs = require('fs');
 const path = require('path');
 
-// Detect if we're in a consuming project or in the Lean IDS repo itself
+// Detect if we're in a consuming project or in the Lean DS repo itself
 const isLeanIDSRepo = __dirname.includes('lean-ids/packages/components');
 
-// Skip postinstall if we're in the Lean IDS repo (during development)
+// Skip postinstall if we're in the Lean DS repo (during development)
 if (isLeanIDSRepo) {
-  console.log('📦 Lean IDS: Skipping postinstall (running in development mode)');
+  console.log('📦 Lean DS: Skipping postinstall (running in development mode)');
   process.exit(0);
 }
 
@@ -51,7 +51,7 @@ const filesToCopy = [
   }
 ];
 
-console.log('\n🤖 Lean IDS: Setting up AI assistant guidelines...\n');
+console.log('\n🤖 Lean DS: Setting up AI assistant guidelines...\n');
 
 let copiedCount = 0;
 let skippedCount = 0;
@@ -85,7 +85,7 @@ filesToCopy.forEach(({ name, description }) => {
 console.log('\n' + '='.repeat(60));
 
 if (copiedCount > 0) {
-  console.log(`\n✅ Lean IDS AI Setup Complete!`);
+  console.log(`\n✅ Lean DS AI Setup Complete!`);
   console.log(`   ${copiedCount} file(s) copied to project root`);
   
   console.log('\n📖 Next Steps:');

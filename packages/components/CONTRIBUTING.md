@@ -1,6 +1,6 @@
-# Contributing to Lean IDS
+# Contributing to Lean DS
 
-Thank you for your interest in contributing to the Lean IDS design system!
+Thank you for your interest in contributing to the Lean DS design system!
 
 ## Getting Started
 

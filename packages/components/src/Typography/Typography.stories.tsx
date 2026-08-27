@@ -415,7 +415,7 @@ export const RealWorldExample: Story = {
   render: () => (
     <div style={{ maxWidth: '800px' }}>
       <Typography variant="headingXL" weight="semibold" style={{ marginBottom: '8px' }}>
-        Welcome to Lean IDS
+        Welcome to Lean DS
       </Typography>
       
       <Typography variant="caption" weight="medium" color="#666" style={{ marginBottom: '24px' }}>
@@ -423,7 +423,7 @@ export const RealWorldExample: Story = {
       </Typography>
       
       <Typography variant="body" weight="regular" style={{ marginBottom: '16px' }}>
-        Lean IDS is a comprehensive design system built for modern web applications. 
+        Lean DS is a comprehensive design system built for modern web applications. 
         It provides a complete set of components, design tokens, and guidelines to help 
         you build consistent, accessible, and beautiful user interfaces.
       </Typography>

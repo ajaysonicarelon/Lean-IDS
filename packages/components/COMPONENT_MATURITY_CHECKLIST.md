@@ -2,7 +2,7 @@
 
 **Quick Reference for Enterprise-Grade Component Development**
 
-Use this checklist to ensure all Lean IDS components meet enterprise standards for customizability, accessibility, and maintainability.
+Use this checklist to ensure all Lean DS components meet enterprise standards for customizability, accessibility, and maintainability.
 
 ---
 

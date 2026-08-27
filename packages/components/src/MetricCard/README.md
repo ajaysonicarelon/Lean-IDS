@@ -1,6 +1,6 @@
 # MetricCard Component
 
-**The official data visualization component for displaying KPIs and metrics in Lean IDS dashboards.**
+**The official data visualization component for displaying KPIs and metrics in Lean DS dashboards.**
 
 ---
 

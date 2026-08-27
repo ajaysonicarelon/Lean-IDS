@@ -25,7 +25,7 @@ const meta: Meta<typeof InputField> = {
         component: `
 # Input Field Component
 
-A fully accessible input field component designed for the Lean IDS design system, supporting both Carelon and Elevance brand themes.
+A fully accessible input field component designed for the Lean DS design system, supporting both Carelon and Elevance brand themes.
 
 ## About
 

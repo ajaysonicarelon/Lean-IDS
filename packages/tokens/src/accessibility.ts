@@ -1,5 +1,5 @@
 /**
- * Accessibility tokens for Lean IDS
+ * Accessibility tokens for Lean DS
  * High-contrast colors, focus indicators, and a11y-specific values
  */
 

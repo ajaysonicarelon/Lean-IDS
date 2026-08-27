@@ -2,7 +2,7 @@
  * Borders & Shadows - Design System Tokens
  * 
  * This page documents border radius, border width, and shadow tokens
- * available in the Lean IDS design system.
+ * available in the Lean DS design system.
  */
 
 import type { Meta, StoryObj } from '@storybook/react';
@@ -173,7 +173,7 @@ const meta: Meta = {
         component: `
 # Borders & Shadows Tokens
 
-The Lean IDS design system provides tokens for border radius, border width, and shadows to create consistent visual styles and depth.
+The Lean DS design system provides tokens for border radius, border width, and shadows to create consistent visual styles and depth.
 
 ## Border Radius
 

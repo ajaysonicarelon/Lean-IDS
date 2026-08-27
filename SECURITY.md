@@ -2,7 +2,7 @@
 
 ## Supported Versions
 
-We actively support the following versions of Lean IDS with security updates:
+We actively support the following versions of Lean DS with security updates:
 
 | Version | Supported          | Status |
 | ------- | ------------------ | ------ |
@@ -16,10 +16,10 @@ We actively support the following versions of Lean IDS with security updates:
 
 ### How to Report
 
-If you discover a security vulnerability in Lean IDS, please report it to us privately:
+If you discover a security vulnerability in Lean DS, please report it to us privately:
 
 1. **Email**: ajay@carelon.com
-2. **Subject**: `[SECURITY] Lean IDS Vulnerability Report`
+2. **Subject**: `[SECURITY] Lean DS Vulnerability Report`
 3. **Include**:
    - Description of the vulnerability
    - Steps to reproduce
@@ -97,7 +97,7 @@ npm ci
 
 ### Content Security Policy (CSP)
 
-If using Lean IDS in a web application, configure CSP headers:
+If using Lean DS in a web application, configure CSP headers:
 
 ```
 Content-Security-Policy: 

@@ -1,5 +1,5 @@
 /**
- * Opacity tokens for Lean IDS
+ * Opacity tokens for Lean DS
  */
 
 export const opacity = {

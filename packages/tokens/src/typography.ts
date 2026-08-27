@@ -1,5 +1,5 @@
 /**
- * Typography tokens for Lean IDS
+ * Typography tokens for Lean DS
  * Auto-generated from Figma design tokens
  */
 

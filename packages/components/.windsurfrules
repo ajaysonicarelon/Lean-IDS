@@ -1,4 +1,4 @@
-# Lean IDS - Windsurf AI Rules
+# Lean DS - Windsurf AI Rules
 # Guidelines for Windsurf AI Assistant
 
 ## � READ FIRST: Complete Guidelines
@@ -38,7 +38,7 @@ Import ONLY from:
 
 ### EXCEPTION:
 ✅ If library already exists in package.json, can continue using
-✅ If user explicitly says "use only Lean IDS", replace all external components
+✅ If user explicitly says "use only Lean DS", replace all external components
 
 ---
 
@@ -99,11 +99,11 @@ background: ${({ theme }) => theme.colors.palette.primary[600]};
 **CRITICAL:** NEVER create custom modal or drawer components.
 
 ```tsx
-// ✅ CORRECT - Use Lean IDS Modal
+// ✅ CORRECT - Use Lean DS Modal
 import { Modal } from '@lean-ids/components';
 <Modal isOpen={isOpen} onClose={onClose} title="Dialog">{content}</Modal>
 
-// ✅ CORRECT - Use Lean IDS Drawer
+// ✅ CORRECT - Use Lean DS Drawer
 import { Drawer } from '@lean-ids/components';
 <Drawer isOpen={isOpen} onClose={onClose} title="Panel">{content}</Drawer>
 
@@ -118,14 +118,14 @@ import Modal from 'react-modal';
 
 ## 🎨 COMPONENT CREATION RULES
 
-### Build ONLY from Existing Lean IDS Components
+### Build ONLY from Existing Lean DS Components
 
-**Need a form?** Use Input, Button from Lean IDS (don't create custom)
-**Need chips?** Use Chip from Lean IDS (don't create custom)
-**Building complex components?** Compose from existing Lean IDS components
+**Need a form?** Use Input, Button from Lean DS (don't create custom)
+**Need chips?** Use Chip from Lean DS (don't create custom)
+**Building complex components?** Compose from existing Lean DS components
 
 ```tsx
-// ✅ CORRECT - Use Lean IDS components
+// ✅ CORRECT - Use Lean DS components
 import { Input, Button, Chip } from '@lean-ids/components';
 
 // ❌ WRONG - Creating custom components
@@ -173,10 +173,10 @@ import { Button } from '@mui/material'; // ❌ WRONG!
 
 ## 📋 DECISION LOGIC
 
-1. Fresh project? → Use ONLY Lean IDS
-2. User says "use only Lean IDS"? → Replace all external components
+1. Fresh project? → Use ONLY Lean DS
+2. User says "use only Lean DS"? → Replace all external components
 3. External library exists? → Can use (unless user says otherwise)
-4. Component doesn't exist in Lean IDS? → Ask user
+4. Component doesn't exist in Lean DS? → Ask user
 5. Need icons? → Use `@mui/icons-material` ONLY
 6. Never use gradients (unless user explicitly requests)
 7. Always use tokens (never hardcode values)

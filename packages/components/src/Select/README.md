@@ -1,6 +1,6 @@
 # Select Component
 
-**The official Select/Dropdown component for Lean IDS. Use this component for all dropdown selection needs.**
+**The official Select/Dropdown component for Lean DS. Use this component for all dropdown selection needs.**
 
 ⚠️ **IMPORTANT:** Do NOT create custom select/dropdown components. Always use this Select component for consistency across the design system.
 
@@ -8,7 +8,7 @@
 
 ## 📋 Overview
 
-The Select component is a reusable dropdown with support for single/multiple selection, search functionality, and full integration with existing Lean IDS components (InputField, Checkbox, RadioButton, Icon, HelpingText, FieldImportance).
+The Select component is a reusable dropdown with support for single/multiple selection, search functionality, and full integration with existing Lean DS components (InputField, Checkbox, RadioButton, Icon, HelpingText, FieldImportance).
 
 ### **When to Use:**
 - ✅ Single selection from a list
@@ -202,7 +202,7 @@ const options = [
 
 ## 🎨 Component Architecture
 
-### **Reuses Lean IDS Components:**
+### **Reuses Lean DS Components:**
 - ✅ **InputField** - For the trigger/display field
 - ✅ **Checkbox** - For multiple selection
 - ✅ **RadioButton** - For single selection
@@ -269,7 +269,7 @@ const CustomSelect = () => (
 );
 ```
 
-### **✅ CORRECT - Use Lean IDS Select:**
+### **✅ CORRECT - Use Lean DS Select:**
 ```tsx
 // DO THIS
 import { Select } from '@ajaysoni7832/lean-ids-components';
@@ -365,7 +365,7 @@ For questions or issues:
 
 ## ✅ Summary
 
-**The Select component is the ONLY way to create dropdowns in Lean IDS applications.**
+**The Select component is the ONLY way to create dropdowns in Lean DS applications.**
 
 - Import from `@ajaysoni7832/lean-ids-components`
 - Use for all dropdown selection needs

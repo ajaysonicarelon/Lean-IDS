@@ -1,6 +1,6 @@
 # Drawer Component
 
-**The official Drawer (Side Panel) component for Lean IDS. Use this component for all side panel needs.**
+**The official Drawer (Side Panel) component for Lean DS. Use this component for all side panel needs.**
 
 ⚠️ **IMPORTANT:** Do NOT create custom drawer/side panel components. Always use this Drawer component for consistency across the design system.
 
@@ -8,7 +8,7 @@
 
 ## 📋 Overview
 
-The Drawer component is a reusable side panel that slides in from the left or right edge of the screen. It's designed to handle all drawer/side panel use cases in Lean IDS applications.
+The Drawer component is a reusable side panel that slides in from the left or right edge of the screen. It's designed to handle all drawer/side panel use cases in Lean DS applications.
 
 ### **When to Use:**
 - ✅ Detailed forms
@@ -216,7 +216,7 @@ function MyComponent() {
 
 ## 🎨 Styling
 
-The Drawer uses Lean IDS design tokens and cannot be customized beyond the provided props. This ensures consistency across all applications.
+The Drawer uses Lean DS design tokens and cannot be customized beyond the provided props. This ensures consistency across all applications.
 
 **Default Styles:**
 - Width: 600px
@@ -287,7 +287,7 @@ const CustomDrawer = () => (
 );
 ```
 
-### **✅ CORRECT - Use Lean IDS Drawer:**
+### **✅ CORRECT - Use Lean DS Drawer:**
 ```tsx
 // DO THIS
 import { Drawer } from '@ajaysoni7832/lean-ids-components';
@@ -420,7 +420,7 @@ For questions or issues:
 
 ## ✅ Summary
 
-**The Drawer component is the ONLY way to create side panels in Lean IDS applications.**
+**The Drawer component is the ONLY way to create side panels in Lean DS applications.**
 
 - Import from `@ajaysoni7832/lean-ids-components`
 - Use for all drawer/side panel needs

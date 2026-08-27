@@ -1,4 +1,4 @@
-# Lean IDS Components
+# Lean DS Components
 
 A comprehensive React component library for building consistent, accessible user interfaces. Part of the Lean Internal Design System (IDS).
 
@@ -34,7 +34,7 @@ npm install @ajaysoni7832/lean-ids-components@1.7.9 @ajaysoni7832/lean-ids-token
 **⚠️ If you're using AI coding assistants (Cursor, Windsurf, GitHub Copilot, etc.), you MUST set up AI guidelines first!**
 
 ### **Why This Matters:**
-Without proper setup, AI assistants will suggest external UI libraries (Material-UI, Ant Design, etc.) instead of Lean IDS components, breaking design system consistency.
+Without proper setup, AI assistants will suggest external UI libraries (Material-UI, Ant Design, etc.) instead of Lean DS components, breaking design system consistency.
 
 ### **Quick Setup (Choose One):**
 
@@ -59,7 +59,7 @@ Download these files from the repository and place them in your project root:
 #### **Option 3: Quick Prompt**
 If you can't set up files, tell your AI assistant:
 
-> "Use ONLY components from @ajaysoni7832/lean-ids-components. Do NOT use Material-UI, Ant Design, Chakra UI, or any other external UI library. Import all components from @ajaysoni7832/lean-ids-components and use theme tokens from @ajaysoni7832/lean-ids-tokens. Never create custom modal or drawer components - always use Modal and Drawer from Lean IDS."
+> "Use ONLY components from @ajaysoni7832/lean-ids-components. Do NOT use Material-UI, Ant Design, Chakra UI, or any other external UI library. Import all components from @ajaysoni7832/lean-ids-components and use theme tokens from @ajaysoni7832/lean-ids-tokens. Never create custom modal or drawer components - always use Modal and Drawer from Lean DS."
 
 ### **Verification:**
 After setup, test by asking your AI:
@@ -89,7 +89,7 @@ npm install @ajaysoni7832/lean-ids-components @ajaysoni7832/lean-ids-tokens styl
 
 ### Framework-Specific Setup
 
-Lean IDS works with all modern React frameworks:
+Lean DS works with all modern React frameworks:
 - ✅ **Next.js** (App Router & Pages Router)
 - ✅ **Vite**
 - ✅ **Create React App**
@@ -101,7 +101,7 @@ Lean IDS works with all modern React frameworks:
 
 ### 1. Wrap your app with ThemeProvider
 
-Lean IDS provides **two brand themes**: `carelonTheme` (default) and `elevanceTheme`.
+Lean DS provides **two brand themes**: `carelonTheme` (default) and `elevanceTheme`.
 
 ```tsx
 import React from 'react';

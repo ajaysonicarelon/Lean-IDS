@@ -1,8 +1,8 @@
-# Fonts in Lean IDS
+# Fonts in Lean DS
 
 ## Automatic Font Loading
 
-The Lean IDS design system uses **Elevance Sans** as the primary font family. When you use the `GlobalStyles` component from `@ajaysoni7832/lean-ids-components`, the fonts are **automatically loaded** for you.
+The Lean DS design system uses **Elevance Sans** as the primary font family. When you use the `GlobalStyles` component from `@ajaysoni7832/lean-ids-components`, the fonts are **automatically loaded** for you.
 
 ## How It Works
 

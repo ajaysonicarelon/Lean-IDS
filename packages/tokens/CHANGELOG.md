@@ -1,6 +1,6 @@
-# Changelog - Lean IDS Tokens
+# Changelog - Lean DS Tokens
 
-All notable changes to the Lean IDS Tokens package will be documented in this file.
+All notable changes to the Lean DS Tokens package will be documented in this file.
 
 ## [1.7.8] - 2026-08-19
 

@@ -1,7 +1,7 @@
 {
   "name": "@lean-ids/utils",
   "version": "1.0.0",
-  "description": "Utility functions for Lean IDS",
+  "description": "Utility functions for Lean DS",
   "main": "dist/index.js",
   "module": "dist/index.esm.js",
   "types": "dist/index.d.ts",

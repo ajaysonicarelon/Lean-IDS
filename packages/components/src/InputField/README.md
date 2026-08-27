@@ -1,6 +1,6 @@
 # InputField Component
 
-**Text input component for forms and data entry in Lean IDS.**
+**Text input component for forms and data entry in Lean DS.**
 
 ---
 
@@ -230,7 +230,7 @@ For questions: See `COMPONENT_API_REFERENCE.md`
 
 ## ✅ Summary
 
-**Use InputField for all text input needs in Lean IDS applications.**
+**Use InputField for all text input needs in Lean DS applications.**
 
 - Always provide a `label`
 - Use appropriate `type` for input

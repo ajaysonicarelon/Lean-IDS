@@ -1,7 +1,7 @@
 {
   "name": "@lean-ids/icons",
   "version": "1.0.0",
-  "description": "Icon system for Lean IDS",
+  "description": "Icon system for Lean DS",
   "main": "dist/index.js",
   "module": "dist/index.esm.js",
   "types": "dist/index.d.ts",

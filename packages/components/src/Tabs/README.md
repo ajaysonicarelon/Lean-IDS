@@ -1,6 +1,6 @@
 # Tabs Component
 
-**The official Tabs navigation component for Lean IDS with parent/child hierarchy support.**
+**The official Tabs navigation component for Lean DS with parent/child hierarchy support.**
 
 ---
 

@@ -1,5 +1,5 @@
 /**
- * Border tokens for Lean IDS
+ * Border tokens for Lean DS
  */
 
 export const borderRadius = {

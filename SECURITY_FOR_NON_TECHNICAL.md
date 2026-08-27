@@ -1,4 +1,4 @@
-# Lean IDS Security Features - Explained Simply
+# Lean DS Security Features - Explained Simply
 
 **For**: Executives, Managers, Stakeholders (No Technical Background Required)  
 **Date**: July 28, 2026
@@ -7,7 +7,7 @@
 
 ## 🔒 **The Big Picture**
 
-Our design system (Lean IDS) is like a **LEGO set** that developers use to build healthcare applications. It contains ready-made UI components like buttons, forms, tables, and navigation menus.
+Our design system (Lean DS) is like a **LEGO set** that developers use to build healthcare applications. It contains ready-made UI components like buttons, forms, tables, and navigation menus.
 
 **The Challenge**: When developers use our components (Button, InputField, Table, etc.), we need to ensure:
 1. The components themselves are secure
@@ -314,16 +314,16 @@ Our design system (Lean IDS) is like a **LEGO set** that developers use to build
 
 ### Fortune 500 Companies
 - **Average Security Score**: 70/100
-- **Lean IDS Score**: 85/100 ✅
+- **Lean DS Score**: 85/100 ✅
 
 ### Healthcare Industry
 - **Average Security Score**: 65/100
-- **Lean IDS Score**: 85/100 ✅
+- **Lean DS Score**: 85/100 ✅
 
 ### Design Systems
 - **Material-UI**: ~75/100
 - **Ant Design**: ~70/100
-- **Lean IDS**: 85/100 ✅
+- **Lean DS**: 85/100 ✅
 
 **We're ahead of industry leaders!**
 
@@ -430,7 +430,7 @@ Our design system (Lean IDS) is like a **LEGO set** that developers use to build
 
 ## 🎉 **Summary**
 
-We've transformed Lean IDS from a **basic component library** into a **secure, enterprise-grade design system** using **100% free tools**.
+We've transformed Lean DS from a **basic component library** into a **secure, enterprise-grade design system** using **100% free tools**.
 
 **What We Protected**:
 - ✅ **50+ UI Components**: Button, InputField, Modal, Table, Navigation, etc.

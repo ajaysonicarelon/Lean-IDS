@@ -1,5 +1,5 @@
 /**
- * Theme configuration for Lean IDS
+ * Theme configuration for Lean DS
  * Combines all design tokens into cohesive themes
  */
 

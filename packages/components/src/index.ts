@@ -1,5 +1,5 @@
 /**
- * Lean IDS Components
+ * Lean DS Components
  * Main entry point for the component library
  */
 

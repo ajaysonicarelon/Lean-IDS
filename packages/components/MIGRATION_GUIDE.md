@@ -1,4 +1,4 @@
-# Migration Guide - Lean IDS v1.7.0
+# Migration Guide - Lean DS v1.7.0
 
 This guide helps you migrate from v1.6.x to v1.7.0.
 
@@ -350,7 +350,7 @@ npm uninstall styled-components
 
 ## Version Compatibility
 
-| Lean IDS | styled-components | React | Next.js | Vite |
+| Lean DS | styled-components | React | Next.js | Vite |
 |----------|-------------------|-------|---------|------|
 | 1.7.0 | ^6.0.0 | 18.x, 19.x | 13+, 14+, 15+, 16+ | 5.x, 6.x |
 | 1.6.x | Bundled | 18.x | 13+, 14+ | 5.x |
@@ -390,4 +390,4 @@ npm uninstall styled-components
 
 ---
 
-**Welcome to Lean IDS v1.7.0!** 🎉
+**Welcome to Lean DS v1.7.0!** 🎉

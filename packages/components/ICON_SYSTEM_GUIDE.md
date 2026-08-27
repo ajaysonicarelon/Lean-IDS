@@ -8,7 +8,7 @@
 
 ## 🎯 Overview
 
-Integrated **Material Design Icons** from `@mui/icons-material` into the Lean IDS design system. No need to create inline SVGs anymore - simply import any Material icon by name!
+Integrated **Material Design Icons** from `@mui/icons-material` into the Lean DS design system. No need to create inline SVGs anymore - simply import any Material icon by name!
 
 ---
 

@@ -136,7 +136,7 @@ const HeaderContent = styled.div`
   min-width: 0;
 `;
 
-// Title and Description now use Typography component from Lean IDS
+// Title and Description now use Typography component from Lean DS
 
 const CloseButton = styled.button`
   display: flex;

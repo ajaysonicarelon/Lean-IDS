@@ -1,4 +1,4 @@
-# Release Notes - Lean IDS v1.7.8
+# Release Notes - Lean DS v1.7.8
 
 **Release Date:** August 19, 2026  
 **Package:** `@ajaysoni7832/lean-ids-components`
@@ -31,7 +31,7 @@ npm install @ajaysoni7832/lean-ids-components@1.7.8 @ajaysoni7832/lean-ids-token
 
 ---
 
-# Release Notes - Lean IDS v1.7.7
+# Release Notes - Lean DS v1.7.7
 
 **Release Date:** August 3, 2026  
 **Package:** `@ajaysoni7832/lean-ids-components`
@@ -75,7 +75,7 @@ npm install @ajaysoni7832/lean-ids-components@1.7.7 @ajaysoni7832/lean-ids-token
 
 ---
 
-# Release Notes - Lean IDS v1.7.6
+# Release Notes - Lean DS v1.7.6
 
 **Release Date:** July 22, 2026  
 **Package:** `@ajaysoni7832/lean-ids-components`
@@ -485,7 +485,7 @@ If using Next.js, see [FRAMEWORK_SUPPORT.md](./FRAMEWORK_SUPPORT.md) for optimal
 
 ## 🎉 Thank You!
 
-Thank you for using Lean IDS! This release represents a major step forward in framework compatibility and developer experience.
+Thank you for using Lean DS! This release represents a major step forward in framework compatibility and developer experience.
 
 **Happy coding!** 🚀
 

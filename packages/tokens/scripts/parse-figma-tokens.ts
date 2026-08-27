@@ -158,7 +158,7 @@ function parseTokenFile(filePath: string): any {
 // Generate TypeScript color file
 function generateColorFile(carelonColors: any, elevanceColors: any): string {
   return `/**
- * Color tokens for Lean IDS
+ * Color tokens for Lean DS
  * Auto-generated from Figma design tokens
  */
 
@@ -273,7 +273,7 @@ export const elevanceSemanticColors = {
 // Generate TypeScript spacing file
 function generateSpacingFile(spacing: any): string {
   return `/**
- * Spacing tokens for Lean IDS
+ * Spacing tokens for Lean DS
  * Based on Figma design tokens
  */
 
@@ -324,7 +324,7 @@ function generateTypographyFile(typography: any): string {
   }
   
   return `/**
- * Typography tokens for Lean IDS
+ * Typography tokens for Lean DS
  * Auto-generated from Figma design tokens
  */
 

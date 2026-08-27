@@ -1,5 +1,5 @@
 /**
- * Color tokens for Lean IDS
+ * Color tokens for Lean DS
  * Auto-generated from Figma design tokens
  */
 

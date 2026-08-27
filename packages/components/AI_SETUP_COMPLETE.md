@@ -2,32 +2,32 @@
 
 ## 🎉 Success!
 
-AI guidelines have been successfully created for your Lean IDS project. Any AI coding assistant (Cursor, Windsurf, Cline, GitHub Copilot, etc.) will now follow these rules.
+AI guidelines have been successfully created for your Lean DS project. Any AI coding assistant (Cursor, Windsurf, Cline, GitHub Copilot, etc.) will now follow these rules.
 
 ---
 
 ## 📁 Files Created
 
 ### 1. **`.cursorrules`** ✅
-- **Location:** `/Users/AM07832/CascadeProjects/lean-ids/.cursorrules`
+- **Location:** `/Users/AM07832/CascadeProjects/lean-ds/.cursorrules`
 - **For:** Cursor AI IDE
 - **Size:** ~15 KB (comprehensive)
 - **Auto-loaded:** Yes
 
 ### 2. **`.windsurfrules`** ✅
-- **Location:** `/Users/AM07832/CascadeProjects/lean-ids/.windsurfrules`
+- **Location:** `/Users/AM07832/CascadeProjects/lean-ds/.windsurfrules`
 - **For:** Windsurf AI IDE (Cascade)
 - **Size:** ~2 KB (concise)
 - **Auto-loaded:** Yes
 
 ### 3. **`AI_GUIDELINES.md`** ✅
-- **Location:** `/Users/AM07832/CascadeProjects/lean-ids/AI_GUIDELINES.md`
+- **Location:** `/Users/AM07832/CascadeProjects/lean-ds/AI_GUIDELINES.md`
 - **For:** All AI assistants (universal)
 - **Size:** ~20 KB (complete guide)
 - **Auto-loaded:** Depends on tool
 
 ### 4. **`AI_GUIDELINES_README.md`** ✅
-- **Location:** `/Users/AM07832/CascadeProjects/lean-ids/AI_GUIDELINES_README.md`
+- **Location:** `/Users/AM07832/CascadeProjects/lean-ds/AI_GUIDELINES_README.md`
 - **For:** Documentation
 - **Purpose:** Explains the AI guidelines system
 
@@ -35,7 +35,7 @@ AI guidelines have been successfully created for your Lean IDS project. Any AI c
 
 ## 🚨 Critical Rules Enforced
 
-### **Rule #1: Use ONLY Lean IDS**
+### **Rule #1: Use ONLY Lean DS**
 ```
 ✅ ALLOWED:
 - @ajaysoni7832/lean-ids-components
@@ -49,14 +49,14 @@ AI guidelines have been successfully created for your Lean IDS project. Any AI c
 ```
 
 ### **Rule #2: Override When Requested**
-If user says "use only Lean IDS":
+If user says "use only Lean DS":
 - Replace ALL external components
 - Remove unused dependencies
-- Use Lean IDS equivalents
+- Use Lean DS equivalents
 
 ### **Rule #3: Fresh Projects**
 For new projects:
-- Use ONLY Lean IDS from start
+- Use ONLY Lean DS from start
 - No external UI libraries
 - Follow PageLayout templates
 
@@ -65,7 +65,7 @@ For new projects:
 ## 🎯 What AI Assistants Will Do
 
 ### **✅ WILL:**
-1. Use Lean IDS components for all UI
+1. Use Lean DS components for all UI
 2. Import from `@ajaysoni7832/lean-ids-components`
 3. Use theme tokens for styling
 4. Follow PageLayout templates
@@ -77,7 +77,7 @@ For new projects:
 ### **❌ WON'T:**
 1. Import from Material-UI, Ant Design, etc.
 2. Install external UI libraries
-3. Create custom components when Lean IDS has them
+3. Create custom components when Lean DS has them
 4. Use hardcoded colors/spacing
 5. Use inline styles
 6. Ignore design system patterns
@@ -122,13 +122,13 @@ Colors, Spacing, Fonts, Font Sizes, Font Weights, Line Heights, Radii, Shadows
 1. Open project in Cursor
 2. Cursor automatically reads `.cursorrules`
 3. Start coding - AI follows guidelines
-4. AI suggests Lean IDS components
+4. AI suggests Lean DS components
 
 ### **For Windsurf Users:**
 1. Open project in Windsurf
 2. Windsurf automatically reads `.windsurfrules`
 3. Cascade AI follows guidelines
-4. AI suggests Lean IDS components
+4. AI suggests Lean DS components
 
 ### **For Other AI Tools:**
 1. AI tool may need to be pointed to `AI_GUIDELINES.md`
@@ -181,7 +181,7 @@ import { Button, Input } from '@ajaysoni7832/lean-ids-components';
 ### **1. Commit to Git** ✅
 ```bash
 git add .cursorrules .windsurfrules AI_GUIDELINES.md AI_GUIDELINES_README.md
-git commit -m "Add AI guidelines for Lean IDS"
+git commit -m "Add AI guidelines for Lean DS"
 git push origin main
 ```
 
@@ -199,7 +199,7 @@ git push origin main
 
 ### **4. Test with AI** 🧪
 - Ask AI to create components
-- Verify it uses Lean IDS
+- Verify it uses Lean DS
 - Report any issues
 
 ---
@@ -207,7 +207,7 @@ git push origin main
 ## 📝 Maintenance
 
 ### **When to Update:**
-- New Lean IDS components added
+- New Lean DS components added
 - Component APIs change
 - New templates created
 - Best practices evolve
@@ -264,7 +264,7 @@ git push origin main
 ### **Issues?**
 - AI not following rules? Check file exists
 - Wrong suggestions? Update guidelines
-- Missing component? Check Lean IDS first
+- Missing component? Check Lean DS first
 
 ### **Questions?**
 - Read `AI_GUIDELINES.md`
@@ -293,7 +293,7 @@ Your AI guidelines are complete and ready to be pushed to both GitHub and Bitbuc
 git add .
 
 # Commit
-git commit -m "Add AI guidelines for Lean IDS design system"
+git commit -m "Add AI guidelines for Lean DS design system"
 
 # Push to both repos
 git push origin main
@@ -301,4 +301,4 @@ git push origin main
 
 ---
 
-**Your Lean IDS project now has comprehensive AI guidelines that ensure consistent, high-quality code generation across all AI-powered IDEs!** 🎉✨
+**Your Lean DS project now has comprehensive AI guidelines that ensure consistent, high-quality code generation across all AI-powered IDEs!** 🎉✨

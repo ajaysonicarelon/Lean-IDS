@@ -24,7 +24,7 @@ A fully customizable, accessible modal dialog component that meets enterprise Co
 - **🔧 forwardRef Support** - Access DOM node via ref
 - **♿ Focus Management** - Focus trap, auto-focus, return focus
 - **🎭 Polymorphic** - Render as different elements via \`as\` prop
-- **📝 Typography Component** - Uses Lean IDS Typography for consistent text styling
+- **📝 Typography Component** - Uses Lean DS Typography for consistent text styling
 
 ## 📦 Basic Usage
 
@@ -52,7 +52,7 @@ function MyComponent() {
 }
 \`\`\`
 
-> **Note:** Modal uses the Lean IDS Typography component internally for title and description, ensuring consistent text styling across the design system.
+> **Note:** Modal uses the Lean DS Typography component internally for title and description, ensuring consistent text styling across the design system.
 
 ## 🎯 Size Presets
 
@@ -129,7 +129,7 @@ Use size presets for common modal sizes:
 - **Event Lifecycle**: \`onOpen\`, \`onAfterOpen\`, \`onAfterClose\`
 - **Behavior Control**: \`preventBodyScroll\`, \`enableFocusTrap\`, \`autoFocus\`
 - **Animation Control**: \`animationDuration\`, \`disableAnimation\`
-- **Typography Integration**: Uses Lean IDS Typography component for consistent text styling
+- **Typography Integration**: Uses Lean DS Typography component for consistent text styling
 
 ## 📝 Typography Usage
 
@@ -710,7 +710,7 @@ export const WithTypography: Story = {
           isOpen={isOpen}
           onClose={() => setIsOpen(false)}
           title="Typography in Modal"
-          description="Modal content using Lean IDS Typography component"
+          description="Modal content using Lean DS Typography component"
           size="medium"
           showReset={false}
           showSubmit={false}
@@ -721,7 +721,7 @@ export const WithTypography: Story = {
             </Typography>
             
             <Typography variant="body">
-              The Modal component uses the Lean IDS Typography component internally for the title and description.
+              The Modal component uses the Lean DS Typography component internally for the title and description.
               You can also use Typography within your modal content for consistent text styling.
             </Typography>
 

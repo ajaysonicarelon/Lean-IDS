@@ -1,7 +1,7 @@
 /**
  * Icons - Design System Atoms
  * 
- * Common icons used throughout the Lean IDS design system.
+ * Common icons used throughout the Lean DS design system.
  * Icons can be exported as SVG or PNG format.
  */
 
@@ -294,7 +294,7 @@ const meta: Meta = {
         component: `
 # Icons
 
-Common icons used throughout the Lean IDS design system. All icons are SVG-based for scalability and can be exported as SVG or PNG.
+Common icons used throughout the Lean DS design system. All icons are SVG-based for scalability and can be exported as SVG or PNG.
 
 ## Available Icons
 

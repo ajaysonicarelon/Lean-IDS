@@ -1,7 +1,7 @@
 /**
  * Colors - Design System Tokens
  * 
- * This page documents all color tokens available in the Lean IDS design system.
+ * This page documents all color tokens available in the Lean DS design system.
  * Colors are organized into primary, neutral, semantic (error, warning, success, info),
  * and secondary color palettes.
  */
@@ -117,7 +117,7 @@ const meta: Meta = {
         component: `
 # Color Tokens
 
-The Lean IDS design system uses a comprehensive color palette organized into several categories:
+The Lean DS design system uses a comprehensive color palette organized into several categories:
 
 ## Color Categories
 

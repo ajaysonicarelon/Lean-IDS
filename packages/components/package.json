@@ -2,7 +2,7 @@
   "name": "@ajaysoni7832/lean-ids-components",
   "version": "1.7.9",
   "type": "module",
-  "description": "React components for Lean IDS design system",
+  "description": "React components for Lean DS design system",
   "main": "dist/index.js",
   "module": "dist/index.esm.js",
   "types": "dist/index.d.ts",

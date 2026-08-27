@@ -237,8 +237,8 @@ The Accordion uses the following design tokens from `@ajaysoni7832/lean-ids-toke
 
 ### FAQ Section
 ```tsx
-<Accordion heading="What is Lean IDS?" description="Learn about our design system">
-  <p>Lean IDS is a comprehensive design system...</p>
+<Accordion heading="What is Lean DS?" description="Learn about our design system">
+  <p>Lean DS is a comprehensive design system...</p>
 </Accordion>
 ```
 
@@ -292,10 +292,10 @@ The Accordion uses the following design tokens from `@ajaysoni7832/lean-ids-toke
 For issues or questions:
 - Check Storybook examples
 - Review API documentation
-- Contact Lean IDS team
+- Contact Lean DS team
 
 ---
 
 **Version:** 1.7.0+  
 **Component Type:** Interactive Container  
-**Design System:** Lean IDS
+**Design System:** Lean DS

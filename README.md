@@ -1,4 +1,4 @@
-# Lean IDS - Internal Design System
+# Lean DS - Internal Design System
 
 A comprehensive React design system for Carelon and Elevance, built with TypeScript and Storybook.
 

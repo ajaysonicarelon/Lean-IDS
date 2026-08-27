@@ -1,10 +1,10 @@
 ---
-description: Deploy a new version of Lean IDS to NPM, GitHub, Bitbucket, and Storybook
+description: Deploy a new version of Lean DS to NPM, GitHub, Bitbucket, and Storybook
 ---
 
-# Lean IDS Release Deployment Workflow
+# Lean DS Release Deployment Workflow
 
-This workflow automates the complete deployment process for releasing a new version of Lean IDS.
+This workflow automates the complete deployment process for releasing a new version of Lean DS.
 
 ## Prerequisites
 
@@ -28,15 +28,15 @@ Update version in both packages:
 
 ```bash
 # Update tokens package version
-# Edit: /Users/AM07832/CascadeProjects/lean-ids/packages/tokens/package.json
+# Edit: /Users/AM07832/CascadeProjects/lean-ds/packages/tokens/package.json
 # Change: "version": "X.X.X"
 
 # Update components package version
-# Edit: /Users/AM07832/CascadeProjects/lean-ids/packages/components/package.json
+# Edit: /Users/AM07832/CascadeProjects/lean-ds/packages/components/package.json
 # Change: "version": "X.X.X"
 
 # Update components dependency on tokens
-# Edit: /Users/AM07832/CascadeProjects/lean-ids/packages/components/package.json
+# Edit: /Users/AM07832/CascadeProjects/lean-ds/packages/components/package.json
 # Change: "@ajaysoni7832/lean-ids-tokens": "^X.X.X"
 ```
 
@@ -53,12 +53,12 @@ Update version in both packages:
 
 ### 3.1 Update Main README.md
 
-**File:** `/Users/AM07832/CascadeProjects/lean-ids/README.md`
+**File:** `/Users/AM07832/CascadeProjects/lean-ds/README.md`
 
 Update the version badges and latest version reference:
 
 ```markdown
-# Lean IDS - Design System
+# Lean DS - Design System
 
 [![npm version](https://img.shields.io/npm/v/@ajaysoni7832/lean-ids-components.svg)](https://www.npmjs.com/package/@ajaysoni7832/lean-ids-components)
 [![npm downloads](https://img.shields.io/npm/dm/@ajaysoni7832/lean-ids-components.svg)](https://www.npmjs.com/package/@ajaysoni7832/lean-ids-components)
@@ -70,7 +70,7 @@ Update the version badges and latest version reference:
 
 ### 3.2 Update Components Package README
 
-**File:** `/Users/AM07832/CascadeProjects/lean-ids/packages/components/README.md`
+**File:** `/Users/AM07832/CascadeProjects/lean-ds/packages/components/README.md`
 
 Update version references and what's new section:
 
@@ -92,7 +92,7 @@ npm install @ajaysoni7832/lean-ids-components@X.X.X @ajaysoni7832/lean-ids-token
 
 ### 3.3 Update Storybook updates.mdx
 
-**File:** `/Users/AM07832/CascadeProjects/lean-ids/.storybook/updates.mdx`
+**File:** `/Users/AM07832/CascadeProjects/lean-ds/.storybook/updates.mdx`
 
 Update in **3 locations**:
 1. Line ~10: `const currentVersion = 'X.X.X';`
@@ -153,12 +153,12 @@ Update in **3 locations**:
 
 ### 3.4 Update Components RELEASE_NOTES.md
 
-**File:** `/Users/AM07832/CascadeProjects/lean-ids/packages/components/RELEASE_NOTES.md`
+**File:** `/Users/AM07832/CascadeProjects/lean-ds/packages/components/RELEASE_NOTES.md`
 
 Add new release section at the top:
 
 ```markdown
-# Release Notes - Lean IDS vX.X.X
+# Release Notes - Lean DS vX.X.X
 
 **Release Date:** [Current Date]  
 **Package:** `@ajaysoni7832/lean-ids-components`
@@ -194,7 +194,7 @@ npm install @ajaysoni7832/lean-ids-components@X.X.X @ajaysoni7832/lean-ids-token
 
 ### 3.5 Update Tokens CHANGELOG.md
 
-**File:** `/Users/AM07832/CascadeProjects/lean-ids/packages/tokens/CHANGELOG.md`
+**File:** `/Users/AM07832/CascadeProjects/lean-ds/packages/tokens/CHANGELOG.md`
 
 Add new version entry at the top:
 
@@ -214,7 +214,7 @@ Add new version entry at the top:
 
 ### 3.6 Update Components CHANGELOG.md
 
-**File:** `/Users/AM07832/CascadeProjects/lean-ids/packages/components/CHANGELOG.md`
+**File:** `/Users/AM07832/CascadeProjects/lean-ds/packages/components/CHANGELOG.md`
 
 Add new version entry at the top:
 
@@ -244,20 +244,20 @@ Add new version entry at the top:
 
 // turbo
 ```bash
-cd /Users/AM07832/CascadeProjects/lean-ids
+cd /Users/AM07832/CascadeProjects/lean-ds
 npm run build -w @ajaysoni7832/lean-ids-tokens
 ```
 
 // turbo
 ```bash
-cd /Users/AM07832/CascadeProjects/lean-ids
+cd /Users/AM07832/CascadeProjects/lean-ds
 npm run build -w @ajaysoni7832/lean-ids-components
 ```
 
 ## Step 5: Build Storybook
 
 ```bash
-cd /Users/AM07832/CascadeProjects/lean-ids
+cd /Users/AM07832/CascadeProjects/lean-ds
 npm run build-storybook
 ```
 
@@ -265,7 +265,7 @@ npm run build-storybook
 
 // turbo
 ```bash
-cd /Users/AM07832/CascadeProjects/lean-ids
+cd /Users/AM07832/CascadeProjects/lean-ds
 ./scripts/pre-deploy-check.sh
 ```
 
@@ -274,7 +274,7 @@ cd /Users/AM07832/CascadeProjects/lean-ids
 ## Step 7: Commit and Push to GitHub
 
 ```bash
-cd /Users/AM07832/CascadeProjects/lean-ids
+cd /Users/AM07832/CascadeProjects/lean-ds
 git add -A
 git commit -m "chore: release vX.X.X"
 git push origin main
@@ -289,7 +289,7 @@ git push origin main
 ### 8.1 Publish Tokens
 
 ```bash
-cd /Users/AM07832/CascadeProjects/lean-ids/packages/tokens
+cd /Users/AM07832/CascadeProjects/lean-ds/packages/tokens
 npm publish --access public --ignore-scripts
 ```
 
@@ -298,7 +298,7 @@ npm publish --access public --ignore-scripts
 ### 8.2 Publish Components
 
 ```bash
-cd /Users/AM07832/CascadeProjects/lean-ids/packages/components
+cd /Users/AM07832/CascadeProjects/lean-ds/packages/components
 npm publish --access public --ignore-scripts
 ```
 
@@ -310,7 +310,7 @@ Force Artifactory to fetch and cache the new versions immediately:
 
 // turbo
 ```bash
-cd /Users/AM07832/CascadeProjects/lean-ids
+cd /Users/AM07832/CascadeProjects/lean-ds
 npm view @ajaysoni7832/lean-ids-tokens@X.X.X --registry=https://artifactory.elevancehealth.com/artifactory/api/npm/npm/
 npm view @ajaysoni7832/lean-ids-components@X.X.X --registry=https://artifactory.elevancehealth.com/artifactory/api/npm/npm/
 ```
@@ -326,7 +326,7 @@ npm view @ajaysoni7832/lean-ids-components@X.X.X --registry=https://artifactory.
 ## Step 10: Push to Bitbucket (Internal Elevance)
 
 ```bash
-cd /Users/AM07832/CascadeProjects/lean-ids
+cd /Users/AM07832/CascadeProjects/lean-ds
 git push bitbucket main
 ```
 
@@ -336,14 +336,14 @@ git push bitbucket main
 
 // turbo
 ```bash
-cd /Users/AM07832/CascadeProjects/lean-ids
-rsync -av --delete --exclude='.git' storybook-static/ /Users/AM07832/CascadeProjects/lean-ids-storybook/
+cd /Users/AM07832/CascadeProjects/lean-ds
+rsync -av --delete --exclude='.git' storybook-static/ /Users/AM07832/CascadeProjects/lean-ds-storybook/
 ```
 
 ### 11.2 Commit and Push Storybook Repo
 
 ```bash
-cd /Users/AM07832/CascadeProjects/lean-ids-storybook
+cd /Users/AM07832/CascadeProjects/lean-ds-storybook
 git add -A
 git commit -m "chore: update Storybook to vX.X.X"
 git pull origin main --rebase || git rebase --abort
@@ -377,7 +377,7 @@ npm view @ajaysoni7832/lean-ids-components version
 - Verify new components appear in sidebar
 
 ### Storybook Repository
-- Visit: https://github.com/ajaysonicarelon/lean-ids-storybook
+- Visit: https://github.com/ajaysonicarelon/lean-ds-storybook
 - Check latest commit shows Storybook update
 
 ### Artifactory (Elevance Internal)
@@ -429,7 +429,7 @@ npm view @ajaysoni7832/lean-ids-components@X.X.X --registry=https://artifactory.
 **Repositories:**
 - GitHub (Main): https://github.com/ajaysonicarelon/Lean-IDS
 - Bitbucket (Internal): https://bitbucket.elevancehealth.com/users/am07832/repos/lean-ids/browse
-- Storybook Repo: https://github.com/ajaysonicarelon/lean-ids-storybook
+- Storybook Repo: https://github.com/ajaysonicarelon/lean-ds-storybook
 - Storybook Live: https://ajaysonicarelon.github.io/Lean-IDS/
 
 **NPM Packages:**

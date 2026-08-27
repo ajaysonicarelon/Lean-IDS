@@ -817,7 +817,7 @@ export const CustomToolbar: Story = {
   parameters: {
     docs: {
       description: {
-        story: 'Example of a custom toolbar using `TableToolbar`, `TableToolbarSection`, `TableToolbarTitle`, and `TableToolbarActions` helper components. These components provide a consistent layout and styling while allowing full customization. You can add any Lean IDS components (Button, Input, Select, etc.) inside the toolbar sections.',
+        story: 'Example of a custom toolbar using `TableToolbar`, `TableToolbarSection`, `TableToolbarTitle`, and `TableToolbarActions` helper components. These components provide a consistent layout and styling while allowing full customization. You can add any Lean DS components (Button, Input, Select, etc.) inside the toolbar sections.',
       },
       story: {
         inline: false,

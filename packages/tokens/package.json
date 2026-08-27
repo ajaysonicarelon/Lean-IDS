@@ -2,7 +2,7 @@
   "name": "@ajaysoni7832/lean-ids-tokens",
   "version": "1.7.8",
   "type": "module",
-  "description": "Design tokens for Lean IDS (Carelon & Elevance themes)",
+  "description": "Design tokens for Lean DS (Carelon & Elevance themes)",
   "main": "dist/index.js",
   "module": "dist/index.esm.js",
   "types": "dist/index.d.ts",

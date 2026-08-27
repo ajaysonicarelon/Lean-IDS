@@ -2,7 +2,7 @@
  * TimePicker Component
  * 
  * A time selection component with hours, minutes, and AM/PM dropdowns.
- * Uses the existing Select component from Lean IDS.
+ * Uses the existing Select component from Lean DS.
  * Based on Figma design: node-id=6463-2010
  */
 

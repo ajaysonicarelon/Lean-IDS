@@ -1,4 +1,4 @@
-# Lean IDS - AI Assistant Guidelines
+# Lean DS - AI Assistant Guidelines
 **Universal guidelines for all AI coding assistants (Cursor, Windsurf, Cline, GitHub Copilot, etc.)**
 
 ---
@@ -68,7 +68,7 @@ import { Button } from '@radix-ui/react';
 
 ### **Building Enterprise-Grade Components**
 
-All Lean IDS components follow the **Component Maturity Checklist** - a set of standards ensuring consistency, accessibility, and maintainability.
+All Lean DS components follow the **Component Maturity Checklist** - a set of standards ensuring consistency, accessibility, and maintainability.
 
 #### **The 6 Pillars:**
 
@@ -149,7 +149,7 @@ const StyledDiv = styled.div`
 
 **For ANY popup, dialog, or overlay:**
 ```tsx
-// ✅ CORRECT - Use Lean IDS Modal
+// ✅ CORRECT - Use Lean DS Modal
 import { Modal } from '@ajaysoni7832/lean-ids-components';
 
 <Modal
@@ -163,7 +163,7 @@ import { Modal } from '@ajaysoni7832/lean-ids-components';
 
 **For ANY side panel or drawer:**
 ```tsx
-// ✅ CORRECT - Use Lean IDS Drawer
+// ✅ CORRECT - Use Lean DS Drawer
 import { Drawer } from '@ajaysoni7832/lean-ids-components';
 
 <Drawer
@@ -212,16 +212,16 @@ import { Drawer } from '@mui/material';
 START
   ↓
 Is this a FRESH project?
-  ├─ YES → Use ONLY Lean IDS ✅
+  ├─ YES → Use ONLY Lean DS ✅
   └─ NO → Does external library already exist in package.json?
            ├─ YES → Can continue using (unless user says otherwise) ✅
-           └─ NO → Use ONLY Lean IDS ✅
+           └─ NO → Use ONLY Lean DS ✅
 
-Did user say "use only Lean IDS" or "replace with Lean IDS"?
-  ├─ YES → Replace ALL external components with Lean IDS ✅
+Did user say "use only Lean DS" or "replace with Lean DS"?
+  ├─ YES → Replace ALL external components with Lean DS ✅
   └─ NO → Follow above logic
 
-Does Lean IDS have this component?
+Does Lean DS have this component?
   ├─ YES → Use it from @ajaysoni7832/lean-ids-components ✅
   └─ NO → ASK USER what to do ⚠️
 ```
@@ -302,7 +302,7 @@ npm install @ajaysoni7832/lean-ids-components @ajaysoni7832/lean-ids-tokens styl
 
 ### **Theme Setup (REQUIRED):**
 
-Every Lean IDS app MUST wrap components with `ThemeProvider`:
+Every Lean DS app MUST wrap components with `ThemeProvider`:
 
 ```tsx
 import { ThemeProvider } from 'styled-components';
@@ -319,7 +319,7 @@ function App() {
 
 ### **Theme Options:**
 
-Lean IDS provides TWO brand themes:
+Lean DS provides TWO brand themes:
 
 1. **carelonTheme** (default) - Carelon brand colors
 2. **elevanceTheme** - Elevance brand colors
@@ -640,19 +640,19 @@ const StyledDiv = styled.div`
 
 ## 🎨 COMPONENT CREATION RULES
 
-### **CRITICAL: Build ONLY from Existing Lean IDS Components**
+### **CRITICAL: Build ONLY from Existing Lean DS Components**
 
 When creating new features or components, you MUST:
 
-1. **ONLY use existing Lean IDS components** - Never create custom versions
+1. **ONLY use existing Lean DS components** - Never create custom versions
 2. **ALWAYS use tokens** from `@ajaysoni7832/lean-ids-tokens` - Never hardcode values
-3. **Compose from Lean IDS** - Build complex components from simple ones
+3. **Compose from Lean DS** - Build complex components from simple ones
 
 ### **Examples:**
 
 **Need a form?**
 ```tsx
-// ✅ CORRECT - Use Lean IDS components
+// ✅ CORRECT - Use Lean DS components
 import { Input, Button, Card } from '@ajaysoni7832/lean-ids-components';
 
 function LoginForm() {
@@ -674,7 +674,7 @@ const CustomInput = styled.input`
 
 **Need chips/tags?**
 ```tsx
-// ✅ CORRECT - Use Lean IDS Chip
+// ✅ CORRECT - Use Lean DS Chip
 import { Chip } from '@ajaysoni7832/lean-ids-components';
 
 <Chip label="Tag" onRemove={() => {}} />
@@ -688,7 +688,7 @@ const CustomChip = styled.div`
 
 **Building complex components?**
 ```tsx
-// ✅ CORRECT - Compose from Lean IDS components
+// ✅ CORRECT - Compose from Lean DS components
 import { Card, Button, Avatar, Badge } from '@ajaysoni7832/lean-ids-components';
 import { theme } from '@ajaysoni7832/lean-ids-tokens';
 
@@ -789,7 +789,7 @@ import { TextField } from '@mui/material'; // ❌ WRONG!
 **Why this exception?**
 - Material Icons is our temporary icon solution
 - We import ONLY icons, nothing else from MUI
-- All other UI components must come from Lean IDS
+- All other UI components must come from Lean DS
 
 ---
 
@@ -809,7 +809,7 @@ npm install chakra-ui
 import { Button } from '@mui/material';
 ```
 
-### **3. Don't Create Custom Components When Lean IDS Has Them**
+### **3. Don't Create Custom Components When Lean DS Has Them**
 ```tsx
 // ❌ WRONG
 const CustomButton = styled.button`...`;
@@ -851,7 +851,7 @@ Before suggesting code, verify:
 ## 🎓 WHEN TO ASK USER
 
 Ask user for clarification when:
-1. ✅ Component doesn't exist in Lean IDS
+1. ✅ Component doesn't exist in Lean DS
 2. ✅ Unsure if they want to override existing library
 3. ✅ Multiple valid approaches exist
 4. ✅ Breaking changes would occur
@@ -859,16 +859,16 @@ Ask user for clarification when:
 
 ### **Example Prompts:**
 ```
-"Lean IDS doesn't have a DatePicker component. Would you like me to:
-1. Create a custom one using Lean IDS styling
+"Lean DS doesn't have a DatePicker component. Would you like me to:
+1. Create a custom one using Lean DS styling
 2. Use an external library (react-datepicker)
-3. Wait for Lean IDS to add it"
+3. Wait for Lean DS to add it"
 ```
 
 ```
 "I see you have Material-UI in your project. Would you like me to:
 1. Continue using MUI for this component
-2. Replace it with Lean IDS equivalent
+2. Replace it with Lean DS equivalent
 3. Keep both (not recommended)"
 ```
 
@@ -953,13 +953,13 @@ For questions or clarifications:
 4. 🤔 **ASK WHEN UNSURE** - Don't guess
 
 **Priority Order:**
-1. Lean IDS components (ALWAYS FIRST)
+1. Lean DS components (ALWAYS FIRST)
 2. Existing project libraries (if already present)
-3. Custom components (only if Lean IDS doesn't have it)
+3. Custom components (only if Lean DS doesn't have it)
 4. External libraries (LAST RESORT, ask user first)
 
 ---
 
-**Remember:** The goal is to maintain consistency across the design system by using Lean IDS components exclusively for all new development.
+**Remember:** The goal is to maintain consistency across the design system by using Lean DS components exclusively for all new development.
 
 **This is a STRICT requirement. All AI assistants MUST follow these guidelines.**

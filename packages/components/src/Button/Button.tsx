@@ -65,7 +65,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       
       if (unknownProps.label !== undefined) {
         console.warn(
-          '[Lean IDS Button] Warning: "label" prop is not supported. Use "children" instead.\n' +
+          '[Lean DS Button] Warning: "label" prop is not supported. Use "children" instead.\n' +
           'Example: <Button>Click Me</Button>\n' +
           'See: Button component documentation'
         );
@@ -73,7 +73,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       
       if (unknownProps.icon !== undefined) {
         console.warn(
-          '[Lean IDS Button] Warning: "icon" prop is not supported. Use "leadingIcon" or "trailingIcon" instead.\n' +
+          '[Lean DS Button] Warning: "icon" prop is not supported. Use "leadingIcon" or "trailingIcon" instead.\n' +
           'Example: <Button leadingIcon={<Icon name="Add" />}>Add Item</Button>\n' +
           'See: Button component documentation'
         );
@@ -81,7 +81,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       
       if (!showLabel && !ariaLabel && !ariaLabelledby) {
         console.warn(
-          '[Lean IDS Button] Warning: Icon-only buttons require "aria-label" or "aria-labelledby" for accessibility.\n' +
+          '[Lean DS Button] Warning: Icon-only buttons require "aria-label" or "aria-labelledby" for accessibility.\n' +
           'Example: <Button leadingIcon={<Icon />} showLabel={false} aria-label="Close">Close</Button>\n' +
           'See: Button component documentation'
         );

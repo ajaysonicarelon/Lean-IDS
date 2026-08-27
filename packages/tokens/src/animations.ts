@@ -1,5 +1,5 @@
 /**
- * Animation and transition tokens for Lean IDS
+ * Animation and transition tokens for Lean DS
  */
 
 // Animation durations

@@ -27,6 +27,6 @@ import CarelonSymbol from './assets/carelon-symbol.svg';
 
 ## Copy Your Files Here
 
-**Path:** `/Users/AM07832/CascadeProjects/lean-ids/packages/components/src/Brand/assets/`
+**Path:** `/Users/AM07832/CascadeProjects/lean-ds/packages/components/src/Brand/assets/`
 
 After copying your SVG files, let me know and I'll update the Brand component to use them!

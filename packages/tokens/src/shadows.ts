@@ -1,5 +1,5 @@
 /**
- * Shadow tokens for Lean IDS
+ * Shadow tokens for Lean DS
  * Elevation system for depth and hierarchy
  */
 

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Pre-Deployment Check Script for Lean IDS
+# Pre-Deployment Check Script for Lean DS
 # This script validates everything before pushing to GitHub and NPM
 
 set -e  # Exit on any error
@@ -18,7 +18,7 @@ FAILED=0
 WARNINGS=0
 
 echo -e "${BLUE}╔════════════════════════════════════════════════════════╗${NC}"
-echo -e "${BLUE}║   🚀 Lean IDS Pre-Deployment Validation Script       ║${NC}"
+echo -e "${BLUE}║   🚀 Lean DS Pre-Deployment Validation Script       ║${NC}"
 echo -e "${BLUE}╚════════════════════════════════════════════════════════╝${NC}"
 echo ""
 

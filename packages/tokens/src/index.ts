@@ -1,5 +1,5 @@
 /**
- * Lean IDS Design Tokens
+ * Lean DS Design Tokens
  * Centralized design tokens for Carelon and Elevance themes
  */
 

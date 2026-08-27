@@ -1,7 +1,7 @@
 /**
  * DateTimePickers - Date and Time Selection Components
  * 
- * A comprehensive set of date and time picker components for Lean IDS.
+ * A comprehensive set of date and time picker components for Lean DS.
  * Based on Figma designs with full token integration.
  */
 

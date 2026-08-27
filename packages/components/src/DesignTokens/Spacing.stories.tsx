@@ -1,7 +1,7 @@
 /**
  * Spacing - Design System Tokens
  * 
- * This page documents all spacing tokens available in the Lean IDS design system.
+ * This page documents all spacing tokens available in the Lean DS design system.
  * Based on an 8px grid system for consistent spacing throughout the application.
  */
 
@@ -101,7 +101,7 @@ const meta: Meta = {
         component: `
 # Spacing Tokens
 
-The Lean IDS design system uses a consistent spacing scale based on an **8px grid system**. This ensures visual rhythm and consistency across all components and layouts.
+The Lean DS design system uses a consistent spacing scale based on an **8px grid system**. This ensures visual rhythm and consistency across all components and layouts.
 
 ## Spacing Scale
 

@@ -41,7 +41,7 @@ You are here! Continue to Step 2.
 
 After reading all files above, you MUST follow these rules:
 
-### **Rule #1: ONLY Use Lean IDS Components**
+### **Rule #1: ONLY Use Lean DS Components**
 ```tsx
 // ✅ CORRECT
 import { Button, Input, Card } from '@ajaysoni7832/lean-ids-components';
@@ -62,11 +62,11 @@ import { Card } from '@chakra-ui/react';
 - ❌ Don't use external UI libraries
 
 ### **Rule #3: Ask When Unsure**
-If a component doesn't exist in Lean IDS:
+If a component doesn't exist in Lean DS:
 1. Check the component list in guidelines
 2. Search in `packages/components/src/`
 3. Ask user before using external library
-4. Suggest Lean IDS alternative if possible
+4. Suggest Lean DS alternative if possible
 
 ---
 
@@ -108,12 +108,12 @@ import { theme } from '@ajaysoni7832/lean-ids-tokens';
 - Always use Modal/Drawer components (never create custom)
 
 ### **Component Creation Rules:**
-- **ONLY use existing Lean IDS components** to build new features
-- **NEVER create custom components** when Lean IDS has them
+- **ONLY use existing Lean DS components** to build new features
+- **NEVER create custom components** when Lean DS has them
 - **ALWAYS use tokens** from `@ajaysoni7832/lean-ids-tokens` (no hardcoded values)
-- Need a form? Use Input, Button from Lean IDS (don't create custom)
-- Need chips? Use Chip from Lean IDS (don't create custom)
-- Building complex components? Compose from existing Lean IDS components
+- Need a form? Use Input, Button from Lean DS (don't create custom)
+- Need chips? Use Chip from Lean DS (don't create custom)
+- Building complex components? Compose from existing Lean DS components
 
 ### **Icon Rules:**
 - **Icons:** Import ONLY from `@mui/icons-material`
@@ -128,7 +128,7 @@ import { theme } from '@ajaysoni7832/lean-ids-tokens';
 
 After reading all files above, you can start coding. Remember:
 
-1. **Use ONLY Lean IDS components**
+1. **Use ONLY Lean DS components**
 2. **Follow the templates and patterns**
 3. **Use theme tokens for styling**
 4. **Ask when unsure**
@@ -151,7 +151,7 @@ If you're an AI assistant and need clarification:
 ```
 Before generating code, ask yourself:
 1. Have I read all required files?
-2. Am I using Lean IDS components?
+2. Am I using Lean DS components?
 3. Am I following the templates?
 4. Am I using theme tokens?
 5. Have I checked if the component exists?

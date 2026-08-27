@@ -1,5 +1,5 @@
 /**
- * Z-index elevation tokens for Lean IDS
+ * Z-index elevation tokens for Lean DS
  * Manages layering and stacking context
  */
 

@@ -2,7 +2,7 @@
  * Select Component
  * 
  * A dropdown select component with search, single/multiple selection support.
- * Reuses existing Lean IDS components: InputField, Checkbox, RadioButton, Icon, HelpingText, FieldImportance
+ * Reuses existing Lean DS components: InputField, Checkbox, RadioButton, Icon, HelpingText, FieldImportance
  * Based on Figma design: node-id=3634-908
  * 
  * Enhanced with Component Maturity Checklist (7 Pillars):

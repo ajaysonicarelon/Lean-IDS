@@ -19,7 +19,7 @@ const meta: Meta<typeof PageLayout> = {
         component: `
 # Page Layout Templates
 
-Three vanilla page templates for building consistent layouts in Lean IDS applications.
+Three vanilla page templates for building consistent layouts in Lean DS applications.
 
 ## 🚨 CRITICAL: How to Use PageLayout Correctly
 

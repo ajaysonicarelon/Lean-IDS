@@ -1,6 +1,6 @@
 # DateTimePickers
 
-Comprehensive date and time selection components for Lean IDS, built with full token integration and accessibility support.
+Comprehensive date and time selection components for Lean DS, built with full token integration and accessibility support.
 
 ## Components
 
@@ -135,7 +135,7 @@ const customQuickSelect: QuickSelectOption[] = [
 ## Features
 
 ### ✅ Token-Based Styling
-All components use Lean IDS design tokens for colors, spacing, typography, and borders. No hardcoded values.
+All components use Lean DS design tokens for colors, spacing, typography, and borders. No hardcoded values.
 
 ### ✅ Accessibility
 - Full keyboard navigation support
@@ -221,7 +221,7 @@ These components are designed to replace any existing date/time pickers in your 
 // Old approach (if using external libraries)
 import DatePicker from 'some-library';
 
-// New approach - Lean IDS
+// New approach - Lean DS
 import { DateTimePicker } from '@lean-ids/components';
 
 // Works in forms, tables, and all contexts
@@ -246,13 +246,13 @@ import { DateTimePicker } from '@lean-ids/components';
 
 - `date-fns` - Date manipulation
 - `@mui/icons-material` - Icons only
-- Existing Lean IDS components (Select, Button)
+- Existing Lean DS components (Select, Button)
 
 ---
 
 ## Notes
 
-- All components follow Lean IDS design guidelines
+- All components follow Lean DS design guidelines
 - No gradients used (solid colors only)
 - Fully typed with TypeScript
 - Tested with React 18+

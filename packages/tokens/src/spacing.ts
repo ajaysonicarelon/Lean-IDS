@@ -1,5 +1,5 @@
 /**
- * Spacing tokens for Lean IDS
+ * Spacing tokens for Lean DS
  * Based on Figma design tokens
  */
 

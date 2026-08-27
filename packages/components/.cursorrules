@@ -1,4 +1,4 @@
-# Lean IDS - AI Assistant Rules
+# Lean DS - AI Assistant Rules
 # This file provides guidelines for AI coding assistants (Cursor, Windsurf, Cline, etc.)
 
 ## � IMPORTANT: READ THESE FILES FIRST (IN ORDER)
@@ -18,7 +18,7 @@
 ## �🚨 CRITICAL RULES - MUST FOLLOW
 
 ### 1. LIBRARY USAGE - STRICT ENFORCEMENT
-**RULE: Use ONLY Lean IDS components. NO external UI libraries allowed.**
+**RULE: Use ONLY Lean DS components. NO external UI libraries allowed.**
 
 #### ✅ ALLOWED:
 - Import from `@lean-ids/components`
@@ -38,9 +38,9 @@
 - Any other external UI component library
 
 #### 🔄 OVERRIDE RULE:
-If user explicitly says "use only Lean IDS" or "replace with Lean IDS":
+If user explicitly says "use only Lean DS" or "replace with Lean DS":
 - Remove existing external UI library imports
-- Replace with equivalent Lean IDS components
+- Replace with equivalent Lean DS components
 - Update package.json to remove unused dependencies
 
 #### 💡 EXAMPLES:
@@ -253,7 +253,7 @@ import { SideNavigation } from '@lean-ids/components';
 
 ## 🎨 STYLING GUIDELINES
 
-### 1. Use Lean IDS Tokens
+### 1. Use Lean DS Tokens
 ```tsx
 import { theme } from '@lean-ids/tokens';
 
@@ -306,7 +306,7 @@ background: ${({ theme }) => theme.colors.semantic.background.primary};
 **CRITICAL:** NEVER create custom modal or drawer components.
 
 ```tsx
-// ✅ CORRECT - Use Lean IDS Modal
+// ✅ CORRECT - Use Lean DS Modal
 import { Modal } from '@lean-ids/components';
 
 <Modal
@@ -317,7 +317,7 @@ import { Modal } from '@lean-ids/components';
   {content}
 </Modal>
 
-// ✅ CORRECT - Use Lean IDS Drawer
+// ✅ CORRECT - Use Lean DS Drawer
 import { Drawer } from '@lean-ids/components';
 
 <Drawer
@@ -377,19 +377,19 @@ const [isPinned, setIsPinned] = useState(false);
 
 ## 🎨 COMPONENT CREATION RULES
 
-### **CRITICAL: Build ONLY from Existing Lean IDS Components**
+### **CRITICAL: Build ONLY from Existing Lean DS Components**
 
 When creating new features or components:
 
-1. **ONLY use existing Lean IDS components** - Never create custom versions
+1. **ONLY use existing Lean DS components** - Never create custom versions
 2. **ALWAYS use tokens** from `@lean-ids/tokens` - Never hardcode values
-3. **Compose from Lean IDS** - Build complex components from simple ones
+3. **Compose from Lean DS** - Build complex components from simple ones
 
 ### **Examples:**
 
 **Need a form?**
 ```tsx
-// ✅ CORRECT - Use Lean IDS components
+// ✅ CORRECT - Use Lean DS components
 import { Input, Button, Card } from '@lean-ids/components';
 
 function LoginForm() {
@@ -408,7 +408,7 @@ const CustomInput = styled.input`...`; // Don't do this!
 
 **Need chips/tags?**
 ```tsx
-// ✅ CORRECT - Use Lean IDS Chip
+// ✅ CORRECT - Use Lean DS Chip
 import { Chip } from '@lean-ids/components';
 
 <Chip label="Tag" onRemove={() => {}} />
@@ -419,7 +419,7 @@ const CustomChip = styled.div`...`; // Don't do this!
 
 **Building complex components?**
 ```tsx
-// ✅ CORRECT - Compose from Lean IDS components
+// ✅ CORRECT - Compose from Lean DS components
 import { Card, Button, Avatar, Badge } from '@lean-ids/components';
 import { theme } from '@lean-ids/tokens';
 
@@ -428,7 +428,7 @@ const UserCard = styled(Card)`
   gap: ${({ theme }) => theme.spacing[2]};
 `;
 
-// Use Lean IDS components + theme tokens
+// Use Lean DS components + theme tokens
 ```
 
 ### **Token Usage - MANDATORY:**
@@ -510,12 +510,12 @@ import { Input } from 'antd';
 import { Card } from '@chakra-ui/react';
 ```
 
-### 3. Don't Create Custom Components When Lean IDS Has Them
+### 3. Don't Create Custom Components When Lean DS Has Them
 ```tsx
-// ❌ WRONG - Creating custom button when Lean IDS has one
+// ❌ WRONG - Creating custom button when Lean DS has one
 const CustomButton = styled.button`...`;
 
-// ✅ CORRECT - Use Lean IDS Button
+// ✅ CORRECT - Use Lean DS Button
 import { Button } from '@lean-ids/components';
 ```
 
@@ -538,21 +538,21 @@ const StyledDiv = styled.div`
 
 ### When User Asks to Create a Component:
 
-1. **Check:** Does Lean IDS have this component?
+1. **Check:** Does Lean DS have this component?
    - YES → Use `@lean-ids/components`
    - NO → Ask user if they want to create a custom component
 
 2. **Check:** Is this a fresh project?
-   - YES → Use ONLY Lean IDS
+   - YES → Use ONLY Lean DS
    - NO → Check if external library exists
 
-3. **Check:** Does user say "use only Lean IDS"?
-   - YES → Replace all external components with Lean IDS
+3. **Check:** Does user say "use only Lean DS"?
+   - YES → Replace all external components with Lean DS
    - NO → Continue with existing setup
 
 4. **Check:** Is external library already in use?
    - YES → Can continue using it (unless user says otherwise)
-   - NO → Use Lean IDS
+   - NO → Use Lean DS
 
 ### Example Decision Flow:
 
@@ -568,19 +568,19 @@ User: "Add a new button"
 AI: Can use existing MUI Button (already in project) ✅
 ```
 
-**Scenario 3: User Wants Lean IDS Only**
+**Scenario 3: User Wants Lean DS Only**
 ```
-User: "Replace everything with Lean IDS"
+User: "Replace everything with Lean DS"
 AI: Replaces all MUI/Ant Design with @lean-ids/components ✅
 ```
 
 **Scenario 4: Component Doesn't Exist**
 ```
 User: "Create a date picker"
-AI: "Lean IDS doesn't have a DatePicker. Would you like me to:
-     1. Create a custom one using Lean IDS styling
+AI: "Lean DS doesn't have a DatePicker. Would you like me to:
+     1. Create a custom one using Lean DS styling
      2. Use an external library (react-datepicker)
-     3. Wait for Lean IDS to add it"
+     3. Wait for Lean DS to add it"
 ```
 
 ---
@@ -630,7 +630,7 @@ Before suggesting code, verify:
 ## 📞 WHEN TO ASK USER
 
 Ask user for clarification when:
-1. Component doesn't exist in Lean IDS
+1. Component doesn't exist in Lean DS
 2. Unsure if they want to override existing library
 3. Multiple valid approaches exist
 4. Breaking changes would occur
@@ -650,14 +650,14 @@ Refer to these files in the project:
 
 ## 🚀 SUMMARY
 
-**Golden Rule:** When in doubt, use Lean IDS. If it doesn't exist, ask the user.
+**Golden Rule:** When in doubt, use Lean DS. If it doesn't exist, ask the user.
 
 **Priority Order:**
-1. Lean IDS components (ALWAYS FIRST)
+1. Lean DS components (ALWAYS FIRST)
 2. Existing project libraries (if already present)
-3. Custom components (only if Lean IDS doesn't have it)
+3. Custom components (only if Lean DS doesn't have it)
 4. External libraries (LAST RESORT, ask user first)
 
 ---
 
-**Remember:** The goal is to maintain consistency across the design system by using Lean IDS components exclusively for all new development.
+**Remember:** The goal is to maintain consistency across the design system by using Lean DS components exclusively for all new development.

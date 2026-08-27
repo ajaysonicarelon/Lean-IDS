@@ -1,6 +1,6 @@
 # Changelog
 
-All notable changes to the Lean IDS Design System will be documented in this file.
+All notable changes to the Lean DS Design System will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
@@ -356,7 +356,7 @@ yarn add @mui/icons-material @mui/material
 ```
 
 **If you already have Material UI v5+ installed:**
-- ✅ No action needed - Lean IDS will use your existing installation
+- ✅ No action needed - Lean DS will use your existing installation
 - ✅ All APIs remain the same
 - ✅ No code changes required
 
@@ -365,20 +365,20 @@ yarn add @mui/icons-material @mui/material
 **Before (v1.7.3):**
 ```
 Your App → Material UI v5 (4MB)
-        → Lean IDS → Material UI v9 (4MB nested)
+        → Lean DS → Material UI v9 (4MB nested)
 Total: 8MB, version conflicts, EMFILE errors
 ```
 
 **After (v1.7.4):**
 ```
 Your App → Material UI v5 (4MB)
-        → Lean IDS → Uses your Material UI ✅
+        → Lean DS → Uses your Material UI ✅
 Total: 4MB, no conflicts, no EMFILE errors
 ```
 
 #### **Compatibility**
 
-| Your Material UI | Lean IDS v1.7.4 | Status |
+| Your Material UI | Lean DS v1.7.4 | Status |
 |------------------|-----------------|--------|
 | v5.x.x | ✅ Compatible | Recommended |
 | v6.x.x | ✅ Compatible | Supported |

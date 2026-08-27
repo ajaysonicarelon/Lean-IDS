@@ -291,7 +291,7 @@ export const FullyCustomized: Story = {
     showFeedback: true,
     customContentBefore: (
       <div style={{ padding: '0 16px', fontSize: '14px', color: '#666' }}>
-        © 2026 Lean IDS
+        © 2026 Lean DS
       </div>
     ),
     customContentAfter: (

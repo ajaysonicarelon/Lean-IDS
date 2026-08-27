@@ -43,7 +43,7 @@ gpg --full-generate-key
 3. Expiration: `0` (never expires) or `2y` (2 years)
 4. Real name: `Your Name` (same as Git config)
 5. Email: `your.email@carelon.com` (same as Git config)
-6. Comment: `Lean IDS Development` (optional)
+6. Comment: `Lean DS Development` (optional)
 7. Passphrase: Choose a strong passphrase
 
 ### Verify key creation

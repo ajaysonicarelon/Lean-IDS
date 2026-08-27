@@ -1,6 +1,6 @@
 # Modal Component
 
-**The official Modal component for Lean IDS. Use this component for all popup dialogs.**
+**The official Modal component for Lean DS. Use this component for all popup dialogs.**
 
 ⚠️ **IMPORTANT:** Do NOT create custom modal/popup components. Always use this Modal component for consistency across the design system.
 
@@ -8,7 +8,7 @@
 
 ## 📋 Overview
 
-The Modal component is a reusable dialog overlay that appears centered on the screen. It's designed to handle all modal use cases in Lean IDS applications.
+The Modal component is a reusable dialog overlay that appears centered on the screen. It's designed to handle all modal use cases in Lean DS applications.
 
 ### **When to Use:**
 - ✅ Confirmation dialogs
@@ -198,7 +198,7 @@ function MyComponent() {
 
 ## 🎨 Styling
 
-The Modal uses Lean IDS design tokens and cannot be customized beyond the provided props. This ensures consistency across all applications.
+The Modal uses Lean DS design tokens and cannot be customized beyond the provided props. This ensures consistency across all applications.
 
 **Default Styles:**
 - Width: 600px
@@ -263,7 +263,7 @@ const CustomModal = () => (
 );
 ```
 
-### **✅ CORRECT - Use Lean IDS Modal:**
+### **✅ CORRECT - Use Lean DS Modal:**
 ```tsx
 // DO THIS
 import { Modal } from '@ajaysoni7832/lean-ids-components';
@@ -368,7 +368,7 @@ For questions or issues:
 
 ## ✅ Summary
 
-**The Modal component is the ONLY way to create popups in Lean IDS applications.**
+**The Modal component is the ONLY way to create popups in Lean DS applications.**
 
 - Import from `@ajaysoni7832/lean-ids-components`
 - Use for all dialog/popup needs

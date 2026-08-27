@@ -1,6 +1,6 @@
 # Button Component
 
-**The primary action component in Lean IDS. Use buttons for all user actions and interactions.**
+**The primary action component in Lean DS. Use buttons for all user actions and interactions.**
 
 ---
 
@@ -332,7 +332,7 @@ The Button component is fully accessible:
 
 ## 🎨 Styling
 
-The Button uses Lean IDS design tokens and follows the design system strictly. Custom styling is not recommended.
+The Button uses Lean DS design tokens and follows the design system strictly. Custom styling is not recommended.
 
 **Theme Support:**
 ```tsx
@@ -446,7 +446,7 @@ For questions or issues:
 
 ## ✅ Summary
 
-**The Button component is the standard way to create interactive buttons in Lean IDS.**
+**The Button component is the standard way to create interactive buttons in Lean DS.**
 
 - Import from `@ajaysoni7832/lean-ids-components`
 - Use `children` for button text (required)
