@@ -5,23 +5,24 @@ A comprehensive React component library for building consistent, accessible user
 [![npm version](https://img.shields.io/npm/v/@ajaysoni7832/lean-ids-components.svg)](https://www.npmjs.com/package/@ajaysoni7832/lean-ids-components)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
-## 🎉 What's New in v1.7.8
+## 🎉 What's New in v1.7.9
 
-Current Version: **1.7.8**
+Current Version: **1.7.9**
 
-### ✨ Component Enhancements
-- ✅ **Checkbox** - `indeterminate` prop with minus icon and `aria-checked="mixed"` (WCAG 2.1 AA)
-- ✅ **Select** - `onSearchInput`, `searchDebounceDelay`, virtual scrolling support for large datasets
-- ✅ **Accordion** - `headingVariant`, `headingWeight`, `expandIconPosition` props
-- ✅ **Drawer** - Polymorphic `as` prop and extended content/layout API
-- ✅ **Table** - New `TableGroupHeader` component and `types` module
-- ✅ **BarChart / DonutChart** - Props and styles enhancements
-- ✅ **AlertBanner, SideNavigation, Toast** - Story and accessibility improvements
+### ✨ Table Component Enhancements
+- ✅ **Server-Side Pagination** - `paginationMode`, `onPageChange`, `currentPage`, `totalItems` props
+- ✅ **Column Locking System** - Three-dot menu with sort, lock, autosize, reset options
+- ✅ **Always-Visible Scrollbar** - 8px scrollbar with theme-based styling
+- ✅ **Render Function Standardization** - Consistent `render(value, row, rowIndex)` signature
+- ✅ **Bug Fixes** - Selected row styling consistency, improved UX terminology
 
-### � Installation
+### 🗑️ Removed
+- ❌ **Angular Support** - Removed Angular dependencies (fixes Node 20.17.0 compatibility)
+
+### 📦 Installation
 
 ```bash
-npm install @ajaysoni7832/lean-ids-components@1.7.8 @ajaysoni7832/lean-ids-tokens@1.7.8
+npm install @ajaysoni7832/lean-ids-components@1.7.9 @ajaysoni7832/lean-ids-tokens@1.7.9
 ```
 
 📖 **[Read Full Release Notes](./RELEASE_NOTES.md)** | **[Migration Guide](./MIGRATION_GUIDE.md)**
