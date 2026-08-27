@@ -36,7 +36,10 @@ export const TableSubHeader: React.FC<TableSubHeaderProps> = ({
   searchPlaceholder = 'Search',
   onSearchChange,
   locked = false,
+  pinned = 'none',
   leftOffset = 0,
+  rightOffset = 0,
+  showPinBorder = false,
   width,
   className,
   showClearFilter = true,
@@ -71,7 +74,10 @@ export const TableSubHeader: React.FC<TableSubHeaderProps> = ({
   return (
     <StyledTableSubHeader
       $locked={locked}
+      $pinned={pinned}
       $leftOffset={leftOffset}
+      $rightOffset={rightOffset}
+      $showPinBorder={showPinBorder}
       style={{ width }}
       className={className}
       data-locked={locked ? 'true' : undefined}

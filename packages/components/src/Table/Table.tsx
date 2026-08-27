@@ -74,6 +74,14 @@ export interface TableProps extends React.HTMLAttributes<HTMLDivElement> {
   paginated?: boolean;
   /** Items per page (default: 10) */
   itemsPerPage?: number;
+  /** Pagination mode: 'client' (default) or 'server'. When 'server', use onPageChange callback */
+  paginationMode?: 'client' | 'server';
+  /** Callback for page change (server-side pagination). Called with (page, itemsPerPage) */
+  onPageChange?: (page: number, itemsPerPage: number) => void;
+  /** Current page (controlled, for server-side pagination) */
+  currentPage?: number;
+  /** Total number of items (required for server-side pagination) */
+  totalItems?: number;
   /** Enable column settings */
   showSettings?: boolean;
   /** Enable actions column */
@@ -165,17 +173,33 @@ const TableContainer = styled.div`
 
 const ScrollContainer = styled.div<{ $maxHeight?: string }>`
   overflow-x: auto;
-  overflow-y: hidden; /* Prevent rows from appearing outside during animation */
+  overflow-y: auto;
   width: min-content; /* Allow table to use natural width based on column widths */
   min-width: 100%; /* But don't shrink below container width */
-  ${({ $maxHeight }) => $maxHeight && `
-    max-height: ${$maxHeight};
-    overflow-y: auto;
-    display: block;
-  `}
+  max-height: ${({ $maxHeight }) => $maxHeight || 'calc(100vh - 300px)'};
   border: ${({ theme }) => theme.borderWidth[1]} solid ${({ theme }) => theme.colors.palette.neutral[300]};
   border-radius: ${({ theme }) => theme.borderRadius.md};
   position: relative;
+  
+  /* Always show scrollbar */
+  &::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  
+  &::-webkit-scrollbar-track {
+    background: ${({ theme }) => theme.colors.palette.neutral[100]};
+    border-radius: 6px;
+  }
+  
+  &::-webkit-scrollbar-thumb {
+    background: ${({ theme }) => theme.colors.palette.neutral[400]};
+    border-radius: 6px;
+  }
+  
+  &::-webkit-scrollbar-thumb:hover {
+    background: ${({ theme }) => theme.colors.palette.neutral[500]};
+  }
 `;
 
 const StyledTable = styled.table<{ $hasMaxHeight?: boolean }>`
@@ -325,6 +349,10 @@ export const Table = forwardRef<HTMLDivElement, TableProps>(({  as: Component = 
   selectable = false,
   paginated = true,
   itemsPerPage: initialItemsPerPage = 10,
+  paginationMode = 'client',
+  onPageChange,
+  currentPage: controlledCurrentPage,
+  totalItems: propTotalItems,
   showSettings = true,
   showActions = false,
   actions = [],
@@ -385,8 +413,14 @@ export const Table = forwardRef<HTMLDivElement, TableProps>(({  as: Component = 
   // STATE
   // ============================================================================
 
-  const [currentPage, setCurrentPage] = useState(1);
+  // Pagination state - controlled/uncontrolled pattern
+  const [internalCurrentPage, setInternalCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(initialItemsPerPage);
+  
+  // Use controlled values if provided (server mode), otherwise use internal state (client mode)
+  const currentPage = controlledCurrentPage !== undefined ? controlledCurrentPage : internalCurrentPage;
+  
+  // Sorting state - controlled/uncontrolled pattern
   const [internalSortColumn, setInternalSortColumn] = useState<string>('');
   const [internalSortDirection, setInternalSortDirection] = useState<'asc' | 'desc' | 'none'>('none');
   
@@ -567,7 +601,28 @@ export const Table = forwardRef<HTMLDivElement, TableProps>(({  as: Component = 
 
   const handleSearch = (columnId: string, value: string) => {
     setSearchValues(prev => ({ ...prev, [columnId]: value }));
-    setCurrentPage(1); // Reset to first page on search
+    handlePageChange(1); // Reset to first page on search
+  };
+
+  const handlePageChange = (page: number) => {
+    if (paginationMode === 'server' && onPageChange) {
+      // Server-side pagination: call the callback
+      onPageChange(page, itemsPerPage);
+    } else {
+      // Client-side pagination: update internal state
+      setInternalCurrentPage(page);
+    }
+  };
+
+  const handleItemsPerPageChange = (newItemsPerPage: number) => {
+    if (paginationMode === 'server' && onPageChange) {
+      // Server-side pagination: call the callback with page 1 and new items per page
+      onPageChange(1, newItemsPerPage);
+    } else {
+      // Client-side pagination: update internal state
+      setInternalCurrentPage(1);
+      setItemsPerPage(newItemsPerPage);
+    }
   };
 
   const handleResize = (columnId: string, width: number) => {
@@ -867,11 +922,13 @@ const processedData = useMemo(() => {
   }, [flatData, selectedRows, rowKey]);
 
   // Pagination
-  const totalItems = processedData.length;
+  // For server-side pagination, use the provided totalItems; for client-side, calculate from data
+  const totalItems = paginationMode === 'server' ? (propTotalItems || 0) : processedData.length;
   const totalPages = paginated ? Math.ceil(totalItems / itemsPerPage) : 1;
   const startIndex = paginated ? (currentPage - 1) * itemsPerPage : 0;
   const endIndex = paginated ? startIndex + itemsPerPage : totalItems;
-  const paginatedData = processedData.slice(startIndex, endIndex);
+  // For server-side pagination, data is already paginated; for client-side, slice it
+  const paginatedData = paginationMode === 'server' ? processedData : processedData.slice(startIndex, endIndex);
 
   // Visible columns
   const visibleColumns = columnConfigs
@@ -1054,6 +1111,7 @@ const processedData = useMemo(() => {
                   label={column?.label || colConfig.id}
                   variant="default"
                   side={side}
+                  showColumnMenu={false}
                 />
               );
             })}
@@ -1111,6 +1169,7 @@ const processedData = useMemo(() => {
                   label={column?.label || colConfig.id}
                   variant="default"
                   side={side}
+                  showColumnMenu={false}
                 />
               );
             })}
@@ -1251,6 +1310,12 @@ const processedData = useMemo(() => {
                       checked={allChecked}
                       indeterminate={isIndeterminate}
                       onCheckChange={handleSelectAll}
+                      onPinChange={(pinState) => {
+                        if (pinState === 'none') {
+                          handleColumnLock('checkbox', false);
+                        }
+                      }}
+                      showColumnMenu={false}
                     />
                   );
                 }
@@ -1266,6 +1331,12 @@ const processedData = useMemo(() => {
                       locked={isLocked}
                       leftOffset={offset}
                       data-locked={isLocked}
+                      onPinChange={(pinState) => {
+                        if (pinState === 'none') {
+                          handleColumnLock('actions', false);
+                        }
+                      }}
+                      showColumnMenu={false}
                     />
                   );
                 }
@@ -1298,10 +1369,17 @@ const processedData = useMemo(() => {
                     minWidth={column.minWidth}
                     maxWidth={column.maxWidth}
                     initialWidth={typeof column.width === 'number' ? column.width : undefined}
-                    onLockToggle={() => handleColumnLock(column.id, !isLocked)}
+                    onPinChange={(pinState) => {
+                      if (pinState === 'none') {
+                        handleColumnLock(column.id, false);
+                      } else {
+                        handleColumnLock(column.id, true);
+                      }
+                    }}
                     locked={isLocked}
                     leftOffset={offset}
                     data-locked={isLocked}
+                    showColumnMenu={false}
                   />
                 );
               })}
@@ -1376,8 +1454,8 @@ const processedData = useMemo(() => {
           totalPages={totalPages}
           totalItems={totalItems}
           itemsPerPage={itemsPerPage}
-          onPageChange={setCurrentPage}
-          onItemsPerPageChange={setItemsPerPage}
+          onPageChange={handlePageChange}
+          onItemsPerPageChange={handleItemsPerPageChange}
         />
       )}
 

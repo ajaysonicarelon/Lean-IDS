@@ -11,16 +11,26 @@ export interface TableHeaderProps {
   sortable?: boolean;
   sortDirection?: SortDirection;
   onSort?: () => void;
+  onSortNone?: () => void;
   showCheckbox?: boolean;
   checked?: boolean;
   indeterminate?: boolean;
   onCheckChange?: (checked: boolean) => void;
   
-  // Locked column feature
+  // Locked column feature (deprecated - use 'pinned' instead)
   locked?: boolean;
-  onLockToggle?: () => void;
+  onPinChange?: (pinState: 'none' | 'left' | 'right') => void; // Set specific pin state
+  onAutosizeColumn?: () => void; // Autosize this column to fit content
+  onAutosizeAll?: () => void; // Autosize all columns
+  onResetColumn?: () => void; // Reset column to original state
+  showColumnMenu?: boolean; // Show/hide three-dot column menu (default: true for Advanced Table, false for Basic Table)
+  enableUserPinning?: boolean; // Allow users to pin columns via menu (default: true)
   leftOffset?: number;
-  isChildColumn?: boolean; // Hide lock icon for child columns
+  rightOffset?: number; // Offset from right edge for right-pinned columns
+  pinned?: 'left' | 'right' | 'none'; // Column pinning direction
+  isChildColumn?: boolean; // Hide lock/pin icon for child columns
+  hasSubColumns?: boolean;
+  showPinBorder?: boolean; // Show border on last left-pinned or first right-pinned column
   
   // Resizable column feature
   resizable?: boolean;

@@ -76,7 +76,10 @@ export const TableCell: React.FC<TableCellProps> = ({
   selected = false,
   isFirstColumn = false,
   locked = false,
+  pinned = 'none',
   leftOffset = 0,
+  rightOffset = 0,
+  showPinBorder = false,
   children,
 }) => {
   const handleCheckboxClick = (e: React.MouseEvent) => {
@@ -127,7 +130,10 @@ export const TableCell: React.FC<TableCellProps> = ({
       $selected={selected} 
       $isFirst={isFirstColumn}
       $locked={locked}
+      $pinned={pinned}
       $leftOffset={leftOffset}
+      $rightOffset={rightOffset}
+      $showPinBorder={showPinBorder}
       className={className}
       data-locked={locked ? 'true' : undefined}
       onClick={onClick}

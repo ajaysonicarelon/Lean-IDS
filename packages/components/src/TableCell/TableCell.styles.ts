@@ -4,13 +4,15 @@ interface StyledTableCellProps {
   $align?: 'left' | 'center' | 'right';
   $selected?: boolean;
   $isFirst?: boolean;
-  $locked?: boolean;
+  $locked?: boolean; // Deprecated - use $pinned instead
+  $pinned?: 'left' | 'right' | 'none';
   $leftOffset?: number;
+  $rightOffset?: number;
 }
 
-export const StyledTableCell = styled.td<StyledTableCellProps>`
-  background-color: ${({ theme, $selected, $locked }) => 
-    $locked ? theme.colors.palette.primary[50] : $selected ? theme.colors.palette.primary[50] : theme.colors.palette.neutral[50]};
+export const StyledTableCell = styled.td<StyledTableCellProps & { $showPinBorder?: boolean }>`
+  background-color: ${({ theme, $selected, $locked, $pinned }) => 
+    ($locked || $pinned === 'left' || $pinned === 'right') ? theme.colors.palette.primary[50] : $selected ? theme.colors.palette.primary[50] : theme.colors.palette.neutral[50]};
   border-bottom: 1px solid ${({ theme }) => theme.colors.palette.neutral[300]};
   border-left: ${({ theme, $selected, $isFirst }) => 
     $selected && $isFirst ? `2px solid ${theme.colors.palette.primary[500]}` : 'none'};
@@ -22,19 +24,38 @@ export const StyledTableCell = styled.td<StyledTableCellProps>`
   box-sizing: border-box;
   overflow: hidden;
   
-  ${({ $locked, $leftOffset, theme }) =>
-    $locked
-      ? `
-    position: sticky;
-    left: ${$leftOffset || 0}px;
-    z-index: 9;
+  ${({ $locked, $pinned, $leftOffset, $rightOffset, $showPinBorder, theme, $selected }) => {
+    // Backward compatibility: locked = true means pinned left
+    const pinnedSide = $pinned || ($locked ? 'left' : 'none');
     
-    &.is-stuck {
-      background-color: ${theme.colors.palette.primary[50]};
-      box-shadow: 4px 0px 4px rgba(0, 0, 0, 0.05);
+    if (pinnedSide === 'left') {
+      return `
+        position: sticky;
+        left: ${$leftOffset || 0}px;
+        z-index: 9;
+        ${$showPinBorder ? `border-right: 1px solid ${theme.colors.palette.neutral[300]};` : ''}
+        
+        &.is-stuck {
+          box-shadow: 4px 0px 4px rgba(0, 0, 0, 0.05);
+        }
+      `;
     }
-  `
-      : ''}
+    
+    if (pinnedSide === 'right') {
+      return `
+        position: sticky;
+        right: ${$rightOffset || 0}px;
+        z-index: 9;
+        ${$showPinBorder ? `border-left: 1px solid ${theme.colors.palette.neutral[300]};` : ''}
+        
+        &.is-stuck-right {
+          box-shadow: -4px 0px 4px rgba(0, 0, 0, 0.05);
+        }
+      `;
+    }
+    
+    return '';
+  }}
 `;
 
 export const CellContent = styled.div`

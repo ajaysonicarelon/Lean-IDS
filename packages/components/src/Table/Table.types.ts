@@ -28,9 +28,33 @@ export interface TableColumn {
   maxWidth?: number;
   /** Initial visibility state (default: true) */
   visible?: boolean;
-  /** Lock column to left side (sticky) */
+  /** 
+   * Lock column to left side (sticky). Basic Table only.
+   * For Advanced Table, use `pinned` instead for left/right pinning.
+   */
   locked?: boolean;
-  /** Custom cell renderer function */
+  /** 
+   * Pin column to left or right side (sticky). Advanced Table only.
+   * - 'left': Pin to left side
+   * - 'right': Pin to right side
+   * - 'none': Not pinned (default)
+   * Takes precedence over `locked` if both are set.
+   * Controlled by `enableDevPinning` prop.
+   */
+  pinned?: 'left' | 'right' | 'none';
+  /** Display order for column (used in column reordering). Advanced Table only. */
+  order?: number;
+  /** 
+   * Custom cell renderer function.
+   * @param value - The cell value (extracted using accessor or column.id)
+   * @param row - The complete row data object
+   * @param rowIndex - The row index (0-based)
+   * @returns React node to render in the cell
+   * @example
+   * renderCell: (value, row, rowIndex) => (
+   *   <Chip label={value} type="success" />
+   * )
+   */
   renderCell?: (value: any, row: any, rowIndex: number) => React.ReactNode;
   /** Sub-columns for nested/grouped column headers (Advanced Table only) */
   subColumns?: TableColumn[];
@@ -55,6 +79,14 @@ export interface TableProps extends React.HTMLAttributes<HTMLDivElement> {
   paginated?: boolean;
   /** Items per page (default: 10) */
   itemsPerPage?: number;
+  /** Pagination mode: 'client' (default) or 'server'. When 'server', use onPageChange callback */
+  paginationMode?: 'client' | 'server';
+  /** Callback for page change (server-side pagination). Called with (page, itemsPerPage) */
+  onPageChange?: (page: number, itemsPerPage: number) => void;
+  /** Current page (controlled, for server-side pagination) */
+  currentPage?: number;
+  /** Total number of items (required for server-side pagination) */
+  totalItems?: number;
   /** Enable column settings */
   showSettings?: boolean;
   /** Enable actions column */
@@ -97,6 +129,16 @@ export interface TableProps extends React.HTMLAttributes<HTMLDivElement> {
   description?: string;
   /** Show default toolbar */
   showToolbar?: boolean;
+  /** Enable column header menu (three-dot menu with sort, pin, autosize options) */
+  showColumnMenu?: boolean;
+  /** Allow users to pin columns to the left via menu */
+  allowUserLeftPin?: boolean;
+  /** Allow users to pin columns to the right via menu */
+  allowUserRightPin?: boolean;
+  /** Allow developers to set initial left-pinned columns */
+  allowDevLeftPin?: boolean;
+  /** Allow developers to set initial right-pinned columns */
+  allowDevRightPin?: boolean;
   /** Show global search in default toolbar */
   showGlobalSearch?: boolean;
   /** Show filter button in default toolbar */

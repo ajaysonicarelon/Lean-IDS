@@ -81,17 +81,33 @@ const TableWrapper = styled.div<{ $hasSidePanel?: boolean }>`
 
 const ScrollContainer = styled.div<{ $hasSidePanel?: boolean; $maxHeight?: string }>`
   overflow-x: auto;
-  ${({ $maxHeight }) => $maxHeight && `
-    max-height: ${$maxHeight};
-    overflow-y: auto;
-    display: block;
-  `}
+  overflow-y: auto;
+  max-height: ${({ $maxHeight }) => $maxHeight || 'calc(100vh - 300px)'};
   border: 1px solid ${({ theme }) => theme.colors.palette.neutral[300]};
   border-radius: ${({ $hasSidePanel }) => 
     $hasSidePanel ? '8px 0 0 8px' : '8px'};
   position: relative;
   flex: 1;
-  ${({ $maxHeight }) => !$maxHeight && 'min-height: 500px;'}
+  
+  /* Always show scrollbar */
+  &::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  
+  &::-webkit-scrollbar-track {
+    background: ${({ theme }) => theme.colors.palette.neutral[100]};
+    border-radius: 6px;
+  }
+  
+  &::-webkit-scrollbar-thumb {
+    background: ${({ theme }) => theme.colors.palette.neutral[400]};
+    border-radius: 6px;
+  }
+  
+  &::-webkit-scrollbar-thumb:hover {
+    background: ${({ theme }) => theme.colors.palette.neutral[500]};
+  }
 `;
 
 const SkeletonRow = styled.tr``;
@@ -330,6 +346,20 @@ interface AdvancedTableProps extends React.HTMLAttributes<HTMLDivElement> {
   maxHeight?: string;
   
   // ============================================================================
+  // COLUMN MENU & PINNING
+  // ============================================================================
+  /** Enable column header menu (three-dot menu with sort, pin, autosize options) (default: true) */
+  showColumnMenu?: boolean;
+  /** Allow users to pin columns to the left via menu (default: true) */
+  allowUserLeftPin?: boolean;
+  /** Allow users to pin columns to the right via menu (default: true) */
+  allowUserRightPin?: boolean;
+  /** Allow developers to set initial left-pinned columns via column config (default: true) */
+  allowDevLeftPin?: boolean;
+  /** Allow developers to set initial right-pinned columns via column config (default: true) */
+  allowDevRightPin?: boolean;
+  
+  // ============================================================================
   // SELECTION
   // ============================================================================
   /** Enable row selection */
@@ -344,6 +374,14 @@ interface AdvancedTableProps extends React.HTMLAttributes<HTMLDivElement> {
   paginated?: boolean;
   /** Items per page (default: 10) */
   itemsPerPage?: number;
+  /** Pagination mode: 'client' (default) or 'server'. When 'server', use onPageChange callback to handle pagination */
+  paginationMode?: 'client' | 'server';
+  /** Callback for page change (server-side pagination). Called with (page, itemsPerPage) */
+  onPageChange?: (page: number, itemsPerPage: number) => void;
+  /** Current page (controlled, for server-side pagination) */
+  currentPage?: number;
+  /** Total number of items (required for server-side pagination) */
+  totalItems?: number;
   
   // ============================================================================
   // SORTING
@@ -364,6 +402,20 @@ interface AdvancedTableProps extends React.HTMLAttributes<HTMLDivElement> {
   defaultMinWidth?: number;
   /** Default maximum width for columns that don't specify maxWidth (default: 250px) */
   defaultMaxWidth?: number;
+  
+  // ============================================================================
+  // COLUMN PINNING
+  // ============================================================================
+  /** 
+   * Allow users to pin columns via column menu (both left and right). 
+   * When false, hides pin options from column menu. Default: true 
+   */
+  enableUserPinning?: boolean;
+  /** 
+   * Allow developers to set initial pinned columns via column config (pinned: 'left' | 'right'). 
+   * When false, ignores pinned property in column config. Default: true 
+   */
+  enableDevPinning?: boolean;
   
   // ============================================================================
   // EVENTS
@@ -458,6 +510,11 @@ export const AdvancedDataTable = forwardRef<HTMLDivElement, AdvancedTableProps>(
   customSidePanelTabs = [],
   maxHeight,
   
+  // Column Menu & Pinning
+  showColumnMenu = true,
+  enableUserPinning = true,
+  enableDevPinning = true,
+  
   // Selection
   selectable = false,
   onRowSelect,
@@ -465,6 +522,10 @@ export const AdvancedDataTable = forwardRef<HTMLDivElement, AdvancedTableProps>(
   // Pagination
   paginated = true,
   itemsPerPage: propItemsPerPage = 10,
+  paginationMode = 'client',
+  onPageChange,
+  currentPage: controlledCurrentPage,
+  totalItems: propTotalItems,
   
   // Sorting
   sortMode = 'client',
@@ -512,12 +573,14 @@ export const AdvancedDataTable = forwardRef<HTMLDivElement, AdvancedTableProps>(
   // Rest props
   ...restProps
 }, ref) => {
-  const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(propItemsPerPage);
+  const [internalCurrentPage, setInternalCurrentPage] = useState(1);
+  const [internalItemsPerPage, setInternalItemsPerPage] = useState(propItemsPerPage);
   const [internalSortColumn, setInternalSortColumn] = useState<string>('');
   const [internalSortDirection, setInternalSortDirection] = useState<'asc' | 'desc' | 'none'>('none');
   
   // Use controlled props in server mode, internal state in client mode
+  const currentPage = paginationMode === 'server' ? (controlledCurrentPage || 1) : internalCurrentPage;
+  const itemsPerPage = paginationMode === 'server' ? propItemsPerPage : internalItemsPerPage;
   const sortColumn = sortMode === 'server' ? (controlledSortColumn || '') : internalSortColumn;
   const sortDirection = sortMode === 'server' ? (controlledSortDirection || 'none') : internalSortDirection;
   const [allChecked, setAllChecked] = useState(false);
@@ -535,8 +598,17 @@ export const AdvancedDataTable = forwardRef<HTMLDivElement, AdvancedTableProps>(
   
   // Use initialColumns or fallback to default
   const getInitialColumns = (): ColumnConfig[] => {
-    if (initialColumns) return initialColumns;
-    return getSimpleColumnConfigs();
+    const cols = initialColumns || getSimpleColumnConfigs();
+    
+    // If enableDevPinning is false, strip pinned property from all columns
+    if (!enableDevPinning) {
+      return cols.map(col => {
+        const { pinned, ...rest } = col;
+        return rest as ColumnConfig;
+      });
+    }
+    
+    return cols;
   };
 
   const [columnConfigs, setColumnConfigs] = useState<ColumnConfig[]>(getInitialColumns());
@@ -544,6 +616,7 @@ export const AdvancedDataTable = forwardRef<HTMLDivElement, AdvancedTableProps>(
   const [columnSearches, setColumnSearches] = useState<{ [key: string]: string }>({});
   const [globalSearch, setGlobalSearch] = useState<string>('');
   const [columnWidths, setColumnWidths] = useState<{ [key: string]: number }>({});
+  const [rightColumnOffsets, setRightColumnOffsets] = useState<{ [key: string]: number }>({});
   const [animateSorting, setAnimateSorting] = useState(false);
   const [sidePanelFilters, setSidePanelFilters] = useState<ColumnFilter[]>([]);
 
@@ -557,46 +630,56 @@ export const AdvancedDataTable = forwardRef<HTMLDivElement, AdvancedTableProps>(
     return selectedRows.length > 0 && selectedRows.length < totalRows;
   }, [selectedRows.length, sampleData.length]);
 
-  const handleColumnLock = (columnId: string) => {
+  const handleColumnPinChange = (columnId: string, pinState: 'none' | 'left' | 'right') => {
     const column = columnConfigs.find(col => col.id === columnId);
     if (!column) return;
 
-    const currentLockedCount = columnConfigs.filter(
-      col => col.locked && col.id !== 'checkbox'
-    ).length;
+    // Check if trying to pin left and already have 3 left-pinned columns
+    if (pinState === 'left') {
+      const currentLeftPinnedCount = columnConfigs.filter(
+        col => (col.pinned === 'left' || (col.locked && !col.pinned)) && col.id !== 'checkbox' && col.id !== columnId
+      ).length;
 
-    // If trying to lock and already have 3 locked, prevent it
-    if (!column.locked && currentLockedCount >= 3) {
-      setLockWarning(true);
-      setTimeout(() => setLockWarning(false), 3000);
-      return;
+      if (currentLeftPinnedCount >= 3) {
+        setLockWarning(true);
+        setTimeout(() => setLockWarning(false), 3000);
+        return;
+      }
     }
 
-    // Toggle lock status - if parent is toggled, apply to all children
+    // Update column pinning - if parent is changed, apply to all children
     const updatedConfigs = columnConfigs.map(col => {
       if (col.id === columnId) {
         if (col.subColumns) {
           return {
             ...col,
-            locked: !col.locked,
+            pinned: pinState,
+            locked: false,
             subColumns: col.subColumns.map((sub) => ({
               ...sub,
-              locked: !col.locked,
+              pinned: pinState,
+              locked: false,
             })),
           };
         }
-        return { ...col, locked: !col.locked };
+        return { ...col, pinned: pinState, locked: false };
       }
       return col;
     });
 
-    // Reorder: checkbox first, then locked columns, then unlocked columns
+    // Reorder columns same as handleColumnPin
     const checkboxCol = updatedConfigs.find(col => col.id === 'checkbox');
     const nonCheckboxCols = updatedConfigs.filter(col => col.id !== 'checkbox');
     
     const sortedCols = nonCheckboxCols.sort((a, b) => {
-      if (a.locked && !b.locked) return -1;
-      if (!a.locked && b.locked) return 1;
+      const aPinned = a.pinned || (a.locked ? 'left' : 'none');
+      const bPinned = b.pinned || (b.locked ? 'left' : 'none');
+      
+      if (aPinned === 'left' && bPinned !== 'left') return -1;
+      if (aPinned !== 'left' && bPinned === 'left') return 1;
+      if (aPinned === 'right' && bPinned !== 'right') return 1;
+      if (aPinned !== 'right' && bPinned === 'right') return -1;
+      
       return a.order - b.order;
     });
     
@@ -605,6 +688,76 @@ export const AdvancedDataTable = forwardRef<HTMLDivElement, AdvancedTableProps>(
       : sortedCols.map((col, idx) => ({ ...col, order: idx }));
 
     setColumnConfigs(finalConfigs);
+  };
+
+  const handleAutosizeColumn = (columnId: string) => {
+    // Get all cells for this column and calculate max width
+    const cells = document.querySelectorAll(`[data-column-id="${columnId}"]`);
+    let maxWidth = 100; // Minimum width
+
+    cells.forEach(cell => {
+      const cellWidth = (cell as HTMLElement).scrollWidth + 32; // Add padding
+      if (cellWidth > maxWidth) {
+        maxWidth = cellWidth;
+      }
+    });
+
+    // Cap at 500px max
+    maxWidth = Math.min(maxWidth, 500);
+
+    setColumnWidths(prev => ({
+      ...prev,
+      [columnId]: maxWidth,
+    }));
+  };
+
+  const handleAutosizeAll = () => {
+    const newWidths: Record<string, number> = {};
+
+    flatVisibleColumns.forEach(col => {
+      const cells = document.querySelectorAll(`[data-column-id="${col.id}"]`);
+      let maxWidth = 100;
+
+      cells.forEach(cell => {
+        const cellWidth = (cell as HTMLElement).scrollWidth + 32;
+        if (cellWidth > maxWidth) {
+          maxWidth = cellWidth;
+        }
+      });
+
+      maxWidth = Math.min(maxWidth, 500);
+      newWidths[col.id] = maxWidth;
+    });
+
+    setColumnWidths(newWidths);
+  };
+
+  const handleResetColumn = (columnId: string) => {
+    // Reset column to original width and pinning
+    const initialColumns = getInitialColumns();
+    const originalColumn = initialColumns.find((col: ColumnConfig) => col.id === columnId);
+    if (!originalColumn) return;
+
+    // Remove custom width
+    setColumnWidths(prev => {
+      const newWidths = { ...prev };
+      delete newWidths[columnId];
+      return newWidths;
+    });
+
+    // Reset pinning to original state
+    const updatedConfigs = columnConfigs.map(col => {
+      if (col.id === columnId) {
+        return {
+          ...col,
+          pinned: originalColumn.pinned || 'none',
+          locked: originalColumn.locked || false,
+        };
+      }
+      return col;
+    });
+
+    setColumnConfigs(updatedConfigs);
   };
 
   const handleSort = (column: string) => {
@@ -627,7 +780,41 @@ export const AdvancedDataTable = forwardRef<HTMLDivElement, AdvancedTableProps>(
     
     // Trigger animation
     setAnimateSorting(true);
+    setTimeout(() => setAnimateSorting(false), 300);
+  };
+
+  const handleSortNone = (column: string) => {
+    // Directly set sort to 'none' state
+    if (sortMode === 'server' && onSort) {
+      onSort(column, 'none');
+    } else {
+      setInternalSortColumn(column);
+      setInternalSortDirection('none');
+    }
+    
+    setAnimateSorting(true);
     setTimeout(() => setAnimateSorting(false), 50);
+  };
+
+  const handlePageChange = (page: number) => {
+    if (paginationMode === 'server' && onPageChange) {
+      // Server-side pagination: call the callback
+      onPageChange(page, itemsPerPage);
+    } else {
+      // Client-side pagination: update internal state
+      setInternalCurrentPage(page);
+    }
+  };
+
+  const handleItemsPerPageChange = (newItemsPerPage: number) => {
+    if (paginationMode === 'server' && onPageChange) {
+      // Server-side pagination: call the callback with page 1 and new items per page
+      onPageChange(1, newItemsPerPage);
+    } else {
+      // Client-side pagination: update internal state
+      setInternalItemsPerPage(newItemsPerPage);
+      setInternalCurrentPage(1); // Reset to first page when changing items per page
+    }
   };
 
   const handleSelectAll = (checked: boolean) => {
@@ -855,17 +1042,28 @@ export const AdvancedDataTable = forwardRef<HTMLDivElement, AdvancedTableProps>(
       })
     : filteredData);
 
-  const totalItems = sortedData.length;
+  // For server-side pagination, use the provided totalItems; for client-side, calculate from data
+  const totalItems = paginationMode === 'server' ? (propTotalItems || 0) : sortedData.length;
   const totalPages = Math.ceil(totalItems / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
-  const paginatedData = sortedData.slice(startIndex, endIndex);
+  // For server-side pagination, data is already paginated; for client-side, slice it
+  const paginatedData = paginationMode === 'server' ? sortedData : sortedData.slice(startIndex, endIndex);
 
   const flattenColumns = (cols: ColumnConfig[]): ColumnConfig[] => {
     const result: ColumnConfig[] = [];
     cols.forEach(col => {
       if (col.subColumns && col.subColumns.length > 0) {
-        result.push(...col.subColumns);
+        // Sub-columns inherit parent's pinned/locked state if they don't have their own
+        const inheritedSubColumns = col.subColumns.map(subCol => {
+          const subPinned = subCol.pinned || (subCol.locked ? 'left' : 'none');
+          return {
+            ...subCol,
+            pinned: subPinned !== 'none' ? subCol.pinned : col.pinned,
+            locked: subCol.locked || col.locked
+          };
+        });
+        result.push(...inheritedSubColumns);
       } else {
         result.push(col);
       }
@@ -891,21 +1089,28 @@ export const AdvancedDataTable = forwardRef<HTMLDivElement, AdvancedTableProps>(
       const newOffsets: { [key: string]: number } = {};
       let cumulativeOffset = 0;
 
-      // Calculate offsets for all locked columns (including sub-columns)
+      // Calculate offsets for all left-pinned columns (including sub-columns)
       flatVisibleColumns.forEach((col, index) => {
-        if (col.locked && cells[index]) {
+        const pinnedSide = col.pinned || (col.locked ? 'left' : 'none');
+        if (pinnedSide === 'left' && cells[index]) {
           newOffsets[col.id] = cumulativeOffset;
           const actualWidth = (cells[index] as HTMLElement).offsetWidth;
           cumulativeOffset += actualWidth;
         }
       });
 
-      // Calculate offsets for parent columns with locked sub-columns
+      // Calculate offsets for parent columns with left-pinned sub-columns
       visibleColumns.forEach((parentCol) => {
         if (parentCol.subColumns && parentCol.subColumns.length > 0) {
-          // If parent has sub-columns, check if any are locked
-          const hasLockedChildren = parentCol.subColumns.some(sub => sub.locked);
-          if (hasLockedChildren || parentCol.locked) {
+          const parentPinned = parentCol.pinned || (parentCol.locked ? 'left' : 'none');
+          
+          // Check if any sub-column is left-pinned (either explicitly or inherited from parent)
+          const hasLeftPinnedChildren = parentCol.subColumns.some(sub => {
+            const subPinned = sub.pinned || (sub.locked ? 'left' : 'none');
+            return subPinned === 'left' || (subPinned === 'none' && parentPinned === 'left');
+          });
+          
+          if (hasLeftPinnedChildren || parentPinned === 'left') {
             // Parent offset should be the same as its first sub-column
             const firstSubCol = parentCol.subColumns[0];
             if (newOffsets[firstSubCol.id] !== undefined) {
@@ -921,6 +1126,50 @@ export const AdvancedDataTable = forwardRef<HTMLDivElement, AdvancedTableProps>(
       }
 
       setColumnOffsets(newOffsets);
+
+      // Calculate right offsets for right-pinned columns
+      const newRightOffsets: { [key: string]: number } = {};
+      let cumulativeRightOffset = 0;
+
+      // Process columns from right to left
+      for (let index = flatVisibleColumns.length - 1; index >= 0; index--) {
+        const col = flatVisibleColumns[index];
+        const pinnedSide = col.pinned || (col.locked ? 'left' : 'none');
+        
+        if (pinnedSide === 'right' && cells[index]) {
+          newRightOffsets[col.id] = cumulativeRightOffset;
+          const actualWidth = (cells[index] as HTMLElement).offsetWidth;
+          cumulativeRightOffset += actualWidth;
+        }
+      }
+
+      // Calculate right offsets for parent columns with right-pinned sub-columns
+      visibleColumns.forEach((parentCol) => {
+        if (parentCol.subColumns && parentCol.subColumns.length > 0) {
+          const parentPinned = parentCol.pinned || (parentCol.locked ? 'left' : 'none');
+          
+          // Check if any sub-column is right-pinned (either explicitly or inherited from parent)
+          const hasRightPinnedChildren = parentCol.subColumns.some(sub => {
+            const subPinned = sub.pinned || (sub.locked ? 'left' : 'none');
+            return subPinned === 'right' || (subPinned === 'none' && parentPinned === 'right');
+          });
+          
+          if (hasRightPinnedChildren || parentPinned === 'right') {
+            // Parent offset should be the same as its LAST (rightmost) right-pinned sub-column
+            // because right offsets are calculated from right to left, so the last sub-column has offset 0
+            const rightPinnedSubCols = parentCol.subColumns.filter(sub => {
+              const subPinned = sub.pinned || (sub.locked ? 'left' : 'none');
+              return subPinned === 'right' || (subPinned === 'none' && parentPinned === 'right');
+            });
+            const lastRightSubCol = rightPinnedSubCols[rightPinnedSubCols.length - 1];
+            if (lastRightSubCol && newRightOffsets[lastRightSubCol.id] !== undefined) {
+              newRightOffsets[parentCol.id] = newRightOffsets[lastRightSubCol.id];
+            }
+          }
+        }
+      });
+
+      setRightColumnOffsets(newRightOffsets);
     };
 
     updateOffsets();
@@ -938,21 +1187,47 @@ export const AdvancedDataTable = forwardRef<HTMLDivElement, AdvancedTableProps>(
     return () => {
       resizeObserver.disconnect();
     };
-  }, [flatVisibleColumns.map(c => c.id + c.locked).join(',')]);
+  }, [flatVisibleColumns.map(c => c.id + c.locked + (c.pinned || 'none')).join(',')]);
 
   // Check if we have any nested columns
   const hasNestedColumns = visibleColumns.some(col => col.subColumns && col.subColumns.length > 0);
+
+  // Calculate which columns should show pin border (for parent columns)
+  const lastLeftPinnedIndex = visibleColumns.map((col, idx) => {
+    const pinnedSide = col.pinned || (col.locked ? 'left' : 'none');
+    return pinnedSide === 'left' ? idx : -1;
+  }).reduce((last, curr) => curr > last ? curr : last, -1);
+
+  const firstRightPinnedIndex = visibleColumns.findIndex(col => {
+    const pinnedSide = col.pinned || (col.locked ? 'left' : 'none');
+    return pinnedSide === 'right';
+  });
+
+  // Calculate which flat columns should show pin border (for sub-headers and cells)
+  const lastLeftPinnedFlatIndex = flatVisibleColumns.map((col, idx) => {
+    const pinnedSide = col.pinned || (col.locked ? 'left' : 'none');
+    return pinnedSide === 'left' ? idx : -1;
+  }).reduce((last, curr) => curr > last ? curr : last, -1);
+
+  const firstRightPinnedFlatIndex = flatVisibleColumns.findIndex(col => {
+    const pinnedSide = col.pinned || (col.locked ? 'left' : 'none');
+    return pinnedSide === 'right';
+  });
 
   const renderHeaderRow = () => {
     return (
       <>
         {/* Row 1: Parent headers */}
         <tr>
-          {visibleColumns.map((col) => {
+          {visibleColumns.map((col, colIndex) => {
+            const pinnedSide = col.pinned || (col.locked ? 'left' : 'none');
             const isLocked = col.locked;
-            const offset = columnOffsets[col.id];
+            const leftOffset = columnOffsets[col.id];
+            const rightOffset = rightColumnOffsets[col.id];
             const colSpan = col.subColumns && col.subColumns.length > 0 ? col.subColumns.length : 1;
             const rowSpan = hasNestedColumns && (!col.subColumns || col.subColumns.length === 0) ? 2 : 1;
+            const showPinBorder = (pinnedSide === 'left' && colIndex === lastLeftPinnedIndex) || 
+                                   (pinnedSide === 'right' && colIndex === firstRightPinnedIndex);
 
             if (col.id === 'checkbox') {
               return (
@@ -965,7 +1240,10 @@ export const AdvancedDataTable = forwardRef<HTMLDivElement, AdvancedTableProps>(
                   indeterminate={isIndeterminate}
                   onCheckChange={handleSelectAll}
                   locked={isLocked}
-                  leftOffset={offset}
+                  pinned={pinnedSide}
+                  leftOffset={leftOffset}
+                  rightOffset={rightOffset}
+                  showPinBorder={showPinBorder}
                   data-locked={isLocked}
                   rowSpan={rowSpan}
                   isChildColumn={true}
@@ -984,9 +1262,19 @@ export const AdvancedDataTable = forwardRef<HTMLDivElement, AdvancedTableProps>(
                 sortable={!col.subColumns || col.subColumns.length === 0}
                 sortDirection={sortColumn === col.id ? sortDirection : 'none'}
                 onSort={() => handleSort(col.id)}
+                onSortNone={() => handleSortNone(col.id)}
                 locked={isLocked}
-                onLockToggle={() => handleColumnLock(col.id)}
-                leftOffset={offset}
+                pinned={pinnedSide}
+                onPinChange={(pinState) => handleColumnPinChange(col.id, pinState)}
+                onAutosizeColumn={() => handleAutosizeColumn(col.id)}
+                onAutosizeAll={handleAutosizeAll}
+                onResetColumn={() => handleResetColumn(col.id)}
+                showColumnMenu={showColumnMenu}
+                enableUserPinning={enableUserPinning}
+                leftOffset={leftOffset}
+                rightOffset={rightOffset}
+                showPinBorder={showPinBorder}
+                hasSubColumns={col.subColumns && col.subColumns.length > 0}
                 data-locked={isLocked}
                 align={colSpan > 1 ? 'center' : 'left'}
                 colSpan={colSpan}
@@ -1012,10 +1300,18 @@ export const AdvancedDataTable = forwardRef<HTMLDivElement, AdvancedTableProps>(
               }
 
               return parentCol.subColumns.map((subCol) => {
-                const isLocked = subCol.locked;
-                const offset = columnOffsets[subCol.id];
+                // Sub-columns inherit parent's pinned state if they don't have their own
+                const parentPinnedSide = parentCol.pinned || (parentCol.locked ? 'left' : 'none');
+                const subPinnedSide = subCol.pinned || (subCol.locked ? 'left' : 'none');
+                const pinnedSide = subPinnedSide !== 'none' ? subPinnedSide : parentPinnedSide;
+                const isLocked = subCol.locked || parentCol.locked;
+                const leftOffset = columnOffsets[subCol.id];
+                const rightOffset = rightColumnOffsets[subCol.id];
                 const dynamicWidth = columnWidths[subCol.id];
                 const currentWidth = dynamicWidth || (typeof subCol.width === 'number' ? subCol.width : undefined);
+                const subColIndex = flatVisibleColumns.findIndex(c => c.id === subCol.id);
+                const showPinBorder = (pinnedSide === 'left' && subColIndex === lastLeftPinnedFlatIndex) || 
+                                       (pinnedSide === 'right' && subColIndex === firstRightPinnedFlatIndex);
 
                 return (
                   <TableHeader
@@ -1025,8 +1321,18 @@ export const AdvancedDataTable = forwardRef<HTMLDivElement, AdvancedTableProps>(
                     sortable
                     sortDirection={sortColumn === subCol.id ? sortDirection : 'none'}
                     onSort={() => handleSort(subCol.id)}
+                    onSortNone={() => handleSortNone(subCol.id)}
                     locked={isLocked}
-                    leftOffset={offset}
+                    pinned={pinnedSide}
+                    onPinChange={(pinState) => handleColumnPinChange(subCol.id, pinState)}
+                    onAutosizeColumn={() => handleAutosizeColumn(subCol.id)}
+                    onAutosizeAll={handleAutosizeAll}
+                    onResetColumn={() => handleResetColumn(subCol.id)}
+                    showColumnMenu={showColumnMenu}
+                    enableUserPinning={enableUserPinning}
+                    leftOffset={leftOffset}
+                    rightOffset={rightOffset}
+                    showPinBorder={showPinBorder}
                     data-locked={isLocked}
                     isChildColumn={true}
                     resizable={true}
@@ -1050,9 +1356,11 @@ export const AdvancedDataTable = forwardRef<HTMLDivElement, AdvancedTableProps>(
 
     return (
       <tr>
-        {flatVisibleColumns.map((col) => {
+        {flatVisibleColumns.map((col, colIndex) => {
+          const pinnedSide = col.pinned || (col.locked ? 'left' : 'none');
           const isLocked = col.locked;
-          const offset = columnOffsets[col.id];
+          const leftOffset = columnOffsets[col.id];
+          const rightOffset = rightColumnOffsets[col.id];
           const isFilterable = col.filterable !== false; // Default to true if not specified
 
           // Skip filter input for checkbox-only columns (first column with only checkbox, no label)
@@ -1061,9 +1369,10 @@ export const AdvancedDataTable = forwardRef<HTMLDivElement, AdvancedTableProps>(
               <th
                 key={col.id}
                 style={{
-                  position: isLocked ? 'sticky' : 'relative',
-                  left: isLocked ? `${offset}px` : 'auto',
-                  zIndex: isLocked ? 3 : 1,
+                  position: pinnedSide !== 'none' ? 'sticky' : 'relative',
+                  left: pinnedSide === 'left' ? `${leftOffset}px` : 'auto',
+                  right: pinnedSide === 'right' ? `${rightOffset}px` : 'auto',
+                  zIndex: pinnedSide !== 'none' ? 3 : 1,
                   background: '#f9fafb',
                   borderBottom: '1px solid #e5e7eb',
                   padding: '8px 12px',
@@ -1080,9 +1389,10 @@ export const AdvancedDataTable = forwardRef<HTMLDivElement, AdvancedTableProps>(
               <th
                 key={col.id}
                 style={{
-                  position: isLocked ? 'sticky' : 'relative',
-                  left: isLocked ? `${offset}px` : 'auto',
-                  zIndex: isLocked ? 3 : 1,
+                  position: pinnedSide !== 'none' ? 'sticky' : 'relative',
+                  left: pinnedSide === 'left' ? `${leftOffset}px` : 'auto',
+                  right: pinnedSide === 'right' ? `${rightOffset}px` : 'auto',
+                  zIndex: pinnedSide !== 'none' ? 3 : 1,
                   background: '#f9fafb',
                   borderBottom: '1px solid #e5e7eb',
                   padding: '8px 12px',
@@ -1099,7 +1409,11 @@ export const AdvancedDataTable = forwardRef<HTMLDivElement, AdvancedTableProps>(
               searchPlaceholder={`Search ${col.label}`}
               onSearchChange={(value) => handleColumnSearchChange(col.id, value)}
               locked={isLocked}
-              leftOffset={offset}
+              pinned={pinnedSide}
+              leftOffset={leftOffset}
+              rightOffset={rightOffset}
+              showPinBorder={(pinnedSide === 'left' && colIndex === lastLeftPinnedFlatIndex) || 
+                             (pinnedSide === 'right' && colIndex === firstRightPinnedFlatIndex)}
               data-locked={isLocked}
             />
           );
@@ -1133,9 +1447,24 @@ export const AdvancedDataTable = forwardRef<HTMLDivElement, AdvancedTableProps>(
         />
       )}
 
+      {/* Column Settings Modal - Same design as Basic Table */}
+      {useModal && (
+        <TableSettings
+          isOpen={settingsOpen}
+          onClose={() => setSettingsOpen(false)}
+          columns={columnConfigs.filter(col => col.id !== 'checkbox')}
+          lockWarning={lockWarning}
+          onColumnsChange={(newConfigs) => {
+            const checkboxCol = columnConfigs.find(c => c.id === 'checkbox');
+            const mergedConfigs = checkboxCol ? [checkboxCol, ...newConfigs] : newConfigs;
+            setColumnConfigs(mergedConfigs);
+          }}
+        />
+      )}
+
       <TableWrapper $hasSidePanel={useSidePanel}>
         <ScrollContainer data-scroll-container $hasSidePanel={useSidePanel} $maxHeight={maxHeight}>
-          <StyledTable $hasMaxHeight={!!maxHeight}>
+          <StyledTable $hasMaxHeight={true}>
             <colgroup>
               {visibleColumns.map((col) => {
                 if (col.subColumns && col.subColumns.length > 0) {
@@ -1281,17 +1610,25 @@ export const AdvancedDataTable = forwardRef<HTMLDivElement, AdvancedTableProps>(
 
                   // Render cells once - used by both animated and regular rows
                   const cells = flatVisibleColumns.map((col, colIndex) => {
+                    const pinnedSide = col.pinned || (col.locked ? 'left' : 'none');
                     const isLocked = col.locked;
-                    const offset = columnOffsets[col.id];
+                    const leftOffset = columnOffsets[col.id];
+                    const rightOffset = rightColumnOffsets[col.id];
                     const isFirstColumn = colIndex === 0;
+                    const showPinBorder = (pinnedSide === 'left' && colIndex === lastLeftPinnedFlatIndex) || 
+                                           (pinnedSide === 'right' && colIndex === firstRightPinnedFlatIndex);
 
                     if (col.id === 'checkbox') {
                       return (
                         <TableCell
                           key={col.id}
+                          data-column-id={col.id}
                           selected={isSelected}
                           locked={isLocked}
-                          leftOffset={offset}
+                          pinned={pinnedSide}
+                          leftOffset={leftOffset}
+                          rightOffset={rightOffset}
+                          showPinBorder={showPinBorder}
                           data-locked={isLocked}
                           isFirstColumn={isFirstColumn}
                           showCheckbox
@@ -1305,9 +1642,13 @@ export const AdvancedDataTable = forwardRef<HTMLDivElement, AdvancedTableProps>(
                       return (
                         <TableCell
                           key={col.id}
+                          data-column-id={col.id}
                           selected={isSelected}
                           locked={isLocked}
-                          leftOffset={offset}
+                          pinned={pinnedSide}
+                          leftOffset={leftOffset}
+                          rightOffset={rightOffset}
+                          showPinBorder={showPinBorder}
                           data-locked={isLocked}
                           isFirstColumn={isFirstColumn}
                         >
@@ -1334,12 +1675,15 @@ export const AdvancedDataTable = forwardRef<HTMLDivElement, AdvancedTableProps>(
                         key={col.id}
                         selected={isSelected}
                         locked={isLocked}
-                        leftOffset={offset}
+                        pinned={pinnedSide}
+                        leftOffset={leftOffset}
+                        rightOffset={rightOffset}
+                        showPinBorder={showPinBorder}
                         data-locked={isLocked}
                         isFirstColumn={isFirstColumn}
                         width={currentWidth}
                       >
-                        {row[col.id as keyof DataRow]}
+                        {col.render ? col.render(row[col.id as keyof DataRow], row, startIndex + rowIndex) : row[col.id as keyof DataRow]}
                       </TableCell>
                     );
                   });
@@ -1379,17 +1723,25 @@ export const AdvancedDataTable = forwardRef<HTMLDivElement, AdvancedTableProps>(
                   const isSelected = selectedRows.includes(startIndex + rowIndex);
 
                   const cells = flatVisibleColumns.map((col, colIndex) => {
+                    const pinnedSide = col.pinned || (col.locked ? 'left' : 'none');
                     const isLocked = col.locked;
-                    const offset = columnOffsets[col.id];
+                    const leftOffset = columnOffsets[col.id];
+                    const rightOffset = rightColumnOffsets[col.id];
                     const isFirstColumn = colIndex === 0;
+                    const showPinBorder = (pinnedSide === 'left' && colIndex === lastLeftPinnedFlatIndex) || 
+                                           (pinnedSide === 'right' && colIndex === firstRightPinnedFlatIndex);
 
                     if (col.id === 'checkbox') {
                       return (
                         <TableCell
                           key={col.id}
+                          data-column-id={col.id}
                           selected={isSelected}
                           locked={isLocked}
-                          leftOffset={offset}
+                          pinned={pinnedSide}
+                          leftOffset={leftOffset}
+                          rightOffset={rightOffset}
+                          showPinBorder={showPinBorder}
                           data-locked={isLocked}
                           isFirstColumn={isFirstColumn}
                           showCheckbox
@@ -1403,9 +1755,13 @@ export const AdvancedDataTable = forwardRef<HTMLDivElement, AdvancedTableProps>(
                       return (
                         <TableCell
                           key={col.id}
+                          data-column-id={col.id}
                           selected={isSelected}
                           locked={isLocked}
-                          leftOffset={offset}
+                          pinned={pinnedSide}
+                          leftOffset={leftOffset}
+                          rightOffset={rightOffset}
+                          showPinBorder={showPinBorder}
                           data-locked={isLocked}
                           isFirstColumn={isFirstColumn}
                         >
@@ -1432,12 +1788,15 @@ export const AdvancedDataTable = forwardRef<HTMLDivElement, AdvancedTableProps>(
                         key={col.id}
                         selected={isSelected}
                         locked={isLocked}
-                        leftOffset={offset}
+                        pinned={pinnedSide}
+                        leftOffset={leftOffset}
+                        rightOffset={rightOffset}
+                        showPinBorder={showPinBorder}
                         data-locked={isLocked}
                         isFirstColumn={isFirstColumn}
                         width={currentWidth}
                       >
-                        {row[col.id as keyof DataRow]}
+                        {col.render ? col.render(row[col.id as keyof DataRow], row, startIndex + rowIndex) : row[col.id as keyof DataRow]}
                       </TableCell>
                     );
                   });
@@ -1497,24 +1856,12 @@ export const AdvancedDataTable = forwardRef<HTMLDivElement, AdvancedTableProps>(
           totalPages={totalPages}
           totalItems={totalItems}
           itemsPerPage={itemsPerPage}
-          onPageChange={setCurrentPage}
-          onItemsPerPageChange={setItemsPerPage}
+          onPageChange={handlePageChange}
+          onItemsPerPageChange={handleItemsPerPageChange}
         />
       )}
 
-      {useModal && (
-        <TableSettings
-          isOpen={settingsOpen}
-          onClose={() => setSettingsOpen(false)}
-          columns={columnConfigs.filter(col => col.id !== 'checkbox')}
-          lockWarning={lockWarning}
-          onColumnsChange={(newConfigs) => {
-            const checkboxCol = columnConfigs.find(c => c.id === 'checkbox');
-            const mergedConfigs = checkboxCol ? [checkboxCol, ...newConfigs] : newConfigs;
-            setColumnConfigs(mergedConfigs);
-          }}
-        />
-      )}
+      {/* Old TableSettings modal removed - replaced with ColumnManagementPopup above */}
     </TableContainer>
     </Component>
   );

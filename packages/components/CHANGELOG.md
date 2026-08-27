@@ -5,6 +5,45 @@ All notable changes to the Lean IDS Design System will be documented in this fil
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.7.9] - 2026-08-27
+
+### ✨ New Features
+
+**Table Components (Basic & Advanced)**
+- **Server-Side Pagination** - Added `paginationMode`, `onPageChange`, `currentPage`, and `totalItems` props for server-side pagination support
+- **Column Locking System** - Added three-dot menu on column headers with sort, lock, autosize, and reset options
+  - New props: `showColumnMenu`, `enableUserPinning`, `enableDevPinning`
+  - Contextual menu items based on column type (parent headers, sub-headers, regular columns)
+  - High z-index (9999-10001) to appear above locked columns
+  - Changed terminology from "Pin" to "Lock" for better UX clarity
+- **Always-Visible Scrollbar** - 8px scrollbar with custom theme-based styling
+  - Track: `neutral[100]`, Thumb: `neutral[400]`, Hover: `neutral[500]`
+  - Positioned on scroll container with sticky header support
+
+### 🐛 Bug Fixes
+- **Selected Row Styling** - Fixed inconsistent background color for selected rows (all cells now use `primary[50]`)
+- **Render Function Consistency** - Standardized render function signature across both tables: `render(value, row, rowIndex)`
+
+### 📚 Documentation
+- **Storybook** - Added comprehensive prop documentation for all table features
+  - Server-side pagination examples
+  - Server-side sorting examples
+  - Column menu and locking documentation
+  - Custom cell rendering guide with signature: `(value, row, rowIndex) => ReactNode`
+  - 11 organized categories with 50+ documented props
+
+### 🔧 Technical Improvements
+- Updated `ColumnConfig.render` signature to match `TableColumn.renderCell`
+- Enhanced scrollbar styling with theme tokens
+- Improved column menu z-index layering
+- Added 300ms delay on submenu hide for better UX
+
+### 🗑️ Removed
+- **Angular Support** - Removed Angular documentation and build dependencies
+  - Deleted `.storybook/angular-guide.mdx` and `.storybook/angular-input-field.mdx`
+  - Removed `ng-packagr`, `@angular/compiler-cli`, `@typescript-eslint/parser` from dependencies
+  - Fixes Node 20.17.0 compatibility issue
+
 ## [1.7.8] - 2026-08-19
 
 ### ✨ Component Enhancements

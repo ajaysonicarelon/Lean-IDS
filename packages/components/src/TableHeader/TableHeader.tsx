@@ -1,5 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { TableHeaderProps } from './TableHeader.types';
+import { ColumnMenu } from './ColumnMenu';
 import {
   StyledTableHeader,
   HeaderContent,
@@ -17,20 +18,9 @@ import {
 import { Checkbox } from '../Checkbox';
 import ArrowUpward from '@mui/icons-material/ArrowUpward';
 import ArrowDownward from '@mui/icons-material/ArrowDownward';
-
-
-const LockClosedIcon = () => (
-  <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <path d="M12.667 7.333H12V5.333C12 3.493 10.507 2 8.667 2C6.827 2 5.333 3.493 5.333 5.333V7.333H4.667C4.113 7.333 3.667 7.78 3.667 8.333V13C3.667 13.553 4.113 14 4.667 14H12.667C13.22 14 13.667 13.553 13.667 13V8.333C13.667 7.78 13.22 7.333 12.667 7.333ZM8.667 11C8.113 11 7.667 10.553 7.667 10C7.667 9.447 8.113 9 8.667 9C9.22 9 9.667 9.447 9.667 10C9.667 10.553 9.22 11 8.667 11ZM10.533 7.333H6.8V5.333C6.8 4.3 7.633 3.467 8.667 3.467C9.7 3.467 10.533 4.3 10.533 5.333V7.333Z" fill="currentColor"/>
-  </svg>
-);
-
-const ResizeIcon = () => (
-  <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <rect x="7.5" y="4" width="1" height="8" rx="0.5" fill="currentColor"/>
-    <circle cx="8" cy="8" r="1" fill="currentColor"/>
-  </svg>
-);
+import Lock from '@mui/icons-material/Lock';
+import MoreHoriz from '@mui/icons-material/MoreHoriz';
+import DragIndicator from '@mui/icons-material/DragIndicator';
 
 export const TableHeader: React.FC<TableHeaderProps> = ({
   label,
@@ -39,14 +29,24 @@ export const TableHeader: React.FC<TableHeaderProps> = ({
   sortable = false,
   sortDirection = 'none',
   onSort,
+  onSortNone,
   showCheckbox = false,
   checked = false,
   indeterminate = false,
   onCheckChange,
   locked = false,
-  onLockToggle,
+  pinned = 'none',
+  onPinChange,
+  onAutosizeColumn,
+  onAutosizeAll,
+  onResetColumn,
+  showColumnMenu = true,
+  enableUserPinning = true,
   leftOffset = 0,
+  rightOffset = 0,
   isChildColumn = false,
+  hasSubColumns = false,
+  showPinBorder = false,
   resizable = false,
   onResize,
   initialWidth,
@@ -66,6 +66,8 @@ export const TableHeader: React.FC<TableHeaderProps> = ({
   rowSpan,
 }) => {
   const [isResizing, setIsResizing] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [menuAnchorEl, setMenuAnchorEl] = useState<HTMLElement | null>(null);
   const headerRef = useRef<HTMLTableCellElement>(null);
   const startXRef = useRef(0);
   const startWidthRef = useRef(0);
@@ -84,12 +86,62 @@ export const TableHeader: React.FC<TableHeaderProps> = ({
     }
   };
 
-  const handleLockClick = (e: React.MouseEvent) => {
+  const handleMenuClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
-    if (onLockToggle) {
-      onLockToggle();
+    setMenuAnchorEl(e.currentTarget);
+    setMenuOpen(true);
+  };
+
+  const handleMenuClose = () => {
+    setMenuOpen(false);
+    setMenuAnchorEl(null);
+  };
+
+  const handleSortAscending = () => {
+    if (onSort) {
+      // Call onSort twice if currently desc to get to asc
+      // This assumes onSort cycles through: none -> asc -> desc -> none
+      onSort();
     }
   };
+
+  const handleSortDescending = () => {
+    if (onSort) {
+      onSort();
+    }
+  };
+
+  const handleSortNone = () => {
+    if (onSortNone) {
+      onSortNone();
+    }
+  };
+
+  const handlePinChange = (pinState: 'none' | 'left' | 'right') => {
+    if (onPinChange) {
+      onPinChange(pinState);
+    }
+  };
+
+  const handleAutosizeColumn = () => {
+    if (onAutosizeColumn) {
+      onAutosizeColumn();
+    }
+  };
+
+  const handleAutosizeAll = () => {
+    if (onAutosizeAll) {
+      onAutosizeAll();
+    }
+  };
+
+  const handleResetColumn = () => {
+    if (onResetColumn) {
+      onResetColumn();
+    }
+  };
+
+  // Removed handleLockClick and handlePinClick - using menu actions instead
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (onSearchChange) {
@@ -189,7 +241,10 @@ export const TableHeader: React.FC<TableHeaderProps> = ({
       $side={side}
       $resizable={resizable}
       $locked={locked}
+      $pinned={pinned}
       $leftOffset={leftOffset}
+      $rightOffset={rightOffset}
+      $showPinBorder={showPinBorder}
       $sortDirection={sortDirection}
       $showCheckbox={showCheckbox}
       $hasLabel={!!label}
@@ -224,7 +279,7 @@ export const TableHeader: React.FC<TableHeaderProps> = ({
             </SearchActions>
             {showResizeHandle && (
               <ResizeHandle onMouseDown={handleResizeStart}>
-                <ResizeIcon />
+                <DragIndicator sx={{ fontSize: 16 }} />
               </ResizeHandle>
             )}
           </HeaderRightContent>
@@ -236,6 +291,7 @@ export const TableHeader: React.FC<TableHeaderProps> = ({
               <CheckboxWrapper>
                 <Checkbox
                   checked={checked}
+                  indeterminate={indeterminate}
                   onChange={handleCheckboxChange}
                   onClick={(e) => e.stopPropagation()}
                 />
@@ -319,10 +375,26 @@ export const TableHeader: React.FC<TableHeaderProps> = ({
                 )}
               </>
             )}
-            {locked && !isChildColumn && !showCheckbox && (
-              onLockToggle ? (
+            {/* Show lock indicator (clickable to unpin) when column is pinned or locked */}
+            {!isChildColumn && !showCheckbox && (() => {
+              const currentPinned = pinned || (locked ? 'left' : 'none');
+              
+              // Only show indicator if actually pinned or locked
+              if (currentPinned === 'none') return null;
+              
+              const PinIcon = Lock; // Use Lock icon for all pinned columns
+              const tooltipText = currentPinned === 'left' ? 'Locked to left (click to unlock)' : 'Locked to right (click to unlock)';
+              
+              const handleUnpin = (e: React.MouseEvent) => {
+                e.stopPropagation();
+                if (onPinChange) {
+                  onPinChange('none');
+                }
+              };
+              
+              return (
                 <button
-                  onClick={handleLockClick}
+                  onClick={handleUnpin}
                   style={{
                     background: 'none',
                     border: 'none',
@@ -339,39 +411,49 @@ export const TableHeader: React.FC<TableHeaderProps> = ({
                   }}
                   onMouseEnter={(e) => e.currentTarget.style.color = '#818CF8'}
                   onMouseLeave={(e) => e.currentTarget.style.color = '#A5B4FC'}
-                  title="Unlock column"
+                  title={tooltipText}
                 >
-                  <LockClosedIcon />
+                  <PinIcon sx={{ fontSize: 16 }} />
                 </button>
-              ) : (
-                <div
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    width: '16px',
-                    height: '16px',
-                    margin: '0 0 0 8px',
-                    color: '#A5B4FC',
-                  }}
-                  title="Column is locked"
-                >
-                  <LockClosedIcon />
-                </div>
-              )
-            )}
+              );
+            })()}
           </HeaderLeftContent>
-          {showResizeHandle && (
-            <HeaderRightContent>
+          <HeaderRightContent>
+            {/* Three-dot menu button - hide for checkbox columns and when showColumnMenu is false */}
+            {!showCheckbox && showColumnMenu && (
+              <button
+                onClick={handleMenuClick}
+                style={{
+                  background: 'none',
+                  border: 'none',
+                  padding: 0,
+                  margin: '0 8px 0 0',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  width: '16px',
+                  height: '16px',
+                  color: '#94A3B8',
+                  transition: 'color 0.2s',
+                }}
+                onMouseEnter={(e) => e.currentTarget.style.color = '#64748B'}
+                onMouseLeave={(e) => e.currentTarget.style.color = '#94A3B8'}
+                title="Column options"
+              >
+                <MoreHoriz sx={{ fontSize: 16 }} />
+              </button>
+            )}
+            {showResizeHandle && (
               <ResizeHandle 
                 onMouseDown={handleResizeStart}
                 onDoubleClick={handleResizeDoubleClick}
                 title="Double-click to reset width"
               >
-                <ResizeIcon />
+                <DragIndicator sx={{ fontSize: 16 }} />
               </ResizeHandle>
-            </HeaderRightContent>
-          )}
+            )}
+          </HeaderRightContent>
         </HeaderContent>
       )}
       {/* Resize border - half-height border on right side for resizing */}
@@ -382,6 +464,25 @@ export const TableHeader: React.FC<TableHeaderProps> = ({
           title="Double-click to reset width"
         />
       )}
+
+      {/* Column Menu */}
+      <ColumnMenu
+        anchorEl={menuAnchorEl}
+        open={menuOpen}
+        onClose={handleMenuClose}
+        onSortAscending={handleSortAscending}
+        onSortDescending={handleSortDescending}
+        onSortNone={handleSortNone}
+        onPinChange={handlePinChange}
+        onAutosizeColumn={handleAutosizeColumn}
+        onAutosizeAll={handleAutosizeAll}
+        onResetColumn={handleResetColumn}
+        currentPinState={pinned || (locked ? 'left' : 'none')}
+        currentSortDirection={sortDirection}
+        isParentWithSubColumns={hasSubColumns}
+        isChildColumn={isChildColumn}
+        enableUserPinning={enableUserPinning}
+      />
     </StyledTableHeader>
   );
 };

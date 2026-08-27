@@ -23,7 +23,7 @@ const meta: Meta<typeof Table> = {
         component: `
 Data table with sorting, filtering, pagination, and column resizing.
 
-**Features:** Sorting • Filtering • Pagination • Row selection • Column resizing • Custom cell rendering
+**Features:** Sorting (Client/Server) • Filtering • Pagination (Client/Server) • Row selection • Column resizing • Column menu • Column pinning • Custom cell rendering • Always-visible scrollbar
 
 ## Quick Start
 \`\`\`tsx
@@ -32,14 +32,283 @@ import { Table } from '@ajaysoni7832/lean-ids-components';
 <Table 
   data={data} 
   columns={columns}
-  sortable
-  resizable
+  paginated
+  selectable
+/>
+\`\`\`
+
+## Server-Side Pagination
+\`\`\`tsx
+<Table
+  data={currentPageData}
+  columns={columns}
+  paginated
+  paginationMode="server"
+  currentPage={page}
+  totalItems={1000}
+  onPageChange={(page, itemsPerPage) => {
+    // Fetch data for the new page
+    fetchData(page, itemsPerPage);
+  }}
+/>
+\`\`\`
+
+## Server-Side Sorting
+\`\`\`tsx
+<Table
+  data={sortedData}
+  columns={columns}
+  sortMode="server"
+  sortColumn={sortColumn}
+  sortDirection={sortDirection}
+  onSort={(columnId, direction) => {
+    // Fetch sorted data from server
+    fetchSortedData(columnId, direction);
+  }}
 />
 \`\`\`
 
 See stories below for detailed examples.
         `,
       },
+    },
+  },
+  argTypes: {
+    // Data & Columns
+    data: {
+      control: false,
+      description: 'Array of data objects to display',
+      table: { category: 'Data & Columns' },
+    },
+    columns: {
+      control: false,
+      description: 'Column configuration array (TableColumn[])',
+      table: { category: 'Data & Columns' },
+    },
+    rowKey: {
+      control: 'text',
+      description: 'Row key accessor (default: "id")',
+      table: { category: 'Data & Columns' },
+    },
+    
+    // Selection
+    selectable: {
+      control: 'boolean',
+      description: 'Enable row selection with checkboxes',
+      table: { category: 'Selection' },
+    },
+    onRowSelect: {
+      action: 'rowsSelected',
+      description: 'Callback when rows are selected. Receives array of selected row IDs',
+      table: { category: 'Selection' },
+    },
+    onRowClick: {
+      action: 'rowClicked',
+      description: 'Callback when a row is clicked. Receives (row, rowIndex, event)',
+      table: { category: 'Selection' },
+    },
+    
+    // Pagination
+    paginated: {
+      control: 'boolean',
+      description: 'Enable pagination',
+      table: { category: 'Pagination' },
+    },
+    itemsPerPage: {
+      control: 'number',
+      description: 'Items per page (default: 10)',
+      table: { category: 'Pagination' },
+    },
+    paginationMode: {
+      control: 'select',
+      options: ['client', 'server'],
+      description: 'Pagination mode: "client" (default) handles data slicing automatically, "server" expects pre-paginated data and calls onPageChange callback',
+      table: { category: 'Pagination' },
+    },
+    onPageChange: {
+      action: 'pageChanged',
+      description: 'Callback for server-side pagination. Called with (page, itemsPerPage) when page changes. Use with paginationMode="server"',
+      table: { category: 'Pagination' },
+    },
+    currentPage: {
+      control: 'number',
+      description: 'Controlled current page (for server-side pagination). Use with paginationMode="server"',
+      table: { category: 'Pagination' },
+    },
+    totalItems: {
+      control: 'number',
+      description: 'Total number of items across all pages (required for server-side pagination). Use with paginationMode="server"',
+      table: { category: 'Pagination' },
+    },
+    
+    // Sorting
+    sortMode: {
+      control: 'select',
+      options: ['client', 'server'],
+      description: 'Sorting mode: "client" (default) sorts data automatically, "server" calls onSort callback for server-side sorting',
+      table: { category: 'Sorting' },
+    },
+    onSort: {
+      action: 'sorted',
+      description: 'Callback for server-side sorting. Called with (columnId, direction) when sort changes. Use with sortMode="server"',
+      table: { category: 'Sorting' },
+    },
+    sortColumn: {
+      control: 'text',
+      description: 'Controlled sort column (for server-side sorting). Use with sortMode="server"',
+      table: { category: 'Sorting' },
+    },
+    sortDirection: {
+      control: 'select',
+      options: ['asc', 'desc', 'none'],
+      description: 'Controlled sort direction (for server-side sorting). Use with sortMode="server"',
+      table: { category: 'Sorting' },
+    },
+    
+    
+    // Layout & Display
+    showSettings: {
+      control: 'boolean',
+      description: 'Show column settings modal',
+      table: { category: 'Layout & Display' },
+    },
+    showToolbar: {
+      control: 'boolean',
+      description: 'Show default toolbar',
+      table: { category: 'Layout & Display' },
+    },
+    toolbar: {
+      control: false,
+      description: 'Custom toolbar content (replaces default toolbar)',
+      table: { category: 'Layout & Display' },
+    },
+    title: {
+      control: 'text',
+      description: 'Table title (used in default toolbar)',
+      table: { category: 'Layout & Display' },
+    },
+    description: {
+      control: 'text',
+      description: 'Table description (used in default toolbar)',
+      table: { category: 'Layout & Display' },
+    },
+    showGlobalSearch: {
+      control: 'boolean',
+      description: 'Show global search in toolbar',
+      table: { category: 'Layout & Display' },
+    },
+    showFilter: {
+      control: 'boolean',
+      description: 'Show filter button in toolbar',
+      table: { category: 'Layout & Display' },
+    },
+    showDownload: {
+      control: 'boolean',
+      description: 'Show download button in toolbar',
+      table: { category: 'Layout & Display' },
+    },
+    onDownload: {
+      action: 'downloaded',
+      description: 'Download button click handler',
+      table: { category: 'Layout & Display' },
+    },
+    maxHeight: {
+      control: 'text',
+      description: 'Max height for table body (e.g., "400px", "50vh"). Enables fixed header with scrollable body and always-visible 8px scrollbar',
+      table: { category: 'Layout & Display' },
+    },
+    
+    // Actions
+    showActions: {
+      control: 'boolean',
+      description: 'Enable actions column',
+      table: { category: 'Actions' },
+    },
+    actions: {
+      control: false,
+      description: 'Custom row actions array',
+      table: { category: 'Actions' },
+    },
+    onRowAction: {
+      action: 'actionTriggered',
+      description: 'Callback when row action is triggered',
+      table: { category: 'Actions' },
+    },
+    
+    // States
+    loading: {
+      control: 'boolean',
+      description: 'Loading state - shows skeleton rows',
+      table: { category: 'States' },
+    },
+    isInvalid: {
+      control: 'boolean',
+      description: 'Error/invalid state',
+      table: { category: 'States' },
+    },
+    errorMessage: {
+      control: 'text',
+      description: 'Error message to display when isInvalid is true',
+      table: { category: 'States' },
+    },
+    
+    // Empty State
+    emptyMessage: {
+      control: 'text',
+      description: 'Custom empty state message',
+      table: { category: 'Empty State' },
+    },
+    emptyIcon: {
+      control: 'text',
+      description: 'Empty state icon name (Material Icons)',
+      table: { category: 'Empty State' },
+    },
+    emptyTitle: {
+      control: 'text',
+      description: 'Empty state title',
+      table: { category: 'Empty State' },
+    },
+    emptyDescription: {
+      control: 'text',
+      description: 'Empty state description',
+      table: { category: 'Empty State' },
+    },
+    emptyActionLabel: {
+      control: 'text',
+      description: 'Empty state action button label',
+      table: { category: 'Empty State' },
+    },
+    onEmptyAction: {
+      action: 'emptyActionClicked',
+      description: 'Empty state action button handler',
+      table: { category: 'Empty State' },
+    },
+    
+    // Customization
+    className: {
+      control: 'text',
+      description: 'Custom CSS class',
+      table: { category: 'Customization' },
+    },
+    scrollContainerClassName: {
+      control: 'text',
+      description: 'Override className for scroll container',
+      table: { category: 'Customization' },
+    },
+    scrollContainerStyle: {
+      control: 'object',
+      description: 'Override style for scroll container',
+      table: { category: 'Customization' },
+    },
+    emptyStateClassName: {
+      control: 'text',
+      description: 'Override className for empty state',
+      table: { category: 'Customization' },
+    },
+    emptyStateStyle: {
+      control: 'object',
+      description: 'Override style for empty state',
+      table: { category: 'Customization' },
     },
   },
   tags: ['autodocs'],

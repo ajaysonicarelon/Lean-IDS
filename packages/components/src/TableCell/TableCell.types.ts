@@ -67,9 +67,12 @@ export interface TableCellProps {
   selected?: boolean;
   isFirstColumn?: boolean;
   
-  // Locked column feature
+  // Locked column feature (deprecated - use 'pinned' instead)
   locked?: boolean;
   leftOffset?: number;
+  rightOffset?: number; // Offset from right edge for right-pinned columns
+  pinned?: 'left' | 'right' | 'none'; // Column pinning direction
+  showPinBorder?: boolean; // Show border on last left-pinned or first right-pinned column
   
   // Custom content
   children?: React.ReactNode;

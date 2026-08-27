@@ -2,7 +2,8 @@ export interface ColumnConfig {
   id: string;
   label: string;
   visible: boolean;
-  locked: boolean;
+  locked: boolean; // Deprecated: use 'pinned' instead. Kept for backward compatibility (locked: true = pinned: 'left')
+  pinned?: 'left' | 'right' | 'none'; // Column pinning: 'left' (freeze to left), 'right' (freeze to right), 'none' (scrollable)
   order: number;
   filterable?: boolean; // Whether column can have filter (default: true)
   width?: string | number; // Custom column width (e.g., '150px', '20%', 200)
@@ -11,6 +12,7 @@ export interface ColumnConfig {
   resizable?: boolean; // Enable column resizing by dragging column border
   subColumns?: ColumnConfig[];
   parentId?: string;
+  render?: (value: any, row: any, rowIndex?: number) => React.ReactNode; // Custom cell renderer function. Receives cell value, full row data, and optional row index. Matches TableColumn.renderCell signature.
 }
 
 export interface TableSettingsProps {

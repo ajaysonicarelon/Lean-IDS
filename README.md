@@ -1,19 +1,15 @@
 # Lean IDS - Internal Design System
 
-A comprehensive design system for Carelon and Elevance, built with React, Angular, TypeScript, and Web Components.
-
-**Multi-Framework Support**: React 16.8+ to 19.x | Angular 15+ to 19.x
+A comprehensive React design system for Carelon and Elevance, built with TypeScript and Storybook.
 
 ## 🎨 Features
 
-- **Multi-Framework Support**: React (16.8-19.x) and Angular (15-19.x)
+- **React Support**: React 16.8+ to 19.x
 - **Dual-Brand Theming**: Support for Carelon and Elevance brand themes
 - **Accessibility First**: WCAG 2.1 AA compliant components
 - **TypeScript**: Full type safety and IntelliSense support
-- **Web Components**: Framework-agnostic core with React & Angular wrappers
 - **Storybook**: Interactive documentation and component playground
 - **Design Tokens**: Centralized design tokens extracted from Figma
-- **Wide Version Support**: No peer dependency conflicts (±3 versions)
 
 ## 📦 Packages
 
@@ -21,25 +17,14 @@ This monorepo contains the following packages:
 
 - `@ajaysoni7832/lean-ids-tokens` - Design tokens (colors, spacing, typography, etc.)
 - `@ajaysoni7832/lean-ids-components` - React component library (React 16.8-19.x)
-- `@ajaysoni7832/lean-ids-angular` - Angular component library (Angular 15-19.x)
-- `@lean-ids/icons` - Icon system
-- `@lean-ids/utils` - Shared utilities
 
 ## 🚀 Getting Started
 
 ### Installation
 
-#### React Projects (16.8+ to 19.x)
 ```bash
 npm install @ajaysoni7832/lean-ids-components@1.7.8 @ajaysoni7832/lean-ids-tokens@1.7.8
 ```
-
-#### Angular Projects (15+ to 19.x)
-```bash
-npm install @ajaysoni7832/lean-ids-angular @ajaysoni7832/lean-ids-tokens
-```
-
-**No `--legacy-peer-deps` required!** Works with all supported versions.
 
 ### Usage
 
@@ -127,8 +112,7 @@ Component Architecture:
 ```
 
 This approach ensures:
-- Future Angular support without rebuilding components
-- Consistent behavior across frameworks
+- Consistent behavior across the application
 - Smaller bundle sizes through code reuse
 
 ## 🎨 Theming

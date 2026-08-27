@@ -7,14 +7,16 @@ interface StyledTableHeaderProps {
   $variant?: TableHeaderVariant;
   $side?: TableHeaderSide;
   $resizable?: boolean;
-  $locked?: boolean;
+  $locked?: boolean; // Deprecated - use $pinned instead
+  $pinned?: 'left' | 'right' | 'none';
   $leftOffset?: number;
+  $rightOffset?: number;
   $sortDirection?: 'asc' | 'desc' | 'none';
   $showCheckbox?: boolean;
   $hasLabel?: boolean;
 }
 
-export const StyledTableHeader = styled.th<StyledTableHeaderProps>`
+export const StyledTableHeader = styled.th<StyledTableHeaderProps & { $showPinBorder?: boolean }>`
   background-color: ${({ theme, $sortDirection }) => 
     $sortDirection && $sortDirection !== 'none' 
       ? theme.colors.palette.primary[100] 
@@ -48,20 +50,42 @@ export const StyledTableHeader = styled.th<StyledTableHeaderProps>`
     return '';
   }}
 
-  ${({ $locked, $leftOffset, theme }) =>
-    $locked
-      ? `
-    position: sticky;
-    left: ${$leftOffset || 0}px;
-    z-index: 10;
-    transition: background-color 0.2s ease, box-shadow 0.2s ease;
+  ${({ $locked, $pinned, $leftOffset, $rightOffset, $showPinBorder, theme }) => {
+    // Backward compatibility: locked = true means pinned left
+    const pinnedSide = $pinned || ($locked ? 'left' : 'none');
     
-    &.is-stuck {
-      background-color: ${theme.colors.palette.primary[50]};
-      box-shadow: 4px 0px 4px rgba(0, 0, 0, 0.05);
+    if (pinnedSide === 'left') {
+      return `
+        position: sticky;
+        left: ${$leftOffset || 0}px;
+        z-index: 10;
+        background-color: ${theme.colors.palette.primary[50]};
+        ${$showPinBorder ? `border-right: 1px solid ${theme.colors.palette.neutral[300]};` : ''}
+        transition: background-color 0.2s ease, box-shadow 0.2s ease;
+        
+        &.is-stuck {
+          box-shadow: 4px 0px 4px rgba(0, 0, 0, 0.05);
+        }
+      `;
     }
-  `
-      : ''}
+    
+    if (pinnedSide === 'right') {
+      return `
+        position: sticky;
+        right: ${$rightOffset || 0}px;
+        z-index: 10;
+        background-color: ${theme.colors.palette.primary[50]};
+        ${$showPinBorder ? `border-left: 1px solid ${theme.colors.palette.neutral[300]};` : ''}
+        transition: background-color 0.2s ease, box-shadow 0.2s ease;
+        
+        &.is-stuck-right {
+          box-shadow: -4px 0px 4px rgba(0, 0, 0, 0.05);
+        }
+      `;
+    }
+    
+    return '';
+  }}
 
   &:hover {
     background-color: ${({ theme, $sortable }) =>

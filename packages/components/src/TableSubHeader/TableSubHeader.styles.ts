@@ -1,8 +1,11 @@
 import styled from 'styled-components';
 
 export const StyledTableSubHeader = styled.th<{
-  $locked?: boolean;
+  $locked?: boolean; // Deprecated - use $pinned instead
+  $pinned?: 'left' | 'right' | 'none';
   $leftOffset?: number;
+  $rightOffset?: number;
+  $showPinBorder?: boolean;
 }>`
   padding: ${({ theme }) => theme.spacing[3]} ${({ theme }) => theme.spacing[7]};
   background-color: ${({ theme }) => theme.colors.palette.primary[50]};
@@ -10,14 +13,40 @@ export const StyledTableSubHeader = styled.th<{
   text-align: left;
   font-size: ${({ theme }) => theme.fontSizes[14]};
   font-weight: ${({ theme }) => theme.fontWeights.regular};
-  position: ${({ $locked }) => ($locked ? 'sticky' : 'relative')};
-  left: ${({ $leftOffset }) => ($leftOffset !== undefined ? `${$leftOffset}px` : 'auto')};
-  z-index: ${({ $locked }) => ($locked ? 3 : 1)};
   transition: box-shadow 0.2s ease;
-
-  &.is-stuck {
-    box-shadow: 2px 0 4px rgba(0, 0, 0, 0.1);
-  }
+  
+  ${({ $locked, $pinned, $leftOffset, $rightOffset, $showPinBorder, theme }) => {
+    // Backward compatibility: locked = true means pinned left
+    const pinnedSide = $pinned || ($locked ? 'left' : 'none');
+    
+    if (pinnedSide === 'left') {
+      return `
+        position: sticky;
+        left: ${$leftOffset || 0}px;
+        z-index: 3;
+        ${$showPinBorder ? `border-right: 1px solid ${theme.colors.palette.neutral[300]};` : ''}
+        
+        &.is-stuck {
+          box-shadow: 2px 0 4px rgba(0, 0, 0, 0.1);
+        }
+      `;
+    }
+    
+    if (pinnedSide === 'right') {
+      return `
+        position: sticky;
+        right: ${$rightOffset || 0}px;
+        z-index: 3;
+        ${$showPinBorder ? `border-left: 1px solid ${theme.colors.palette.neutral[300]};` : ''}
+        
+        &.is-stuck-right {
+          box-shadow: -2px 0 4px rgba(0, 0, 0, 0.1);
+        }
+      `;
+    }
+    
+    return 'position: relative; z-index: 1;';
+  }}
 `;
 
 export const SearchInputWrapper = styled.div`

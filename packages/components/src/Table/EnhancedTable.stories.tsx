@@ -3,6 +3,7 @@ import { fn } from '@storybook/test';
 import { AdvancedDataTable, getNestedColumnConfigs } from './EnhancedTableTemplate';
 import { Chip } from '../Chip';
 import { Button } from '../Button';
+import { Visibility, Edit, Delete } from '@mui/icons-material';
 
 const meta: Meta<typeof AdvancedDataTable> = {
   title: 'Components/Table/Advanced Table',
@@ -24,7 +25,7 @@ const meta: Meta<typeof AdvancedDataTable> = {
     // Data & Columns
     initialColumns: {
       control: false,
-      description: 'Column configuration',
+      description: 'Column configuration array. Each column supports: id, label, visible, locked, pinned ("left"|"right"|"none"), order, width, and render function. The render function signature is: (value, row, rowIndex) => ReactNode. Example: render: (value, row) => <Chip label={value} />',
       table: { category: 'Data & Columns' },
     },
     data: {
@@ -81,13 +82,30 @@ const meta: Meta<typeof AdvancedDataTable> = {
     },
     maxHeight: {
       control: 'text',
-      description: 'Max height for table body',
+      description: 'Max height for table body (e.g., "400px", "50vh"). Enables fixed header with scrollable body and always-visible 8px scrollbar',
       table: { category: 'Layout & Display' },
     },
     showColumnSearchByDefault: {
       control: 'boolean',
       description: 'Show column search bars',
       table: { category: 'Layout & Display' },
+    },
+    
+    // Column Menu & Pinning
+    showColumnMenu: {
+      control: 'boolean',
+      description: 'Enable column header menu (three-dot menu with sort, pin, autosize, and reset options). Default: true',
+      table: { category: 'Column Menu & Pinning' },
+    },
+    enableUserPinning: {
+      control: 'boolean',
+      description: 'Allow users to pin columns (left or right) via column menu. When false, hides pin options from menu. Default: true',
+      table: { category: 'Column Menu & Pinning' },
+    },
+    enableDevPinning: {
+      control: 'boolean',
+      description: 'Allow developers to set initial pinned columns via column config (pinned: "left" | "right"). When false, ignores pinned property in column config. Default: true',
+      table: { category: 'Column Menu & Pinning' },
     },
     
     // Selection
@@ -106,6 +124,27 @@ const meta: Meta<typeof AdvancedDataTable> = {
     itemsPerPage: {
       control: 'number',
       description: 'Items per page',
+      table: { category: 'Pagination' },
+    },
+    paginationMode: {
+      control: 'select',
+      options: ['client', 'server'],
+      description: 'Pagination mode: "client" (default) handles data slicing automatically, "server" expects pre-paginated data and calls onPageChange callback',
+      table: { category: 'Pagination' },
+    },
+    onPageChange: {
+      action: 'pageChanged',
+      description: 'Callback for server-side pagination. Called with (page, itemsPerPage) when page changes. Use with paginationMode="server"',
+      table: { category: 'Pagination' },
+    },
+    currentPage: {
+      control: 'number',
+      description: 'Controlled current page (for server-side pagination). Use with paginationMode="server"',
+      table: { category: 'Pagination' },
+    },
+    totalItems: {
+      control: 'number',
+      description: 'Total number of items across all pages (required for server-side pagination). Use with paginationMode="server"',
       table: { category: 'Pagination' },
     },
     
@@ -283,14 +322,42 @@ import { AdvancedDataTable, getNestedColumnConfigs } from '@ajaysoni7832/lean-id
 | **Data** | \`initialColumns\`, \`data\`, \`rowKey\` |
 | **Layout** | \`useSidePanel\`, \`useModal\`, \`showToolbar\`, \`toolbar\`, \`maxHeight\` |
 | **Toolbar** | \`toolbarTitle\`, \`description\`, \`showGlobalSearch\`, \`showFilter\`, \`showDownload\` |
+| **Column Menu** | \`showColumnMenu\`, \`allowUserLeftPin\`, \`allowUserRightPin\`, \`allowDevLeftPin\`, \`allowDevRightPin\` |
 | **Selection** | \`selectable\`, \`onRowSelect\` |
-| **Pagination** | \`paginated\`, \`itemsPerPage\` |
+| **Pagination** | \`paginated\`, \`itemsPerPage\`, \`paginationMode\`, \`onPageChange\`, \`currentPage\`, \`totalItems\` |
 | **Sorting** | \`sortMode\`, \`onSort\`, \`sortColumn\`, \`sortDirection\` |
 | **Resizing** | \`defaultMinWidth\`, \`defaultMaxWidth\` |
 | **Events** | \`onRowClick\`, \`onOpen\`, \`onClose\`, \`onAfterOpen\`, \`onAfterClose\` |
 | **States** | \`loading\`, \`isInvalid\`, \`errorMessage\` |
 | **Empty State** | \`emptyTitle\`, \`emptyDescription\`, \`emptyActionLabel\`, \`onEmptyAction\` |
 | **Customization** | 10+ className/style override props |
+
+## 🎨 Custom Cell Rendering
+
+Columns support custom rendering via the \`render\` function:
+
+**Signature:** \`(value, row, rowIndex) => ReactNode\`
+
+\`\`\`tsx
+const columns = [
+  {
+    id: 'status',
+    label: 'Status',
+    // value = cell value, row = full row object, rowIndex = row index
+    render: (value, row, rowIndex) => (
+      <Chip label={value} type="success" />
+    )
+  },
+  {
+    id: 'actions',
+    label: 'Actions',
+    // For actions column, value is ignored, use row object
+    render: (_value, row) => (
+      <Button onClick={() => handleEdit(row)}>Edit</Button>
+    )
+  }
+];
+\`\`\`
 
 See stories below for detailed examples of each feature.
         `,
@@ -308,6 +375,9 @@ See stories below for detailed examples of each feature.
     showFilter: false,
     showDownload: false,
     showColumnSearchByDefault: false,
+    showColumnMenu: true,
+    enableUserPinning: true,
+    enableDevPinning: true,
     selectable: false,
     paginated: true,
     itemsPerPage: 10,
@@ -1278,14 +1348,29 @@ export const ToolbarCustomization: Story = {
 /**
  * ## Full Customization
  * 
- * Demonstrates all customization options together.
+ * Demonstrates all customization options together including column pinning.
+ * 
+ * **Column Pinning:**
+ * - Claim ID and User columns are pinned to the LEFT
+ * - Actions column is pinned to the RIGHT
+ * - Users can change pinning via column menu (enableUserPinning: true)
+ * - Developers can set initial pins in config (enableDevPinning: true)
  * 
  * **Usage:**
  * ```tsx
  * <AdvancedDataTable
  *   as="section"
  *   className="enterprise-table"
- *   initialColumns={getNestedColumnConfigs()}
+ *   initialColumns={[
+ *     { id: 'claimId', label: 'Claim ID', pinned: 'left' },
+ *     { id: 'userDetails', label: 'User', pinned: 'left' },
+ *     { id: 'status', label: 'Status' },
+ *     { id: 'actions', label: 'Actions', pinned: 'right' }
+ *   ]}
+ *   
+ *   // Column Pinning Control
+ *   enableUserPinning={true}  // Users can pin via menu
+ *   enableDevPinning={true}   // Respect dev's initial pins
  *   
  *   // Layout
  *   showToolbar={true}
@@ -1312,12 +1397,106 @@ export const FullCustomization: Story = {
   args: {
     as: 'section',
     className: 'enterprise-table',
-    initialColumns: getNestedColumnConfigs(),
+    initialColumns: [
+      { id: 'checkbox', label: '', visible: true, locked: true, order: 0 },
+      { id: 'claimId', label: 'Claim ID', visible: true, locked: false, pinned: 'left', order: 1, width: 120 },
+      { id: 'userDetails', label: 'User', visible: true, locked: false, pinned: 'left', order: 2, width: 200 },
+      { 
+        id: 'status', 
+        label: 'Status', 
+        visible: true, 
+        locked: false, 
+        order: 3,
+        width: 150,
+        // Custom render with Chip component
+        render: (value: any, _row: any) => {
+          const statusMap: Record<string, { type: 'success' | 'warning' | 'error' | 'default', label: string }> = {
+            'approved': { type: 'success', label: 'Approved' },
+            'pending': { type: 'warning', label: 'Pending' },
+            'rejected': { type: 'error', label: 'Rejected' },
+            'review': { type: 'default', label: 'In Review' },
+          };
+          const status = statusMap[String(value || '').toLowerCase()] || { type: 'default', label: value };
+          return <Chip label={status.label} type={status.type} variant="filled" size="small" />;
+        }
+      },
+      { 
+        id: 'priority', 
+        label: 'Priority', 
+        visible: true, 
+        locked: false, 
+        order: 4,
+        width: 120,
+        // Custom render with Chip component
+        render: (value: any, _row: any) => {
+          const priorityMap: Record<string, { type: 'success' | 'warning' | 'error', label: string }> = {
+            'high': { type: 'error', label: 'High' },
+            'medium': { type: 'warning', label: 'Medium' },
+            'low': { type: 'success', label: 'Low' },
+          };
+          const priority = priorityMap[String(value || '').toLowerCase()] || { type: 'warning', label: value };
+          return <Chip label={priority.label} type={priority.type} variant="outlined" size="small" />;
+        }
+      },
+      { id: 'amount', label: 'Amount', visible: true, locked: false, order: 5, width: 120 },
+      { id: 'contact', label: 'Contact', visible: true, locked: false, order: 6, width: 150 },
+      { id: 'nrCodes', label: 'NR Codes', visible: true, locked: false, order: 7, width: 120 },
+      { id: 'paidAmount', label: 'Paid Amount', visible: true, locked: false, order: 8, width: 130 },
+      { id: 'acrLoadDates', label: 'ACR Load Date', visible: true, locked: false, order: 9, width: 140 },
+      { id: 'firstName', label: 'First Name', visible: true, locked: false, order: 10, width: 120 },
+      { id: 'lastName', label: 'Last Name', visible: true, locked: false, order: 11, width: 120 },
+      { 
+        id: 'actions', 
+        label: 'Actions', 
+        visible: true, 
+        locked: false,
+        pinned: 'right', // Pin to right side
+        order: 12,
+        width: 180,
+        // Custom render with icon action buttons
+        // Signature: (value, row, rowIndex) - value is ignored for actions column
+        render: (_value: any, row: any) => (
+          <div style={{ display: 'flex', gap: '4px', alignItems: 'center' }}>
+            <Button 
+              variant="tertiary" 
+              size="small" 
+              onClick={() => console.log('View', row.claimId)}
+              aria-label="View"
+            >
+              <Visibility style={{ fontSize: '16px' }} />
+            </Button>
+            <Button 
+              variant="tertiary" 
+              size="small" 
+              onClick={() => console.log('Edit', row.claimId)}
+              aria-label="Edit"
+            >
+              <Edit style={{ fontSize: '16px' }} />
+            </Button>
+            <Button 
+              variant="tertiary" 
+              size="small" 
+              onClick={() => console.log('Delete', row.claimId)}
+              aria-label="Delete"
+            >
+              <Delete style={{ fontSize: '16px' }} />
+            </Button>
+          </div>
+        )
+      },
+    ],
+    data: [
+      { id: '1', claimId: 'CLM-1001', firstName: 'John', lastName: 'Doe', userDetails: 'John Doe', status: 'approved', priority: 'high', amount: '$15,200', paidAmount: '$15,200', contact: '(555) 100-1001', nrCodes: 'NR-001', acrLoadDates: '2024-01-15', avatar: 'https://i.pravatar.cc/32?img=1' },
+      { id: '2', claimId: 'CLM-1002', firstName: 'Jane', lastName: 'Smith', userDetails: 'Jane Smith', status: 'pending', priority: 'medium', amount: '$8,500', paidAmount: '$8,500', contact: '(555) 100-1002', nrCodes: 'NR-002', acrLoadDates: '2024-01-16', avatar: 'https://i.pravatar.cc/32?img=2' },
+      { id: '3', claimId: 'CLM-1003', firstName: 'Bob', lastName: 'Wilson', userDetails: 'Bob Wilson', status: 'review', priority: 'low', amount: '$12,300', paidAmount: '$12,300', contact: '(555) 100-1003', nrCodes: 'NR-003', acrLoadDates: '2024-01-17', avatar: 'https://i.pravatar.cc/32?img=3' },
+      { id: '4', claimId: 'CLM-1004', firstName: 'Alice', lastName: 'Brown', userDetails: 'Alice Brown', status: 'rejected', priority: 'high', amount: '$22,100', paidAmount: '$22,100', contact: '(555) 100-1004', nrCodes: 'NR-004', acrLoadDates: '2024-01-18', avatar: 'https://i.pravatar.cc/32?img=4' },
+      { id: '5', claimId: 'CLM-1005', firstName: 'Charlie', lastName: 'Davis', userDetails: 'Charlie Davis', status: 'approved', priority: 'medium', amount: '$9,800', paidAmount: '$9,800', contact: '(555) 100-1005', nrCodes: 'NR-005', acrLoadDates: '2024-01-19', avatar: 'https://i.pravatar.cc/32?img=5' },
+    ] as any,
     
     // Layout
     showToolbar: true,
-    toolbarTitle: 'Enterprise Table',
-    description: 'Demonstrating all customization options',
+    toolbarTitle: 'Enterprise Table with Custom Renders & Right Pinning',
+    description: 'Scroll horizontally to see the Actions column pinned to the right. Status and Priority use custom Chip renders.',
     showGlobalSearch: true,
     showFilter: true,
     showDownload: true,
@@ -1344,7 +1523,7 @@ export const FullCustomization: Story = {
   parameters: {
     docs: {
       description: {
-        story: 'Complete example showing all customization options: polymorphic rendering, selection, pagination, toolbar customization, event callbacks, and style overrides.',
+        story: 'Complete example showing all customization options including **right-side column pinning** (Actions column) and **custom cell rendering** (Status and Priority columns with Chips). Try scrolling horizontally to see the Actions column stay fixed on the right.',
       },
     },
   },
