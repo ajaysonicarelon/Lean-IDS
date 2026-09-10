@@ -212,4 +212,38 @@ export interface SelectProps extends Omit<HTMLAttributes<HTMLDivElement>, 'onCha
    * Can be used to show a modal/popover with all selections
    */
   onMoreChipsClick?: () => void;
+
+  /**
+   * Size of chips rendered for selected values (multi-select with showChips)
+   * Matches Chip component size options
+   * @default 'small'
+   */
+  chipSize?: 'small' | 'medium' | 'large';
+
+  /**
+   * Show a "Select All" option at the top of the multi-select dropdown list
+   * Selecting it checks all options; deselecting unchecks all
+   * Only applies when multiple={true}
+   * @default false
+   */
+  showSelectAll?: boolean;
+
+  /**
+   * Label text for the "Select All" option
+   * @default 'Select All'
+   */
+  selectAllLabel?: string;
+
+  /**
+   * Label text shown when all options are selected (replaces selectAllLabel)
+   * @default 'Deselect All'
+   */
+  deselectAllLabel?: string;
+
+  /**
+   * Sort the checkbox list so selected items appear at the top
+   * Only applies when multiple={true}
+   * @default false
+   */
+  sortSelectedFirst?: boolean;
 }

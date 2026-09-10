@@ -48,8 +48,8 @@ export const Pagination: React.FC<PaginationProps> = ({
   itemsPerPage,
   onPageChange,
   onItemsPerPageChange,
-  variant = 'default',
   itemsPerPageOptions = [10, 25, 50, 100],
+  showPageSizeSelector = true,
   className,
 }) => {
   const [goToPage, setGoToPage] = useState('');
@@ -108,26 +108,30 @@ export const Pagination: React.FC<PaginationProps> = ({
         <Summary>
           {startItem}-{endItem} of {totalItems}
         </Summary>
-        <Divider />
-        <RowSelector>
-          <Label>Rows per page</Label>
-          <Dropdown
-            as="select"
-            value={itemsPerPage}
-            onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
-              const newValue = parseInt(e.target.value, 10);
-              if (onItemsPerPageChange) {
-                onItemsPerPageChange(newValue);
-              }
-            }}
-          >
-            {itemsPerPageOptions.map((option) => (
-              <option key={option} value={option}>
-                {option}
-              </option>
-            ))}
-          </Dropdown>
-        </RowSelector>
+        {showPageSizeSelector && (
+          <>
+            <Divider />
+            <RowSelector>
+              <Label>Rows per page</Label>
+              <Dropdown
+                as="select"
+                value={itemsPerPage}
+                onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
+                  const newValue = parseInt(e.target.value, 10);
+                  if (onItemsPerPageChange) {
+                    onItemsPerPageChange(newValue);
+                  }
+                }}
+              >
+                {itemsPerPageOptions.map((option) => (
+                  <option key={option} value={option}>
+                    {option}
+                  </option>
+                ))}
+              </Dropdown>
+            </RowSelector>
+          </>
+        )}
       </LeftSection>
 
       <PaginatorContainer>

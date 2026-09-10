@@ -30,7 +30,7 @@ The Badge is designed to display status indicators, category labels, notificatio
 ## Usage
 
 \`\`\`tsx
-import { Badge } from '@lean-ids/components';
+import { Badge } from '@ajaysoni7832/lean-ids-components';
 
 <Badge label="Active" type="success" styleVariant="default" />
 

@@ -5,24 +5,29 @@ A comprehensive React component library for building consistent, accessible user
 [![npm version](https://img.shields.io/npm/v/@ajaysoni7832/lean-ids-components.svg)](https://www.npmjs.com/package/@ajaysoni7832/lean-ids-components)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
-## 🎉 What's New in v1.7.9
+## 🎉 What's New in v1.7.10
 
-Current Version: **1.7.9**
+Current Version: **1.7.10**
 
-### ✨ Table Component Enhancements
-- ✅ **Server-Side Pagination** - `paginationMode`, `onPageChange`, `currentPage`, `totalItems` props
-- ✅ **Column Locking System** - Three-dot menu with sort, lock, autosize, reset options
-- ✅ **Always-Visible Scrollbar** - 8px scrollbar with theme-based styling
-- ✅ **Render Function Standardization** - Consistent `render(value, row, rowIndex)` signature
-- ✅ **Bug Fixes** - Selected row styling consistency, improved UX terminology
+### ✨ Table Enhancements
+- ✅ **Custom Error State** - `errorDescription`, `errorIcon`, `errorActionLabel`, `onErrorAction` props
+- ✅ **Fully Custom Error/Empty States** - `errorStateContent` and `emptyStateContent` ReactNode slots
 
-### 🗑️ Removed
-- ❌ **Angular Support** - Removed Angular dependencies (fixes Node 20.17.0 compatibility)
+### ✨ Drawer Enhancements
+- ✅ **showCloseButton** - Toggle close button visibility
+- ✅ **headerActions / footerStart / footerEnd** - Flexible content slots
+- ✅ **ReactNode title & description** - Accept JSX, not just strings
+
+### ✨ Pagination Enhancements
+- ✅ **showPageSizeSelector** - Show/hide the page size dropdown
+
+### ✨ Select & NestedMenuOverlay
+- ✅ Prop enhancements, bug fixes, and stability improvements
 
 ### 📦 Installation
 
 ```bash
-npm install @ajaysoni7832/lean-ids-components@1.7.9 @ajaysoni7832/lean-ids-tokens@1.7.9
+npm install @ajaysoni7832/lean-ids-components@1.7.10 @ajaysoni7832/lean-ids-tokens@1.7.10
 ```
 
 📖 **[Read Full Release Notes](./RELEASE_NOTES.md)** | **[Migration Guide](./MIGRATION_GUIDE.md)**

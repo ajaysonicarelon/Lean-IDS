@@ -17,7 +17,7 @@ A tab-like interface component for switching between different views or options 
 ## Installation
 
 ```bash
-npm install @lean-ids/components
+npm install @ajaysoni7832/lean-ids-components
 ```
 
 ## Basic Usage
@@ -27,7 +27,7 @@ npm install @lean-ids/components
 ### Standalone Segment
 
 ```tsx
-import { SegmentController } from '@lean-ids/components';
+import { SegmentController } from '@ajaysoni7832/lean-ids-components';
 import { Home } from '@mui/icons-material'; // ✅ Material-UI icons only
 
 function App() {
@@ -46,7 +46,7 @@ function App() {
 ### Segment Group (Recommended)
 
 ```tsx
-import { SegmentControllerGroup, SegmentController } from '@lean-ids/components';
+import { SegmentControllerGroup, SegmentController } from '@ajaysoni7832/lean-ids-components';
 import { Home, Architecture, School } from '@mui/icons-material';
 
 function App() {

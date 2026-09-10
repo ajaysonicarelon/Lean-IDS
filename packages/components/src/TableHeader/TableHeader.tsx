@@ -64,6 +64,9 @@ export const TableHeader: React.FC<TableHeaderProps> = ({
   isLastInGroup = false,
   colSpan,
   rowSpan,
+  customIcon,
+  onCustomIconClick,
+  customIconTitle,
 }) => {
   const [isResizing, setIsResizing] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -419,6 +422,36 @@ export const TableHeader: React.FC<TableHeaderProps> = ({
             })()}
           </HeaderLeftContent>
           <HeaderRightContent>
+            {/* Custom icon - if provided */}
+            {customIcon && (
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  if (onCustomIconClick) {
+                    onCustomIconClick(e);
+                  }
+                }}
+                style={{
+                  background: 'none',
+                  border: 'none',
+                  padding: 0,
+                  margin: '0 8px 0 0',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  width: '16px',
+                  height: '16px',
+                  color: '#94A3B8',
+                  transition: 'color 0.2s',
+                }}
+                onMouseEnter={(e) => e.currentTarget.style.color = '#64748B'}
+                onMouseLeave={(e) => e.currentTarget.style.color = '#94A3B8'}
+                title={customIconTitle || 'Custom action'}
+              >
+                {customIcon}
+              </button>
+            )}
             {/* Three-dot menu button - hide for checkbox columns and when showColumnMenu is false */}
             {!showCheckbox && showColumnMenu && (
               <button

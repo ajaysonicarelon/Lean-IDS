@@ -74,7 +74,7 @@ Enterprise-grade collapsible content container with full customization, accessib
 ## Usage
 
 \`\`\`tsx
-import { Accordion } from '@lean-ids/components';
+import { Accordion } from '@ajaysoni7832/lean-ids-components';
 import { CheckCircleOutlined } from '@mui/icons-material';
 
 // Basic usage

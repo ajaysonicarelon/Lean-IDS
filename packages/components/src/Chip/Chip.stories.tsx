@@ -43,13 +43,13 @@ Enterprise-grade Chip component for displaying compact, interactive tags, catego
 ## 📦 Installation
 
 \`\`\`bash
-npm install @lean-ids/components
+npm install @ajaysoni7832/lean-ids-components
 \`\`\`
 
 ## 🚀 Basic Usage
 
 \`\`\`tsx
-import { Chip } from '@lean-ids/components';
+import { Chip } from '@ajaysoni7832/lean-ids-components';
 
 <Chip label="React" variant="filled" size="medium" />
 \`\`\`

@@ -40,7 +40,7 @@ Enterprise-grade radio button following Component Maturity Checklist.
 ## Usage
 
 \`\`\`tsx
-import { RadioButton } from '@lean-ids/components';
+import { RadioButton } from '@ajaysoni7832/lean-ids-components';
 
 <RadioButton
   label="Option 1"

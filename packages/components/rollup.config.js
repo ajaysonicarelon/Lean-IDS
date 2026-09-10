@@ -40,7 +40,7 @@ export default defineConfig({
     'react-dom',
     'react/jsx-runtime',
     'styled-components',
-    '@lean-ids/tokens',
+    '@ajaysoni7832/lean-ids-tokens',
     '@ajaysoni7832/lean-ids-tokens',
     '@mui/icons-material',
     /^@mui\/icons-material\//,

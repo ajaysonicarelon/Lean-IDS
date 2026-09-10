@@ -118,11 +118,10 @@ This audit compares the **Basic Table** (`Table.tsx`) and **Advanced Table** (`A
 
 ### 3. **Column Type Difference**
 - **Basic Table**: Uses `TableColumn` interface with `renderCell`
-- **Advanced Table**: Uses `ColumnConfig` interface with `render`
-- **Impact**: Different function signatures
-  - `renderCell`: `(value, row, rowIndex) => ReactNode`
-  - `render`: `(row, value) => ReactNode`
-- **Recommendation**: Standardize or document clearly
+- **Advanced Table**: Uses `ColumnConfig` interface with `renderCell`
+- **Impact**: Consistent function signatures
+  - `renderCell`: `(value, row, rowIndex) => ReactNode` (both tables)
+- **Recommendation**: ✅ Standardized
 
 ---
 
@@ -172,7 +171,7 @@ This audit compares the **Basic Table** (`Table.tsx`) and **Advanced Table** (`A
 
 ### ColumnConfig (TableSettings.types.ts) ✅
 ```typescript
-✅ Has 'render' function
+✅ Has 'renderCell' function
 ✅ Has pinned/locked props
 ✅ Has width/minWidth/maxWidth
 ✅ Has resizable prop
@@ -205,7 +204,7 @@ This audit compares the **Basic Table** (`Table.tsx`) and **Advanced Table** (`A
 ### High Priority
 1. ✅ **Add Storybook stories** for all new features
 2. ⚠️ **Document prop naming differences** (columns vs initialColumns)
-3. ⚠️ **Document render function differences** (renderCell vs render)
+3. ✅ **Standardized render function names** (both use renderCell)
 
 ### Medium Priority
 4. ✅ **Update CHANGELOG.md** with all new features

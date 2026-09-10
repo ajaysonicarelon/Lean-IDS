@@ -99,6 +99,30 @@ const NoResults = styled.div`
   font-size: ${({ theme }) => theme.fontSizes[14]};
 `;
 
+const SelectAllItem = styled.div<{ $focused: boolean }>`
+  display: flex;
+  align-items: center;
+  gap: ${({ theme }) => theme.spacing[2]};
+  padding: ${({ theme }) => `${theme.spacing[2]} ${theme.spacing[3]}`};
+  cursor: pointer;
+  background: ${({ theme, $focused }) =>
+    $focused ? theme.colors.semantic.background.secondary : theme.colors.palette.neutral[50]};
+  font-family: ${({ theme }) => theme.fonts.primary};
+  font-size: ${({ theme }) => theme.fontSizes[14]};
+  font-weight: ${({ theme }) => theme.fontWeights.medium};
+  color: ${({ theme }) => theme.colors.palette.neutral[900]};
+  border-bottom: ${({ theme }) => theme.borderWidth[1]} solid ${({ theme }) => theme.colors.palette.neutral[200]};
+  transition: background 0.2s ease-in-out;
+
+  &:hover {
+    background: ${({ theme }) => theme.colors.semantic.background.secondary};
+  }
+
+  &:active {
+    background: ${({ theme }) => theme.colors.semantic.background.tertiary};
+  }
+`;
+
 const SearchInputWrapper = styled.div`
   padding: ${({ theme }) => theme.spacing[2]};
   border-bottom: ${({ theme }) => theme.borderWidth[1]} solid ${({ theme }) => theme.colors.palette.neutral[300]};
@@ -302,6 +326,12 @@ export const Select = forwardRef<HTMLDivElement, SelectProps>((
     chipsClassName,
     onChipRemove,
     onMoreChipsClick,
+    chipSize = 'small',
+    // Multi-select list enhancements
+    showSelectAll = false,
+    selectAllLabel = 'Select All',
+    deselectAllLabel = 'Deselect All',
+    sortSelectedFirst = false,
     ...restProps
   },
   ref
@@ -344,13 +374,25 @@ export const Select = forwardRef<HTMLDivElement, SelectProps>((
 
   // Memoize filtered options (expensive operation for large lists)
   const filteredOptions = useMemo(() => {
-    if (!searchable || !searchQuery) return options;
-    
-    const lowerQuery = searchQuery.toLowerCase();
-    return options.filter(opt =>
-      opt.label.toLowerCase().includes(lowerQuery)
-    );
-  }, [options, searchQuery, searchable]);
+    let result = options;
+
+    // Filter by search query
+    if (searchable && searchQuery) {
+      const lowerQuery = searchQuery.toLowerCase();
+      result = result.filter(opt => opt.label.toLowerCase().includes(lowerQuery));
+    }
+
+    // Sort selected items to the top (multi-select only)
+    if (sortSelectedFirst && multiple && Array.isArray(value) && value.length > 0) {
+      const selectedSet = new Set(value);
+      result = [
+        ...result.filter(opt => selectedSet.has(opt.value)),
+        ...result.filter(opt => !selectedSet.has(opt.value)),
+      ];
+    }
+
+    return result;
+  }, [options, searchQuery, searchable, sortSelectedFirst, multiple, value]);
 
   // Memoize selection handler
   const handleSelect = useCallback((optionValue: string) => {
@@ -376,6 +418,34 @@ export const Select = forwardRef<HTMLDivElement, SelectProps>((
     }
     return value === optionValue;
   }, [value, multiple]);
+
+  // Derived: whether all non-disabled options are selected
+  const isAllSelected = useMemo(() => {
+    if (!multiple || !Array.isArray(value)) return false;
+    const enabledOptions = filteredOptions.filter(opt => !opt.disabled);
+    return enabledOptions.length > 0 && enabledOptions.every(opt => value.includes(opt.value));
+  }, [multiple, value, filteredOptions]);
+
+  // Derived: whether some (but not all) options are selected
+  const isSomeSelected = useMemo(() => {
+    if (!multiple || !Array.isArray(value)) return false;
+    return !isAllSelected && filteredOptions.some(opt => value.includes(opt.value));
+  }, [multiple, value, filteredOptions, isAllSelected]);
+
+  // Handle Select All toggle
+  const handleSelectAll = useCallback(() => {
+    if (!multiple) return;
+    const currentValues = Array.isArray(value) ? value : [];
+    if (isAllSelected) {
+      // Deselect all filtered (enabled) options
+      const enabledValues = new Set(filteredOptions.filter(opt => !opt.disabled).map(opt => opt.value));
+      onChange?.(currentValues.filter(v => !enabledValues.has(v)));
+    } else {
+      // Select all filtered (enabled) options not yet selected
+      const toAdd = filteredOptions.filter(opt => !opt.disabled && !currentValues.includes(opt.value)).map(opt => opt.value);
+      onChange?.([...currentValues, ...toAdd]);
+    }
+  }, [multiple, value, filteredOptions, isAllSelected, onChange]);
 
   // Handle dropdown open/close with callbacks
   const handleOpen = () => {
@@ -546,7 +616,7 @@ export const Select = forwardRef<HTMLDivElement, SelectProps>((
       <Chip
         key={selectedValue}
         label={option.label}
-        size="small"
+        size={chipSize}
         variant="filled"
         type="default"
         trailingIcon={<Icon name="Close" size="small" />}
@@ -558,7 +628,7 @@ export const Select = forwardRef<HTMLDivElement, SelectProps>((
         }}
       />
     );
-  }, [options, value, onChange, onChipRemove]);
+  }, [options, value, onChange, onChipRemove, chipSize]);
   
   // Render inline chips (wrapping or with manual limit)
   const renderInlineChips = useCallback(() => {
@@ -777,6 +847,26 @@ export const Select = forwardRef<HTMLDivElement, SelectProps>((
               aria-label="Search options"
             />
           </SearchInputWrapper>
+        )}
+
+        {/* Select All row (multi-select only) */}
+        {showSelectAll && multiple && filteredOptions.length > 0 && (
+          <SelectAllItem
+            $focused={false}
+            onClick={handleSelectAll}
+            role="option"
+            aria-selected={isAllSelected}
+          >
+            {showSelectionIndicator && (
+              <Checkbox
+                checked={isAllSelected}
+                indeterminate={isSomeSelected}
+                size="default"
+                onChange={() => {}}
+              />
+            )}
+            <span>{isAllSelected ? deselectAllLabel : selectAllLabel}</span>
+          </SelectAllItem>
         )}
 
         {filteredOptions.length === 0 ? (

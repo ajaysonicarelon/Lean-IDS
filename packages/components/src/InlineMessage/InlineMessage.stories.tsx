@@ -28,7 +28,7 @@ A contextual message component for inline feedback with title, description, and 
 ## Usage
 
 \`\`\`tsx
-import { InlineMessage } from '@lean-ids/components';
+import { InlineMessage } from '@ajaysoni7832/lean-ids-components';
 
 <InlineMessage
   type="warning"

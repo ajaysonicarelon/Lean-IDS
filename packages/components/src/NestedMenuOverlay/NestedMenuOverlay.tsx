@@ -54,8 +54,8 @@ export const NestedMenuOverlay = forwardRef<HTMLDivElement, NestedMenuOverlayPro
   const [nestedOverlayPosition, setNestedOverlayPosition] = useState<{ top: number; left: number } | null>(null);
   const [nestedItems, setNestedItems] = useState<NestedMenuItem[] | null>(null);
   const overlayRef = useRef<HTMLDivElement>(null);
-  const hoverTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-  const closeTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const hoverTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const closeTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Polymorphic component
   const Container = as || 'div';
@@ -196,10 +196,12 @@ export const NestedMenuOverlay = forwardRef<HTMLDivElement, NestedMenuOverlayPro
       return;
     }
 
-    // Only handle click for leaf items (no children)
+    // Always fire onClick for any item (leaf or parent with children in hover mode)
+    item.onClick?.();
+    onItemClick?.(item);
+
+    // Only close the overlay for leaf items (items without children)
     if (!item.children || item.children.length === 0) {
-      item.onClick?.();
-      onItemClick?.(item);
       onClose?.();
       onAfterClose?.();
     }

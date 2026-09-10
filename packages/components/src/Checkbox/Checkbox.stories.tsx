@@ -40,7 +40,7 @@ Enterprise-grade checkbox following Component Maturity Checklist.
 ## Usage
 
 \`\`\`tsx
-import { Checkbox } from '@lean-ids/components';
+import { Checkbox } from '@ajaysoni7832/lean-ids-components';
 
 <Checkbox
   label="Accept terms"

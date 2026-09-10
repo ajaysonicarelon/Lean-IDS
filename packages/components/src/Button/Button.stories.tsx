@@ -68,7 +68,7 @@ An enterprise-grade interactive control that triggers actions with comprehensive
 
 ### Basic Usage
 \`\`\`tsx
-import { Button } from '@lean-ids/components';
+import { Button } from '@ajaysoni7832/lean-ids-components';
 
 <Button
   variant="primary"

@@ -10,7 +10,7 @@ A time-only selection component with hours, minutes, and AM/PM dropdowns.
 
 **Usage:**
 ```tsx
-import { TimePicker } from '@lean-ids/components';
+import { TimePicker } from '@ajaysoni7832/lean-ids-components';
 
 function MyComponent() {
   const [time, setTime] = useState('12:00 PM');
@@ -40,7 +40,7 @@ A single date and time selection component with calendar and time dropdowns.
 
 **Usage:**
 ```tsx
-import { DateTimePicker } from '@lean-ids/components';
+import { DateTimePicker } from '@ajaysoni7832/lean-ids-components';
 
 function MyComponent() {
   const [dateTime, setDateTime] = useState(new Date());
@@ -74,7 +74,7 @@ A date and time range selection component with dual calendars and quick select o
 
 **Usage:**
 ```tsx
-import { DateTimeRangePicker, DateRange } from '@lean-ids/components';
+import { DateTimeRangePicker, DateRange } from '@ajaysoni7832/lean-ids-components';
 
 function MyComponent() {
   const [range, setRange] = useState<DateRange>({
@@ -222,7 +222,7 @@ These components are designed to replace any existing date/time pickers in your 
 import DatePicker from 'some-library';
 
 // New approach - Lean DS
-import { DateTimePicker } from '@lean-ids/components';
+import { DateTimePicker } from '@ajaysoni7832/lean-ids-components';
 
 // Works in forms, tables, and all contexts
 <DateTimePicker

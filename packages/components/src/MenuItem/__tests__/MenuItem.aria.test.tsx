@@ -7,7 +7,7 @@
 import { render, screen } from '@testing-library/react';
 import { MenuItem } from '../MenuItem';
 import { ThemeProvider } from 'styled-components';
-import { theme } from '@lean-ids/tokens';
+import { theme } from '@ajaysoni7832/lean-ids-tokens';
 
 describe('MenuItem ARIA Attributes', () => {
   const renderWithTheme = (ui: React.ReactElement) => {

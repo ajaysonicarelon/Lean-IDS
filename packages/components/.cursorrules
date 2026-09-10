@@ -21,9 +21,9 @@
 **RULE: Use ONLY Lean DS components. NO external UI libraries allowed.**
 
 #### ✅ ALLOWED:
-- Import from `@lean-ids/components`
-- Import from `@lean-ids/tokens`
-- Import from `@lean-ids/icons`
+- Import from `@ajaysoni7832/lean-ids-components`
+- Import from `@ajaysoni7832/lean-ids-tokens`
+- Import from `@ajaysoni7832/lean-ids-icons`
 - Use existing libraries already in package.json (React, styled-components, etc.)
 
 #### ❌ FORBIDDEN:
@@ -53,7 +53,7 @@ import { Input } from 'antd';
 
 **✅ CORRECT:**
 ```tsx
-import { Button, Input } from '@lean-ids/components';
+import { Button, Input } from '@ajaysoni7832/lean-ids-components';
 ```
 
 **❌ WRONG (Fresh Project):**
@@ -65,7 +65,7 @@ import { Card } from '@chakra-ui/react';
 **✅ CORRECT (Fresh Project):**
 ```tsx
 // User creates new component
-import { Card } from '@lean-ids/components';
+import { Card } from '@ajaysoni7832/lean-ids-components';
 ```
 
 ---
@@ -192,7 +192,7 @@ import { Card } from '@lean-ids/components';
 
 ### 1. Buttons
 ```tsx
-import { Button } from '@lean-ids/components';
+import { Button } from '@ajaysoni7832/lean-ids-components';
 
 <Button
   variant="primary" | "secondary" | "tertiary"
@@ -206,7 +206,7 @@ import { Button } from '@lean-ids/components';
 
 ### 2. Inputs
 ```tsx
-import { Input } from '@lean-ids/components';
+import { Input } from '@ajaysoni7832/lean-ids-components';
 
 <Input
   label="Label"
@@ -220,7 +220,7 @@ import { Input } from '@lean-ids/components';
 
 ### 3. Navigation
 ```tsx
-import { SideNavigation } from '@lean-ids/components';
+import { SideNavigation } from '@ajaysoni7832/lean-ids-components';
 
 <SideNavigation
   state="collapsed" // Always collapsed by default
@@ -255,7 +255,7 @@ import { SideNavigation } from '@lean-ids/components';
 
 ### 1. Use Lean DS Tokens
 ```tsx
-import { theme } from '@lean-ids/tokens';
+import { theme } from '@ajaysoni7832/lean-ids-tokens';
 
 // ✅ CORRECT
 const StyledDiv = styled.div`
@@ -276,7 +276,7 @@ const StyledDiv = styled.div`
 Always wrap app with ThemeProvider:
 ```tsx
 import { ThemeProvider } from 'styled-components';
-import { theme } from '@lean-ids/tokens';
+import { theme } from '@ajaysoni7832/lean-ids-tokens';
 
 <ThemeProvider theme={theme}>
   <App />
@@ -307,7 +307,7 @@ background: ${({ theme }) => theme.colors.semantic.background.primary};
 
 ```tsx
 // ✅ CORRECT - Use Lean DS Modal
-import { Modal } from '@lean-ids/components';
+import { Modal } from '@ajaysoni7832/lean-ids-components';
 
 <Modal
   isOpen={isOpen}
@@ -318,7 +318,7 @@ import { Modal } from '@lean-ids/components';
 </Modal>
 
 // ✅ CORRECT - Use Lean DS Drawer
-import { Drawer } from '@lean-ids/components';
+import { Drawer } from '@ajaysoni7832/lean-ids-components';
 
 <Drawer
   isOpen={isOpen}
@@ -340,8 +340,8 @@ import { Drawer } from '@mui/material';
 ```
 
 **ENFORCEMENT:**
-- For ANY popup/dialog → Use `Modal` from `@lean-ids/components`
-- For ANY side panel → Use `Drawer` from `@lean-ids/components`
+- For ANY popup/dialog → Use `Modal` from `@ajaysoni7832/lean-ids-components`
+- For ANY side panel → Use `Drawer` from `@ajaysoni7832/lean-ids-components`
 - NEVER create custom overlay components
 - NEVER use external modal/drawer libraries
 
@@ -382,7 +382,7 @@ const [isPinned, setIsPinned] = useState(false);
 When creating new features or components:
 
 1. **ONLY use existing Lean DS components** - Never create custom versions
-2. **ALWAYS use tokens** from `@lean-ids/tokens` - Never hardcode values
+2. **ALWAYS use tokens** from `@ajaysoni7832/lean-ids-tokens` - Never hardcode values
 3. **Compose from Lean DS** - Build complex components from simple ones
 
 ### **Examples:**
@@ -390,7 +390,7 @@ When creating new features or components:
 **Need a form?**
 ```tsx
 // ✅ CORRECT - Use Lean DS components
-import { Input, Button, Card } from '@lean-ids/components';
+import { Input, Button, Card } from '@ajaysoni7832/lean-ids-components';
 
 function LoginForm() {
   return (
@@ -409,7 +409,7 @@ const CustomInput = styled.input`...`; // Don't do this!
 **Need chips/tags?**
 ```tsx
 // ✅ CORRECT - Use Lean DS Chip
-import { Chip } from '@lean-ids/components';
+import { Chip } from '@ajaysoni7832/lean-ids-components';
 
 <Chip label="Tag" onRemove={() => {}} />
 
@@ -420,8 +420,8 @@ const CustomChip = styled.div`...`; // Don't do this!
 **Building complex components?**
 ```tsx
 // ✅ CORRECT - Compose from Lean DS components
-import { Card, Button, Avatar, Badge } from '@lean-ids/components';
-import { theme } from '@lean-ids/tokens';
+import { Card, Button, Avatar, Badge } from '@ajaysoni7832/lean-ids-components';
+import { theme } from '@ajaysoni7832/lean-ids-tokens';
 
 const UserCard = styled(Card)`
   padding: ${({ theme }) => theme.spacing[4]};
@@ -488,7 +488,7 @@ import { Card } from '@mui/material'; // ❌ WRONG!
 **RULE:**
 - ✅ Import icons from `@mui/icons-material` ONLY
 - ❌ Do NOT import Button, Input, Card, or ANY other component from `@mui/material`
-- ✅ For UI components, use `@lean-ids/components`
+- ✅ For UI components, use `@ajaysoni7832/lean-ids-components`
 
 ---
 
@@ -516,7 +516,7 @@ import { Card } from '@chakra-ui/react';
 const CustomButton = styled.button`...`;
 
 // ✅ CORRECT - Use Lean DS Button
-import { Button } from '@lean-ids/components';
+import { Button } from '@ajaysoni7832/lean-ids-components';
 ```
 
 ### 4. Don't Use Inline Styles
@@ -539,7 +539,7 @@ const StyledDiv = styled.div`
 ### When User Asks to Create a Component:
 
 1. **Check:** Does Lean DS have this component?
-   - YES → Use `@lean-ids/components`
+   - YES → Use `@ajaysoni7832/lean-ids-components`
    - NO → Ask user if they want to create a custom component
 
 2. **Check:** Is this a fresh project?
@@ -559,7 +559,7 @@ const StyledDiv = styled.div`
 **Scenario 1: Fresh Project**
 ```
 User: "Create a login form"
-AI: Uses Button, Input from @lean-ids/components ✅
+AI: Uses Button, Input from @ajaysoni7832/lean-ids-components ✅
 ```
 
 **Scenario 2: Existing Project with MUI**
@@ -571,7 +571,7 @@ AI: Can use existing MUI Button (already in project) ✅
 **Scenario 3: User Wants Lean DS Only**
 ```
 User: "Replace everything with Lean DS"
-AI: Replaces all MUI/Ant Design with @lean-ids/components ✅
+AI: Replaces all MUI/Ant Design with @ajaysoni7832/lean-ids-components ✅
 ```
 
 **Scenario 4: Component Doesn't Exist**
@@ -596,13 +596,13 @@ import {
   Card,
   PageLayout,
   SideNavigation 
-} from '@lean-ids/components';
+} from '@ajaysoni7832/lean-ids-components';
 
 // Tokens
-import { theme } from '@lean-ids/tokens';
+import { theme } from '@ajaysoni7832/lean-ids-tokens';
 
 // Icons (if available)
-import { IconName } from '@lean-ids/icons';
+import { IconName } from '@ajaysoni7832/lean-ids-icons';
 
 // Styled Components
 import styled from 'styled-components';
@@ -616,7 +616,7 @@ import React, { useState, useEffect } from 'react';
 ## 🎯 QUALITY CHECKLIST
 
 Before suggesting code, verify:
-- [ ] All UI components are from `@lean-ids/components`
+- [ ] All UI components are from `@ajaysoni7832/lean-ids-components`
 - [ ] No external UI library imports (unless pre-existing)
 - [ ] Using theme tokens for colors, spacing, fonts
 - [ ] Following PageLayout templates for layouts

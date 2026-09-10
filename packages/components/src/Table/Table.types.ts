@@ -159,8 +159,32 @@ export interface TableProps extends React.HTMLAttributes<HTMLDivElement> {
   maxHeight?: string;
   /** Invalid/error state */
   isInvalid?: boolean;
-  /** Error message to display when isInvalid is true */
+  /** Error state title/heading (default: 'Something went wrong') */
   errorMessage?: string;
+  /** Error state description text (default: 'There was a problem loading the table data.') */
+  errorDescription?: string;
+  /** Error state icon – any ReactNode (e.g. custom SVG, MUI icon). Defaults to ErrorIcon. */
+  errorIcon?: React.ReactNode;
+  /** Error state action button label (default: 'Retry') */
+  errorActionLabel?: string;
+  /** Error state action button handler. When provided, shows the button. */
+  onErrorAction?: () => void;
+  /**
+   * Fully custom error state content.
+   * When provided, replaces the entire error state UI (icon, text, button).
+   * Ideal for API-driven content or completely custom layouts.
+   * @example
+   * errorStateContent={<MyApiErrorBanner error={apiError} onRetry={refetch} />}
+   */
+  errorStateContent?: React.ReactNode;
+  /**
+   * Fully custom empty state content.
+   * When provided, replaces the entire empty state UI (icon, text, button).
+   * Ideal for API-driven content or completely custom layouts.
+   * @example
+   * emptyStateContent={<MyEmptyIllustration onAction={handleAction} />}
+   */
+  emptyStateContent?: React.ReactNode;
   /** Override className for scroll container */
   scrollContainerClassName?: string;
   /** Override style for scroll container */

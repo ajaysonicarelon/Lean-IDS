@@ -44,6 +44,12 @@ export interface PaginationProps {
   itemsPerPageOptions?: number[];
   
   /**
+   * Show/hide page size selector dropdown
+   * @default true
+   */
+  showPageSizeSelector?: boolean;
+  
+  /**
    * Custom class name
    */
   className?: string;

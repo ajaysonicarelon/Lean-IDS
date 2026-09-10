@@ -15,8 +15,8 @@ export interface DrawerProps extends Omit<HTMLAttributes<HTMLDivElement>, 'title
   /** Callback when drawer should close */
   onClose: () => void;
   
-  /** Drawer title */
-  title: string;
+  /** Drawer title — accepts a string or any ReactNode (e.g. with a badge or icon) */
+  title: ReactNode;
   
   /** Drawer body content */
   children: ReactNode;
@@ -32,8 +32,8 @@ export interface DrawerProps extends Omit<HTMLAttributes<HTMLDivElement>, 'title
   // CONTENT & LAYOUT
   // ============================================================================
   
-  /** Drawer description/subtitle */
-  description?: string;
+  /** Drawer description/subtitle — accepts a string or any ReactNode (e.g. with links or rich text) */
+  description?: ReactNode;
   
   /** Drawer position */
   position?: 'left' | 'right';
@@ -90,6 +90,57 @@ export interface DrawerProps extends Omit<HTMLAttributes<HTMLDivElement>, 'title
    * @default true
    */
   showFooter?: boolean;
+
+  /**
+   * Show the default close (X) icon button in the header
+   * @default true
+   */
+  showCloseButton?: boolean;
+
+  // ============================================================================
+  // HEADER SLOTS
+  // ============================================================================
+
+  /**
+   * Extra icon buttons or actions rendered between the title block and the close
+   * button. Use this to add bookmark, share, edit, or any other icon actions
+   * without replacing the entire header.
+   *
+   * @example
+   * headerActions={<>
+   *   <IconButton icon="Bookmark" onClick={onBookmark} />
+   *   <IconButton icon="Share" onClick={onShare} />
+   * </>}
+   */
+  headerActions?: ReactNode;
+
+  // ============================================================================
+  // FOOTER SLOTS
+  // ============================================================================
+
+  /**
+   * Replaces the left slot of the default footer (where the Reset button lives).
+   * Use this to put any content on the left side — status text, a stepper, a
+   * checkbox, extra links, etc. — while keeping the right slot (cancel/submit)
+   * intact.
+   *
+   * @example
+   * footerStart={<Typography variant="bodyS">Step 2 of 4</Typography>}
+   */
+  footerStart?: ReactNode;
+
+  /**
+   * Replaces the right slot of the default footer (where Cancel + Submit live).
+   * Use this to put any content on the right side — custom buttons, a link, a
+   * split-button, etc. — while keeping the left slot (reset) intact.
+   *
+   * @example
+   * footerEnd={<>
+   *   <Button variant="secondary" onClick={onSaveDraft}>Save Draft</Button>
+   *   <Button variant="primary" onClick={onPublish}>Publish</Button>
+   * </>}
+   */
+  footerEnd?: ReactNode;
   
   // ============================================================================
   // FOOTER BUTTONS

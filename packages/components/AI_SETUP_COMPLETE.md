@@ -40,7 +40,7 @@ AI guidelines have been successfully created for your Lean DS project. Any AI co
 ✅ ALLOWED:
 - @ajaysoni7832/lean-ids-components
 - @ajaysoni7832/lean-ids-tokens
-- @lean-ids/icons
+- @ajaysoni7832/lean-ids-icons
 
 ❌ FORBIDDEN:
 - Material-UI, Ant Design, Chakra UI

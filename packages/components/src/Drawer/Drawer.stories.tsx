@@ -2,6 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import React, { useState } from 'react';
 import { Drawer } from './Drawer';
 import { Button } from '../Button';
+import { Icon } from '../Icon';
 import { InputField } from '../InputField';
 import { Typography } from '../Typography';
 
@@ -511,6 +512,291 @@ export const NoFooter: Story = {
       </div>
     </div>
   </DrawerWrapper>,
+};
+
+// ============================================================================
+// FLEXIBLE HEADER & FOOTER STORIES
+// ============================================================================
+
+/**
+ * ReactNode title — pass a badge, icon, or any JSX as the heading.
+ * The `title` prop accepts `string | ReactNode`.
+ */
+export const RichTitle: Story = {
+  render: () => <DrawerWrapper
+    title={
+      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+        <Typography variant="headingM" weight="semibold" as="h2">User Settings</Typography>
+        <span style={{
+          display: 'inline-flex',
+          alignItems: 'center',
+          padding: '2px 8px',
+          borderRadius: '12px',
+          background: '#EFF6FF',
+          color: '#1D4ED8',
+          fontSize: '12px',
+          fontWeight: 600,
+        }}>Beta</span>
+      </div>
+    }
+    description="Manage your account preferences"
+    onSubmit={() => {}}
+  >
+    <div style={{ padding: '20px' }}>
+      <Typography variant="body">The title is a ReactNode — badge, icon, anything goes.</Typography>
+    </div>
+  </DrawerWrapper>,
+};
+
+/**
+ * ReactNode description — rich text with links, emphasis, or any JSX.
+ * The `description` prop accepts `string | ReactNode`.
+ */
+export const RichDescription: Story = {
+  render: () => <DrawerWrapper
+    title="Import Data"
+    description={
+      <Typography variant="body">
+        Upload a CSV file. Need help?{' '}
+        <a href="#" style={{ color: '#2563EB' }}>View the import guide</a>.
+      </Typography>
+    }
+    submitLabel="Import"
+    onSubmit={() => {}}
+  >
+    <div style={{ padding: '20px' }}>
+      <Typography variant="body">The description is a ReactNode — links, bold text, anything.</Typography>
+    </div>
+  </DrawerWrapper>,
+};
+
+/**
+ * headerActions — extra icon buttons injected between the title block and the
+ * close button without replacing the whole header.
+ */
+export const WithHeaderActions: Story = {
+  render: () => <DrawerWrapper
+    title="Document Preview"
+    description="Review before publishing"
+    headerActions={
+      <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+        <button
+          aria-label="Bookmark"
+          style={{
+            display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+            width: 36, height: 36, border: 'none', background: 'none',
+            borderRadius: 6, cursor: 'pointer', color: '#6B7280',
+          }}
+        >
+          <Icon name="Bookmark" size="medium" />
+        </button>
+        <button
+          aria-label="Share"
+          style={{
+            display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+            width: 36, height: 36, border: 'none', background: 'none',
+            borderRadius: 6, cursor: 'pointer', color: '#6B7280',
+          }}
+        >
+          <Icon name="Share" size="medium" />
+        </button>
+      </div>
+    }
+    onSubmit={() => {}}
+  >
+    <div style={{ padding: '20px' }}>
+      <Typography variant="body">
+        Bookmark and Share icon buttons appear in the header alongside the default close button.
+        The default header structure is preserved — only extra actions are injected.
+      </Typography>
+    </div>
+  </DrawerWrapper>,
+};
+
+/**
+ * showCloseButton={false} — remove the X icon from the header entirely.
+ * Useful when your headerActions or custom footer manage dismissal.
+ */
+export const NoCloseButton: Story = {
+  render: () => {
+    const [isOpen, setIsOpen] = useState(false);
+    return (
+      <div style={{ padding: '20px' }}>
+        <Button onClick={() => setIsOpen(true)}>Open Drawer</Button>
+        <Drawer
+          isOpen={isOpen}
+          onClose={() => setIsOpen(false)}
+          title="Confirm Action"
+          description="Please read before proceeding"
+          showCloseButton={false}
+          showReset={false}
+          cancelLabel="Discard"
+          submitLabel="Confirm"
+          onSubmit={() => setIsOpen(false)}
+        >
+          <div style={{ padding: '20px' }}>
+            <Typography variant="body">
+              The X close button is removed. Dismissal is only via the footer Cancel/Confirm buttons.
+            </Typography>
+          </div>
+        </Drawer>
+      </div>
+    );
+  },
+};
+
+/**
+ * footerStart — replace the left footer slot (where Reset lives) with any content:
+ * step counter, status chip, helper text, checkbox, etc.
+ */
+export const FooterStartSlot: Story = {
+  render: () => <DrawerWrapper
+    title="Multi-step Wizard"
+    description="Complete all steps to finish"
+    footerStart={
+      <Typography variant="caption" style={{ color: '#6B7280' }}>
+        Step 2 of 4
+      </Typography>
+    }
+    onSubmit={() => {}}
+    cancelLabel="Back"
+    submitLabel="Continue"
+  >
+    <div style={{ padding: '20px' }}>
+      <Typography variant="body">
+        The left footer slot shows "Step 2 of 4" instead of the default Reset button.
+        The right slot keeps Cancel + Submit as usual.
+      </Typography>
+    </div>
+  </DrawerWrapper>,
+};
+
+/**
+ * footerEnd — replace the right footer slot (Cancel + Submit) with any content:
+ * custom button set, split-button, link, etc.
+ */
+export const FooterEndSlot: Story = {
+  render: () => <DrawerWrapper
+    title="Publish Settings"
+    description="Choose how to save your work"
+    showReset={false}
+    footerEnd={
+      <>
+        <Button variant="tertiary" size="medium" onClick={() => {}}>Discard</Button>
+        <Button variant="secondary" size="medium" onClick={() => {}}>Save Draft</Button>
+        <Button variant="primary" size="medium" onClick={() => {}}>Publish Now</Button>
+      </>
+    }
+  >
+    <div style={{ padding: '20px' }}>
+      <Typography variant="body">
+        The right footer slot has three custom buttons (Discard, Save Draft, Publish Now)
+        instead of the default Cancel + Submit pair.
+      </Typography>
+    </div>
+  </DrawerWrapper>,
+};
+
+/**
+ * Both footer slots overridden — full control over left and right areas while
+ * keeping the default footer shell (border, padding, layout).
+ */
+export const BothFooterSlotsOverridden: Story = {
+  render: () => <DrawerWrapper
+    title="Review Changes"
+    description="12 items pending review"
+    footerStart={
+      <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+        <span style={{
+          width: 8, height: 8, borderRadius: '50%', background: '#F59E0B',
+          display: 'inline-block',
+        }} />
+        <Typography variant="caption" style={{ color: '#6B7280' }}>Unsaved changes</Typography>
+      </div>
+    }
+    footerEnd={
+      <>
+        <Button variant="secondary" size="medium" onClick={() => {}}>Reject All</Button>
+        <Button variant="primary" size="medium" onClick={() => {}}>Approve All</Button>
+      </>
+    }
+  >
+    <div style={{ padding: '20px' }}>
+      <Typography variant="body">
+        Both footer slots are overridden. Left shows an "Unsaved changes" status dot,
+        right shows Reject All + Approve All buttons.
+      </Typography>
+    </div>
+  </DrawerWrapper>,
+};
+
+/**
+ * Kitchen sink — all new flexibility props used together:
+ * ReactNode title, ReactNode description, headerActions, showCloseButton=false,
+ * footerStart, and footerEnd.
+ */
+export const FullFlexibility: Story = {
+  render: () => {
+    const [isOpen, setIsOpen] = useState(false);
+    return (
+      <div style={{ padding: '20px' }}>
+        <Button onClick={() => setIsOpen(true)}>Open Flexible Drawer</Button>
+        <Drawer
+          isOpen={isOpen}
+          onClose={() => setIsOpen(false)}
+          title={
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <Icon name="Settings" size="medium" />
+              <Typography variant="headingM" weight="semibold" as="h2">Advanced Config</Typography>
+              <span style={{
+                display: 'inline-flex', alignItems: 'center',
+                padding: '2px 8px', borderRadius: '12px',
+                background: '#FEF3C7', color: '#92400E',
+                fontSize: '11px', fontWeight: 600,
+              }}>Experimental</span>
+            </div>
+          }
+          description={
+            <Typography variant="body">
+              Changes apply immediately.{' '}
+              <a href="#" style={{ color: '#2563EB' }}>Read the docs</a> before continuing.
+            </Typography>
+          }
+          headerActions={
+            <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+              <button aria-label="Bookmark" style={{
+                display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+                width: 36, height: 36, border: 'none', background: 'none',
+                borderRadius: 6, cursor: 'pointer', color: '#6B7280',
+              }}>
+                <Icon name="Bookmark" size="medium" />
+              </button>
+            </div>
+          }
+          showCloseButton={true}
+          footerStart={
+            <Typography variant="caption" style={{ color: '#6B7280' }}>Last saved: 2 min ago</Typography>
+          }
+          footerEnd={
+            <>
+              <Button variant="tertiary" size="medium" onClick={() => setIsOpen(false)}>Cancel</Button>
+              <Button variant="secondary" size="medium" onClick={() => {}}>Save Draft</Button>
+              <Button variant="primary" size="medium" onClick={() => setIsOpen(false)}>Apply</Button>
+            </>
+          }
+        >
+          <div style={{ padding: '20px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
+            <Typography variant="headingS" weight="semibold">All flexibility props active</Typography>
+            <Typography variant="body">• title — ReactNode with icon + badge</Typography>
+            <Typography variant="body">• description — ReactNode with a link</Typography>
+            <Typography variant="body">• headerActions — bookmark icon button</Typography>
+            <Typography variant="body">• footerStart — "Last saved" status text</Typography>
+            <Typography variant="body">• footerEnd — 3 custom action buttons</Typography>
+          </div>
+        </Drawer>
+      </div>
+    );
+  },
 };
 
 /**

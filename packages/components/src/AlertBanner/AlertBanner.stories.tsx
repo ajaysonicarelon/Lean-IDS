@@ -29,7 +29,7 @@ A feedback component for system messages that combines text and iconography for 
 ## Usage
 
 \`\`\`tsx
-import { AlertBanner } from '@lean-ids/components';
+import { AlertBanner } from '@ajaysoni7832/lean-ids-components';
 
 <AlertBanner
   type="warning"

@@ -12,7 +12,7 @@ const meta: Meta<typeof Breadcrumbs> = {
 ## Usage
 
 \`\`\`tsx
-import { Breadcrumbs } from '@lean-ids/components';
+import { Breadcrumbs } from '@ajaysoni7832/lean-ids-components';
 
 function MyComponent() {
   const items = [

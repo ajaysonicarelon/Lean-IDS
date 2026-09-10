@@ -733,6 +733,270 @@ export const ChipsComparison: Story = {
 };
 
 /**
+ * NEW: Chip Size Control
+ * Demonstrates the chipSize prop to change the size of chips in multi-select
+ */
+export const ChipSizes: Story = {
+  render: () => {
+    const [smallValue, setSmallValue] = useState<string[]>(['apple', 'banana']);
+    const [mediumValue, setMediumValue] = useState<string[]>(['apple', 'banana']);
+    const [largeValue, setLargeValue] = useState<string[]>(['apple', 'banana']);
+
+    return (
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '24px', padding: '20px', maxWidth: '500px' }}>
+        <Typography variant="headingM" weight="semibold">Chip Size Control</Typography>
+        <Typography variant="body">
+          Use <code>chipSize</code> prop to control the size of chips displayed in multi-select.
+          Accepts <code>'small'</code>, <code>'medium'</code>, or <code>'large'</code>.
+        </Typography>
+
+        <div>
+          <Typography variant="bodyS" weight="semibold" style={{ marginBottom: '8px' }}>chipSize="small" (default)</Typography>
+          <Select
+            label="Fruits"
+            placeholder="Select fruits..."
+            options={fruits}
+            value={smallValue}
+            onChange={(val) => setSmallValue(val as string[])}
+            multiple={true}
+            showChips={true}
+            chipsPosition="below"
+            chipSize="small"
+          />
+        </div>
+
+        <div>
+          <Typography variant="bodyS" weight="semibold" style={{ marginBottom: '8px' }}>chipSize="medium"</Typography>
+          <Select
+            label="Fruits"
+            placeholder="Select fruits..."
+            options={fruits}
+            value={mediumValue}
+            onChange={(val) => setMediumValue(val as string[])}
+            multiple={true}
+            showChips={true}
+            chipsPosition="below"
+            chipSize="medium"
+          />
+        </div>
+
+        <div>
+          <Typography variant="bodyS" weight="semibold" style={{ marginBottom: '8px' }}>chipSize="large"</Typography>
+          <Select
+            label="Fruits"
+            placeholder="Select fruits..."
+            options={fruits}
+            value={largeValue}
+            onChange={(val) => setLargeValue(val as string[])}
+            multiple={true}
+            showChips={true}
+            chipsPosition="below"
+            chipSize="large"
+          />
+        </div>
+      </div>
+    );
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: `
+**chipSize prop:** Controls the size of chips in the multi-select chip display.
+
+\`\`\`tsx
+<Select
+  multiple={true}
+  showChips={true}
+  chipSize="medium"  // 'small' | 'medium' | 'large'
+/>
+\`\`\`
+        `,
+      },
+    },
+  },
+};
+
+/**
+ * NEW: Select All option in multi-select dropdown
+ * Demonstrates showSelectAll, selectAllLabel, and deselectAllLabel props
+ */
+export const SelectAll: Story = {
+  render: () => {
+    const [value, setValue] = useState<string[]>([]);
+
+    return (
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', padding: '20px', maxWidth: '400px' }}>
+        <Typography variant="headingM" weight="semibold">Select All / Deselect All</Typography>
+        <Typography variant="body">
+          The label toggles between <code>selectAllLabel</code> and <code>deselectAllLabel</code> based on
+          selection state. The checkbox shows an indeterminate state when only some items are selected.
+        </Typography>
+
+        <Select
+          label="Countries"
+          placeholder="Select countries..."
+          options={countries}
+          value={value}
+          onChange={(val) => setValue(val as string[])}
+          multiple={true}
+          showSelectAll={true}
+          selectAllLabel="Select All"
+          deselectAllLabel="Deselect All"
+          showChips={true}
+          chipsPosition="below"
+          helperText={`${value.length} of ${countries.length} selected`}
+        />
+      </div>
+    );
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: `
+**showSelectAll prop:** Adds a "Select All / Deselect All" toggle at the top of the multi-select list.
+
+| State | Checkbox | Label |
+|---|---|---|
+| Nothing selected | Unchecked | \`selectAllLabel\` ("Select All") |
+| Some selected | Indeterminate | \`selectAllLabel\` ("Select All") |
+| All selected | Checked | \`deselectAllLabel\` ("Deselect All") |
+
+\`\`\`tsx
+<Select
+  multiple={true}
+  showSelectAll={true}
+  selectAllLabel="Select All"      // shown when not all selected
+  deselectAllLabel="Deselect All"  // shown when all selected
+/>
+\`\`\`
+        `,
+      },
+    },
+  },
+};
+
+/**
+ * NEW: Sort Selected First in multi-select dropdown
+ * Demonstrates sortSelectedFirst prop
+ */
+export const SortSelectedFirst: Story = {
+  render: () => {
+    const [value, setValue] = useState<string[]>(['ca', 'jp', 'br']);
+
+    return (
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '32px', padding: '20px' }}>
+        <Typography variant="headingM" weight="semibold">Sort Selected First</Typography>
+        <Typography variant="body">
+          Use <code>sortSelectedFirst</code> to move selected (checked) items to the top of the list.
+          Useful when there are many options and the user needs to quickly review their selections.
+        </Typography>
+
+        <div style={{ display: 'flex', gap: '24px', flexWrap: 'wrap' }}>
+          <div style={{ flex: '1', minWidth: '280px' }}>
+            <Typography variant="bodyS" weight="semibold" style={{ marginBottom: '8px' }}>Without sortSelectedFirst</Typography>
+            <Select
+              label="Countries (default order)"
+              placeholder="Select countries..."
+              options={countries}
+              value={value}
+              onChange={(val) => setValue(val as string[])}
+              multiple={true}
+              showChips={true}
+              chipsPosition="below"
+              helperText="Selections stay in original order"
+            />
+          </div>
+
+          <div style={{ flex: '1', minWidth: '280px' }}>
+            <Typography variant="bodyS" weight="semibold" style={{ marginBottom: '8px' }}>With sortSelectedFirst</Typography>
+            <Select
+              label="Countries (selected on top)"
+              placeholder="Select countries..."
+              options={countries}
+              value={value}
+              onChange={(val) => setValue(val as string[])}
+              multiple={true}
+              sortSelectedFirst={true}
+              showChips={true}
+              chipsPosition="below"
+              helperText="Selected items float to top"
+            />
+          </div>
+        </div>
+
+        <Typography variant="caption" style={{ color: '#666' }}>
+          Both selects share the same state. Toggle items in either to see the difference.
+        </Typography>
+      </div>
+    );
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: `
+**sortSelectedFirst prop:** Moves selected items to the top of the dropdown list.
+
+\`\`\`tsx
+<Select
+  multiple={true}
+  sortSelectedFirst={true}
+/>
+\`\`\`
+
+Works with \`showSelectAll\` and \`searchable\` too — selected items float above unselected ones.
+        `,
+      },
+    },
+  },
+};
+
+/**
+ * NEW: All three new props combined
+ */
+export const MultiSelectEnhanced: Story = {
+  render: () => {
+    const [value, setValue] = useState<string[]>([]);
+
+    return (
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', padding: '20px', maxWidth: '480px' }}>
+        <Typography variant="headingM" weight="semibold">Multi-Select — All Enhancements</Typography>
+        <Typography variant="body">
+          Combines <code>showSelectAll</code>, <code>sortSelectedFirst</code>, and <code>chipSize="medium"</code>.
+        </Typography>
+
+        <Select
+          label="Team Members"
+          placeholder="Choose members..."
+          options={countries}
+          value={value}
+          onChange={(val) => setValue(val as string[])}
+          multiple={true}
+          showSelectAll={true}
+          sortSelectedFirst={true}
+          showChips={true}
+          chipsPosition="below"
+          chipSize="medium"
+          searchable={true}
+          helperText={value.length > 0 ? `${value.length} member(s) selected` : 'Select team members'}
+        />
+      </div>
+    );
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: `
+Combines all three new multi-select features:
+- \`showSelectAll\` — "Select All" at top with indeterminate state
+- \`sortSelectedFirst\` — selected items float to top  
+- \`chipSize="medium"\` — medium-sized chips below the field
+        `,
+      },
+    },
+  },
+};
+
+/**
  * Component Maturity Summary
  */
 export const ComponentMaturity: Story = {

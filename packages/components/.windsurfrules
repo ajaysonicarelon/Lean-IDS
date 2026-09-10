@@ -21,9 +21,9 @@
 **NO external UI component libraries allowed in fresh projects.**
 
 Import ONLY from:
-- `@lean-ids/components`
-- `@lean-ids/tokens`
-- `@lean-ids/icons`
+- `@ajaysoni7832/lean-ids-components`
+- `@ajaysoni7832/lean-ids-tokens`
+- `@ajaysoni7832/lean-ids-icons`
 
 ### FORBIDDEN IMPORTS:
 ❌ Material-UI (@mui/material)
@@ -66,8 +66,8 @@ Button, Input, Checkbox, Radio, Select, TextArea, Toggle, Avatar, Badge, Brand, 
 ## ✅ CORRECT USAGE
 
 ```tsx
-import { Button, Input, PageLayout } from '@lean-ids/components';
-import { theme } from '@lean-ids/tokens';
+import { Button, Input, PageLayout } from '@ajaysoni7832/lean-ids-components';
+import { theme } from '@ajaysoni7832/lean-ids-tokens';
 ```
 
 ## ❌ INCORRECT USAGE
@@ -100,11 +100,11 @@ background: ${({ theme }) => theme.colors.palette.primary[600]};
 
 ```tsx
 // ✅ CORRECT - Use Lean DS Modal
-import { Modal } from '@lean-ids/components';
+import { Modal } from '@ajaysoni7832/lean-ids-components';
 <Modal isOpen={isOpen} onClose={onClose} title="Dialog">{content}</Modal>
 
 // ✅ CORRECT - Use Lean DS Drawer
-import { Drawer } from '@lean-ids/components';
+import { Drawer } from '@ajaysoni7832/lean-ids-components';
 <Drawer isOpen={isOpen} onClose={onClose} title="Panel">{content}</Drawer>
 
 // ❌ WRONG - Custom implementation
@@ -126,7 +126,7 @@ import Modal from 'react-modal';
 
 ```tsx
 // ✅ CORRECT - Use Lean DS components
-import { Input, Button, Chip } from '@lean-ids/components';
+import { Input, Button, Chip } from '@ajaysoni7832/lean-ids-components';
 
 // ❌ WRONG - Creating custom components
 const CustomInput = styled.input`...`; // Don't do this!
@@ -167,7 +167,7 @@ import { Button } from '@mui/material'; // ❌ WRONG!
 **RULE:**
 - ✅ Import icons from `@mui/icons-material` ONLY
 - ❌ Do NOT import Button, Input, Card from `@mui/material`
-- ✅ For UI components, use `@lean-ids/components`
+- ✅ For UI components, use `@ajaysoni7832/lean-ids-components`
 
 ---
 

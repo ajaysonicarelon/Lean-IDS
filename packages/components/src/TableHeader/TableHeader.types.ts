@@ -58,4 +58,9 @@ export interface TableHeaderProps {
   // Table structure
   colSpan?: number;
   rowSpan?: number;
+  
+  // Custom icon feature
+  customIcon?: React.ReactNode; // Custom icon to display in header
+  onCustomIconClick?: (e: React.MouseEvent) => void; // Click handler for custom icon
+  customIconTitle?: string; // Tooltip text for custom icon
 }

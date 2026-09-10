@@ -5,6 +5,41 @@ All notable changes to the Lean DS Design System will be documented in this file
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.7.10] - 2026-09-10
+
+### ✨ Component Enhancements
+
+**Table**
+- Added `errorDescription` prop - customizable error state description text
+- Added `errorIcon` prop - custom ReactNode for error state icon
+- Added `errorActionLabel` prop - custom error action button label
+- Added `onErrorAction` prop - error state action button handler
+- Added `errorStateContent` prop - fully custom error state UI (replaces default)
+- Added `emptyStateContent` prop - fully custom empty state UI (replaces default)
+
+**Drawer**
+- Added `showCloseButton` prop - toggleable close button visibility
+- Added `headerActions` slot - custom ReactNode injected into the header
+- Added `footerStart` slot - custom content at start of footer
+- Added `footerEnd` slot - custom content at end of footer
+- `title` and `description` props now accept `ReactNode` (previously string-only)
+
+**Pagination**
+- Added `showPageSizeSelector` prop - show/hide page size dropdown (default: `true`)
+
+**Select**
+- Prop and story enhancements
+
+**NestedMenuOverlay**
+- Bug fixes and stability improvements
+
+### 📚 Documentation
+- Updated Storybook stories for Table, Drawer, Select with comprehensive examples
+- Updated README.md with v1.7.10
+
+### 🔧 Technical
+- Version alignment between tokens and components packages
+
 ## [1.7.9] - 2026-08-27
 
 ### ✨ New Features
@@ -22,18 +57,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### 🐛 Bug Fixes
 - **Selected Row Styling** - Fixed inconsistent background color for selected rows (all cells now use `primary[50]`)
-- **Render Function Consistency** - Standardized render function signature across both tables: `render(value, row, rowIndex)`
+- **Render Function Consistency** - Standardized render function name across both tables: `renderCell(value, row, rowIndex)`
 
 ### 📚 Documentation
 - **Storybook** - Added comprehensive prop documentation for all table features
   - Server-side pagination examples
   - Server-side sorting examples
   - Column menu and locking documentation
-  - Custom cell rendering guide with signature: `(value, row, rowIndex) => ReactNode`
+  - Custom cell rendering guide with signature: `renderCell(value, row, rowIndex) => ReactNode`
   - 11 organized categories with 50+ documented props
 
 ### 🔧 Technical Improvements
-- Updated `ColumnConfig.render` signature to match `TableColumn.renderCell`
+- Renamed `ColumnConfig.render` to `renderCell` to match `TableColumn.renderCell`
 - Enhanced scrollbar styling with theme tokens
 - Improved column menu z-index layering
 - Added 300ms delay on submenu hide for better UX

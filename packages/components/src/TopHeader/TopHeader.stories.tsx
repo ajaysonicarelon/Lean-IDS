@@ -24,7 +24,7 @@ const meta: Meta<typeof TopHeader> = {
 ### Basic Example
 
 \`\`\`tsx
-import { TopHeader, Icon } from '@lean-ids/components';
+import { TopHeader, Icon } from '@ajaysoni7832/lean-ids-components';
 
 function App() {
   const menuItems = [
@@ -223,7 +223,7 @@ export const DarkMode: Story = {
           
           const propsString = props.length > 0 ? '\n  ' + props.join('\n  ') + '\n' : '';
           
-          return `import { TopHeader, Icon } from '@lean-ids/components';
+          return `import { TopHeader, Icon } from '@ajaysoni7832/lean-ids-components';
 
 const menuItems = [
   {
@@ -271,7 +271,7 @@ export const LightMode: Story = {
         iframeHeight: 200,
       },
       source: {
-        code: `import { TopHeader, Icon } from '@lean-ids/components';
+        code: `import { TopHeader, Icon } from '@ajaysoni7832/lean-ids-components';
 
 const menuItems = [
   {
@@ -327,7 +327,7 @@ export const WithoutLogo: Story = {
         iframeHeight: 200,
       },
       source: {
-        code: `import { TopHeader, Icon } from '@lean-ids/components';
+        code: `import { TopHeader, Icon } from '@ajaysoni7832/lean-ids-components';
 
 <TopHeader
   mode="dark"
@@ -367,7 +367,7 @@ export const WithoutMenuItems: Story = {
         iframeHeight: 200,
       },
       source: {
-        code: `import { TopHeader } from '@lean-ids/components';
+        code: `import { TopHeader } from '@ajaysoni7832/lean-ids-components';
 
 <TopHeader
   mode="dark"
@@ -405,7 +405,7 @@ export const MinimalHeader: Story = {
         iframeHeight: 200,
       },
       source: {
-        code: `import { TopHeader } from '@lean-ids/components';
+        code: `import { TopHeader } from '@ajaysoni7832/lean-ids-components';
 
 <TopHeader
   mode="dark"

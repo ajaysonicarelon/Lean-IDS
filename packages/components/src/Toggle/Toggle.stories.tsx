@@ -40,7 +40,7 @@ Enterprise-grade toggle button following Component Maturity Checklist.
 ## Usage
 
 \`\`\`tsx
-import { Toggle } from '@lean-ids/components';
+import { Toggle } from '@ajaysoni7832/lean-ids-components';
 
 <Toggle
   label="Option 1"

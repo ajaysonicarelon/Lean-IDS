@@ -27,7 +27,7 @@ const meta: Meta<typeof Avatar> = {
 ## Usage
 
 \`\`\`tsx
-import { Avatar } from '@lean-ids/components';
+import { Avatar } from '@ajaysoni7832/lean-ids-components';
 
 function UserProfile() {
   return (

@@ -10,11 +10,11 @@
   - Advanced Table (`ColumnConfig`): `render(row, value)` ❌ Different signature
 
 - **After:**
-  - Both tables now use: `render(value, row, rowIndex)` ✅ Consistent!
+  - Both tables now use: `renderCell(value, row, rowIndex)` ✅ Consistent!
 
 **Files Modified:**
-- `/packages/components/src/TableSettings/TableSettings.types.ts` - Updated `ColumnConfig.render` signature
-- `/packages/components/src/Table/EnhancedTableTemplate.tsx` - Updated render function calls (2 locations)
+- `/packages/components/src/TableSettings/TableSettings.types.ts` - Renamed `ColumnConfig.render` to `renderCell`
+- `/packages/components/src/Table/EnhancedTableTemplate.tsx` - Updated renderCell function calls (2 locations)
 
 **Migration:**
 ```typescript
@@ -22,7 +22,7 @@
 render: (row, value) => <Badge>{value}</Badge>
 
 // NEW (Both tables - consistent)
-render: (value, row, rowIndex) => <Badge>{value}</Badge>
+renderCell: (value, row, rowIndex) => <Badge>{value}</Badge>
 ```
 
 ---
@@ -166,7 +166,7 @@ Total: 45+ props
 - Basic Table: `title` vs Advanced Table: `toolbarTitle`
 
 ### **Render Function (NOW CONSISTENT)**
-- Both tables: `render(value, row, rowIndex)` ✅
+- Both tables: `renderCell(value, row, rowIndex)` ✅
 
 ---
 
@@ -210,7 +210,7 @@ Total: 45+ props
 
 ### 🐛 Bug Fixes
 - **Selected Row Styling** - Fixed inconsistent background color for selected rows (all cells now use `primary[50]`)
-- **Render Function Consistency** - Standardized render function signature across both tables: `render(value, row, rowIndex)`
+- **Render Function Consistency** - Standardized render function name across both tables: `renderCell(value, row, rowIndex)`
 
 ### 📚 Documentation
 - **Storybook** - Added comprehensive prop documentation for all table features
@@ -220,7 +220,7 @@ Total: 45+ props
   - 11 organized categories with 50+ documented props
 
 ### 🔧 Technical Improvements
-- Updated `ColumnConfig.render` signature to match `TableColumn.renderCell`
+- Renamed `ColumnConfig.render` to `renderCell` to match `TableColumn.renderCell`
 - Enhanced scrollbar styling with theme tokens
 - Improved column menu z-index layering
 ```

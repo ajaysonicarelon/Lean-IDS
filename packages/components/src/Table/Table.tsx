@@ -144,8 +144,28 @@ export interface TableProps extends React.HTMLAttributes<HTMLDivElement> {
   maxHeight?: string;
   /** Invalid/error state */
   isInvalid?: boolean;
-  /** Error message to display when isInvalid is true */
+  /** Error state title/heading (default: 'Something went wrong') */
   errorMessage?: string;
+  /** Error state description text (default: 'There was a problem loading the table data.') */
+  errorDescription?: string;
+  /** Error state icon – any ReactNode (e.g. custom SVG, MUI icon). Defaults to ErrorIcon. */
+  errorIcon?: React.ReactNode;
+  /** Error state action button label (default: 'Retry') */
+  errorActionLabel?: string;
+  /** Error state action button handler. When provided, shows the button. */
+  onErrorAction?: () => void;
+  /**
+   * Fully custom error state content.
+   * When provided, replaces the entire error state UI (icon, text, button).
+   * Ideal for API-driven content or completely custom layouts.
+   */
+  errorStateContent?: React.ReactNode;
+  /**
+   * Fully custom empty state content.
+   * When provided, replaces the entire empty state UI (icon, text, button).
+   * Ideal for API-driven content or completely custom layouts.
+   */
+  emptyStateContent?: React.ReactNode;
   /** Override className for scroll container */
   scrollContainerClassName?: string;
   /** Override style for scroll container */
@@ -383,6 +403,12 @@ export const Table = forwardRef<HTMLDivElement, TableProps>(({  as: Component = 
   maxHeight,
   isInvalid = false,
   errorMessage,
+  errorDescription,
+  errorIcon,
+  errorActionLabel,
+  onErrorAction,
+  errorStateContent,
+  emptyStateContent,
   scrollContainerClassName,
   scrollContainerStyle,
   emptyStateClassName,
@@ -1125,30 +1151,32 @@ const processedData = useMemo(() => {
         role="status"
         aria-live="polite"
       >
-        <EmptyStateContent>
-          <EmptyStateIconWrapper>
-            <CloudOffIcon sx={{ fontSize: 64, color: 'text.secondary' }} />
-          </EmptyStateIconWrapper>
-          
-          <EmptyStateTextWrapper>
-            <Typography variant="headingL" weight="semibold" as="h3">
-              {emptyTitle}
-            </Typography>
-            <Typography variant="body" color="secondary">
-              {emptyDescription}
-            </Typography>
-          </EmptyStateTextWrapper>
-          
-          {emptyActionLabel && onEmptyAction && (
-            <Button
-              variant="primary"
-              size="medium"
-              onClick={onEmptyAction}
-            >
-              {emptyActionLabel}
-            </Button>
-          )}
-        </EmptyStateContent>
+        {emptyStateContent ?? (
+          <EmptyStateContent>
+            <EmptyStateIconWrapper>
+              <CloudOffIcon sx={{ fontSize: 64, color: 'text.secondary' }} />
+            </EmptyStateIconWrapper>
+            
+            <EmptyStateTextWrapper>
+              <Typography variant="headingL" weight="semibold" as="h3">
+                {emptyTitle}
+              </Typography>
+              <Typography variant="body" color="secondary">
+                {emptyDescription}
+              </Typography>
+            </EmptyStateTextWrapper>
+            
+            {emptyActionLabel && onEmptyAction && (
+              <Button
+                variant="primary"
+                size="medium"
+                onClick={onEmptyAction}
+              >
+                {emptyActionLabel}
+              </Button>
+            )}
+          </EmptyStateContent>
+        )}
       </EmptyStateContainer>
     </ScrollContainer>
   );
@@ -1181,30 +1209,32 @@ const processedData = useMemo(() => {
         role="alert"
         aria-live="assertive"
       >
-        <EmptyStateContent>
-          <EmptyStateIconWrapper>
-            <ErrorIcon sx={{ fontSize: 64, color: 'error.main' }} />
-          </EmptyStateIconWrapper>
-          
-          <EmptyStateTextWrapper>
-            <Typography variant="headingL" weight="semibold" as="h3" color="error">
-              {errorMessage || 'Crazy'}
-            </Typography>
-            <Typography variant="body" color="secondary">
-              There was a problem loading the table data.
-            </Typography>
-          </EmptyStateTextWrapper>
-          
-          {onEmptyAction && (
-            <Button
-              variant="primary"
-              size="medium"
-              onClick={onEmptyAction}
-            >
-              {emptyActionLabel || 'Retry'}
-            </Button>
-          )}
-        </EmptyStateContent>
+        {errorStateContent ?? (
+          <EmptyStateContent>
+            <EmptyStateIconWrapper>
+              {errorIcon ?? <ErrorIcon sx={{ fontSize: 64, color: 'error.main' }} />}
+            </EmptyStateIconWrapper>
+            
+            <EmptyStateTextWrapper>
+              <Typography variant="headingL" weight="semibold" as="h3" color="error">
+                {errorMessage || 'Something went wrong'}
+              </Typography>
+              <Typography variant="body" color="secondary">
+                {errorDescription || 'There was a problem loading the table data.'}
+              </Typography>
+            </EmptyStateTextWrapper>
+            
+            {(onErrorAction || onEmptyAction) && (
+              <Button
+                variant="primary"
+                size="medium"
+                onClick={onErrorAction ?? onEmptyAction}
+              >
+                {errorActionLabel || emptyActionLabel || 'Retry'}
+              </Button>
+            )}
+          </EmptyStateContent>
+        )}
       </EmptyStateContainer>
     </ScrollContainer>
   );

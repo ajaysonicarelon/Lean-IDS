@@ -338,8 +338,10 @@ interface AdvancedTableProps extends React.HTMLAttributes<HTMLDivElement> {
   showDownload?: boolean;
   /** Download handler */
   onDownload?: () => void;
-  /** Show column search bars in sub-header (default: false, shows on filter apply) */
-  showColumnSearchByDefault?: boolean;
+  /** Show column search bars in sub-header (controlled) */
+  showColumnFilters?: boolean;
+  /** Callback when column filters visibility changes */
+  onColumnFiltersChange?: (show: boolean) => void;
   /** Custom tabs for side panel */
   customSidePanelTabs?: CustomTabConfig[];
   /** Maximum height for table body (enables fixed header with internal scroll). Example: '400px', '50vh' */
@@ -376,12 +378,18 @@ interface AdvancedTableProps extends React.HTMLAttributes<HTMLDivElement> {
   itemsPerPage?: number;
   /** Pagination mode: 'client' (default) or 'server'. When 'server', use onPageChange callback to handle pagination */
   paginationMode?: 'client' | 'server';
-  /** Callback for page change (server-side pagination). Called with (page, itemsPerPage) */
-  onPageChange?: (page: number, itemsPerPage: number) => void;
+  /** Callback for page change (server-side pagination). Called with (page) */
+  onPageChange?: (page: number) => void;
+  /** Callback for page size change (server-side pagination). Called with (pageSize) */
+  onPageSizeChange?: (pageSize: number) => void;
   /** Current page (controlled, for server-side pagination) */
   currentPage?: number;
   /** Total number of items (required for server-side pagination) */
   totalItems?: number;
+  /** Show/hide page size selector dropdown (default: true) */
+  showPageSizeSelector?: boolean;
+  /** Custom page size options (default: [10, 25, 50, 100]) */
+  pageSizeOptions?: number[];
   
   // ============================================================================
   // SORTING
@@ -394,6 +402,16 @@ interface AdvancedTableProps extends React.HTMLAttributes<HTMLDivElement> {
   sortColumn?: string;
   /** Controlled sort direction (only used when sortMode='server') */
   sortDirection?: 'asc' | 'desc' | 'none';
+  
+  // ============================================================================
+  // COLUMN SEARCH
+  // ============================================================================
+  /** Search mode: 'client' (default) or 'server'. When 'server', use onColumnSearch callback to handle column search */
+  searchMode?: 'client' | 'server';
+  /** Callback when column search changes (only used when searchMode='server') */
+  onColumnSearch?: (columnSearches: { [key: string]: string }) => void;
+  /** Controlled column search values (only used when searchMode='server') */
+  columnSearches?: { [key: string]: string };
   
   // ============================================================================
   // COLUMN RESIZING
@@ -438,16 +456,32 @@ interface AdvancedTableProps extends React.HTMLAttributes<HTMLDivElement> {
   loading?: boolean;
   /** Invalid/error state */
   isInvalid?: boolean;
-  /** Error message to display when isInvalid is true */
+  /** Error state title/heading (default: 'Something went wrong') */
   errorMessage?: string;
-  
+  /** Error state description text (default: 'There was a problem loading the table data.') */
+  errorDescription?: string;
+  /** Error state icon – any ReactNode (e.g. custom SVG, MUI icon). Defaults to ErrorIcon. */
+  errorIcon?: React.ReactNode;
+  /** Error state action button label (default: 'Retry') */
+  errorActionLabel?: string;
+  /** Error state action button handler. When provided, shows the button. */
+  onErrorAction?: () => void;
+  /**
+   * Fully custom error state content.
+   * When provided, replaces the entire error state UI (icon, text, button).
+   * Ideal for API-driven content or completely custom layouts.
+   * @example
+   * errorStateContent={<MyApiErrorBanner error={apiError} onRetry={refetch} />}
+   */
+  errorStateContent?: React.ReactNode;
+
   // ============================================================================
   // EMPTY STATE
   // ============================================================================
   /** Custom empty state message */
   emptyMessage?: string;
-  /** Empty state icon name (Material Icons) */
-  emptyIcon?: string;
+  /** Empty state icon – any ReactNode. Defaults to CloudOffIcon. */
+  emptyIcon?: React.ReactNode;
   /** Empty state title */
   emptyTitle?: string;
   /** Empty state description */
@@ -456,6 +490,14 @@ interface AdvancedTableProps extends React.HTMLAttributes<HTMLDivElement> {
   emptyActionLabel?: string;
   /** Empty state action button handler */
   onEmptyAction?: () => void;
+  /**
+   * Fully custom empty state content.
+   * When provided, replaces the entire empty state UI (icon, text, button).
+   * Ideal for API-driven content or completely custom layouts.
+   * @example
+   * emptyStateContent={<MyEmptyIllustration onAction={handleAction} />}
+   */
+  emptyStateContent?: React.ReactNode;
   
   // ============================================================================
   // CUSTOMIZATION & OVERRIDES
@@ -506,7 +548,8 @@ export const AdvancedDataTable = forwardRef<HTMLDivElement, AdvancedTableProps>(
   showFilter = true,
   showDownload = false,
   onDownload,
-  showColumnSearchByDefault = false,
+  showColumnFilters: controlledShowColumnFilters,
+  onColumnFiltersChange,
   customSidePanelTabs = [],
   maxHeight,
   
@@ -524,14 +567,22 @@ export const AdvancedDataTable = forwardRef<HTMLDivElement, AdvancedTableProps>(
   itemsPerPage: propItemsPerPage = 10,
   paginationMode = 'client',
   onPageChange,
+  onPageSizeChange,
   currentPage: controlledCurrentPage,
   totalItems: propTotalItems,
+  showPageSizeSelector = true,
+  pageSizeOptions = [10, 25, 50, 100],
   
   // Sorting
   sortMode = 'client',
   onSort,
   sortColumn: controlledSortColumn,
   sortDirection: controlledSortDirection,
+  
+  // Column Search
+  searchMode = 'client',
+  onColumnSearch,
+  columnSearches: controlledColumnSearches,
   
   // Column Resizing
   defaultMinWidth = 50,
@@ -548,14 +599,20 @@ export const AdvancedDataTable = forwardRef<HTMLDivElement, AdvancedTableProps>(
   loading = false,
   isInvalid = false,
   errorMessage,
-  
+  errorDescription,
+  errorIcon,
+  errorActionLabel,
+  onErrorAction,
+  errorStateContent,
+
   // Empty State
   emptyMessage = 'No data available',
-  emptyIcon = 'inbox',
+  emptyIcon,
   emptyTitle = 'No Results Found',
   emptyDescription = 'Try adjusting your filters or search criteria',
   emptyActionLabel,
   onEmptyAction,
+  emptyStateContent,
   
   // Customization & Overrides
   containerClassName,
@@ -577,12 +634,14 @@ export const AdvancedDataTable = forwardRef<HTMLDivElement, AdvancedTableProps>(
   const [internalItemsPerPage, setInternalItemsPerPage] = useState(propItemsPerPage);
   const [internalSortColumn, setInternalSortColumn] = useState<string>('');
   const [internalSortDirection, setInternalSortDirection] = useState<'asc' | 'desc' | 'none'>('none');
+  const [internalColumnSearches, setInternalColumnSearches] = useState<{ [key: string]: string }>({});
   
   // Use controlled props in server mode, internal state in client mode
   const currentPage = paginationMode === 'server' ? (controlledCurrentPage || 1) : internalCurrentPage;
   const itemsPerPage = paginationMode === 'server' ? propItemsPerPage : internalItemsPerPage;
   const sortColumn = sortMode === 'server' ? (controlledSortColumn || '') : internalSortColumn;
   const sortDirection = sortMode === 'server' ? (controlledSortDirection || 'none') : internalSortDirection;
+  const currentColumnSearches = searchMode === 'server' ? (controlledColumnSearches || {}) : internalColumnSearches;
   const [allChecked, setAllChecked] = useState(false);
   const [selectedRows, setSelectedRows] = useState<number[]>([]);
   const [lastSelectedIndex, setLastSelectedIndex] = useState<number | null>(null);
@@ -612,13 +671,15 @@ export const AdvancedDataTable = forwardRef<HTMLDivElement, AdvancedTableProps>(
   };
 
   const [columnConfigs, setColumnConfigs] = useState<ColumnConfig[]>(getInitialColumns());
-  const [showColumnFilters, setShowColumnFilters] = useState(false);
-  const [columnSearches, setColumnSearches] = useState<{ [key: string]: string }>({});
+  const [internalShowColumnFilters, setInternalShowColumnFilters] = useState(false);
   const [globalSearch, setGlobalSearch] = useState<string>('');
   const [columnWidths, setColumnWidths] = useState<{ [key: string]: number }>({});
   const [rightColumnOffsets, setRightColumnOffsets] = useState<{ [key: string]: number }>({});
   const [animateSorting, setAnimateSorting] = useState(false);
   const [sidePanelFilters, setSidePanelFilters] = useState<ColumnFilter[]>([]);
+
+  // Use controlled prop if provided, otherwise use internal state
+  const showColumnFilters = controlledShowColumnFilters !== undefined ? controlledShowColumnFilters : internalShowColumnFilters;
 
   // Use provided data or fall back to demo data
   const sampleData = propData || getSampleData();
@@ -798,8 +859,8 @@ export const AdvancedDataTable = forwardRef<HTMLDivElement, AdvancedTableProps>(
 
   const handlePageChange = (page: number) => {
     if (paginationMode === 'server' && onPageChange) {
-      // Server-side pagination: call the callback
-      onPageChange(page, itemsPerPage);
+      // Server-side pagination: call the callback with page only
+      onPageChange(page);
     } else {
       // Client-side pagination: update internal state
       setInternalCurrentPage(page);
@@ -807,9 +868,13 @@ export const AdvancedDataTable = forwardRef<HTMLDivElement, AdvancedTableProps>(
   };
 
   const handleItemsPerPageChange = (newItemsPerPage: number) => {
-    if (paginationMode === 'server' && onPageChange) {
-      // Server-side pagination: call the callback with page 1 and new items per page
-      onPageChange(1, newItemsPerPage);
+    if (paginationMode === 'server' && onPageSizeChange) {
+      // Server-side pagination: call the separate page size callback
+      onPageSizeChange(newItemsPerPage);
+      // Also reset to page 1 when page size changes (industry standard)
+      if (onPageChange) {
+        onPageChange(1);
+      }
     } else {
       // Client-side pagination: update internal state
       setInternalItemsPerPage(newItemsPerPage);
@@ -845,18 +910,21 @@ export const AdvancedDataTable = forwardRef<HTMLDivElement, AdvancedTableProps>(
   };
 
   const handleFilterToggle = () => {
-    // This is now just a placeholder - search headers are controlled by filters being applied
-    // or showColumnSearchByDefault prop
+    const newValue = !showColumnFilters;
+    if (onColumnFiltersChange) {
+      onColumnFiltersChange(newValue);
+    } else {
+      setInternalShowColumnFilters(newValue);
+    }
   };
 
-  // Automatically show/hide search headers based on applied filters
+  // Automatically show/hide search headers based on applied filters (only when not controlled)
   useEffect(() => {
-    if (showColumnSearchByDefault) {
-      setShowColumnFilters(true);
-    } else {
-      setShowColumnFilters(sidePanelFilters.length > 0);
+    if (controlledShowColumnFilters === undefined) {
+      // Only auto-manage when not controlled
+      setInternalShowColumnFilters(sidePanelFilters.length > 0);
     }
-  }, [sidePanelFilters, showColumnSearchByDefault]);
+  }, [sidePanelFilters, controlledShowColumnFilters]);
 
   const handleColumnResize = (columnId: string, width: number) => {
     // Find the column configuration to get min/max constraints
@@ -887,7 +955,13 @@ export const AdvancedDataTable = forwardRef<HTMLDivElement, AdvancedTableProps>(
   };
 
   const handleColumnSearchChange = (columnId: string, value: string) => {
-    setColumnSearches(prev => ({ ...prev, [columnId]: value }));
+    if (searchMode === 'server' && onColumnSearch) {
+      // Server-side search: call the callback with updated column searches
+      onColumnSearch({ ...currentColumnSearches, [columnId]: value });
+    } else {
+      // Client-side search: update internal state
+      setInternalColumnSearches(prev => ({ ...prev, [columnId]: value }));
+    }
   };
 
   const handleGroupToggle = (groupId: string) => {
@@ -960,12 +1034,15 @@ export const AdvancedDataTable = forwardRef<HTMLDivElement, AdvancedTableProps>(
         if (!matchesGlobalSearch) return false;
       }
 
-      const matchesColumnSearch = Object.entries(columnSearches).every(([columnId, searchValue]) => {
-        if (!searchValue) return true;
-        const value = row[columnId as keyof DataRow];
-        return String(value).toLowerCase().includes(searchValue.toLowerCase());
-      });
-      if (!matchesColumnSearch) return false;
+      // Skip column search filtering in server mode (server handles filtering)
+      if (searchMode === 'client') {
+        const matchesColumnSearch = Object.entries(currentColumnSearches).every(([columnId, searchValue]) => {
+          if (!searchValue) return true;
+          const value = row[columnId as keyof DataRow];
+          return String(value).toLowerCase().includes(searchValue.toLowerCase());
+        });
+        if (!matchesColumnSearch) return false;
+      }
 
       const matchesSidePanelFilters = sidePanelFilters.every(filter => {
         const value = row[filter.columnId as keyof DataRow];
@@ -996,7 +1073,7 @@ export const AdvancedDataTable = forwardRef<HTMLDivElement, AdvancedTableProps>(
       ...group,
       rows: sortRows(filterRows(group.rows)),
     }));
-  }, [groups, globalSearch, columnSearches, sidePanelFilters, sortColumn, sortDirection]);
+  }, [groups, globalSearch, currentColumnSearches, sidePanelFilters, sortColumn, sortDirection, searchMode]);
 
   const flatData = useMemo(() => {
     if (processedGroups) {
@@ -1016,12 +1093,15 @@ export const AdvancedDataTable = forwardRef<HTMLDivElement, AdvancedTableProps>(
     }
 
     // Column-specific search filters (from sub-header search inputs)
-    const matchesColumnSearch = Object.entries(columnSearches).every(([columnId, searchValue]) => {
-      if (!searchValue) return true;
-      const value = row[columnId as keyof DataRow];
-      return String(value).toLowerCase().includes(searchValue.toLowerCase());
-    });
-    if (!matchesColumnSearch) return false;
+    // Skip column search filtering in server mode (server handles filtering)
+    if (searchMode === 'client') {
+      const matchesColumnSearch = Object.entries(currentColumnSearches).every(([columnId, searchValue]) => {
+        if (!searchValue) return true;
+        const value = row[columnId as keyof DataRow];
+        return String(value).toLowerCase().includes(searchValue.toLowerCase());
+      });
+      if (!matchesColumnSearch) return false;
+    }
 
     // Side panel dropdown filters (exact match)
     const matchesSidePanelFilters = sidePanelFilters.every(filter => {
@@ -1285,6 +1365,9 @@ export const AdvancedDataTable = forwardRef<HTMLDivElement, AdvancedTableProps>(
                 minWidth={col.minWidth !== undefined ? col.minWidth : defaultMinWidth}
                 maxWidth={col.maxWidth !== undefined ? col.maxWidth : defaultMaxWidth}
                 initialWidth={typeof col.width === 'number' ? col.width : undefined}
+                customIcon={col.headerIcon}
+                onCustomIconClick={col.onHeaderIconClick ? (e) => col.onHeaderIconClick!(col.id, e) : undefined}
+                customIconTitle={col.headerIconTitle}
               />
             );
           })}
@@ -1341,6 +1424,9 @@ export const AdvancedDataTable = forwardRef<HTMLDivElement, AdvancedTableProps>(
                     minWidth={subCol.minWidth !== undefined ? subCol.minWidth : defaultMinWidth}
                     maxWidth={subCol.maxWidth !== undefined ? subCol.maxWidth : defaultMaxWidth}
                     initialWidth={typeof subCol.width === 'number' ? subCol.width : undefined}
+                    customIcon={subCol.headerIcon}
+                    onCustomIconClick={subCol.onHeaderIconClick ? (e) => subCol.onHeaderIconClick!(subCol.id, e) : undefined}
+                    customIconTitle={subCol.headerIconTitle}
                   />
                 );
               });
@@ -1405,7 +1491,7 @@ export const AdvancedDataTable = forwardRef<HTMLDivElement, AdvancedTableProps>(
           return (
             <TableSubHeader
               key={col.id}
-              searchValue={columnSearches[col.id] || ''}
+              searchValue={currentColumnSearches[col.id] || ''}
               searchPlaceholder={`Search ${col.label}`}
               onSearchChange={(value) => handleColumnSearchChange(col.id, value)}
               locked={isLocked}
@@ -1441,7 +1527,7 @@ export const AdvancedDataTable = forwardRef<HTMLDivElement, AdvancedTableProps>(
           showDownload={showDownload}
           onDownload={onDownload}
           showFilter={showFilter}
-          onFilter={() => {}}
+          onFilter={handleFilterToggle}
           showSettings={useModal}
           onSettingsClick={() => setSettingsOpen(true)}
         />
@@ -1513,70 +1599,74 @@ export const AdvancedDataTable = forwardRef<HTMLDivElement, AdvancedTableProps>(
               ) : isInvalid ? (
                 <tr>
                   <td colSpan={flatVisibleColumns.length} style={{ padding: 0, border: 'none' }}>
-                    <EmptyStateContainer 
+                    <EmptyStateContainer
                       role="alert"
                       aria-live="assertive"
                     >
-                      <EmptyStateContent>
-                        <EmptyStateIconWrapper>
-                          <ErrorIcon sx={{ fontSize: 64, color: 'error.main' }} />
-                        </EmptyStateIconWrapper>
-                        
-                        <EmptyStateTextWrapper>
-                          <Typography variant="headingL" weight="semibold" as="h3" color="error">
-                            {errorMessage || 'Error loading data'}
-                          </Typography>
-                          <Typography variant="body" color="secondary">
-                            There was a problem loading the table data.
-                          </Typography>
-                        </EmptyStateTextWrapper>
-                        
-                        {onEmptyAction && (
-                          <Button
-                            variant="primary"
-                            size="medium"
-                            onClick={onEmptyAction}
-                          >
-                            {emptyActionLabel || 'Retry'}
-                          </Button>
-                        )}
-                      </EmptyStateContent>
+                      {errorStateContent ?? (
+                        <EmptyStateContent>
+                          <EmptyStateIconWrapper>
+                            {errorIcon ?? <ErrorIcon sx={{ fontSize: 64, color: 'error.main' }} />}
+                          </EmptyStateIconWrapper>
+
+                          <EmptyStateTextWrapper>
+                            <Typography variant="headingL" weight="semibold" as="h3" color="error">
+                              {errorMessage || 'Something went wrong'}
+                            </Typography>
+                            <Typography variant="body" color="secondary">
+                              {errorDescription || 'There was a problem loading the table data.'}
+                            </Typography>
+                          </EmptyStateTextWrapper>
+
+                          {(onErrorAction || onEmptyAction) && (
+                            <Button
+                              variant="primary"
+                              size="medium"
+                              onClick={onErrorAction ?? onEmptyAction}
+                            >
+                              {errorActionLabel || emptyActionLabel || 'Retry'}
+                            </Button>
+                          )}
+                        </EmptyStateContent>
+                      )}
                     </EmptyStateContainer>
                   </td>
                 </tr>
               ) : paginatedData.length === 0 ? (
                 <tr>
                   <td colSpan={flatVisibleColumns.length} style={{ padding: 0, border: 'none' }}>
-                    <EmptyStateContainer 
+                    <EmptyStateContainer
                       className={emptyStateClassName}
                       style={emptyStateStyle}
                       role="status"
                       aria-live="polite"
                     >
-                      <EmptyStateContent>
-                        <EmptyStateIconWrapper>
-                          <CloudOffIcon sx={{ fontSize: 64, color: 'text.secondary' }} />
-                        </EmptyStateIconWrapper>
-                        
-                        <EmptyStateTextWrapper>
-                          <Typography variant="headingL" weight="semibold" as="h3">
-                            {emptyTitle}
-                          </Typography>
-                          <Typography variant="body" color="secondary">
-                            {emptyDescription}
-                          </Typography>
-                        </EmptyStateTextWrapper>
-                        
-                        {emptyActionLabel && onEmptyAction && (
-                          <Button
-                            variant="primary"
-                            size="medium"
-                            onClick={onEmptyAction}
-                          >
-                            {emptyActionLabel}
-                          </Button>
-                        )}
-                      </EmptyStateContent>
+                      {emptyStateContent ?? (
+                        <EmptyStateContent>
+                          <EmptyStateIconWrapper>
+                            {emptyIcon ?? <CloudOffIcon sx={{ fontSize: 64, color: 'text.secondary' }} />}
+                          </EmptyStateIconWrapper>
+
+                          <EmptyStateTextWrapper>
+                            <Typography variant="headingL" weight="semibold" as="h3">
+                              {emptyTitle}
+                            </Typography>
+                            <Typography variant="body" color="secondary">
+                              {emptyDescription}
+                            </Typography>
+                          </EmptyStateTextWrapper>
+
+                          {emptyActionLabel && onEmptyAction && (
+                            <Button
+                              variant="primary"
+                              size="medium"
+                              onClick={onEmptyAction}
+                            >
+                              {emptyActionLabel}
+                            </Button>
+                          )}
+                        </EmptyStateContent>
+                      )}
                     </EmptyStateContainer>
                   </td>
                 </tr>
@@ -1683,7 +1773,7 @@ export const AdvancedDataTable = forwardRef<HTMLDivElement, AdvancedTableProps>(
                         isFirstColumn={isFirstColumn}
                         width={currentWidth}
                       >
-                        {col.render ? col.render(row[col.id as keyof DataRow], row, startIndex + rowIndex) : row[col.id as keyof DataRow]}
+                        {col.renderCell ? col.renderCell(row[col.id as keyof DataRow], row, startIndex + rowIndex) : row[col.id as keyof DataRow]}
                       </TableCell>
                     );
                   });
@@ -1796,7 +1886,7 @@ export const AdvancedDataTable = forwardRef<HTMLDivElement, AdvancedTableProps>(
                         isFirstColumn={isFirstColumn}
                         width={currentWidth}
                       >
-                        {col.render ? col.render(row[col.id as keyof DataRow], row, startIndex + rowIndex) : row[col.id as keyof DataRow]}
+                        {col.renderCell ? col.renderCell(row[col.id as keyof DataRow], row, startIndex + rowIndex) : row[col.id as keyof DataRow]}
                       </TableCell>
                     );
                   });
@@ -1858,6 +1948,8 @@ export const AdvancedDataTable = forwardRef<HTMLDivElement, AdvancedTableProps>(
           itemsPerPage={itemsPerPage}
           onPageChange={handlePageChange}
           onItemsPerPageChange={handleItemsPerPageChange}
+          showPageSizeSelector={showPageSizeSelector}
+          itemsPerPageOptions={pageSizeOptions}
         />
       )}
 

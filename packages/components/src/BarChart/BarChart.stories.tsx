@@ -50,7 +50,7 @@ Control chart layout with these props:
 
 ## Usage
 \`\`\`tsx
-import { BarChart } from '@lean-ids/components';
+import { BarChart } from '@ajaysoni7832/lean-ids-components';
 
 <BarChart
   title="Monthly Revenue"

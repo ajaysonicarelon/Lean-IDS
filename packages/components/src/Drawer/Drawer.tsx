@@ -256,6 +256,14 @@ export const Drawer = forwardRef<HTMLDivElement, DrawerProps>(
       // Visibility Controls
       showHeader = true,
       showFooter = true,
+      showCloseButton = true,
+      
+      // Header Slots
+      headerActions,
+      
+      // Footer Slots
+      footerStart,
+      footerEnd,
       
       // Footer Buttons
       showReset = true,
@@ -476,33 +484,42 @@ export const Drawer = forwardRef<HTMLDivElement, DrawerProps>(
       return (
         <Header className={headerClassName} style={headerStyle}>
           <HeaderContent>
-            <Typography 
-              variant="headingM" 
-              weight="semibold" 
-              as="h2"
-            >
-              {title}
-            </Typography>
+            {typeof title === 'string' ? (
+              <Typography 
+                variant="headingM" 
+                weight="semibold" 
+                as="h2"
+              >
+                {title}
+              </Typography>
+            ) : (
+              title
+            )}
             {description && (
               <Description>
-                <Typography 
-                  variant="body"
-                >
-                  {description}
-                </Typography>
+                {typeof description === 'string' ? (
+                  <Typography variant="body">
+                    {description}
+                  </Typography>
+                ) : (
+                  description
+                )}
               </Description>
             )}
           </HeaderContent>
-          <CloseButton 
-            onClick={onClose} 
-            aria-label="Close drawer"
-            disabled={disabled}
-          >
-            <Icon name="Close" size="medium" />
-          </CloseButton>
+          {headerActions && headerActions}
+          {showCloseButton && (
+            <CloseButton 
+              onClick={onClose} 
+              aria-label="Close drawer"
+              disabled={disabled}
+            >
+              <Icon name="Close" size="medium" />
+            </CloseButton>
+          )}
         </Header>
       );
-    }, [customHeader, onClose, title, description, headerClassName, headerStyle, disabled]);
+    }, [customHeader, onClose, title, description, headerClassName, headerStyle, disabled, headerActions, showCloseButton]);
 
     const renderFooter = useMemo(() => {
       if (customFooter) {
@@ -512,41 +529,49 @@ export const Drawer = forwardRef<HTMLDivElement, DrawerProps>(
       return (
         <Footer className={footerClassName} style={footerStyle}>
           <FooterLeft>
-            {showReset && (
-              <Button
-                variant="tertiary"
-                size="medium"
-                onClick={onReset}
-                disabled={disabled}
-              >
-                {resetLabel}
-              </Button>
+            {/* footerStart slot overrides the left (reset) area entirely */}
+            {footerStart !== undefined ? footerStart : (
+              showReset && (
+                <Button
+                  variant="tertiary"
+                  size="medium"
+                  onClick={onReset}
+                  disabled={disabled}
+                >
+                  {resetLabel}
+                </Button>
+              )
             )}
           </FooterLeft>
           <FooterRight>
-            {showCancel && (
-              <Button
-                variant="secondary"
-                size="medium"
-                leadingIcon={<Icon name="Close" size="small" />}
-                onClick={handleCancel}
-                disabled={disabled}
-              >
-                {cancelLabel}
-              </Button>
-            )}
-            {showSubmit && (
-              <Button
-                variant="primary"
-                size="medium"
-                buttonType={submitType}
-                leadingIcon={<Icon name="Check" size="small" />}
-                onClick={onSubmit}
-                disabled={disabled}
-                isLoading={isSubmitting}
-              >
-                {submitLabel}
-              </Button>
+            {/* footerEnd slot overrides the right (cancel + submit) area entirely */}
+            {footerEnd !== undefined ? footerEnd : (
+              <>
+                {showCancel && (
+                  <Button
+                    variant="secondary"
+                    size="medium"
+                    leadingIcon={<Icon name="Close" size="small" />}
+                    onClick={handleCancel}
+                    disabled={disabled}
+                  >
+                    {cancelLabel}
+                  </Button>
+                )}
+                {showSubmit && (
+                  <Button
+                    variant="primary"
+                    size="medium"
+                    buttonType={submitType}
+                    leadingIcon={<Icon name="Check" size="small" />}
+                    onClick={onSubmit}
+                    disabled={disabled}
+                    isLoading={isSubmitting}
+                  >
+                    {submitLabel}
+                  </Button>
+                )}
+              </>
             )}
           </FooterRight>
         </Footer>
@@ -554,6 +579,8 @@ export const Drawer = forwardRef<HTMLDivElement, DrawerProps>(
     }, [
       customFooter,
       onClose,
+      footerStart,
+      footerEnd,
       showReset,
       resetLabel,
       onReset,

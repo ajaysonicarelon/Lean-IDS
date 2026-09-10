@@ -5,7 +5,7 @@
 
 import React, { createContext, useContext } from 'react';
 import { ThemeProvider as StyledThemeProvider } from 'styled-components';
-import { Theme } from '@lean-ids/tokens';
+import { Theme } from '@ajaysoni7832/lean-ids-tokens';
 
 interface ThemeContextValue {
   theme: Theme;

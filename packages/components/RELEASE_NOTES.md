@@ -1,3 +1,45 @@
+# Release Notes - Lean DS v1.7.10
+
+**Release Date:** September 10, 2026  
+**Package:** `@ajaysoni7832/lean-ids-components`
+
+---
+
+## 🚀 What's New in v1.7.10
+
+### ✨ Table Component Enhancements
+- **errorDescription** - Customizable error state description text (default: "There was a problem loading the table data.")
+- **errorIcon** - Custom ReactNode for the error state icon (replaces default ErrorIcon)
+- **errorActionLabel** - Custom label for the error state action button (default: "Retry")
+- **onErrorAction** - Handler for the error action button; when provided, button is shown
+- **errorStateContent** - Fully custom error state UI — replaces the entire default error layout
+- **emptyStateContent** - Fully custom empty state UI — replaces the entire default empty layout
+
+### ✨ Drawer Component Enhancements
+- **showCloseButton** - Toggle close button visibility (default: `true`)
+- **headerActions** - ReactNode slot injected into the header alongside the title
+- **footerStart / footerEnd** - Custom content slots at the start and end of the footer
+- **ReactNode title & description** - Both props now accept JSX/ReactNode, not just strings
+
+### ✨ Pagination Enhancements
+- **showPageSizeSelector** - Show or hide the page size dropdown (default: `true`)
+
+### ✨ Select Enhancements
+- Prop and story improvements for better developer experience
+
+### 🔧 NestedMenuOverlay
+- Bug fixes and stability improvements
+
+---
+
+## 📦 Installation
+
+```bash
+npm install @ajaysoni7832/lean-ids-components@1.7.10 @ajaysoni7832/lean-ids-tokens@1.7.10
+```
+
+---
+
 # Release Notes - Lean DS v1.7.8
 
 **Release Date:** August 19, 2026  

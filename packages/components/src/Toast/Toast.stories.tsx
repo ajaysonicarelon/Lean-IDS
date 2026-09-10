@@ -28,7 +28,7 @@ A compact notification component for temporary feedback messages. Toasts are typ
 ## Usage
 
 \`\`\`tsx
-import { Toast } from '@lean-ids/components';
+import { Toast } from '@ajaysoni7832/lean-ids-components';
 
 <Toast
   type="success"

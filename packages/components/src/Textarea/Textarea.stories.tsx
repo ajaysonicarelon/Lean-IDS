@@ -40,7 +40,7 @@ A fully accessible textarea component for multi-line text input based on the Fig
 ## Usage
 
 \`\`\`tsx
-import { Textarea } from '@lean-ids/components';
+import { Textarea } from '@ajaysoni7832/lean-ids-components';
 
 function MyForm() {
   return (

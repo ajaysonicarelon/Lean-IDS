@@ -3,7 +3,7 @@ import { fn } from '@storybook/test';
 import { AdvancedDataTable, getNestedColumnConfigs } from './EnhancedTableTemplate';
 import { Chip } from '../Chip';
 import { Button } from '../Button';
-import { Visibility, Edit, Delete } from '@mui/icons-material';
+import { Visibility, Edit, Delete, FilterList, Info } from '@mui/icons-material';
 
 const meta: Meta<typeof AdvancedDataTable> = {
   title: 'Components/Table/Advanced Table',
@@ -25,7 +25,7 @@ const meta: Meta<typeof AdvancedDataTable> = {
     // Data & Columns
     initialColumns: {
       control: false,
-      description: 'Column configuration array. Each column supports: id, label, visible, locked, pinned ("left"|"right"|"none"), order, width, and render function. The render function signature is: (value, row, rowIndex) => ReactNode. Example: render: (value, row) => <Chip label={value} />',
+      description: 'Column configuration array. Each column supports: id, label, visible, locked, pinned ("left"|"right"|"none"), order, width, minWidth, maxWidth, resizable, filterable, subColumns, parentId, renderCell, headerIcon, onHeaderIconClick, headerIconTitle. The renderCell function signature is: (value, row, rowIndex) => ReactNode. Example: renderCell: (value, row) => <Chip label={value} />',
       table: { category: 'Data & Columns' },
     },
     data: {
@@ -85,9 +85,14 @@ const meta: Meta<typeof AdvancedDataTable> = {
       description: 'Max height for table body (e.g., "400px", "50vh"). Enables fixed header with scrollable body and always-visible 8px scrollbar',
       table: { category: 'Layout & Display' },
     },
-    showColumnSearchByDefault: {
+    showColumnFilters: {
       control: 'boolean',
-      description: 'Show column search bars',
+      description: 'Show column search bars (controlled). When provided, parent controls visibility via onColumnFiltersChange callback',
+      table: { category: 'Layout & Display' },
+    },
+    onColumnFiltersChange: {
+      action: 'columnFiltersChanged',
+      description: 'Callback when column filters visibility changes',
       table: { category: 'Layout & Display' },
     },
     
@@ -129,12 +134,17 @@ const meta: Meta<typeof AdvancedDataTable> = {
     paginationMode: {
       control: 'select',
       options: ['client', 'server'],
-      description: 'Pagination mode: "client" (default) handles data slicing automatically, "server" expects pre-paginated data and calls onPageChange callback',
+      description: 'Pagination mode: "client" (default) handles data slicing automatically, "server" expects pre-paginated data and calls callbacks',
       table: { category: 'Pagination' },
     },
     onPageChange: {
       action: 'pageChanged',
-      description: 'Callback for server-side pagination. Called with (page, itemsPerPage) when page changes. Use with paginationMode="server"',
+      description: 'Callback when page changes (server-side pagination). Called with (page). Use with paginationMode="server"',
+      table: { category: 'Pagination' },
+    },
+    onPageSizeChange: {
+      action: 'pageSizeChanged',
+      description: 'Callback when page size changes (server-side pagination). Called with (pageSize). Use with paginationMode="server"',
       table: { category: 'Pagination' },
     },
     currentPage: {
@@ -147,13 +157,57 @@ const meta: Meta<typeof AdvancedDataTable> = {
       description: 'Total number of items across all pages (required for server-side pagination). Use with paginationMode="server"',
       table: { category: 'Pagination' },
     },
+    showPageSizeSelector: {
+      control: 'boolean',
+      description: 'Show/hide page size selector dropdown',
+      table: { category: 'Pagination' },
+    },
+    pageSizeOptions: {
+      control: 'object',
+      description: 'Custom page size options (default: [10, 25, 50, 100])',
+      table: { category: 'Pagination' },
+    },
     
     // Sorting
     sortMode: {
       control: 'select',
       options: ['client', 'server'],
-      description: 'Sorting mode',
+      description: 'Sorting mode: "client" (default) handles sorting internally, "server" calls onSort callback',
       table: { category: 'Sorting' },
+    },
+    onSort: {
+      action: 'sorted',
+      description: 'Callback when sort changes (only used when sortMode="server")',
+      table: { category: 'Sorting' },
+    },
+    sortColumn: {
+      control: 'text',
+      description: 'Controlled sort column (only used when sortMode="server")',
+      table: { category: 'Sorting' },
+    },
+    sortDirection: {
+      control: 'select',
+      options: ['asc', 'desc', 'none'],
+      description: 'Controlled sort direction (only used when sortMode="server")',
+      table: { category: 'Sorting' },
+    },
+    
+    // Column Search
+    searchMode: {
+      control: 'select',
+      options: ['client', 'server'],
+      description: 'Search mode: "client" (default) handles filtering internally, "server" calls onColumnSearch callback',
+      table: { category: 'Column Search' },
+    },
+    onColumnSearch: {
+      action: 'columnSearchChanged',
+      description: 'Callback when column search changes (only used when searchMode="server")',
+      table: { category: 'Column Search' },
+    },
+    columnSearches: {
+      control: 'object',
+      description: 'Controlled column search values (only used when searchMode="server")',
+      table: { category: 'Column Search' },
     },
     
     // Column Resizing
@@ -181,10 +235,35 @@ const meta: Meta<typeof AdvancedDataTable> = {
     },
     errorMessage: {
       control: 'text',
-      description: 'Error message',
+      description: 'Error state title/heading (default: "Something went wrong")',
       table: { category: 'States' },
     },
-    
+    errorDescription: {
+      control: 'text',
+      description: 'Error state description text (default: "There was a problem loading the table data.")',
+      table: { category: 'States' },
+    },
+    errorIcon: {
+      control: false,
+      description: 'Error state icon – any ReactNode. Defaults to ErrorIcon.',
+      table: { category: 'States' },
+    },
+    errorActionLabel: {
+      control: 'text',
+      description: 'Error state action button label (default: "Retry")',
+      table: { category: 'States' },
+    },
+    onErrorAction: {
+      action: 'errorActionClicked',
+      description: 'Error state action button handler. When provided, shows the button.',
+      table: { category: 'States' },
+    },
+    errorStateContent: {
+      control: false,
+      description: 'Fully custom error state content (ReactNode). Replaces entire error UI. Ideal for API-driven content.',
+      table: { category: 'States' },
+    },
+
     // Empty State
     emptyTitle: {
       control: 'text',
@@ -202,8 +281,13 @@ const meta: Meta<typeof AdvancedDataTable> = {
       table: { category: 'Empty State' },
     },
     emptyIcon: {
-      control: 'text',
-      description: 'Empty state icon',
+      control: false,
+      description: 'Empty state icon – any ReactNode. Defaults to CloudOffIcon.',
+      table: { category: 'Empty State' },
+    },
+    emptyStateContent: {
+      control: false,
+      description: 'Fully custom empty state content (ReactNode). Replaces entire empty state UI. Ideal for API-driven content.',
       table: { category: 'Empty State' },
     },
     
@@ -237,7 +321,6 @@ const meta: Meta<typeof AdvancedDataTable> = {
     // Events (actions)
     onRowClick: { action: 'row clicked', table: { category: 'Events' } },
     onRowSelect: { action: 'rows selected', table: { category: 'Events' } },
-    onSort: { action: 'sorted', table: { category: 'Events' } },
     onDownload: { action: 'download clicked', table: { category: 'Events' } },
     onEmptyAction: { action: 'empty action clicked', table: { category: 'Events' } },
     onOpen: { action: 'panel opened', table: { category: 'Events' } },
@@ -324,17 +407,18 @@ import { AdvancedDataTable, getNestedColumnConfigs } from '@ajaysoni7832/lean-id
 | **Toolbar** | \`toolbarTitle\`, \`description\`, \`showGlobalSearch\`, \`showFilter\`, \`showDownload\` |
 | **Column Menu** | \`showColumnMenu\`, \`allowUserLeftPin\`, \`allowUserRightPin\`, \`allowDevLeftPin\`, \`allowDevRightPin\` |
 | **Selection** | \`selectable\`, \`onRowSelect\` |
-| **Pagination** | \`paginated\`, \`itemsPerPage\`, \`paginationMode\`, \`onPageChange\`, \`currentPage\`, \`totalItems\` |
+| **Pagination** | \`paginated\`, \`itemsPerPage\`, \`paginationMode\`, \`onPageChange\`, \`onPageSizeChange\`, \`currentPage\`, \`totalItems\`, \`showPageSizeSelector\`, \`pageSizeOptions\` |
 | **Sorting** | \`sortMode\`, \`onSort\`, \`sortColumn\`, \`sortDirection\` |
+| **Column Search** | \`searchMode\`, \`onColumnSearch\`, \`columnSearches\`, \`showColumnFilters\`, \`onColumnFiltersChange\` |
 | **Resizing** | \`defaultMinWidth\`, \`defaultMaxWidth\` |
 | **Events** | \`onRowClick\`, \`onOpen\`, \`onClose\`, \`onAfterOpen\`, \`onAfterClose\` |
-| **States** | \`loading\`, \`isInvalid\`, \`errorMessage\` |
-| **Empty State** | \`emptyTitle\`, \`emptyDescription\`, \`emptyActionLabel\`, \`onEmptyAction\` |
+| **States** | \`loading\`, \`isInvalid\`, \`errorMessage\`, \`errorDescription\`, \`errorIcon\`, \`errorActionLabel\`, \`onErrorAction\`, \`errorStateContent\` |
+| **Empty State** | \`emptyTitle\`, \`emptyDescription\`, \`emptyActionLabel\`, \`onEmptyAction\`, \`emptyIcon\`, \`emptyStateContent\` |
 | **Customization** | 10+ className/style override props |
 
 ## 🎨 Custom Cell Rendering
 
-Columns support custom rendering via the \`render\` function:
+Columns support custom rendering via the \`renderCell\` function:
 
 **Signature:** \`(value, row, rowIndex) => ReactNode\`
 
@@ -344,7 +428,7 @@ const columns = [
     id: 'status',
     label: 'Status',
     // value = cell value, row = full row object, rowIndex = row index
-    render: (value, row, rowIndex) => (
+    renderCell: (value, row, rowIndex) => (
       <Chip label={value} type="success" />
     )
   },
@@ -352,11 +436,98 @@ const columns = [
     id: 'actions',
     label: 'Actions',
     // For actions column, value is ignored, use row object
-    render: (_value, row) => (
+    renderCell: (_value, row) => (
       <Button onClick={() => handleEdit(row)}>Edit</Button>
     )
   }
 ];
+\`\`\`
+
+## 🎯 Custom Header Icons
+
+Columns support custom icons in the header with click handlers:
+
+**Properties:** \`headerIcon\`, \`onHeaderIconClick\`, \`headerIconTitle\`
+
+\`\`\`tsx
+import FilterListIcon from '@mui/icons-material/FilterList';
+
+const columns = [
+  {
+    id: 'firstName',
+    label: 'First Name',
+    headerIcon: <FilterListIcon fontSize="small" />,
+    onHeaderIconClick: (columnId, event) => {
+      console.log(\`Filter icon clicked for column: \${columnId}\`);
+      // Handle custom action
+    },
+    headerIconTitle: 'Toggle column filters'
+  }
+];
+\`\`\`
+
+## 🔍 Server-Side Search
+
+Enable server-side search for large datasets:
+
+**Properties:** \`searchMode\`, \`onColumnSearch\`, \`columnSearches\`
+
+\`\`\`tsx
+const [columnSearches, setColumnSearches] = useState({});
+
+<AdvancedDataTable
+  searchMode="server"
+  columnSearches={columnSearches}
+  onColumnSearch={(searches) => {
+    setColumnSearches(searches);
+    // Call your API with the search criteria
+    fetchFilteredData(searches);
+  }}
+/>
+\`\`\`
+
+## 🎛️ Controlled Column Filters
+
+Control column filter visibility with parent state:
+
+**Properties:** \`showColumnFilters\`, \`onColumnFiltersChange\`
+
+\`\`\`tsx
+const [showFilters, setShowFilters] = useState(false);
+
+<AdvancedDataTable
+  showColumnFilters={showFilters}
+  onColumnFiltersChange={setShowFilters}
+/>
+\`\`\`
+
+## 📄 Server-Side Pagination
+
+Industry-standard pagination with separate callbacks for page and page size changes:
+
+**Properties:** \`paginationMode\`, \`onPageChange\`, \`onPageSizeChange\`, \`showPageSizeSelector\`, \`pageSizeOptions\`
+
+\`\`\`tsx
+const [currentPage, setCurrentPage] = useState(1);
+const [pageSize, setPageSize] = useState(10);
+
+<AdvancedDataTable
+  paginationMode="server"
+  currentPage={currentPage}
+  itemsPerPage={pageSize}
+  totalItems={1000}
+  onPageChange={(page) => {
+    setCurrentPage(page);
+    fetchPaginatedData(page, pageSize);
+  }}
+  onPageSizeChange={(newPageSize) => {
+    setPageSize(newPageSize);
+    setCurrentPage(1); // Reset to page 1
+    fetchPaginatedData(1, newPageSize);
+  }}
+  showPageSizeSelector={true}
+  pageSizeOptions={[10, 25, 50, 100]}
+/>
 \`\`\`
 
 See stories below for detailed examples of each feature.
@@ -374,7 +545,7 @@ See stories below for detailed examples of each feature.
     showGlobalSearch: true,
     showFilter: false,
     showDownload: false,
-    showColumnSearchByDefault: false,
+    showColumnFilters: false,
     showColumnMenu: true,
     enableUserPinning: true,
     enableDevPinning: true,
@@ -874,15 +1045,15 @@ const filters = [
 
 /**
  * ## New Feature: Always Show Search Headers
- * 
+ *
  * **What's New:**
- * - 🎛️ **Developer control** via showColumnSearchByDefault prop
+ * - 🎛️ **Developer control** via showColumnFilters prop (controlled)
  * - 📌 Force search headers to always be visible
  * - 🔧 Useful when you want search functionality always available
- * 
+ *
  * **Use Case:**
  * When you want column-specific search to be the primary filtering method,
- * set showColumnSearchByDefault to true to keep search headers always visible.
+ * set showColumnFilters to true to keep search headers always visible.
  */
 export const WithAlwaysVisibleSearchHeaders: Story = {
   args: {
@@ -890,14 +1061,14 @@ export const WithAlwaysVisibleSearchHeaders: Story = {
     useModal: false,
     showToolbar: true,
     toolbarTitle: 'Always Visible Search Headers',
-    showColumnSearchByDefault: true,
+    showColumnFilters: true,
     onRowClick: fn(),
     onSort: fn(),
   },
   parameters: {
     docs: {
       description: {
-        story: '**Always Visible Search Headers**: Set showColumnSearchByDefault to true to force search headers to always be visible, regardless of filter state. Useful when column search is the primary filtering method.',
+        story: '**Always Visible Search Headers**: Set showColumnFilters to true to force search headers to always be visible, regardless of filter state. Useful when column search is the primary filtering method.',
       },
       story: {
         inline: false,
@@ -1119,13 +1290,16 @@ export const ErrorState: Story = {
     initialColumns: getNestedColumnConfigs(),
     isInvalid: true,
     errorMessage: 'Failed to load data.',
+    errorDescription: 'The server returned an unexpected error. Please try again.',
+    errorActionLabel: 'Retry',
+    onErrorAction: fn(),
     showToolbar: true,
     toolbarTitle: 'Error Loading Data',
   },
   parameters: {
     docs: {
       description: {
-        story: 'Shows an error state with custom error message using Typography component. Customize with `errorClassName` and `errorStyle` props.',
+        story: 'Shows an error state. Customize the title (`errorMessage`), description (`errorDescription`), icon (`errorIcon`), and action button (`errorActionLabel` + `onErrorAction`). For fully custom content from an API, use `errorStateContent`.',
       },
     },
   },
@@ -1133,9 +1307,9 @@ export const ErrorState: Story = {
 
 /**
  * ## Empty State
- * 
+ *
  * Display a custom empty state when no data is available.
- * 
+ *
  * **Usage:**
  * ```tsx
  * <AdvancedDataTable
@@ -1145,8 +1319,6 @@ export const ErrorState: Story = {
  *   emptyDescription="Try adjusting your search criteria or filters"
  *   emptyActionLabel="Clear Filters"
  *   onEmptyAction={() => {}}
- *   emptyStateClassName="custom-empty"
- *   emptyStateStyle={{ padding: '60px' }}
  * />
  * ```
  */
@@ -1164,7 +1336,72 @@ export const EmptyState: Story = {
   parameters: {
     docs: {
       description: {
-        story: 'Shows a custom empty state with title, description, and action button. All text uses Typography component. Customize with `emptyStateClassName` and `emptyStateStyle` props.',
+        story: 'Shows a custom empty state with title, description, and action button. Customize with `emptyTitle`, `emptyDescription`, `emptyActionLabel`, `emptyIcon`. For fully custom content from an API, use `emptyStateContent`.',
+      },
+    },
+  },
+};
+
+/**
+ * ## Custom State Content (API-driven)
+ *
+ * Supply any ReactNode via `errorStateContent` or `emptyStateContent` to completely
+ * replace the built-in state UI. Perfect when content comes from an API or you need
+ * a fully custom layout (illustration, multi-action, rich text, etc.).
+ *
+ * **Usage – empty state from API:**
+ * ```tsx
+ * <AdvancedDataTable
+ *   data={[]}
+ *   emptyStateContent={
+ *     <div style={{ textAlign: 'center', padding: '40px' }}>
+ *       <img src={apiData.illustrationUrl} alt="" />
+ *       <h3>{apiData.title}</h3>
+ *       <p>{apiData.message}</p>
+ *       <Button onClick={apiData.onAction}>{apiData.actionLabel}</Button>
+ *     </div>
+ *   }
+ * />
+ * ```
+ *
+ * **Usage – error state from API:**
+ * ```tsx
+ * <AdvancedDataTable
+ *   isInvalid={true}
+ *   errorStateContent={
+ *     <div style={{ textAlign: 'center', padding: '40px' }}>
+ *       <p>Error {apiError.code}: {apiError.message}</p>
+ *       <Button onClick={refetch}>Retry</Button>
+ *       <Button onClick={reportError} variant="tertiary">Report</Button>
+ *     </div>
+ *   }
+ * />
+ * ```
+ */
+export const CustomStateContent: Story = {
+  args: {
+    initialColumns: getNestedColumnConfigs(),
+    data: [],
+    showToolbar: true,
+    toolbarTitle: 'Custom Empty State Content',
+    emptyStateContent: (
+      <div style={{ textAlign: 'center', padding: '48px 24px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '16px' }}>
+        <div style={{ fontSize: '48px' }}>🗂️</div>
+        <div>
+          <h3 style={{ margin: '0 0 8px', fontWeight: 600 }}>No claims to display</h3>
+          <p style={{ margin: 0, color: '#6b7280' }}>Your custom API-driven empty state goes here — illustrations, multi-action buttons, rich text, anything.</p>
+        </div>
+      </div>
+    ),
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: '**Custom State Content**: Use `emptyStateContent` or `errorStateContent` to supply any ReactNode, completely replacing the built-in UI. Ideal for API-driven content, custom illustrations, or multi-action layouts. Toggle `isInvalid` in controls to see the error state variant.',
+      },
+      story: {
+        inline: false,
+        iframeHeight: 500,
       },
     },
   },
@@ -1172,9 +1409,9 @@ export const EmptyState: Story = {
 
 /**
  * ## With Selection
- * 
+ *
  * Enable row selection with callback.
- * 
+ *
  * **Usage:**
  * ```tsx
  * <AdvancedDataTable
@@ -1202,16 +1439,252 @@ export const WithSelection: Story = {
 };
 
 /**
+ * ## New Feature: Custom Header Icons
+ *
+ * **What's New:**
+ * - 🎯 **Add custom icons** to column headers
+ * - 🔔 **Click handlers** for custom actions
+ * - 💡 **Tooltip support** for accessibility
+ *
+ * **Use Case:**
+ * Add custom icons like filter toggles, info buttons, or settings icons to column headers.
+ *
+ * **Usage:**
+ * ```tsx
+ * import FilterListIcon from '@mui/icons-material/FilterList';
+ *
+ * const columns = [
+ *   {
+ *     id: 'firstName',
+ *     label: 'First Name',
+ *     headerIcon: <FilterListIcon fontSize="small" />,
+ *     onHeaderIconClick: (columnId, event) => {
+ *       console.log(`Icon clicked for column: ${columnId}`);
+ *     },
+ *     headerIconTitle: 'Toggle column filters'
+ *   }
+ * ];
+ * ```
+ */
+export const WithCustomHeaderIcons: Story = {
+  args: {
+    initialColumns: getNestedColumnConfigs().map(col => {
+      // Add icons to nested columns
+      if (col.subColumns) {
+        return {
+          ...col,
+          subColumns: col.subColumns.map(subCol => {
+            if (subCol.id === 'firstName') {
+              return { ...subCol, headerIcon: <FilterList fontSize="small" />, onHeaderIconClick: fn(), headerIconTitle: 'Toggle column filters' };
+            }
+            if (subCol.id === 'lastName') {
+              return { ...subCol, headerIcon: <Info fontSize="small" />, onHeaderIconClick: fn(), headerIconTitle: 'Column information' };
+            }
+            return subCol;
+          })
+        };
+      }
+      return col;
+    }),
+    showToolbar: true,
+    toolbarTitle: 'Custom Header Icons',
+    showColumnFilters: true,
+    onRowClick: fn(),
+    onSort: fn(),
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: '**Custom Header Icons**: Add custom icons to column headers with click handlers. Each column can have its own icon and action. Icons appear before the three-dot menu button and include hover effects and tooltips.',
+      },
+      story: {
+        inline: false,
+        iframeHeight: 600,
+      },
+    },
+  },
+};
+
+/**
+ * ## New Feature: Server-Side Search
+ *
+ * **What's New:**
+ * - 🌐 **Server-side search mode** for large datasets
+ * - 📡 **Callback-based search** with controlled state
+ * - 🔍 **Column-specific search** with server delegation
+ *
+ * **Use Case:**
+ * When dealing with large datasets, delegate filtering to the server instead of client-side.
+ *
+ * **Usage:**
+ * ```tsx
+ * const [columnSearches, setColumnSearches] = useState({});
+ *
+ * <AdvancedDataTable
+ *   searchMode="server"
+ *   columnSearches={columnSearches}
+ *   onColumnSearch={(searches) => {
+ *     setColumnSearches(searches);
+ *     fetchFilteredData(searches);
+ *   }}
+ * />
+ * ```
+ */
+export const WithServerSideSearch: Story = {
+  args: {
+    initialColumns: getNestedColumnConfigs(),
+    searchMode: 'client',
+    showToolbar: true,
+    toolbarTitle: 'Server-Side Search Demo',
+    showColumnFilters: true,
+    onRowClick: fn(),
+    onSort: fn(),
+    onColumnSearch: fn(),
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: '**Server-Side Search**: Enable server-side search mode for large datasets. When `searchMode="server"`, the component delegates filtering to the server via the `onColumnSearch` callback. Search inputs remain visible but don\'t filter data locally.',
+      },
+      story: {
+        inline: false,
+        iframeHeight: 600,
+      },
+    },
+  },
+};
+
+/**
+ * ## New Feature: Controlled Column Filters with Toggle
+ *
+ * **What's New:**
+ * - 🎛️ **Controlled filter visibility** via parent state
+ * - 🔘 **Toggle from anywhere** including custom header icons
+ * - 🎯 **Industry-standard pattern** for filter management
+ *
+ * **Use Case:**
+ * Control column filter visibility from parent state, allowing toggles from custom icons or external controls.
+ *
+ * **Usage:**
+ * ```tsx
+ * const [showFilters, setShowFilters] = useState(false);
+ *
+ * const columns = [
+ *   {
+ *     id: 'firstName',
+ *     label: 'First Name',
+ *     headerIcon: <FilterListIcon />,
+ *     onHeaderIconClick: (columnId) => {
+ *       setShowFilters(!showFilters);
+ *     }
+ *   }
+ * ];
+ *
+ * <AdvancedDataTable
+ *   initialColumns={columns}
+ *   showColumnFilters={showFilters}
+ *   onColumnFiltersChange={setShowFilters}
+ * />
+ * ```
+ */
+export const WithControlledColumnFilters: Story = {
+  args: {
+    initialColumns: getNestedColumnConfigs(),
+    showToolbar: true,
+    toolbarTitle: 'Controlled Column Filters',
+    showColumnFilters: false,
+    onColumnFiltersChange: fn(),
+    onRowClick: fn(),
+    onSort: fn(),
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: '**Controlled Column Filters**: Control column filter visibility using parent state. Click the filter icon in any column header to toggle the search row for all columns. This follows the industry-standard pattern where filter icons in headers control global filter visibility.',
+      },
+      story: {
+        inline: false,
+        iframeHeight: 600,
+      },
+    },
+  },
+};
+
+/**
+ * ## New Feature: Server-Side Pagination with Separate Callbacks
+ *
+ * **What's New:**
+ * - 🌐 **Industry-standard pagination** with separate callbacks
+ * - 📡 **onPageChange** - called when page changes
+ * - 📊 **onPageSizeChange** - called when page size changes
+ * - 🔘 **showPageSizeSelector** - control dropdown visibility
+ * - 🎯 **pageSizeOptions** - customize available page sizes
+ *
+ * **Industry Standard:**
+ * Follows Material UI, AG Grid, and Ant Design patterns with separate callbacks for page and page size changes.
+ *
+ * **Usage:**
+ * ```tsx
+ * const [currentPage, setCurrentPage] = useState(1);
+ * const [pageSize, setPageSize] = useState(10);
+ *
+ * <AdvancedDataTable
+ *   paginationMode="server"
+ *   currentPage={currentPage}
+ *   itemsPerPage={pageSize}
+ *   totalItems={1000}
+ *   onPageChange={(page) => {
+ *     setCurrentPage(page);
+ *     fetchPaginatedData(page, pageSize);
+ *   }}
+ *   onPageSizeChange={(newPageSize) => {
+ *     setPageSize(newPageSize);
+ *     setCurrentPage(1);
+ *     fetchPaginatedData(1, newPageSize);
+ *   }}
+ *   showPageSizeSelector={true}
+ *   pageSizeOptions={[10, 25, 50, 100]}
+ * />
+ * ```
+ */
+export const WithServerSidePagination: Story = {
+  args: {
+    initialColumns: getNestedColumnConfigs(),
+    paginationMode: 'client',
+    showToolbar: true,
+    toolbarTitle: 'Server-Side Pagination Demo',
+    showPageSizeSelector: true,
+    pageSizeOptions: [10, 25, 50, 100],
+    onRowClick: fn(),
+    onPageChange: fn(),
+    onPageSizeChange: fn(),
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: '**Server-Side Pagination**: Industry-standard pagination with separate callbacks for page changes (`onPageChange`) and page size changes (`onPageSizeChange`). Also supports hiding the page size selector (`showPageSizeSelector`) and customizing available page sizes (`pageSizeOptions`).',
+      },
+      story: {
+        inline: false,
+        iframeHeight: 600,
+      },
+    },
+  },
+};
+
+/**
  * ## Custom Pagination
- * 
- * Control pagination settings.
- * 
+ *
+ * Control pagination settings with industry-standard callbacks.
+ *
  * **Usage:**
  * ```tsx
  * <AdvancedDataTable
  *   initialColumns={getNestedColumnConfigs()}
  *   paginated={true}
  *   itemsPerPage={25}
+ *   showPageSizeSelector={true}
+ *   pageSizeOptions={[5, 10, 25, 50, 100]}
  * />
  * ```
  */
@@ -1220,13 +1693,15 @@ export const CustomPagination: Story = {
     initialColumns: getNestedColumnConfigs(),
     paginated: true,
     itemsPerPage: 5,
+    showPageSizeSelector: true,
+    pageSizeOptions: [5, 10, 25, 50, 100],
     showToolbar: true,
     toolbarTitle: 'Custom Pagination (5 per page)',
   },
   parameters: {
     docs: {
       description: {
-        story: 'Customize pagination with `itemsPerPage` prop. This example shows 5 items per page.',
+        story: 'Customize pagination with `itemsPerPage` prop, `showPageSizeSelector` to control dropdown visibility, and `pageSizeOptions` to customize available page sizes. This example shows 5 items per page with custom page size options.',
       },
     },
   },
@@ -1409,7 +1884,7 @@ export const FullCustomization: Story = {
         order: 3,
         width: 150,
         // Custom render with Chip component
-        render: (value: any, _row: any) => {
+        renderCell: (value: any, _row: any) => {
           const statusMap: Record<string, { type: 'success' | 'warning' | 'error' | 'default', label: string }> = {
             'approved': { type: 'success', label: 'Approved' },
             'pending': { type: 'warning', label: 'Pending' },
@@ -1428,7 +1903,7 @@ export const FullCustomization: Story = {
         order: 4,
         width: 120,
         // Custom render with Chip component
-        render: (value: any, _row: any) => {
+        renderCell: (value: any, _row: any) => {
           const priorityMap: Record<string, { type: 'success' | 'warning' | 'error', label: string }> = {
             'high': { type: 'error', label: 'High' },
             'medium': { type: 'warning', label: 'Medium' },
@@ -1453,9 +1928,9 @@ export const FullCustomization: Story = {
         pinned: 'right', // Pin to right side
         order: 12,
         width: 180,
-        // Custom render with icon action buttons
+        // Custom renderCell with icon action buttons
         // Signature: (value, row, rowIndex) - value is ignored for actions column
-        render: (_value: any, row: any) => (
+        renderCell: (_value: any, row: any) => (
           <div style={{ display: 'flex', gap: '4px', alignItems: 'center' }}>
             <Button 
               variant="tertiary" 

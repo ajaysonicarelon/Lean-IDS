@@ -78,13 +78,13 @@ export const carelonColors = {
 ```
 
 ### **Layer 3: Components** (Use Semantic Tokens)
-- Import from `@lean-ids/tokens` (exports semantic layer)
+- Import from `@ajaysoni7832/lean-ids-tokens` (exports semantic layer)
 - Use stable API: `theme.colors.palette.primary[500]`
 - **Never break** when Figma changes
 
 ```typescript
 // Button.styles.ts
-import { Theme } from '@lean-ids/tokens';
+import { Theme } from '@ajaysoni7832/lean-ids-tokens';
 
 background: ${({ theme }) => theme.colors.palette.primary[500]};
 color: ${({ theme }) => theme.colors.palette.error[600]};
@@ -175,7 +175,7 @@ Figma: Moves feedback colors to new "status" object
 
 ### ✅ **CORRECT - Use Semantic Tokens**
 ```typescript
-import { carelonTheme, elevanceTheme } from '@lean-ids/tokens';
+import { carelonTheme, elevanceTheme } from '@ajaysoni7832/lean-ids-tokens';
 
 // These are semantic tokens - stable API
 theme.colors.palette.primary[500]
@@ -186,7 +186,7 @@ theme.colors.palette.neutral[900]
 
 ### ❌ **WRONG - Don't Use Raw Tokens**
 ```typescript
-import { rawCarelonColors } from '@lean-ids/tokens';
+import { rawCarelonColors } from '@ajaysoni7832/lean-ids-tokens';
 
 // Don't use raw Figma structure - will break!
 rawCarelonColors.primary["primary-500"]
@@ -317,19 +317,19 @@ packages/tokens/src/
 
 ### **Check Raw Figma Tokens**
 ```typescript
-import { rawCarelonColors } from '@lean-ids/tokens';
+import { rawCarelonColors } from '@ajaysoni7832/lean-ids-tokens';
 console.log(rawCarelonColors);
 ```
 
 ### **Check Semantic Tokens**
 ```typescript
-import { carelonColors } from '@lean-ids/tokens';
+import { carelonColors } from '@ajaysoni7832/lean-ids-tokens';
 console.log(carelonColors.primary[500]);  // "#5009B5"
 ```
 
 ### **Check Mapping**
 ```typescript
-import { TOKEN_MAPPING } from '@lean-ids/tokens';
+import { TOKEN_MAPPING } from '@ajaysoni7832/lean-ids-tokens';
 console.log(TOKEN_MAPPING.colors.error);
 // { figmaPath: 'feedback', figmaPrefix: 'red-', ... }
 ```

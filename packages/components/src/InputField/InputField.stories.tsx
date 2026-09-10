@@ -71,7 +71,7 @@ InputField
 ## Usage
 
 \`\`\`tsx
-import { InputField } from '@lean-ids/components';
+import { InputField } from '@ajaysoni7832/lean-ids-components';
 
 // Default helping text (gray)
 <InputField
@@ -107,7 +107,7 @@ import { InputField } from '@lean-ids/components';
 />
 
 // You can also use HelpingText as a standalone component
-import { HelpingText } from '@lean-ids/components';
+import { HelpingText } from '@ajaysoni7832/lean-ids-components';
 
 <HelpingText 
   text="This is a standalone helping message"

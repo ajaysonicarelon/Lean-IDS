@@ -25,17 +25,17 @@ echo ""
 # Helper functions
 pass() {
     echo -e "${GREEN}✅ PASS:${NC} $1"
-    ((PASSED++))
+    PASSED=$((PASSED+1))
 }
 
 fail() {
     echo -e "${RED}❌ FAIL:${NC} $1"
-    ((FAILED++))
+    FAILED=$((FAILED+1))
 }
 
 warn() {
     echo -e "${YELLOW}⚠️  WARN:${NC} $1"
-    ((WARNINGS++))
+    WARNINGS=$((WARNINGS+1))
 }
 
 info() {
@@ -98,10 +98,17 @@ else
     fail "Components package name is wrong: $COMPONENTS_NAME"
 fi
 
-# Check for old package names in code
-if grep -r "@lean-ids" packages/ --exclude-dir=node_modules --exclude-dir=dist -q 2>/dev/null; then
-    fail "Found old '@lean-ids' package references in code"
-    grep -r "@lean-ids" packages/ --exclude-dir=node_modules --exclude-dir=dist | head -5
+# Check for old package names in code (exclude packages/utils and packages/icons which have their own @lean-ids names)
+if grep -r "@lean-ids" packages/ --exclude-dir=node_modules --exclude-dir=dist -q 2>/dev/null \
+   | grep -v "^packages/utils/\|^packages/icons/" > /dev/null 2>&1; then
+    LEAN_IDS_REFS=$(grep -r "@lean-ids" packages/ --exclude-dir=node_modules --exclude-dir=dist 2>/dev/null \
+      | grep -v "^packages/utils/\|^packages/icons/")
+    if [ -n "$LEAN_IDS_REFS" ]; then
+        fail "Found old '@lean-ids' package references in code"
+        echo "$LEAN_IDS_REFS" | head -5
+    else
+        pass "No old package name references found"
+    fi
 else
     pass "No old package name references found"
 fi

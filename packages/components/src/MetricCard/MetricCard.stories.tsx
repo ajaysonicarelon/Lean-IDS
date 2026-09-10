@@ -44,7 +44,7 @@ Enterprise-grade metric card component with full accessibility and customization
 
 ## Usage
 \`\`\`tsx
-import { MetricCard } from '@lean-ids/components';
+import { MetricCard } from '@ajaysoni7832/lean-ids-components';
 
 <MetricCard
   variant="basic"

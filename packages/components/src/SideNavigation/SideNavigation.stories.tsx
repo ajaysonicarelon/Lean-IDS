@@ -49,8 +49,8 @@ const meta: Meta<typeof SideNavigation> = {
 ### Basic Example
 
 \`\`\`tsx
-import { SideNavigation } from '@lean-ids/components';
-import { Icon } from '@lean-ids/components';
+import { SideNavigation } from '@ajaysoni7832/lean-ids-components';
+import { Icon } from '@ajaysoni7832/lean-ids-components';
 
 function App() {
   const navigationGroups = [
@@ -92,7 +92,7 @@ function App() {
 ### With Pin State Control
 
 \`\`\`tsx
-import { SideNavigation } from '@lean-ids/components';
+import { SideNavigation } from '@ajaysoni7832/lean-ids-components';
 import { useState } from 'react';
 
 function App() {
@@ -289,7 +289,7 @@ export const Default: Story = {
           
           const propsString = props.length > 0 ? '\n  ' + props.join('\n  ') + '\n' : '';
           
-          return `import { SideNavigation, Icon } from '@lean-ids/components';
+          return `import { SideNavigation, Icon } from '@ajaysoni7832/lean-ids-components';
 
 const navigationGroups = [
   {
@@ -366,7 +366,7 @@ export const WithNotifications: Story = {
         iframeHeight: 600,
       },
       source: {
-        code: `import { SideNavigation, Icon } from '@lean-ids/components';
+        code: `import { SideNavigation, Icon } from '@ajaysoni7832/lean-ids-components';
 
 const navigationGroups = [
   {
@@ -415,7 +415,7 @@ export const WithoutUser: Story = {
         iframeHeight: 600,
       },
       source: {
-        code: `import { SideNavigation, Icon } from '@lean-ids/components';
+        code: `import { SideNavigation, Icon } from '@ajaysoni7832/lean-ids-components';
 
 const navigationGroups = [
   {
@@ -484,7 +484,7 @@ export const WithClickHandlers: Story = {
         iframeHeight: 600,
       },
       source: {
-        code: `import { SideNavigation, Icon } from '@lean-ids/components';
+        code: `import { SideNavigation, Icon } from '@ajaysoni7832/lean-ids-components';
 
 const navigationGroups = [
   {
@@ -576,7 +576,7 @@ export const MultipleGroups: Story = {
         iframeHeight: 600,
       },
       source: {
-        code: `import { SideNavigation, Icon } from '@lean-ids/components';
+        code: `import { SideNavigation, Icon } from '@ajaysoni7832/lean-ids-components';
 
 const navigationGroups = [
   {
@@ -641,7 +641,7 @@ export const WithActiveState: Story = {
         iframeHeight: 600,
       },
       source: {
-        code: `import { SideNavigation, Icon } from '@lean-ids/components';
+        code: `import { SideNavigation, Icon } from '@ajaysoni7832/lean-ids-components';
 import { useState } from 'react';
 
 function Navigation() {
@@ -693,7 +693,7 @@ export const PinnedState: Story = {
         iframeHeight: 600,
       },
       source: {
-        code: `import { SideNavigation } from '@lean-ids/components';
+        code: `import { SideNavigation } from '@ajaysoni7832/lean-ids-components';
 import { useState } from 'react';
 
 function App() {
@@ -736,7 +736,7 @@ export const WithAvatarImage: Story = {
         iframeHeight: 600,
       },
       source: {
-        code: `import { SideNavigation } from '@lean-ids/components';
+        code: `import { SideNavigation } from '@ajaysoni7832/lean-ids-components';
 
 const userProfile = {
   initials: 'JD',
@@ -810,7 +810,7 @@ export const WithManyItems: Story = {
         iframeHeight: 600,
       },
       source: {
-        code: `import { SideNavigation, Icon } from '@lean-ids/components';
+        code: `import { SideNavigation, Icon } from '@ajaysoni7832/lean-ids-components';
 
 const navigationGroups = [
   {
@@ -917,7 +917,7 @@ export const CompleteExample: Story = {
         iframeHeight: 700,
       },
       source: {
-        code: `import { SideNavigation, Icon } from '@lean-ids/components';
+        code: `import { SideNavigation, Icon } from '@ajaysoni7832/lean-ids-components';
 import { useState } from 'react';
 
 function App() {
@@ -1169,7 +1169,7 @@ export const WithNestedMenus: Story = {
         iframeHeight: 600,
       },
       source: {
-        code: `import { SideNavigation, Icon } from '@lean-ids/components';
+        code: `import { SideNavigation, Icon } from '@ajaysoni7832/lean-ids-components';
 import ShoppingCart from '@mui/icons-material/ShoppingCart';
 
 function App() {
@@ -1258,7 +1258,7 @@ export const CustomLogo: Story = {
         iframeHeight: 700,
       },
       source: {
-        code: `import { SideNavigation } from '@lean-ids/components';
+        code: `import { SideNavigation } from '@ajaysoni7832/lean-ids-components';
 
 const navigationGroups = [
   {

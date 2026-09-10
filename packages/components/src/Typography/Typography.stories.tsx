@@ -23,7 +23,7 @@ const meta: Meta<typeof Typography> = {
 ### Basic Example
 
 \`\`\`tsx
-import { Typography } from '@lean-ids/components';
+import { Typography } from '@ajaysoni7832/lean-ids-components';
 
 function App() {
   return (
@@ -444,7 +444,7 @@ export const RealWorldExample: Story = {
       
       <div style={{ backgroundColor: '#f5f5f5', padding: '16px', borderRadius: '8px', marginTop: '24px' }}>
         <Typography variant="code" codeSize="14" weight="regular">
-          npm install @lean-ids/components
+          npm install @ajaysoni7832/lean-ids-components
         </Typography>
       </div>
     </div>

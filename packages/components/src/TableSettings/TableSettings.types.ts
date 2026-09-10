@@ -12,7 +12,10 @@ export interface ColumnConfig {
   resizable?: boolean; // Enable column resizing by dragging column border
   subColumns?: ColumnConfig[];
   parentId?: string;
-  render?: (value: any, row: any, rowIndex?: number) => React.ReactNode; // Custom cell renderer function. Receives cell value, full row data, and optional row index. Matches TableColumn.renderCell signature.
+  renderCell?: (value: any, row: any, rowIndex?: number) => React.ReactNode; // Custom cell renderer function. Receives cell value, full row data, and optional row index. Matches TableColumn.renderCell signature.
+  headerIcon?: React.ReactNode; // Custom icon to display in column header
+  onHeaderIconClick?: (columnId: string, e: React.MouseEvent) => void; // Click handler for header icon
+  headerIconTitle?: string; // Tooltip text for header icon
 }
 
 export interface TableSettingsProps {

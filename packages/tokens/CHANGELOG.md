@@ -2,6 +2,15 @@
 
 All notable changes to the Lean DS Tokens package will be documented in this file.
 
+## [1.7.10] - 2026-09-10
+
+### 📦 Version Alignment
+
+- **Version bump to 1.7.10** to align with `@ajaysoni7832/lean-ids-components@1.7.10`
+- No functional changes to tokens in this release
+
+**Recommended pairing:** `lean-ids-components@1.7.10` + `lean-ids-tokens@1.7.10`
+
 ## [1.7.8] - 2026-08-19
 
 ### 📦 Version Alignment

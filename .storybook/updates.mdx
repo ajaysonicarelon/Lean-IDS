@@ -7,7 +7,7 @@ import { useEffect } from 'react';
 {`
   // Mark updates as viewed when user visits this page
   if (typeof window !== 'undefined') {
-    const currentVersion = '1.7.9';
+    const currentVersion = '1.7.10';
     const lastViewedVersion = localStorage.getItem('lean-ids-last-viewed-version');
     
     // Mark as viewed
@@ -217,7 +217,7 @@ import { useEffect } from 'react';
     <div className="icon">🔔</div>
     <div className="content">
       <div className="title">New Update Available!</div>
-      <div className="message">Version 1.7.9 has been released. Check out the latest changes below.</div>
+      <div className="message">Version 1.7.10 has been released. Check out the latest changes below.</div>
     </div>
   </div>
 </div>
@@ -225,7 +225,7 @@ import { useEffect } from 'react';
 <script dangerouslySetInnerHTML={{__html: `
   (function() {
     if (typeof window !== 'undefined') {
-      const currentVersion = '1.7.9';
+      const currentVersion = '1.7.10';
       const lastViewedVersion = localStorage.getItem('lean-ids-last-viewed-version');
       
       // Show banner if user hasn't seen this version
@@ -254,7 +254,7 @@ Stay up to date with the latest changes, improvements, and fixes to the Lean DS 
 
 <div className="stats-container">
   <div className="stat-card">
-    <div className="stat-number">1.7.9</div>
+    <div className="stat-number">1.7.10</div>
     <div className="stat-label">Current Version</div>
   </div>
   <div className="stat-card">
@@ -277,6 +277,79 @@ Stay up to date with the latest changes, improvements, and fixes to the Lean DS 
 
 <div className="version-container">
   <div className="version-header">
+    <div className="version-number">v1.7.10</div>
+    <div className="version-date">September 10, 2026</div>
+  </div>
+  <div className="version-content">
+
+    <div className="change-section">
+      <div className="change-title">
+        <span className="change-icon">✨</span>
+        Table Enhancements
+      </div>
+      <ul className="change-list">
+        <li className="change-item critical">
+          <strong>Custom Error State</strong> - errorDescription, errorIcon, errorActionLabel, onErrorAction props
+        </li>
+        <li className="change-item critical">
+          <strong>errorStateContent / emptyStateContent</strong> - Fully custom ReactNode slots to replace default error and empty state UIs
+        </li>
+      </ul>
+    </div>
+
+    <div className="change-section">
+      <div className="change-title">
+        <span className="change-icon">✨</span>
+        Drawer Enhancements
+      </div>
+      <ul className="change-list">
+        <li className="change-item">
+          <strong>showCloseButton</strong> - Toggle close button visibility
+        </li>
+        <li className="change-item">
+          <strong>headerActions</strong> - Custom ReactNode slot in the header
+        </li>
+        <li className="change-item">
+          <strong>footerStart / footerEnd</strong> - Custom content slots in the footer
+        </li>
+        <li className="change-item">
+          <strong>ReactNode title & description</strong> - Both props now accept JSX, not just strings
+        </li>
+      </ul>
+    </div>
+
+    <div className="change-section">
+      <div className="change-title">
+        <span className="change-icon">✨</span>
+        Pagination & Select
+      </div>
+      <ul className="change-list">
+        <li className="change-item">
+          <strong>showPageSizeSelector</strong> - Show/hide page size dropdown (default: true)
+        </li>
+        <li className="change-item">
+          <strong>Select</strong> - Prop and story improvements
+        </li>
+        <li className="change-item">
+          <strong>NestedMenuOverlay</strong> - Bug fixes and stability improvements
+        </li>
+      </ul>
+    </div>
+
+    <div className="migration-note">
+      <strong>📦 Installation</strong>
+      <code>npm install @ajaysoni7832/lean-ids-components@1.7.10 @ajaysoni7832/lean-ids-tokens@1.7.10</code>
+    </div>
+
+  </div>
+</div>
+
+---
+
+## 📋 Previous Versions
+
+<div className="version-container">
+  <div className="version-header">
     <div className="version-number">v1.7.9</div>
     <div className="version-date">August 27, 2026</div>
   </div>
@@ -289,13 +362,13 @@ Stay up to date with the latest changes, improvements, and fixes to the Lean DS 
       </div>
       <ul className="change-list">
         <li className="change-item critical">
-          <strong>Server-Side Pagination</strong> - Added paginationMode, onPageChange, currentPage, and totalItems props for server-side pagination support
+          <strong>Server-Side Pagination</strong> - Added paginationMode, onPageChange, currentPage, and totalItems props
         </li>
         <li className="change-item critical">
           <strong>Column Locking System</strong> - Three-dot menu on column headers with sort, lock, autosize, and reset options
         </li>
         <li className="change-item">
-          <strong>Always-Visible Scrollbar</strong> - 8px scrollbar with custom theme-based styling (neutral[100], neutral[400], neutral[500])
+          <strong>Always-Visible Scrollbar</strong> - 8px scrollbar with custom theme-based styling
         </li>
         <li className="change-item">
           <strong>Terminology Update</strong> - Changed from "Pin" to "Lock" for better UX clarity
@@ -305,7 +378,7 @@ Stay up to date with the latest changes, improvements, and fixes to the Lean DS 
 
     <div className="change-section">
       <div className="change-title">
-        <span className="change-icon">🐛</span>
+        <span className="change-icon">�</span>
         Bug Fixes
       </div>
       <ul className="change-list">
@@ -313,28 +386,7 @@ Stay up to date with the latest changes, improvements, and fixes to the Lean DS 
           <strong>Selected Row Styling</strong> - Fixed inconsistent background color (all cells now use primary[50])
         </li>
         <li className="change-item">
-          <strong>Render Function Consistency</strong> - Standardized signature across both tables: render(value, row, rowIndex)
-        </li>
-      </ul>
-    </div>
-
-    <div className="change-section">
-      <div className="change-title">
-        <span className="change-icon">�</span>
-        Documentation
-      </div>
-      <ul className="change-list">
-        <li className="change-item">
-          <strong>Storybook</strong> - Added comprehensive prop documentation for all table features
-        </li>
-        <li className="change-item">
-          <strong>Server-Side Examples</strong> - Added pagination and sorting examples
-        </li>
-        <li className="change-item">
-          <strong>Custom Cell Rendering</strong> - Added guide with signature: (value, row, rowIndex) => ReactNode
-        </li>
-        <li className="change-item">
-          <strong>11 Categories</strong> - Organized 50+ documented props
+          <strong>Render Function Consistency</strong> - Standardized signature: renderCell(value, row, rowIndex)
         </li>
       </ul>
     </div>
@@ -351,17 +403,8 @@ Stay up to date with the latest changes, improvements, and fixes to the Lean DS 
       </ul>
     </div>
 
-    <div className="migration-note">
-      <strong>📦 Installation</strong>
-      <code>npm install @ajaysoni7832/lean-ids-components@1.7.9 @ajaysoni7832/lean-ids-tokens@1.7.9</code>
-    </div>
-
   </div>
 </div>
-
----
-
-## 📋 Previous Versions
 
 <div className="version-container">
   <div className="version-header">
