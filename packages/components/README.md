@@ -5,29 +5,21 @@ A comprehensive React component library for building consistent, accessible user
 [![npm version](https://img.shields.io/npm/v/@ajaysoni7832/lean-ids-components.svg)](https://www.npmjs.com/package/@ajaysoni7832/lean-ids-components)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
-## 🎉 What's New in v1.7.10
+## 🎉 What's New in v1.7.11
 
-Current Version: **1.7.10**
+Current Version: **1.7.11**
 
-### ✨ Table Enhancements
-- ✅ **Custom Error State** - `errorDescription`, `errorIcon`, `errorActionLabel`, `onErrorAction` props
-- ✅ **Fully Custom Error/Empty States** - `errorStateContent` and `emptyStateContent` ReactNode slots
+### 🐛 Bug Fixes
+- ✅ **AdvancedTable — Server-side column search fixed** — Typing "AED" now correctly passes `{ col: 'AED' }` in the callback instead of three separate single-character calls. Input text now displays immediately on every keystroke without waiting for a prop round-trip.
 
-### ✨ Drawer Enhancements
-- ✅ **showCloseButton** - Toggle close button visibility
-- ✅ **headerActions / footerStart / footerEnd** - Flexible content slots
-- ✅ **ReactNode title & description** - Accept JSX, not just strings
-
-### ✨ Pagination Enhancements
-- ✅ **showPageSizeSelector** - Show/hide the page size dropdown
-
-### ✨ Select & NestedMenuOverlay
-- ✅ Prop enhancements, bug fixes, and stability improvements
+### ✨ AdvancedTable Enhancements
+- ✅ **`columnSearchDebounceMs` prop** — Debounce delay (default 300 ms) before `onColumnSearch` fires, preventing an API call per keystroke. Set to `0` to disable.
+- ✅ **External reset support** — Passing an updated `columnSearches` prop (e.g. `{}` to clear all) now correctly resets the column search inputs.
 
 ### 📦 Installation
 
 ```bash
-npm install @ajaysoni7832/lean-ids-components@1.7.10 @ajaysoni7832/lean-ids-tokens@1.7.10
+npm install @ajaysoni7832/lean-ids-components@1.7.11 @ajaysoni7832/lean-ids-tokens@1.7.11
 ```
 
 📖 **[Read Full Release Notes](./RELEASE_NOTES.md)** | **[Migration Guide](./MIGRATION_GUIDE.md)**

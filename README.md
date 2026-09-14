@@ -23,7 +23,7 @@ This monorepo contains the following packages:
 ### Installation
 
 ```bash
-npm install @ajaysoni7832/lean-ids-components@1.7.10 @ajaysoni7832/lean-ids-tokens@1.7.10
+npm install @ajaysoni7832/lean-ids-components@1.7.11 @ajaysoni7832/lean-ids-tokens@1.7.11
 ```
 
 ### Usage

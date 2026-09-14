@@ -492,8 +492,8 @@ const [columnSearches, setColumnSearches] = useState({});
   columnSearchDebounceMs={300}           // default — omit to use default
   onColumnSearch={(searches) => {
     setColumnSearches(searches);
-    // Called once after user stops typing (debounced).
-    // `searches` always contains the full accumulated value, e.g. { applicationCode: 'AED' }
+    // Called once after user stops typing (debounced)
+    // searches contains the full accumulated value
     fetchFilteredData(searches);
   }}
 />
@@ -755,10 +755,6 @@ export const WithBothControls: Story = {
     docs: {
       description: {
         story: 'Table with both side panel and modal controls available. The toolbar settings button opens the modal, while the side panel provides quick access to column/filter controls. Column resizing works in both Canvas and Docs views.',
-      },
-      story: {
-        inline: false,
-        iframeHeight: 600,
       },
     },
   },
@@ -1089,10 +1085,6 @@ export const WithAlwaysVisibleSearchHeaders: Story = {
       description: {
         story: '**Always Visible Search Headers**: Set showColumnFilters to true to force search headers to always be visible, regardless of filter state. Useful when column search is the primary filtering method.',
       },
-      story: {
-        inline: false,
-        iframeHeight: 600,
-      },
     },
   },
 };
@@ -1169,10 +1161,6 @@ export const WithCustomTabs: Story = {
       description: {
         story: '**Custom Tabs**: Add your own tabs to the side panel with customSidePanelTabs prop. Supports both action-only tabs (with onClick) and content tabs (with content ReactNode). Try clicking the "Export" and "Info" tabs!',
       },
-      story: {
-        inline: false,
-        iframeHeight: 600,
-      },
     },
   },
 };
@@ -1205,10 +1193,6 @@ export const WithClickOutsideToClose: Story = {
     docs: {
       description: {
         story: '**Click Outside to Close**: The side panel now closes when clicking outside, providing standard overlay/modal behavior. However, if there are unsaved filter changes, the panel prevents closing and shows a warning with shake animation. This prevents accidental loss of filter selections.',
-      },
-      story: {
-        inline: false,
-        iframeHeight: 600,
       },
     },
   },
@@ -1248,10 +1232,6 @@ export const WithUnsavedChangesProtection: Story = {
     docs: {
       description: {
         story: '**Unsaved Changes Protection**: Filter selections are now tracked as "pending" until you click Apply. If you try to close the panel with unsaved changes, it prevents closing and shows a shake animation with a warning message: "Please apply, cancel, or reset filters before closing." This ensures users never accidentally lose their filter selections.',
-      },
-      story: {
-        inline: false,
-        iframeHeight: 600,
       },
     },
   },
@@ -1418,10 +1398,6 @@ export const CustomStateContent: Story = {
       description: {
         story: '**Custom State Content**: Use `emptyStateContent` or `errorStateContent` to supply any ReactNode, completely replacing the built-in UI. Ideal for API-driven content, custom illustrations, or multi-action layouts. Toggle `isInvalid` in controls to see the error state variant.',
       },
-      story: {
-        inline: false,
-        iframeHeight: 500,
-      },
     },
   },
 };
@@ -1516,10 +1492,6 @@ export const WithCustomHeaderIcons: Story = {
       description: {
         story: '**Custom Header Icons**: Add custom icons to column headers with click handlers. Each column can have its own icon and action. Icons appear before the three-dot menu button and include hover effects and tooltips.',
       },
-      story: {
-        inline: false,
-        iframeHeight: 600,
-      },
     },
   },
 };
@@ -1553,7 +1525,7 @@ export const WithCustomHeaderIcons: Story = {
 export const WithServerSideSearch: Story = {
   args: {
     initialColumns: getNestedColumnConfigs(),
-    searchMode: 'client',
+    searchMode: 'server',
     showToolbar: true,
     toolbarTitle: 'Server-Side Search Demo',
     showColumnFilters: true,
@@ -1564,11 +1536,43 @@ export const WithServerSideSearch: Story = {
   parameters: {
     docs: {
       description: {
-        story: '**Server-Side Search**: When `searchMode="server"`, inputs are immediately responsive and `onColumnSearch` fires after the debounce delay (default 300 ms) with the full accumulated search map. Pass `columnSearches` back only for external resets. Set `columnSearchDebounceMs={0}` to disable debouncing.',
+        story: '**Server-Side Search**: When `searchMode="server"`, inputs are immediately responsive and `onColumnSearch` fires after the debounce delay (default 300 ms) with the full accumulated search map. The parent component must handle the actual filtering and update the `data` prop. For immediate filtering in Storybook, use the Client-Side Search demo.',
       },
-      story: {
-        inline: false,
-        iframeHeight: 600,
+    },
+  },
+};
+
+/**
+ * ## Client-Side Search (Immediate Filtering)
+ * 
+ * Table with client-side search that filters data immediately as you type.
+ * 
+ * **Usage:**
+ * ```tsx
+ * import { AdvancedDataTable } from '@ajaysoni7832/lean-ids-components';
+ * 
+ * <AdvancedDataTable
+ *   searchMode="client"
+ *   showColumnFilters={true}
+ *   initialColumns={columns}
+ *   data={data}
+ * />
+ * ```
+ */
+export const WithClientSideSearch: Story = {
+  args: {
+    initialColumns: getNestedColumnConfigs(),
+    searchMode: 'client',
+    showToolbar: true,
+    toolbarTitle: 'Client-Side Search Demo',
+    showColumnFilters: true,
+    onRowClick: fn(),
+    onSort: fn(),
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: '**Client-Side Search**: When `searchMode="client"`, the table handles filtering internally and updates the view immediately as you type. This is perfect for smaller datasets and provides instant visual feedback.',
       },
     },
   },
@@ -1621,10 +1625,6 @@ export const WithControlledColumnFilters: Story = {
     docs: {
       description: {
         story: '**Controlled Column Filters**: Control column filter visibility using parent state. Click the filter icon in any column header to toggle the search row for all columns. This follows the industry-standard pattern where filter icons in headers control global filter visibility.',
-      },
-      story: {
-        inline: false,
-        iframeHeight: 600,
       },
     },
   },
@@ -1683,10 +1683,6 @@ export const WithServerSidePagination: Story = {
     docs: {
       description: {
         story: '**Server-Side Pagination**: Industry-standard pagination with separate callbacks for page changes (`onPageChange`) and page size changes (`onPageSizeChange`). Also supports hiding the page size selector (`showPageSizeSelector`) and customizing available page sizes (`pageSizeOptions`).',
-      },
-      story: {
-        inline: false,
-        iframeHeight: 600,
       },
     },
   },

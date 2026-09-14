@@ -5,6 +5,28 @@ All notable changes to the Lean DS Design System will be documented in this file
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.7.11] - 2026-09-14
+
+### 🐛 Bug Fixes
+
+**AdvancedTable — Server-side column search**
+- Fixed stale closure bug where `handleColumnSearchChange` spread a render-time snapshot of `currentColumnSearches` (always `{}` in server mode). Typing "AED" now correctly fires `onColumnSearch({ col: 'AED' })` instead of three single-character calls.
+- Fixed controlled input showing no text — the input now updates immediately on every keystroke without waiting for a prop round-trip.
+
+### ✨ Enhancements
+
+**AdvancedTable**
+- Added `columnSearchDebounceMs` prop (default: 300 ms) — debounces the `onColumnSearch` callback to reduce API calls during fast typing. Set to `0` to disable.
+- Added external reset support — passing an updated `columnSearches` prop (e.g. `{}`) now syncs back into internal state, resetting all column search inputs.
+
+### 📚 Documentation
+- Updated Storybook server-side search docs with correct usage patterns and debounce guidance
+- Updated README.md, RELEASE_NOTES.md, CHANGELOG.md for v1.7.11
+
+### 🔧 Technical
+- `useRef` added to manage debounce timer; timer is cleaned up on unmount to prevent memory leaks
+- Shallow-equality check on `controlledColumnSearches` effect prevents unnecessary re-renders
+
 ## [1.7.10] - 2026-09-10
 
 ### ✨ Component Enhancements

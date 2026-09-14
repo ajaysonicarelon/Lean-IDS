@@ -1,3 +1,30 @@
+# Release Notes - Lean DS v1.7.11
+
+**Release Date:** September 14, 2026  
+**Package:** `@ajaysoni7832/lean-ids-components`
+
+---
+
+## 🚀 What's New in v1.7.11
+
+### 🐛 Bug Fixes
+
+#### AdvancedTable — Server-Side Column Search (critical fix)
+- **Fixed stale closure bug** — Typing "AED" now correctly fires `onColumnSearch` with `{ col: 'AED' }` instead of three separate single-character calls (`{ col: 'a' }`, `{ col: 'e' }`, `{ col: 'd' }`).
+- **Fixed input not showing typed text** — The column search input now shows typed characters immediately on every keystroke, without waiting for a prop round-trip from the parent.
+
+### ✨ AdvancedTable Enhancements
+- **`columnSearchDebounceMs` prop** — Debounce delay before `onColumnSearch` fires (default: 300 ms). Prevents an API call on every keystroke. Set to `0` to disable debouncing.
+- **External column search reset** — Passing an updated `columnSearches` prop (e.g. `{}` to clear all filters) now correctly resets all column search inputs via a shallow-equality sync effect.
+
+### 📦 Installation
+
+```bash
+npm install @ajaysoni7832/lean-ids-components@1.7.11 @ajaysoni7832/lean-ids-tokens@1.7.11
+```
+
+---
+
 # Release Notes - Lean DS v1.7.10
 
 **Release Date:** September 10, 2026  

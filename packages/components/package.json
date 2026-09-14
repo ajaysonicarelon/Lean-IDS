@@ -1,6 +1,6 @@
 {
   "name": "@ajaysoni7832/lean-ids-components",
-  "version": "1.7.10",
+  "version": "1.7.11",
   "type": "module",
   "description": "React components for Lean DS design system",
   "main": "dist/index.js",
@@ -92,13 +92,14 @@
     }
   },
   "dependencies": {
-    "@ajaysoni7832/lean-ids-tokens": "^1.7.10",
+    "@ajaysoni7832/lean-ids-tokens": "^1.7.11",
     "date-fns": "^4.4.0",
     "lodash": "^4.17.21"
   },
   "devDependencies": {
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
+    "@figma/code-connect": "^2.0.1",
     "@mui/icons-material": "^9.0.0",
     "@mui/material": "^9.0.0",
     "@playwright/test": "^1.62.1",

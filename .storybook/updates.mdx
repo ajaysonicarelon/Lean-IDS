@@ -7,7 +7,7 @@ import { useEffect } from 'react';
 {`
   // Mark updates as viewed when user visits this page
   if (typeof window !== 'undefined') {
-    const currentVersion = '1.7.10';
+    const currentVersion = '1.7.11';
     const lastViewedVersion = localStorage.getItem('lean-ids-last-viewed-version');
     
     // Mark as viewed
@@ -217,7 +217,7 @@ import { useEffect } from 'react';
     <div className="icon">🔔</div>
     <div className="content">
       <div className="title">New Update Available!</div>
-      <div className="message">Version 1.7.10 has been released. Check out the latest changes below.</div>
+      <div className="message">Version 1.7.11 has been released. Check out the latest changes below.</div>
     </div>
   </div>
 </div>
@@ -225,7 +225,7 @@ import { useEffect } from 'react';
 <script dangerouslySetInnerHTML={{__html: `
   (function() {
     if (typeof window !== 'undefined') {
-      const currentVersion = '1.7.10';
+      const currentVersion = '1.7.11';
       const lastViewedVersion = localStorage.getItem('lean-ids-last-viewed-version');
       
       // Show banner if user hasn't seen this version
@@ -254,7 +254,7 @@ Stay up to date with the latest changes, improvements, and fixes to the Lean DS 
 
 <div className="stats-container">
   <div className="stat-card">
-    <div className="stat-number">1.7.10</div>
+    <div className="stat-number">1.7.11</div>
     <div className="stat-label">Current Version</div>
   </div>
   <div className="stat-card">
@@ -274,6 +274,52 @@ Stay up to date with the latest changes, improvements, and fixes to the Lean DS 
 ---
 
 ## 🚀 Current Version
+
+<div className="version-container">
+  <div className="version-header">
+    <div className="version-number">v1.7.11</div>
+    <div className="version-date">September 14, 2026</div>
+  </div>
+  <div className="version-content">
+
+    <div className="change-section">
+      <div className="change-title">
+        <span className="change-icon">🐛</span>
+        Bug Fixes
+      </div>
+      <ul className="change-list">
+        <li className="change-item critical">
+          <strong>AdvancedTable — Server-side column search</strong> - Fixed stale closure bug where typing "AED" sent three single-character callbacks instead of one accumulated value. Input text now shows immediately on every keystroke.
+        </li>
+      </ul>
+    </div>
+
+    <div className="change-section">
+      <div className="change-title">
+        <span className="change-icon">✨</span>
+        AdvancedTable Enhancements
+      </div>
+      <ul className="change-list">
+        <li className="change-item">
+          <strong>columnSearchDebounceMs</strong> - New prop (default: 300 ms) debounces the onColumnSearch callback so rapid keystrokes produce a single API call instead of one per character. Set to 0 to disable.
+        </li>
+        <li className="change-item">
+          <strong>External column search reset</strong> - Passing an updated columnSearches prop (e.g. empty object) now correctly resets all column search inputs.
+        </li>
+      </ul>
+    </div>
+
+    <div className="migration-note">
+      <strong>📦 Installation</strong>
+      <code>npm install @ajaysoni7832/lean-ids-components@1.7.11 @ajaysoni7832/lean-ids-tokens@1.7.11</code>
+    </div>
+
+  </div>
+</div>
+
+---
+
+## 📋 Previous Versions
 
 <div className="version-container">
   <div className="version-header">
@@ -343,10 +389,6 @@ Stay up to date with the latest changes, improvements, and fixes to the Lean DS 
 
   </div>
 </div>
-
----
-
-## 📋 Previous Versions
 
 <div className="version-container">
   <div className="version-header">
