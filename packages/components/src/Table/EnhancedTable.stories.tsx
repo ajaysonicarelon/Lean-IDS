@@ -196,17 +196,22 @@ const meta: Meta<typeof AdvancedDataTable> = {
     searchMode: {
       control: 'select',
       options: ['client', 'server'],
-      description: 'Search mode: "client" (default) handles filtering internally, "server" calls onColumnSearch callback',
+      description: 'Search mode: "client" (default) handles filtering internally, "server" calls onColumnSearch callback after debounce',
       table: { category: 'Column Search' },
     },
     onColumnSearch: {
       action: 'columnSearchChanged',
-      description: 'Callback when column search changes (only used when searchMode="server")',
+      description: 'Callback fired (after debounce) with the full accumulated column search map. Only used when searchMode="server"',
       table: { category: 'Column Search' },
     },
     columnSearches: {
       control: 'object',
-      description: 'Controlled column search values (only used when searchMode="server")',
+      description: 'Controlled column search values. Used in searchMode="server" to externally reset inputs (e.g. a "Clear all" button). Changes to this prop are synced back into the internal display state.',
+      table: { category: 'Column Search' },
+    },
+    columnSearchDebounceMs: {
+      control: 'number',
+      description: 'Debounce delay in ms before onColumnSearch fires (default: 300). Set to 0 to disable debouncing. Only used when searchMode="server".',
       table: { category: 'Column Search' },
     },
     
@@ -470,20 +475,34 @@ const columns = [
 
 Enable server-side search for large datasets:
 
-**Properties:** \`searchMode\`, \`onColumnSearch\`, \`columnSearches\`
+**Properties:** \`searchMode\`, \`onColumnSearch\`, \`columnSearches\`, \`columnSearchDebounceMs\`
+
+**How it works:**
+- The input is always immediately responsive — typing never blocks waiting for an API round-trip.
+- \`onColumnSearch\` fires **after the debounce delay** (default 300 ms) with the full accumulated search map.
+- Pass \`columnSearches\` back only when you need to **externally reset** the inputs (e.g. a "Clear all filters" button). You do not need to pass it on every keystroke.
+- Set \`columnSearchDebounceMs={0}\` to disable debouncing and fire on every keystroke.
 
 \`\`\`tsx
 const [columnSearches, setColumnSearches] = useState({});
 
 <AdvancedDataTable
   searchMode="server"
-  columnSearches={columnSearches}
+  columnSearches={columnSearches}        // only needed for external resets
+  columnSearchDebounceMs={300}           // default — omit to use default
   onColumnSearch={(searches) => {
     setColumnSearches(searches);
-    // Call your API with the search criteria
+    // Called once after user stops typing (debounced).
+    // `searches` always contains the full accumulated value, e.g. { applicationCode: 'AED' }
     fetchFilteredData(searches);
   }}
 />
+\`\`\`
+
+To programmatically reset all column search inputs from outside the table:
+\`\`\`tsx
+// Passing an empty object resets all column search inputs
+setColumnSearches({});
 \`\`\`
 
 ## 🎛️ Controlled Column Filters
@@ -1506,15 +1525,14 @@ export const WithCustomHeaderIcons: Story = {
 };
 
 /**
- * ## New Feature: Server-Side Search
+ * ## Server-Side Column Search
  *
- * **What's New:**
- * - 🌐 **Server-side search mode** for large datasets
- * - 📡 **Callback-based search** with controlled state
- * - 🔍 **Column-specific search** with server delegation
- *
- * **Use Case:**
- * When dealing with large datasets, delegate filtering to the server instead of client-side.
+ * **How it works:**
+ * - Inputs are immediately responsive — typing never blocks waiting for an API round-trip.
+ * - `onColumnSearch` fires **after the debounce delay** (default 300 ms) with the **full accumulated** search map.
+ *   e.g. typing "AED" fires a single callback with `{ applicationCode: 'AED' }`, not three separate calls.
+ * - Pass `columnSearches` back only when you need to **externally reset** inputs (e.g. "Clear all" button).
+ * - Set `columnSearchDebounceMs={0}` to disable debouncing.
  *
  * **Usage:**
  * ```tsx
@@ -1522,9 +1540,11 @@ export const WithCustomHeaderIcons: Story = {
  *
  * <AdvancedDataTable
  *   searchMode="server"
- *   columnSearches={columnSearches}
+ *   columnSearches={columnSearches}        // only needed for external resets
+ *   columnSearchDebounceMs={300}           // default — omit to use default
  *   onColumnSearch={(searches) => {
  *     setColumnSearches(searches);
+ *     // searches = { applicationCode: 'AED' } — always the full value
  *     fetchFilteredData(searches);
  *   }}
  * />
@@ -1544,7 +1564,7 @@ export const WithServerSideSearch: Story = {
   parameters: {
     docs: {
       description: {
-        story: '**Server-Side Search**: Enable server-side search mode for large datasets. When `searchMode="server"`, the component delegates filtering to the server via the `onColumnSearch` callback. Search inputs remain visible but don\'t filter data locally.',
+        story: '**Server-Side Search**: When `searchMode="server"`, inputs are immediately responsive and `onColumnSearch` fires after the debounce delay (default 300 ms) with the full accumulated search map. Pass `columnSearches` back only for external resets. Set `columnSearchDebounceMs={0}` to disable debouncing.',
       },
       story: {
         inline: false,

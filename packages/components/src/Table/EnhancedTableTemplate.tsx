@@ -17,7 +17,7 @@
  * - Resizable columns
  */
 
-import React, { useState, useEffect, forwardRef, ElementType, useMemo } from 'react';
+import React, { useState, useEffect, useRef, forwardRef, ElementType, useMemo } from 'react';
 import styled from 'styled-components';
 import { TableHeader } from '../TableHeader';
 import { TableSubHeader } from '../TableSubHeader';
@@ -412,6 +412,8 @@ interface AdvancedTableProps extends React.HTMLAttributes<HTMLDivElement> {
   onColumnSearch?: (columnSearches: { [key: string]: string }) => void;
   /** Controlled column search values (only used when searchMode='server') */
   columnSearches?: { [key: string]: string };
+  /** Debounce delay in ms before firing onColumnSearch callback (default: 300, set 0 to disable). Only used when searchMode='server' */
+  columnSearchDebounceMs?: number;
   
   // ============================================================================
   // COLUMN RESIZING
@@ -583,6 +585,7 @@ export const AdvancedDataTable = forwardRef<HTMLDivElement, AdvancedTableProps>(
   searchMode = 'client',
   onColumnSearch,
   columnSearches: controlledColumnSearches,
+  columnSearchDebounceMs = 300,
   
   // Column Resizing
   defaultMinWidth = 50,
@@ -641,7 +644,10 @@ export const AdvancedDataTable = forwardRef<HTMLDivElement, AdvancedTableProps>(
   const itemsPerPage = paginationMode === 'server' ? propItemsPerPage : internalItemsPerPage;
   const sortColumn = sortMode === 'server' ? (controlledSortColumn || '') : internalSortColumn;
   const sortDirection = sortMode === 'server' ? (controlledSortDirection || 'none') : internalSortDirection;
-  const currentColumnSearches = searchMode === 'server' ? (controlledColumnSearches || {}) : internalColumnSearches;
+  // Column search always uses internal state as the display buffer so the input is immediately
+  // responsive on every keystroke. In server mode the controlled prop is only used to sync
+  // external resets (e.g. a "clear all" button in the parent) — see the useEffect below.
+  const currentColumnSearches = internalColumnSearches;
   const [allChecked, setAllChecked] = useState(false);
   const [selectedRows, setSelectedRows] = useState<number[]>([]);
   const [lastSelectedIndex, setLastSelectedIndex] = useState<number | null>(null);
@@ -926,6 +932,33 @@ export const AdvancedDataTable = forwardRef<HTMLDivElement, AdvancedTableProps>(
     }
   }, [sidePanelFilters, controlledShowColumnFilters]);
 
+  // Fix 3: Sync internal column search state when the controlled prop changes externally.
+  // This allows the parent to reset inputs (e.g. a "Clear all filters" button) by passing
+  // an updated columnSearches prop. We do a shallow-equality check to avoid infinite loops.
+  const prevControlledColumnSearchesRef = useRef<{ [key: string]: string } | undefined>(undefined);
+  useEffect(() => {
+    if (searchMode !== 'server' || !controlledColumnSearches) return;
+    const prev = prevControlledColumnSearchesRef.current;
+    const hasChanged =
+      prev === undefined ||
+      Object.keys(controlledColumnSearches).length !== Object.keys(prev).length ||
+      Object.keys(controlledColumnSearches).some(k => controlledColumnSearches[k] !== prev[k]);
+    if (hasChanged) {
+      prevControlledColumnSearchesRef.current = controlledColumnSearches;
+      setInternalColumnSearches(controlledColumnSearches);
+    }
+  }, [controlledColumnSearches, searchMode]);
+
+  // Debounce timer ref for server-side column search callback (Fix 2)
+  const columnSearchDebounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // Cleanup debounce timer on unmount
+  useEffect(() => {
+    return () => {
+      if (columnSearchDebounceRef.current) clearTimeout(columnSearchDebounceRef.current);
+    };
+  }, []);
+
   const handleColumnResize = (columnId: string, width: number) => {
     // Find the column configuration to get min/max constraints
     let column = columnConfigs.find(c => c.id === columnId);
@@ -955,13 +988,26 @@ export const AdvancedDataTable = forwardRef<HTMLDivElement, AdvancedTableProps>(
   };
 
   const handleColumnSearchChange = (columnId: string, value: string) => {
-    if (searchMode === 'server' && onColumnSearch) {
-      // Server-side search: call the callback with updated column searches
-      onColumnSearch({ ...currentColumnSearches, [columnId]: value });
-    } else {
-      // Client-side search: update internal state
-      setInternalColumnSearches(prev => ({ ...prev, [columnId]: value }));
-    }
+    // Always update internal state immediately so the input shows the typed text.
+    // In server mode the internal state IS the display buffer (Fix 1).
+    setInternalColumnSearches(prev => {
+      const next = { ...prev, [columnId]: value };
+
+      if (searchMode === 'server' && onColumnSearch) {
+        // Fix 2: debounce the server callback so rapid keystrokes don't each fire an API call.
+        if (columnSearchDebounceRef.current) clearTimeout(columnSearchDebounceRef.current);
+        if (columnSearchDebounceMs === 0) {
+          // Debounce disabled — fire immediately
+          onColumnSearch(next);
+        } else {
+          columnSearchDebounceRef.current = setTimeout(() => {
+            onColumnSearch(next);
+          }, columnSearchDebounceMs);
+        }
+      }
+
+      return next;
+    });
   };
 
   const handleGroupToggle = (groupId: string) => {
