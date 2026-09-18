@@ -101,7 +101,7 @@
     "@emotion/styled": "^11.14.1",
     "@figma/code-connect": "^2.0.1",
     "@mui/icons-material": "^9.0.0",
-    "@mui/material": "^9.0.0",
+    "@mui/material": "^9.2.0",
     "@playwright/test": "^1.62.1",
     "@rollup/plugin-typescript": "^12.1.2",
     "@rollup/plugin-url": "^8.0.2",
