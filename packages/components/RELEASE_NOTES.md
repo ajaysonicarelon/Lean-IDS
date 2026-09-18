@@ -1,3 +1,30 @@
+# Release Notes - Lean DS v1.7.12
+
+**Release Date:** September 18, 2026  
+**Package:** `@ajaysoni7832/lean-ids-components`
+
+---
+
+## 🚀 What's New in v1.7.12
+
+### 🐛 Bug Fixes
+
+#### Select — Label container renders empty `<div>` when no label is set
+- **Fixed ghost `<div>` spacing issue** — When `label` was empty or the dev used `display: hidden` workarounds, the `LabelContainer` div still rendered with its `margin-bottom` spacing, creating a blank gap. Now the entire container is suppressed when `showLabel={false}` or `label` is absent, in all three render paths (loading, empty, normal).
+
+### ✨ Select Enhancements
+- **`showLabel` prop** (boolean, default `true`) — Set to `false` to completely remove label DOM output; no empty `<div>` is rendered.
+- **`labelPosition` prop** (`'top' | 'left'`, default `'top'`) — Set to `'left'` to place the label inline to the left of the input for horizontal form layouts.
+- **`label` is now optional** — Previously a required `string`; now `string | undefined` so TypeScript no longer complains when no label is passed.
+
+### 📦 Installation
+
+```bash
+npm install @ajaysoni7832/lean-ids-components@1.7.12 @ajaysoni7832/lean-ids-tokens@1.7.12
+```
+
+---
+
 # Release Notes - Lean DS v1.7.11
 
 **Release Date:** September 14, 2026  

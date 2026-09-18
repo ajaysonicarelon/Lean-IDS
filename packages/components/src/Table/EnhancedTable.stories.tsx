@@ -25,7 +25,7 @@ const meta: Meta<typeof AdvancedDataTable> = {
     // Data & Columns
     initialColumns: {
       control: false,
-      description: 'Column configuration array. Each column supports: id, label, visible, locked, pinned ("left"|"right"|"none"), order, width, minWidth, maxWidth, resizable, filterable, subColumns, parentId, renderCell, headerIcon, onHeaderIconClick, headerIconTitle. The renderCell function signature is: (value, row, rowIndex) => ReactNode. Example: renderCell: (value, row) => <Chip label={value} />',
+      description: 'Column configuration array. Each column supports: id, label, visible, locked, pinned ("left"|"right"|"none"), order, width, minWidth, maxWidth, resizable, filterable, showColumnSearch, subColumns, parentId, renderCell, headerIcon, onHeaderIconClick, headerIconTitle. The renderCell function signature is: (value, row, rowIndex) => ReactNode. Example: renderCell: (value, row) => <Chip label={value} />',
       table: { category: 'Data & Columns' },
     },
     data: {
@@ -87,7 +87,12 @@ const meta: Meta<typeof AdvancedDataTable> = {
     },
     showColumnFilters: {
       control: 'boolean',
-      description: 'Show column search bars (controlled). When provided, parent controls visibility via onColumnFiltersChange callback',
+      description: 'Show column search bars for all columns (controlled). When provided, parent controls visibility via onColumnFiltersChange callback',
+      table: { category: 'Layout & Display' },
+    },
+    showColumnFiltersFor: {
+      control: 'object',
+      description: 'Show column search bars for specific columns only (array of column IDs). When provided, only these columns show search inputs. Takes precedence over showColumnFilters.',
       table: { category: 'Layout & Display' },
     },
     onColumnFiltersChange: {
@@ -414,7 +419,7 @@ import { AdvancedDataTable, getNestedColumnConfigs } from '@ajaysoni7832/lean-id
 | **Selection** | \`selectable\`, \`onRowSelect\` |
 | **Pagination** | \`paginated\`, \`itemsPerPage\`, \`paginationMode\`, \`onPageChange\`, \`onPageSizeChange\`, \`currentPage\`, \`totalItems\`, \`showPageSizeSelector\`, \`pageSizeOptions\` |
 | **Sorting** | \`sortMode\`, \`onSort\`, \`sortColumn\`, \`sortDirection\` |
-| **Column Search** | \`searchMode\`, \`onColumnSearch\`, \`columnSearches\`, \`showColumnFilters\`, \`onColumnFiltersChange\` |
+| **Column Search** | \`searchMode\`, \`onColumnSearch\`, \`columnSearches\`, \`showColumnFilters\`, \`showColumnFiltersFor\`, \`onColumnFiltersChange\` |
 | **Resizing** | \`defaultMinWidth\`, \`defaultMaxWidth\` |
 | **Events** | \`onRowClick\`, \`onOpen\`, \`onClose\`, \`onAfterOpen\`, \`onAfterClose\` |
 | **States** | \`loading\`, \`isInvalid\`, \`errorMessage\`, \`errorDescription\`, \`errorIcon\`, \`errorActionLabel\`, \`onErrorAction\`, \`errorStateContent\` |
@@ -519,6 +524,43 @@ const [showFilters, setShowFilters] = useState(false);
   onColumnFiltersChange={setShowFilters}
 />
 \`\`\`
+
+## 🎯 Column-Specific Search
+
+Control which columns show inline search inputs:
+
+**Three modes available:**
+
+1. **Global toggle (all columns):**
+   \`\`\`tsx
+   <AdvancedDataTable
+     showColumnFilters={true}
+   />
+   \`\`\`
+
+2. **Specific columns only:**
+   \`\`\`tsx
+   <AdvancedDataTable
+     showColumnFiltersFor={['firstName', 'lastName']}
+   />
+   \`\`\`
+
+3. **Per-column configuration:**
+   \`\`\`tsx
+   const columns = [
+     { id: 'firstName', label: 'First Name', showColumnSearch: true },
+     { id: 'lastName', label: 'Last Name', showColumnSearch: false },
+   ];
+   <AdvancedDataTable
+     showColumnFilters={true}
+     initialColumns={columns}
+   />
+   \`\`\`
+
+**Priority Logic:**
+- If \`showColumnFiltersFor\` is provided → Only those columns
+- Else if \`showColumnFilters\` is true → All columns with \`showColumnSearch: true\` (or all if not set)
+- Else → No search inputs
 
 ## 📄 Server-Side Pagination
 
@@ -1718,6 +1760,57 @@ export const CustomPagination: Story = {
     docs: {
       description: {
         story: 'Customize pagination with `itemsPerPage` prop, `showPageSizeSelector` to control dropdown visibility, and `pageSizeOptions` to customize available page sizes. This example shows 5 items per page with custom page size options.',
+      },
+    },
+  },
+};
+
+/**
+ * ## Column-Specific Search
+ *
+ * Control which columns show inline search inputs with three modes:
+ *
+ * **1. Global toggle (all columns):**
+ * ```tsx
+ * <AdvancedDataTable showColumnFilters={true} />
+ * ```
+ *
+ * **2. Specific columns only:**
+ * ```tsx
+ * <AdvancedDataTable showColumnFiltersFor={['firstName', 'lastName']} />
+ * ```
+ *
+ * **3. Per-column configuration:**
+ * ```tsx
+ * const columns = [
+ *   { id: 'firstName', label: 'First Name', showColumnSearch: true },
+ *   { id: 'lastName', label: 'Last Name', showColumnSearch: false },
+ * ];
+ * <AdvancedDataTable showColumnFilters={true} initialColumns={columns} />
+ * ```
+ *
+ * **Priority Logic:**
+ * - If `showColumnFiltersFor` is provided → Only those columns
+ * - Else if `showColumnFilters` is true → All columns with `showColumnSearch: true` (or all if not set)
+ * - Else → No search inputs
+ */
+export const ColumnSpecificSearch: Story = {
+  args: {
+    initialColumns: getNestedColumnConfigs(),
+    showToolbar: true,
+    toolbarTitle: 'Column-Specific Search',
+    showColumnFiltersFor: ['firstName', 'lastName'],
+    onRowClick: fn(),
+    onSort: fn(),
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: '**Column-Specific Search**: Control which columns show inline search inputs. This example shows search inputs only for `firstName` and `lastName` columns using `showColumnFiltersFor`. You can also use `showColumnSearch` on individual column configs or the global `showColumnFilters` toggle.',
+      },
+      story: {
+        inline: false,
+        iframeHeight: 600,
       },
     },
   },

@@ -6,6 +6,7 @@ export interface ColumnConfig {
   pinned?: 'left' | 'right' | 'none'; // Column pinning: 'left' (freeze to left), 'right' (freeze to right), 'none' (scrollable)
   order: number;
   filterable?: boolean; // Whether column can have filter (default: true)
+  showColumnSearch?: boolean; // Whether column shows inline search input (default: undefined - controlled by global settings)
   width?: string | number; // Custom column width (e.g., '150px', '20%', 200)
   minWidth?: number; // Minimum width constraint in pixels
   maxWidth?: number; // Maximum width constraint in pixels

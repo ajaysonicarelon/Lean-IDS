@@ -7,7 +7,7 @@ import { useEffect } from 'react';
 {`
   // Mark updates as viewed when user visits this page
   if (typeof window !== 'undefined') {
-    const currentVersion = '1.7.11';
+    const currentVersion = '1.7.12';
     const lastViewedVersion = localStorage.getItem('lean-ids-last-viewed-version');
     
     // Mark as viewed
@@ -217,7 +217,7 @@ import { useEffect } from 'react';
     <div className="icon">🔔</div>
     <div className="content">
       <div className="title">New Update Available!</div>
-      <div className="message">Version 1.7.11 has been released. Check out the latest changes below.</div>
+      <div className="message">Version 1.7.12 has been released. Check out the latest changes below.</div>
     </div>
   </div>
 </div>
@@ -225,7 +225,7 @@ import { useEffect } from 'react';
 <script dangerouslySetInnerHTML={{__html: `
   (function() {
     if (typeof window !== 'undefined') {
-      const currentVersion = '1.7.11';
+      const currentVersion = '1.7.12';
       const lastViewedVersion = localStorage.getItem('lean-ids-last-viewed-version');
       
       // Show banner if user hasn't seen this version
@@ -254,7 +254,7 @@ Stay up to date with the latest changes, improvements, and fixes to the Lean DS 
 
 <div className="stats-container">
   <div className="stat-card">
-    <div className="stat-number">1.7.11</div>
+    <div className="stat-number">1.7.12</div>
     <div className="stat-label">Current Version</div>
   </div>
   <div className="stat-card">
@@ -274,6 +274,55 @@ Stay up to date with the latest changes, improvements, and fixes to the Lean DS 
 ---
 
 ## 🚀 Current Version
+
+<div className="version-container">
+  <div className="version-header">
+    <div className="version-number">v1.7.12</div>
+    <div className="version-date">September 18, 2026</div>
+  </div>
+  <div className="version-content">
+
+    <div className="change-section">
+      <div className="change-title">
+        <span className="change-icon">🐛</span>
+        Bug Fixes
+      </div>
+      <ul className="change-list">
+        <li className="change-item critical">
+          <strong>Select — Empty label ghost div</strong> - When no label is provided or showLabel is false, the LabelContainer div is no longer rendered, eliminating the blank spacing gap above the input that appeared when devs used display:hidden workarounds.
+        </li>
+      </ul>
+    </div>
+
+    <div className="change-section">
+      <div className="change-title">
+        <span className="change-icon">✨</span>
+        Select Enhancements
+      </div>
+      <ul className="change-list">
+        <li className="change-item">
+          <strong>showLabel prop</strong> - New boolean prop (default: true). Set to false to completely suppress label DOM output on the Select component — no empty div rendered.
+        </li>
+        <li className="change-item">
+          <strong>labelPosition prop</strong> - New prop ('top' | 'left', default: 'top'). Set to 'left' to render the label inline to the left of the input for horizontal form layouts.
+        </li>
+        <li className="change-item">
+          <strong>label is now optional</strong> - Previously required; now optional so Select can be used without a label without TypeScript errors.
+        </li>
+      </ul>
+    </div>
+
+    <div className="migration-note">
+      <strong>📦 Installation</strong>
+      <code>npm install @ajaysoni7832/lean-ids-components@1.7.12 @ajaysoni7832/lean-ids-tokens@1.7.12</code>
+    </div>
+
+  </div>
+</div>
+
+---
+
+## 📋 Previous Versions
 
 <div className="version-container">
   <div className="version-header">
@@ -318,8 +367,6 @@ Stay up to date with the latest changes, improvements, and fixes to the Lean DS 
 </div>
 
 ---
-
-## 📋 Previous Versions
 
 <div className="version-container">
   <div className="version-header">

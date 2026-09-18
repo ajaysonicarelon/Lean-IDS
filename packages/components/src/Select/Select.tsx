@@ -141,6 +141,24 @@ const LabelContainer = styled.div`
   margin-bottom: ${({ theme }) => theme.spacing[1]};
 `;
 
+// Wrapper used when labelPosition='left' to lay label and input side-by-side
+const LeftLabelWrapper = styled.div`
+  display: flex;
+  align-items: flex-start;
+  gap: ${({ theme }) => theme.spacing[3]};
+  width: 100%;
+`;
+
+// When label is on the left it doesn't need bottom margin, just right-side alignment
+const LeftLabelContainer = styled.div`
+  display: flex;
+  gap: ${({ theme }) => theme.spacing[1]};
+  align-items: center;
+  padding-top: ${({ theme }) => theme.spacing[2]};
+  flex-shrink: 0;
+  white-space: nowrap;
+`;
+
 const Label = styled.label<{ $disabled?: boolean }>`
   font-family: ${({ theme }) => theme.fonts.primary};
   font-size: ${({ theme }) => theme.fontSizes[14]};
@@ -280,6 +298,8 @@ export const Select = forwardRef<HTMLDivElement, SelectProps>((
   {
     as,
     label,
+    showLabel = true,
+    labelPosition = 'top',
     placeholder = 'Placeholder',
     options = [],
     value,
@@ -683,10 +703,12 @@ export const Select = forwardRef<HTMLDivElement, SelectProps>((
   if (isLoading) {
     return (
       <SelectWrapper as={Container} ref={ref || wrapperRef} className={className} style={style} {...restProps}>
-        <LabelContainer>
-          <Label $disabled={true} className={labelClassName}>{label}</Label>
-          {required && <FieldImportance variant="asterisk" style="normal" />}
-        </LabelContainer>
+        {showLabel && label && (
+          <LabelContainer>
+            <Label $disabled={true} className={labelClassName}>{label}</Label>
+            {required && <FieldImportance variant="asterisk" style="normal" />}
+          </LabelContainer>
+        )}
         <div>
           <InputField
             value="Loading..."
@@ -730,10 +752,12 @@ export const Select = forwardRef<HTMLDivElement, SelectProps>((
   if (isEmpty) {
     return (
       <SelectWrapper as={Container} ref={ref || wrapperRef} className={className} style={style} {...restProps}>
-        <LabelContainer>
-          <Label $disabled={true} className={labelClassName}>{label}</Label>
-          {required && <FieldImportance variant="asterisk" style="normal" />}
-        </LabelContainer>
+        {showLabel && label && (
+          <LabelContainer>
+            <Label $disabled={true} className={labelClassName}>{label}</Label>
+            {required && <FieldImportance variant="asterisk" style="normal" />}
+          </LabelContainer>
+        )}
         <div>
           <InputField
             value=""
@@ -759,21 +783,16 @@ export const Select = forwardRef<HTMLDivElement, SelectProps>((
     );
   }
 
-  return (
-    <SelectWrapper as={Container} ref={ref || wrapperRef} className={className} style={style} {...restProps}>
-      {/* Label with required indicator */}
-      <LabelContainer>
-        <Label $disabled={disabled} className={labelClassName}>{label}</Label>
-        {required && <FieldImportance variant="asterisk" style="normal" />}
-      </LabelContainer>
-
+  // The trigger + dropdown + chips + helper text block (shared between top and left layouts)
+  const inputBlock = (
+    <>
       {/* Input Field (acts as trigger) */}
       {showChips && chipsPosition === 'inline' && multiple ? (
         // Inline chips mode - custom input with chips inside
         (() => {
           const filled = !!(Array.isArray(value) && value.length > 0);
           return (
-            <InputWithChipsWrapper 
+            <InputWithChipsWrapper
               onClick={() => !disabled && (isOpen ? handleClose() : handleOpen())}
               $disabled={disabled}
               $error={hasError}
@@ -781,20 +800,17 @@ export const Select = forwardRef<HTMLDivElement, SelectProps>((
               $filled={filled}
               $size={size}
               role="button"
-          aria-haspopup="listbox"
-          aria-expanded={isOpen}
-          tabIndex={disabled ? -1 : 0}
-        >
-          {renderInlineChips()}
-          {showTrailingIcon && (
-            <TrailingIconWrapper>
-              <Icon
-                name={isOpen ? 'ExpandLess' : 'ExpandMore'}
-                size="small"
-              />
-            </TrailingIconWrapper>
-          )}
-        </InputWithChipsWrapper>
+              aria-haspopup="listbox"
+              aria-expanded={isOpen}
+              tabIndex={disabled ? -1 : 0}
+            >
+              {renderInlineChips()}
+              {showTrailingIcon && (
+                <TrailingIconWrapper>
+                  <Icon name={isOpen ? 'ExpandLess' : 'ExpandMore'} size="small" />
+                </TrailingIconWrapper>
+              )}
+            </InputWithChipsWrapper>
           );
         })()
       ) : (
@@ -811,10 +827,7 @@ export const Select = forwardRef<HTMLDivElement, SelectProps>((
               leadingIcon={showLeadingIcon ? <Icon name="Search" size="small" /> : undefined}
               trailingIcon={
                 showTrailingIcon ? (
-                  <Icon
-                    name={isOpen ? 'ExpandLess' : 'ExpandMore'}
-                    size="small"
-                  />
+                  <Icon name={isOpen ? 'ExpandLess' : 'ExpandMore'} size="small" />
                 ) : undefined
               }
               onKeyDown={(e) => e.preventDefault()}
@@ -827,12 +840,12 @@ export const Select = forwardRef<HTMLDivElement, SelectProps>((
       )}
 
       {/* Dropdown Options */}
-      <DropdownContainer 
+      <DropdownContainer
         ref={dropdownRef}
-        $isOpen={isOpen && !disabled} 
+        $isOpen={isOpen && !disabled}
         className={dropdownClassName}
         role="listbox"
-        aria-label={`${label} options`}
+        aria-label={label || 'Select options'}
       >
         {searchable && (
           <SearchInputWrapper>
@@ -969,6 +982,36 @@ export const Select = forwardRef<HTMLDivElement, SelectProps>((
             className={helperTextClassName}
           />
         </div>
+      )}
+    </>
+  );
+
+  return (
+    <SelectWrapper as={Container} ref={ref || wrapperRef} className={className} style={style} {...restProps}>
+      {labelPosition === 'left' ? (
+        // Left layout: label sits inline to the left of the input
+        <LeftLabelWrapper>
+          {showLabel && label && (
+            <LeftLabelContainer>
+              <Label $disabled={disabled} className={labelClassName}>{label}</Label>
+              {required && <FieldImportance variant="asterisk" style="normal" />}
+            </LeftLabelContainer>
+          )}
+          <div style={{ flex: 1, minWidth: 0, position: 'relative' }}>
+            {inputBlock}
+          </div>
+        </LeftLabelWrapper>
+      ) : (
+        // Top layout (default): label sits above the input
+        <>
+          {showLabel && label && (
+            <LabelContainer>
+              <Label $disabled={disabled} className={labelClassName}>{label}</Label>
+              {required && <FieldImportance variant="asterisk" style="normal" />}
+            </LabelContainer>
+          )}
+          {inputBlock}
+        </>
       )}
     </SelectWrapper>
   );

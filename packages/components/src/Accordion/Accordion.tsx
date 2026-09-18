@@ -25,7 +25,7 @@
  */
 
 import React, { useState, useEffect, useRef, forwardRef, useId } from 'react';
-import { ExpandMore, Error as ErrorIcon, HourglassEmpty, Loop } from '@mui/icons-material';
+import { ExpandMore, Error as ErrorIcon, HourglassEmpty, Loop, CheckCircle } from '@mui/icons-material';
 import { AccordionProps } from './Accordion.types';
 import { Typography } from '../Typography';
 import {
@@ -43,6 +43,7 @@ import {
   ErrorContainer,
   AccordionFooter,
   FooterActionsContainer,
+  FooterLine,
 } from './Accordion.styles';
 
 /**
@@ -72,6 +73,7 @@ export const Accordion = forwardRef<HTMLDivElement, AccordionProps>(
       headingVariant = 'headingM',
       headingWeight = 'semibold',
       description,
+      showDescription = true,
       children,
       
       // Icons & Metadata
@@ -82,6 +84,8 @@ export const Accordion = forwardRef<HTMLDivElement, AccordionProps>(
       
       // Footer
       showFooter = false,
+      showFooterLine = true,
+      showButtons = true,
       footerText,
       footerActions,
       
@@ -134,7 +138,7 @@ export const Accordion = forwardRef<HTMLDivElement, AccordionProps>(
     const accordionId = providedId || generatedId;
     const headerId = `${accordionId}-header`;
     const contentId = `${accordionId}-content`;
-    const descriptionId = description ? `${accordionId}-description` : undefined;
+    const descriptionId = description && showDescription ? `${accordionId}-description` : undefined;
     
     // Internal state for uncontrolled mode
     const [internalExpanded, setInternalExpanded] = useState(defaultExpanded);
@@ -236,8 +240,10 @@ export const Accordion = forwardRef<HTMLDivElement, AccordionProps>(
             <HeaderLeftContent>
               {/* Icon and Heading */}
               <IconAndHeading>
-                {showLeadIcon && leadIcon && (
-                  <LeadIconWrapper aria-hidden="true">{leadIcon}</LeadIconWrapper>
+                {showLeadIcon && (
+                  <LeadIconWrapper aria-hidden="true">
+                    {leadIcon ?? <CheckCircle />}
+                  </LeadIconWrapper>
                 )}
                 <Typography 
                   variant={headingVariant}
@@ -266,7 +272,7 @@ export const Accordion = forwardRef<HTMLDivElement, AccordionProps>(
           </HeaderTopRow>
           
           {/* Description */}
-          {description && (
+          {description && showDescription && (
             <span id={descriptionId} style={{ width: '100%' }}>
               <Typography 
                 variant="body" 
@@ -345,16 +351,19 @@ export const Accordion = forwardRef<HTMLDivElement, AccordionProps>(
       }
       
       return (
-        <AccordionFooter className={footerClassName} style={footerStyle}>
-          {footerText && (
-            <Typography variant="caption" as="span" style={{ whiteSpace: 'nowrap' }}>
-              {footerText}
-            </Typography>
-          )}
-          {footerActions && (
-            <FooterActionsContainer>{footerActions}</FooterActionsContainer>
-          )}
-        </AccordionFooter>
+        <>
+          {showFooterLine && <FooterLine />}
+          <AccordionFooter className={footerClassName} style={footerStyle}>
+            {footerText && (
+              <Typography variant="caption" as="span" style={{ whiteSpace: 'nowrap' }}>
+                {footerText}
+              </Typography>
+            )}
+            {showButtons && footerActions && (
+              <FooterActionsContainer>{footerActions}</FooterActionsContainer>
+            )}
+          </AccordionFooter>
+        </>
       );
     };
     

@@ -5,6 +5,27 @@ All notable changes to the Lean DS Design System will be documented in this file
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.7.12] - 2026-09-18
+
+### 🐛 Bug Fixes
+
+**Select — Label container ghost `<div>`**
+- Fixed empty `LabelContainer` div rendering when `label` is absent or `showLabel={false}`, causing blank spacing above the input. All three render paths (loading, empty, normal) now guard with `{showLabel && label && ...}` — matching the existing behaviour of `InputField` and `Textarea`.
+
+### ✨ Enhancements
+
+**Select**
+- Added `showLabel` boolean prop (default `true`) — completely suppresses label DOM when `false`
+- Added `labelPosition` prop (`'top' | 'left'`, default `'top'`) — `'left'` renders the label inline to the left of the input
+- Made `label` prop optional (was previously required `string`)
+
+### 📚 Documentation
+- Updated README.md, RELEASE_NOTES.md, CHANGELOG.md for v1.7.12
+- Updated Storybook updates.mdx
+
+### 🔧 Technical
+- Version alignment with `@ajaysoni7832/lean-ids-tokens@1.7.12`
+
 ## [1.7.11] - 2026-09-14
 
 ### 🐛 Bug Fixes

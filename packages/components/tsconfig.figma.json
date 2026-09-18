@@ -1,0 +1,19 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "rootDir": "./src",
+    "jsx": "react-jsx",
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
+    "types": [
+      "react",
+      "react-dom",
+      "lodash",
+      "styled-components",
+      "node",
+      "@figma/code-connect/figma-types"
+    ]
+  },
+  "include": ["src/**/*.figma.ts", "src/**/*.figma.tsx"],
+  "exclude": ["node_modules", "dist"]
+}

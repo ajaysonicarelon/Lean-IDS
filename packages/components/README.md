@@ -5,21 +5,22 @@ A comprehensive React component library for building consistent, accessible user
 [![npm version](https://img.shields.io/npm/v/@ajaysoni7832/lean-ids-components.svg)](https://www.npmjs.com/package/@ajaysoni7832/lean-ids-components)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
-## 🎉 What's New in v1.7.11
+## 🎉 What's New in v1.7.12
 
-Current Version: **1.7.11**
+Current Version: **1.7.12**
 
 ### 🐛 Bug Fixes
-- ✅ **AdvancedTable — Server-side column search fixed** — Typing "AED" now correctly passes `{ col: 'AED' }` in the callback instead of three separate single-character calls. Input text now displays immediately on every keystroke without waiting for a prop round-trip.
+- ✅ **Select — Empty label renders invisible `<div>`** — When no `label` is provided or `showLabel={false}` is set, the `LabelContainer` div is no longer rendered at all, eliminating the blank space above the input.
 
-### ✨ AdvancedTable Enhancements
-- ✅ **`columnSearchDebounceMs` prop** — Debounce delay (default 300 ms) before `onColumnSearch` fires, preventing an API call per keystroke. Set to `0` to disable.
-- ✅ **External reset support** — Passing an updated `columnSearches` prop (e.g. `{}` to clear all) now correctly resets the column search inputs.
+### ✨ Select Enhancements
+- ✅ **`showLabel` prop** — Boolean (default `true`). Set to `false` to completely suppress label DOM output on the Select component.
+- ✅ **`labelPosition` prop** — `'top'` (default) or `'left'`. Allows the label to be rendered inline to the left of the input for horizontal form layouts.
+- ✅ **`label` is now optional** — Previously required; now optional so Select can be used without a label without TypeScript errors.
 
 ### 📦 Installation
 
 ```bash
-npm install @ajaysoni7832/lean-ids-components@1.7.11 @ajaysoni7832/lean-ids-tokens@1.7.11
+npm install @ajaysoni7832/lean-ids-components@1.7.12 @ajaysoni7832/lean-ids-tokens@1.7.12
 ```
 
 📖 **[Read Full Release Notes](./RELEASE_NOTES.md)** | **[Migration Guide](./MIGRATION_GUIDE.md)**

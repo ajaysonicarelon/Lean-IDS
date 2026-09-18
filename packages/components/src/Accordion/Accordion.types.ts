@@ -44,6 +44,13 @@ export interface AccordionProps extends Omit<HTMLAttributes<HTMLDivElement>, 'on
   description?: string;
   
   /**
+   * Show/hide the description text.
+   * When false, description is hidden even if provided.
+   * @default true
+   */
+  showDescription?: boolean;
+  
+  /**
    * Content to display when expanded.
    * Can be any React node or component.
    */
@@ -52,8 +59,9 @@ export interface AccordionProps extends Omit<HTMLAttributes<HTMLDivElement>, 'on
   // ===== ICONS & METADATA =====
   /**
    * Lead icon (24px) shown before heading.
-   * Typically a Material Icon component.
+   * Use a Material UI icon component (from @mui/icons-material).
    * @example leadIcon={<CheckCircleOutlined />}
+   * @default <CheckCircle /> (shown when showLeadIcon is true and no icon provided)
    */
   leadIcon?: ReactNode;
   
@@ -83,6 +91,19 @@ export interface AccordionProps extends Omit<HTMLAttributes<HTMLDivElement>, 'on
    * @default false
    */
   showFooter?: boolean;
+  
+  /**
+   * Show/hide the divider line between content and footer.
+   * @default true
+   */
+  showFooterLine?: boolean;
+  
+  /**
+   * Show/hide the footer action buttons area.
+   * When false, footerActions are hidden even if provided.
+   * @default true
+   */
+  showButtons?: boolean;
   
   /**
    * Footer text content.

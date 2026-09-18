@@ -188,3 +188,9 @@ export const FooterActionsContainer = styled.div`
   align-items: center;
   gap: ${({ theme }) => theme.spacing[3]}; /* 8px */
 `;
+
+export const FooterLine = styled.div`
+  width: 100%;
+  height: 1px;
+  background-color: ${({ theme }) => theme.colors.palette.neutral[200]};
+`;

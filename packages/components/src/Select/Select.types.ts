@@ -18,7 +18,22 @@ export interface SelectProps extends Omit<HTMLAttributes<HTMLDivElement>, 'onCha
   as?: ElementType;
   
   /** Field label */
-  label: string;
+  label?: string;
+  
+  /**
+   * Whether to show the label
+   * When false, the label and its container div are not rendered at all
+   * @default true
+   */
+  showLabel?: boolean;
+  
+  /**
+   * Position of the label relative to the input
+   * 'top' - label renders above the input (default)
+   * 'left' - label renders to the left of the input (inline)
+   * @default 'top'
+   */
+  labelPosition?: 'top' | 'left';
   
   /** Placeholder text */
   placeholder?: string;

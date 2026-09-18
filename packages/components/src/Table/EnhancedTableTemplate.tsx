@@ -340,6 +340,8 @@ interface AdvancedTableProps extends React.HTMLAttributes<HTMLDivElement> {
   onDownload?: () => void;
   /** Show column search bars in sub-header (controlled) */
   showColumnFilters?: boolean;
+  /** Limit column search inputs to specific columns (array of column IDs). The search row still requires showColumnFilters (user toggle) to be visible. */
+  showColumnFiltersFor?: string[];
   /** Callback when column filters visibility changes */
   onColumnFiltersChange?: (show: boolean) => void;
   /** Custom tabs for side panel */
@@ -551,6 +553,7 @@ export const AdvancedDataTable = forwardRef<HTMLDivElement, AdvancedTableProps>(
   showDownload = false,
   onDownload,
   showColumnFilters: controlledShowColumnFilters,
+  showColumnFiltersFor,
   onColumnFiltersChange,
   customSidePanelTabs = [],
   maxHeight,
@@ -1484,7 +1487,13 @@ export const AdvancedDataTable = forwardRef<HTMLDivElement, AdvancedTableProps>(
   };
 
   const renderSearchFilterRow = () => {
-    if (!showColumnFilters) return null;
+    // Priority logic for showing column search inputs:
+    // The search row visibility is always gated by the showColumnFilters toggle (user click).
+    // Which columns show an input within the row is determined by:
+    // 1. If showColumnFiltersFor is provided → Only those column IDs
+    // 2. Else → All columns with showColumnSearch !== false
+    const shouldShowSearchRow = showColumnFilters;
+    if (!shouldShowSearchRow) return null;
 
     return (
       <tr>
@@ -1494,6 +1503,16 @@ export const AdvancedDataTable = forwardRef<HTMLDivElement, AdvancedTableProps>(
           const leftOffset = columnOffsets[col.id];
           const rightOffset = rightColumnOffsets[col.id];
           const isFilterable = col.filterable !== false; // Default to true if not specified
+
+          // Determine if this column should show search input
+          let showSearchForColumn = false;
+          if (showColumnFiltersFor) {
+            // Specific columns mode
+            showSearchForColumn = showColumnFiltersFor.includes(col.id);
+          } else if (showColumnFilters) {
+            // Global mode - check column-level setting
+            showSearchForColumn = col.showColumnSearch !== false; // Default to true if not set
+          }
 
           // Skip filter input for checkbox-only columns (first column with only checkbox, no label)
           if (col.id === 'checkbox') {
@@ -1515,8 +1534,8 @@ export const AdvancedDataTable = forwardRef<HTMLDivElement, AdvancedTableProps>(
             );
           }
 
-          // If column is not filterable, render empty cell
-          if (!isFilterable) {
+          // If column is not filterable or not configured to show search, render empty cell
+          if (!isFilterable || !showSearchForColumn) {
             return (
               <th
                 key={col.id}
@@ -1544,7 +1563,7 @@ export const AdvancedDataTable = forwardRef<HTMLDivElement, AdvancedTableProps>(
               pinned={pinnedSide}
               leftOffset={leftOffset}
               rightOffset={rightOffset}
-              showPinBorder={(pinnedSide === 'left' && colIndex === lastLeftPinnedFlatIndex) || 
+              showPinBorder={(pinnedSide === 'left' && colIndex === lastLeftPinnedFlatIndex) ||
                              (pinnedSide === 'right' && colIndex === firstRightPinnedFlatIndex)}
               data-locked={isLocked}
             />
