@@ -126,9 +126,11 @@ export interface TableProps extends React.HTMLAttributes<HTMLDivElement> {
   showToolbar?: boolean;
   /** Show global search in toolbar */
   showGlobalSearch?: boolean;
-  /** Show filter button in toolbar */
+  /** Show filter button in toolbar — only set when onFilter is provided */
   showFilter?: boolean;
-  /** Show download button in toolbar */
+  /** Filter button handler */
+  onFilter?: () => void;
+  /** Show download button in toolbar — only set when onDownload is provided */
   showDownload?: boolean;
   /** Download handler */
   onDownload?: () => void;
@@ -393,8 +395,9 @@ export const Table = forwardRef<HTMLDivElement, TableProps>(({  as: Component = 
   description,
   showToolbar = true,
   showGlobalSearch = false,
-  showFilter = true,
-  showDownload = true,
+  showFilter = false,
+  onFilter,
+  showDownload = false,
   onDownload,
   sortMode = 'client',
   onSort,
@@ -1265,7 +1268,7 @@ const processedData = useMemo(() => {
           showDownload={showDownload}
           onDownload={onDownload}
           showFilter={showFilter}
-          onFilter={() => {}}
+          onFilter={onFilter}
           showSettings={showSettings}
           onSettingsClick={() => setSettingsOpen(true)}
           showGlobalSearch={showGlobalSearch}

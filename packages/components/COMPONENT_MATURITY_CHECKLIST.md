@@ -60,6 +60,7 @@ Build [ComponentName] according to the Component Maturity Checklist
 
 ### 6. STORYBOOK DOCUMENTATION 📚
 - [ ] **Typography component in ALL stories** (no `<h1>`, `<p>`, etc.)
+- [ ] **Only use valid Typography variants** — see variant table below (invalid variants crash at runtime)
 - [ ] Comprehensive component description
 - [ ] Stories for all states (loading, error, empty)
 - [ ] Stories for all sizes/variants
@@ -70,6 +71,43 @@ Build [ComponentName] according to the Component Maturity Checklist
 ---
 
 ## 🚫 NEVER DO
+
+### ❌ Invalid Typography Variants (Runtime Crash!)
+
+The `variant` prop maps directly to keys in the token file. An invalid variant causes:
+`TypeError: Cannot read properties of undefined (reading 'semibold')`
+
+**Valid variants — only these 11 strings are allowed:**
+
+| Variant | Purpose |
+|---|---|
+| `displayL` | Hero / jumbo headings |
+| `displayM` | Large display text |
+| `displayS` | Small display text |
+| `headingXL` | Page titles |
+| `headingL` | Section headings |
+| `headingM` | Sub-section headings |
+| `headingS` | Card/panel headings |
+| `body` | Body copy, descriptions |
+| `paragraph` | Long-form prose |
+| `caption` | Helper text, fine print |
+| `code` | Monospace / code snippets |
+
+```tsx
+// ✅ CORRECT
+<Typography variant="body" weight="semibold">Label</Typography>
+<Typography variant="caption">Helper text</Typography>
+<Typography variant="headingS">Card title</Typography>
+
+// ❌ WRONG — crash at runtime
+<Typography variant="bodyS">...</Typography>       // ❌
+<Typography variant="headingXS">...</Typography>   // ❌
+<Typography variant="label">...</Typography>       // ❌
+<Typography variant="subtitle">...</Typography>    // ❌
+<Typography variant="bodySmall">...</Typography>   // ❌
+```
+
+**When you need smaller text:** use `caption`. Never invent variants.
 
 ### ❌ Hardcoded Values
 ```typescript

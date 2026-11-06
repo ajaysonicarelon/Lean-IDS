@@ -225,11 +225,11 @@ export const TableToolbar: React.FC<TableToolbarProps> = ({
   globalSearchValue = '',
   onGlobalSearchChange,
   globalSearchPlaceholder = 'Search...',
-  showDownload = true,
+  showDownload = false,
   onDownload,
-  showFilter = true,
+  showFilter = false,
   onFilter,
-  showSettings = true,
+  showSettings = false,
   onSettingsClick,
 }) => {
   // If custom children provided, render them instead of default toolbar

@@ -170,6 +170,19 @@ export type { TypographyProps, TypographyVariant, TypographyWeight, TypographyCo
 export { ProgressBar } from './ProgressBar';
 export type { ProgressBarProps, ProgressBarSize, ProgressBarType } from './ProgressBar';
 
+export { Stepper, StepIndicator, StepConnector } from './Stepper';
+export type {
+  StepperProps,
+  StepIndicatorProps,
+  StepConnectorProps,
+  StepItem,
+  StepperSize,
+  StepperType,
+  StepStatus,
+  StepperOrientation,
+  StepContent,
+} from './Stepper';
+
 export { Popover } from './Popover';
 export type { PopoverProps, PopoverPlacement } from './Popover';
 

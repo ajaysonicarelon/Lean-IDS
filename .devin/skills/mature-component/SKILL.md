@@ -645,12 +645,44 @@ test('has proper ARIA attributes', () => {
 
 #### Required:
 - [ ] **Typography component in ALL stories** (no `<h1>`, `<p>`, etc.)
+- [ ] **Only valid Typography variants** — see list below (invalid variants crash at runtime!)
 - [ ] **Comprehensive component description**
 - [ ] **Stories for all states** (loading, error, empty)
 - [ ] **Stories for all sizes/variants**
 - [ ] **Stories for customization** (render props, slots)
 - [ ] **Story for forwardRef usage**
 - [ ] **Copy-paste ready examples**
+
+#### ⚠️ CRITICAL: Valid Typography Variants
+
+The `variant` prop maps directly to keys in the token file. **An invalid variant name causes a runtime crash:**
+`TypeError: Cannot read properties of undefined (reading 'semibold')`
+
+**Only these 11 variants exist — use no others:**
+
+```
+displayL | displayM | displayS
+headingXL | headingL | headingM | headingS
+body | paragraph | caption | code
+```
+
+```tsx
+// ✅ CORRECT
+<Typography variant="body" weight="semibold">Section label</Typography>
+<Typography variant="caption">Helper text</Typography>
+<Typography variant="headingS" weight="medium">Card title</Typography>
+<Typography variant="headingM" weight="semibold">Page section</Typography>
+
+// ❌ WRONG — crash at runtime — these variants DO NOT EXIST
+<Typography variant="bodyS">...</Typography>       // ❌ crashes!
+<Typography variant="headingXS">...</Typography>   // ❌ crashes!
+<Typography variant="label">...</Typography>       // ❌ crashes!
+<Typography variant="subtitle">...</Typography>    // ❌ crashes!
+<Typography variant="bodySmall">...</Typography>   // ❌ crashes!
+<Typography variant="bodyLarge">...</Typography>   // ❌ crashes!
+```
+
+**When you need smaller text:** use `caption`. **When you need a sub-label:** use `body` with `weight`. Never invent variant names.
 
 ---
 
@@ -987,6 +1019,7 @@ Before finalizing, verify:
 - [ ] Typography imported in stories file
 - [ ] **Zero HTML tags** (<h1>, <h2>, <h3>, <p>, <ul>, <li>) in ALL stories
 - [ ] All text uses Typography component
+- [ ] **⚠️ Only valid Typography variants used** (`displayL/M/S`, `headingXL/L/M/S`, `body`, `paragraph`, `caption`, `code`) — invalid variants crash at runtime!
 - [ ] Comprehensive component description
 - [ ] Basic usage example with imports
 - [ ] Stories for all states (loading, error, empty)

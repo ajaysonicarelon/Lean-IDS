@@ -118,6 +118,11 @@ import { Card } from '@ajaysoni7832/lean-ids-components';
 - **Drawer** (for side panels, filters, forms)
 - Tooltip
 
+### Table Components:
+- **AdvancedDataTable** (PREFERRED - full table with toolbar, sorting, selection, pagination, column management)
+- Table (bare primitive - NO toolbar; use only for toolbar-less tables)
+- Pagination
+
 ---
 
 ## 🎨 PAGE TEMPLATES GUIDELINES
@@ -218,7 +223,33 @@ import { Input } from '@ajaysoni7832/lean-ids-components';
 />
 ```
 
-### 3. Navigation
+### 3. Tables (IMPORTANT - common mistakes!)
+```tsx
+import { AdvancedDataTable } from '@ajaysoni7832/lean-ids-components';
+
+// ✅ CORRECT - always use AdvancedDataTable for table screens
+<AdvancedDataTable
+  data={data}
+  initialColumns={columns}
+  toolbarTitle="Claims"        // REQUIRED - always a real title (never default 'Data Table')
+  showGlobalSearch
+  showFilter                   // ONLY if onFilter is also passed
+  onFilter={handleFilter}
+  useModal                     // Enables working settings (gear) button
+  selectable
+  paginated
+/>
+
+// ❌ WRONG - bare Table has NO toolbar/title
+<Table data={data} columns={columns} />
+
+// ❌ WRONG - dead buttons (no handlers wired)
+<AdvancedDataTable showFilter showDownload />  // without onFilter/onDownload
+
+// ❌ WRONG - never hand-compose TableToolbar + Table (toolbar stacks/breaks)
+```
+
+### 4. Navigation
 ```tsx
 import { SideNavigation } from '@ajaysoni7832/lean-ids-components';
 
@@ -531,6 +562,35 @@ const StyledDiv = styled.div`
   padding: ${({ theme }) => theme.spacing[4]};
 `;
 ```
+
+### 5. Don't Invent Typography Variants — Only Use Valid Token Variants
+
+**⚠️ This causes a runtime crash:** `TypeError: Cannot read properties of undefined (reading 'semibold')`
+
+The `variant` prop on `<Typography>` must be one of the **exact** strings below. The token file has no other variants — passing anything else crashes at runtime.
+
+**✅ Valid variants only:**
+```
+displayL | displayM | displayS
+headingXL | headingL | headingM | headingS
+body | paragraph | caption | code
+```
+
+```tsx
+// ✅ CORRECT
+<Typography variant="body" weight="semibold">Label</Typography>
+<Typography variant="caption">Helper text</Typography>
+<Typography variant="headingS">Card title</Typography>
+
+// ❌ WRONG — these DO NOT EXIST and crash at runtime
+<Typography variant="bodyS">...</Typography>       // ❌ crashes!
+<Typography variant="headingXS">...</Typography>   // ❌ crashes!
+<Typography variant="label">...</Typography>       // ❌ crashes!
+<Typography variant="subtitle">...</Typography>    // ❌ crashes!
+<Typography variant="bodySmall">...</Typography>   // ❌ crashes!
+```
+
+**Rule:** If you need smaller text, use `caption`. Never invent variant names.
 
 ---
 

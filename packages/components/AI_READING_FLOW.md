@@ -90,7 +90,12 @@ Before writing ANY code, verify:
 ## 🎯 What You Should Know After Reading
 
 ### **Available Components:**
-Button, Input, Checkbox, Radio, Select, TextArea, Toggle, Avatar, Badge, Brand, Card, Chip, Divider, Icon, Link, MenuItem, Tooltip, PageLayout, TopHeader, SideNavigation, Footer, PageHeader, Breadcrumb, Modal, Drawer, Table, TableHeader, TableCell, TableSettings, TableSidePanel, TableSubHeader, EnhancedTableTemplate, Accordion, DateTimePicker, TimePicker, DateTimeRangePicker, Pagination, Tabs, Toast, AlertBanner, InlineMessage
+Button, Input, Checkbox, Radio, Select, TextArea, Toggle, Avatar, Badge, Brand, Card, Chip, Divider, Icon, Link, MenuItem, Tooltip, PageLayout, TopHeader, SideNavigation, Footer, PageHeader, Breadcrumb, Modal, Drawer, Accordion, DateTimePicker, TimePicker, DateTimeRangePicker, Pagination, Tabs, Toast, AlertBanner, InlineMessage
+
+**Table components:**
+- `AdvancedDataTable` — **PREFERRED**: full-featured table (toolbar with title/search/filter/download/settings, sorting, selection, pagination, column pinning, side panel or modal settings). Use this for any table screen. Always pass `toolbarTitle`, and only enable `showFilter`/`showDownload`/`useModal` when wiring their handlers.
+- `Table` — bare primitive, **no toolbar**; use only for toolbar-less tables.
+- `TableToolbar`, `TableHeader`, `TableCell`, `TableSettings`, `TableSidePanel`, `TableSubHeader` — building blocks; do not hand-compose unless the design requires a fully custom toolbar.
 
 ### **Forbidden Libraries:**
 Material-UI, Ant Design, Chakra UI, Bootstrap, Tailwind UI, Shadcn/ui, Radix UI, Mantine, and ALL other external UI libraries

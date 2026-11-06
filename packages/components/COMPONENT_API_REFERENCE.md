@@ -110,28 +110,33 @@ interface MetricCardProps {
 
 #### **Actual Implementation:**
 ```tsx
-// TableToolbar requires these props
+// TableToolbar real props (from TableToolbar.tsx)
 interface TableToolbarProps {
-  title?: string;
-  description?: string;
-  showSearch?: boolean;
-  searchPlaceholder?: string;
-  searchValue?: string;
-  onSearchChange?: (value: string) => void;
-  showFilter?: boolean;
-  filterOptions?: FilterOption[];
-  selectedFilter?: string;
-  onFilterChange?: (filterId: string) => void;
-  showDownload?: boolean;
+  children?: React.ReactNode;        // Custom content — replaces the default toolbar entirely
+  className?: string;
+  title?: string;                    // Table title (left side)
+  showDropdown?: boolean;
+  dropdownOptions?: DropdownOption[]; // { label, value }
+  dropdownValue?: string;
+  onDropdownChange?: (value: string) => void;
+  dropdownLabel?: string;
+  showGlobalSearch?: boolean;
+  globalSearchValue?: string;
+  onGlobalSearchChange?: (value: string) => void;
+  globalSearchPlaceholder?: string;
+  showDownload?: boolean;            // Default: false — only set true WITH onDownload
   onDownload?: () => void;
-  downloadFormats?: Array<{ label: string; format: string }>;
-  showSettings?: boolean;
+  showFilter?: boolean;              // Default: false — only set true WITH onFilter
+  onFilter?: () => void;
+  showSettings?: boolean;            // Default: false — only set true WITH onSettingsClick
   onSettingsClick?: () => void;
-  customActions?: React.ReactNode;
-  selectedCount?: number;
-  bulkActions?: React.ReactNode;
 }
 ```
+
+> ⚠️ These are the ONLY props that exist. Props like `description`, `showSearch`,
+> `filterOptions`, `onFilterChange`, `bulkActions`, `selectedCount` do NOT exist —
+> passing them does nothing. For most table screens, use `AdvancedDataTable`
+> instead of composing `TableToolbar` manually.
 
 ---
 

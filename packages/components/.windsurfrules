@@ -46,6 +46,24 @@ Import ONLY from:
 
 Button, Input, Checkbox, Radio, Select, TextArea, Toggle, Avatar, Badge, Brand, Card, Chip, Divider, Icon, Link, MenuItem, Tooltip, PageLayout, TopHeader, SideNavigation, Footer, PageHeader, Breadcrumb
 
+### Table Components:
+- **AdvancedDataTable** — PREFERRED: full table with toolbar (title, search, filter, download, settings), sorting, selection, pagination, column management
+- **Table** — bare primitive, NO toolbar; use only for toolbar-less tables
+
+### ✅ CORRECT Table usage (default pattern):
+```tsx
+<AdvancedDataTable
+  data={data}
+  initialColumns={columns}
+  toolbarTitle="Claims"      // REQUIRED — never leave the default 'Data Table'
+  showGlobalSearch
+  showFilter onFilter={fn}   // only enable buttons when wiring their handler
+  useModal                   // working settings button
+  selectable paginated
+/>
+```
+❌ Never use bare `Table` when a toolbar/title is needed; never enable toolbar buttons without their handlers; never hand-compose `TableToolbar` + `Table` (layout breaks).
+
 ---
 
 ## 🎯 PAGE LAYOUT TEMPLATES

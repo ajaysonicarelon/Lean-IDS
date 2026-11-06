@@ -751,7 +751,7 @@ export const ChipSizes: Story = {
         </Typography>
 
         <div>
-          <Typography variant="bodyS" weight="semibold" style={{ marginBottom: '8px' }}>chipSize="small" (default)</Typography>
+          <Typography variant="body" weight="semibold" style={{ marginBottom: '8px' }}>chipSize="small" (default)</Typography>
           <Select
             label="Fruits"
             placeholder="Select fruits..."
@@ -766,7 +766,7 @@ export const ChipSizes: Story = {
         </div>
 
         <div>
-          <Typography variant="bodyS" weight="semibold" style={{ marginBottom: '8px' }}>chipSize="medium"</Typography>
+          <Typography variant="body" weight="semibold" style={{ marginBottom: '8px' }}>chipSize="medium"</Typography>
           <Select
             label="Fruits"
             placeholder="Select fruits..."
@@ -781,7 +781,7 @@ export const ChipSizes: Story = {
         </div>
 
         <div>
-          <Typography variant="bodyS" weight="semibold" style={{ marginBottom: '8px' }}>chipSize="large"</Typography>
+          <Typography variant="body" weight="semibold" style={{ marginBottom: '8px' }}>chipSize="large"</Typography>
           <Select
             label="Fruits"
             placeholder="Select fruits..."
@@ -893,7 +893,7 @@ export const SortSelectedFirst: Story = {
 
         <div style={{ display: 'flex', gap: '24px', flexWrap: 'wrap' }}>
           <div style={{ flex: '1', minWidth: '280px' }}>
-            <Typography variant="bodyS" weight="semibold" style={{ marginBottom: '8px' }}>Without sortSelectedFirst</Typography>
+            <Typography variant="body" weight="semibold" style={{ marginBottom: '8px' }}>Without sortSelectedFirst</Typography>
             <Select
               label="Countries (default order)"
               placeholder="Select countries..."
@@ -908,7 +908,7 @@ export const SortSelectedFirst: Story = {
           </div>
 
           <div style={{ flex: '1', minWidth: '280px' }}>
-            <Typography variant="bodyS" weight="semibold" style={{ marginBottom: '8px' }}>With sortSelectedFirst</Typography>
+            <Typography variant="body" weight="semibold" style={{ marginBottom: '8px' }}>With sortSelectedFirst</Typography>
             <Select
               label="Countries (selected on top)"
               placeholder="Select countries..."

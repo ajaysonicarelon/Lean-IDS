@@ -1388,10 +1388,10 @@ export const AdvancedDataTable = forwardRef<HTMLDivElement, AdvancedTableProps>(
                 key={col.id}
                 label={col.label}
                 variant={!isLocked && !col.subColumns ? 'resizeable-locked' : 'default'}
-                sortable={!col.subColumns || col.subColumns.length === 0}
+                sortable={col.sortable !== false && (!col.subColumns || col.subColumns.length === 0)}
                 sortDirection={sortColumn === col.id ? sortDirection : 'none'}
-                onSort={() => handleSort(col.id)}
-                onSortNone={() => handleSortNone(col.id)}
+                onSort={col.sortable !== false ? () => handleSort(col.id) : undefined}
+                onSortNone={col.sortable !== false ? () => handleSortNone(col.id) : undefined}
                 locked={isLocked}
                 pinned={pinnedSide}
                 onPinChange={(pinState) => handleColumnPinChange(col.id, pinState)}

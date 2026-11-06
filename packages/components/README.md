@@ -5,22 +5,25 @@ A comprehensive React component library for building consistent, accessible user
 [![npm version](https://img.shields.io/npm/v/@ajaysoni7832/lean-ids-components.svg)](https://www.npmjs.com/package/@ajaysoni7832/lean-ids-components)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
-## 🎉 What's New in v1.7.12
+## 🎉 What's New in v1.8.0
 
-Current Version: **1.7.12**
+Current Version: **1.8.0**
 
-### 🐛 Bug Fixes
-- ✅ **Select — Empty label renders invisible `<div>`** — When no `label` is provided or `showLabel={false}` is set, the `LabelContainer` div is no longer rendered at all, eliminating the blank space above the input.
+### 🎉 New Components
+- ✅ **Stepper** — Enterprise-grade step-by-step wizard indicator with horizontal/vertical orientations, 3 sizes, 4 semantic types (default/safe/warning/alert), per-step status (completed/active/incomplete/error/disabled), optional click navigation, custom icons, and error messages. Exports `Stepper`, `StepIndicator`, and `StepConnector` primitives for custom layouts.
 
 ### ✨ Select Enhancements
-- ✅ **`showLabel` prop** — Boolean (default `true`). Set to `false` to completely suppress label DOM output on the Select component.
-- ✅ **`labelPosition` prop** — `'top'` (default) or `'left'`. Allows the label to be rendered inline to the left of the input for horizontal form layouts.
-- ✅ **`label` is now optional** — Previously required; now optional so Select can be used without a label without TypeScript errors.
+- ✅ **Viewport-aware dropdown positioning** — The dropdown now measures available space above and below the trigger, flips upward when space below is cramped, and caps its height so it never overflows the viewport.
+
+### ✨ Table Enhancements
+- ✅ **`onFilter` prop** — The filter button in the default toolbar now wires to a real `onFilter` handler instead of a no-op.
+- ✅ **Toolbar buttons now opt-in** — `showFilter`, `showDownload`, and `showSettings` now default to `false`; only enable buttons you wire handlers for.
+- ✅ **`ColumnConfig.sortable`** — New flag to disable sorting on individual columns.
 
 ### 📦 Installation
 
 ```bash
-npm install @ajaysoni7832/lean-ids-components@1.7.12 @ajaysoni7832/lean-ids-tokens@1.7.12
+npm install @ajaysoni7832/lean-ids-components@1.8.0 @ajaysoni7832/lean-ids-tokens@1.8.0
 ```
 
 📖 **[Read Full Release Notes](./RELEASE_NOTES.md)** | **[Migration Guide](./MIGRATION_GUIDE.md)**

@@ -122,6 +122,42 @@ import { Typography } from '@ajaysoni7832/lean-ids-components';
 <Typography variant="body" color="secondary">Description</Typography>
 ```
 
+#### **⚠️ CRITICAL: Typography Variant — ONLY Use Valid Token Variants**
+
+The `variant` prop on `<Typography>` maps **directly** to keys in the token file. Passing an invalid variant causes a **runtime crash**: `TypeError: Cannot read properties of undefined (reading 'semibold')`.
+
+**Valid variants (exact strings — no others exist):**
+
+| Variant | Use for |
+|---|---|
+| `displayL` | Hero / jumbo headings |
+| `displayM` | Large display text |
+| `displayS` | Small display text |
+| `headingXL` | Page titles |
+| `headingL` | Section headings |
+| `headingM` | Sub-section headings |
+| `headingS` | Card/panel headings |
+| `body` | Body copy, descriptions, labels |
+| `paragraph` | Long-form prose |
+| `caption` | Helper text, timestamps, fine print |
+| `code` | Monospace / code snippets |
+
+```tsx
+// ✅ CORRECT — only use variants from the table above
+<Typography variant="body" weight="semibold">Section label</Typography>
+<Typography variant="caption">Helper text</Typography>
+<Typography variant="headingS" weight="medium">Card title</Typography>
+
+// ❌ WRONG — these variants DO NOT EXIST and will crash at runtime
+<Typography variant="bodyS">...</Typography>       // ❌ crashes!
+<Typography variant="bodyLarge">...</Typography>   // ❌ crashes!
+<Typography variant="headingXS">...</Typography>   // ❌ crashes!
+<Typography variant="label">...</Typography>       // ❌ crashes!
+<Typography variant="subtitle">...</Typography>    // ❌ crashes!
+```
+
+**When you need smaller body text:** use `caption` or `body` — do NOT invent variants like `bodyS`, `bodySmall`, `smallText`, etc.
+
 #### **Example - Token-Based Styling:**
 ```tsx
 // ❌ NEVER hardcode
@@ -204,6 +240,71 @@ import { Drawer } from '@mui/material';
 
 ---
 
+## 🚨 CRITICAL RULE #3: TABLE COMPONENTS
+
+### **USE `AdvancedDataTable` FOR ANY TABLE WITH A TOOLBAR**
+
+Lean DS has TWO table components — picking the right one matters:
+
+| Component | What it is | When to use |
+|-----------|-----------|-------------|
+| `AdvancedDataTable` | **Full template** — toolbar (title, search, filter, download, settings), sorting, selection, pagination, column pinning, sub-headers, side panel / modal settings, loading/empty/error states | ✅ **DEFAULT for every table screen** |
+| `Table` | Bare primitive — rows, columns, sorting, pagination only. **NO toolbar.** | Only when the design has no toolbar, or a fully custom toolbar is required |
+
+### ✅ CORRECT — Canonical table pattern:
+
+```tsx
+import { AdvancedDataTable } from '@ajaysoni7832/lean-ids-components';
+
+<AdvancedDataTable
+  data={data}
+  initialColumns={columns}
+  toolbarTitle="Claims"              // REQUIRED — always pass a real title
+  showToolbar
+  showGlobalSearch
+  showFilter                          // Only when onFilter is provided
+  onFilter={handleFilterToggle}
+  showDownload                        // Only when onDownload is provided
+  onDownload={handleDownload}
+  useModal                            // Enables the settings (gear) button
+  selectable
+  paginated
+/>
+```
+
+### ❌ COMMON MISTAKES (all produce broken/broken-looking tables):
+
+```tsx
+// ❌ WRONG — bare Table renders with NO toolbar, no title
+<Table data={data} columns={columns} />
+
+// ❌ WRONG — no toolbarTitle → renders generic "Data Table" heading
+<AdvancedDataTable data={data} initialColumns={columns} />
+
+// ❌ WRONG — buttons render but do nothing (no handlers)
+<AdvancedDataTable
+  data={data}
+  initialColumns={columns}
+  showFilter        // dead button — no onFilter!
+  showDownload      // dead button — no onDownload!
+/>
+
+// ❌ WRONG — hand-rolled toolbar composes wrong and stacks vertically
+<div>
+  <TableToolbar showFilter showDownload />
+  <Table data={data} columns={columns} />
+</div>
+```
+
+### **ENFORCEMENT:**
+- **ALWAYS** use `AdvancedDataTable` for table screens that need a toolbar
+- **ALWAYS** pass `toolbarTitle` with the real name of the data set
+- **NEVER** enable `showFilter`, `showDownload`, or `showSettings`/`useModal` without wiring the matching handler (`onFilter`, `onDownload`, settings panel)
+- **NEVER** compose `TableToolbar` + `Table` manually unless the design truly requires a fully custom toolbar — and if it does, use `TableToolbarSection`, `TableToolbarTitle`, and `TableToolbarActions` for correct horizontal layout
+- Use `Table` (primitive) only for toolbar-less tables
+
+---
+
 ## 🎯 DECISION TREE
 
 ### When User Asks to Create UI:
@@ -266,7 +367,8 @@ Does Lean DS have this component?
 - `Brand` - Brand logo component
 
 ### **Data Display Components:**
-- `Table` - Advanced data table with:
+- `AdvancedDataTable` - **PREFERRED** full-featured table with built-in toolbar, column management, and states (see Table Rules above)
+- `Table` - Low-level table primitive (no toolbar) with:
   - Row selection (with select all checkbox)
   - Sortable columns (with visual feedback)
   - Pagination
@@ -913,13 +1015,22 @@ import React, { useState, useEffect } from 'react';
   {content}
 </Drawer>
 
-// Table with all features
+// Table — use AdvancedDataTable for anything needing a toolbar (DEFAULT)
+<AdvancedDataTable
+  data={data}
+  initialColumns={columns}
+  toolbarTitle="Claims"            // REQUIRED — real title, never the default
+  showGlobalSearch
+  showFilter onFilter={handleFilter}   // handler required
+  selectable
+  paginated
+/>
+
+// Bare Table — only for toolbar-less tables
 <Table
   columns={columns}
   data={data}
   selectable={true}
-  showGlobalSearch={true}
-  onSort={handleSort}
 />
 ```
 

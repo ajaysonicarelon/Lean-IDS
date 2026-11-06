@@ -7,7 +7,7 @@ import { useEffect } from 'react';
 {`
   // Mark updates as viewed when user visits this page
   if (typeof window !== 'undefined') {
-    const currentVersion = '1.7.12';
+    const currentVersion = '1.8.0';
     const lastViewedVersion = localStorage.getItem('lean-ids-last-viewed-version');
     
     // Mark as viewed
@@ -217,7 +217,7 @@ import { useEffect } from 'react';
     <div className="icon">🔔</div>
     <div className="content">
       <div className="title">New Update Available!</div>
-      <div className="message">Version 1.7.12 has been released. Check out the latest changes below.</div>
+      <div className="message">Version 1.8.0 has been released. Check out the latest changes below.</div>
     </div>
   </div>
 </div>
@@ -225,7 +225,7 @@ import { useEffect } from 'react';
 <script dangerouslySetInnerHTML={{__html: `
   (function() {
     if (typeof window !== 'undefined') {
-      const currentVersion = '1.7.12';
+      const currentVersion = '1.8.0';
       const lastViewedVersion = localStorage.getItem('lean-ids-last-viewed-version');
       
       // Show banner if user hasn't seen this version
@@ -254,7 +254,7 @@ Stay up to date with the latest changes, improvements, and fixes to the Lean DS 
 
 <div className="stats-container">
   <div className="stat-card">
-    <div className="stat-number">1.7.12</div>
+    <div className="stat-number">1.8.0</div>
     <div className="stat-label">Current Version</div>
   </div>
   <div className="stat-card">
@@ -274,6 +274,67 @@ Stay up to date with the latest changes, improvements, and fixes to the Lean DS 
 ---
 
 ## 🚀 Current Version
+
+<div className="version-container">
+  <div className="version-header">
+    <div className="version-number">v1.8.0</div>
+    <div className="version-date">November 6, 2026</div>
+  </div>
+  <div className="version-content">
+
+    <div className="change-section">
+      <div className="change-title">
+        <span className="change-icon">🎉</span>
+        New Components
+      </div>
+      <ul className="change-list">
+        <li className="change-item critical">
+          <strong>Stepper</strong> - Enterprise-grade step-by-step wizard indicator. Horizontal/vertical orientations, 3 sizes, 4 semantic types (default/safe/warning/alert), per-step status (completed/active/incomplete/error/disabled), optional click navigation, custom icons, and error messages. Ships Stepper, StepIndicator, and StepConnector primitives for custom layouts.
+        </li>
+      </ul>
+    </div>
+
+    <div className="change-section">
+      <div className="change-title">
+        <span className="change-icon">✨</span>
+        Select Enhancements
+      </div>
+      <ul className="change-list">
+        <li className="change-item">
+          <strong>Viewport-aware dropdown positioning</strong> - The dropdown measures available space above and below the trigger, flips upward when space below is cramped, and caps its height so it never overflows the viewport.
+        </li>
+      </ul>
+    </div>
+
+    <div className="change-section">
+      <div className="change-title">
+        <span className="change-icon">✨</span>
+        Table Enhancements
+      </div>
+      <ul className="change-list">
+        <li className="change-item">
+          <strong>onFilter prop</strong> - The filter button in the default toolbar now wires to a real onFilter handler instead of a no-op.
+        </li>
+        <li className="change-item critical">
+          <strong>Toolbar buttons now opt-in</strong> - showFilter, showDownload, and showSettings now default to false. Only enable buttons you wire handlers for — update existing usages that relied on the old defaults.
+        </li>
+        <li className="change-item">
+          <strong>ColumnConfig.sortable</strong> - New flag to disable sorting on individual columns.
+        </li>
+      </ul>
+    </div>
+
+    <div className="migration-note">
+      <strong>📦 Installation</strong>
+      <code>npm install @ajaysoni7832/lean-ids-components@1.8.0 @ajaysoni7832/lean-ids-tokens@1.8.0</code>
+    </div>
+
+  </div>
+</div>
+
+---
+
+## 📋 Previous Versions
 
 <div className="version-container">
   <div className="version-header">
@@ -321,8 +382,6 @@ Stay up to date with the latest changes, improvements, and fixes to the Lean DS 
 </div>
 
 ---
-
-## 📋 Previous Versions
 
 <div className="version-container">
   <div className="version-header">

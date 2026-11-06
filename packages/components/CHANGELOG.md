@@ -5,6 +5,37 @@ All notable changes to the Lean DS Design System will be documented in this file
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.8.0] - 2026-11-06
+
+### 🎉 New Components
+
+**Stepper**
+- New enterprise-grade step-by-step wizard indicator. `Stepper` orchestrator plus exported `StepIndicator` and `StepConnector` primitives.
+- Horizontal/vertical orientations, 3 sizes, 4 semantic types (`default`/`safe`/`warning`/`alert`)
+- Per-step `status` (`completed`/`active`/`incomplete`/`error`/`disabled`), `errorMessage`, `optional`, `disabled`, custom `icon`
+- `clickable` + `onStepClick` for non-linear navigation; `content` (`icon`/`number`); `showLabel` compact mode
+- Polymorphic `as` prop, `aria-current`, labelled nav landmark, keyboard support
+
+### ✨ Enhancements
+
+**Select**
+- Viewport-aware dropdown positioning — measures space above/below the trigger, flips upward when below is cramped (<120px), and caps `max-height` (≤300px) so the panel never overflows the viewport
+
+**Table / TableToolbar**
+- Added `onFilter` prop wired to the toolbar filter button (previously a no-op)
+- `showFilter`, `showDownload`, `showSettings` now default to `false` — opt-in only when handlers are wired
+
+**TableSettings**
+- Added `sortable` flag to `ColumnConfig` to disable sorting per column (default `true`)
+
+### 📚 Documentation
+- Updated README.md, RELEASE_NOTES.md, CHANGELOG.md for v1.8.0
+- Updated Storybook updates.mdx
+- Expanded AI guidelines and maturity checklist docs
+
+### 🔧 Technical
+- Version alignment with `@ajaysoni7832/lean-ids-tokens@1.8.0`
+
 ## [1.7.12] - 2026-09-18
 
 ### 🐛 Bug Fixes

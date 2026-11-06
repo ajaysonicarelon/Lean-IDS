@@ -47,14 +47,22 @@ const SelectWrapper = styled.div`
   width: 100%;
 `;
 
-const DropdownContainer = styled.div<{ $isOpen: boolean }>`
+const DropdownContainer = styled.div<{
+  $isOpen: boolean;
+  $direction: 'below' | 'above';
+  $maxHeight: number;
+}>`
   position: absolute;
-  top: calc(100% + ${({ theme }) => theme.spacing[1]});
+  /* Flip between below and above based on available viewport space */
+  ${({ $direction, theme }) =>
+    $direction === 'above'
+      ? `bottom: calc(100% + ${theme.spacing[1]});`
+      : `top: calc(100% + ${theme.spacing[1]});`}
   left: 0;
   right: 0;
-  max-height: 18.75rem; /* 300px */
+  max-height: ${({ $maxHeight }) => `${$maxHeight}px`};
   background: ${({ theme }) => theme.colors.palette.neutral[50]};
-  border: ${({ theme }) => theme.borderWidth[1]} solid ${({ theme }) => theme.colors.palette.neutral[500]}; // Updated from 400 to 500
+  border: ${({ theme }) => theme.borderWidth[1]} solid ${({ theme }) => theme.colors.palette.neutral[500]};
   border-radius: ${({ theme }) => theme.borderRadius.sm};
   box-shadow: ${({ theme }) => theme.shadows.md};
   z-index: 1000;
@@ -364,7 +372,62 @@ export const Select = forwardRef<HTMLDivElement, SelectProps>((
   const [visibleInlineChips, setVisibleInlineChips] = useState<number>(maxInlineChips || 0);
   const wrapperRef = useRef<HTMLDivElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
-  
+
+  // ============================================================================
+  // VIEWPORT-AWARE POSITIONING (Fix 1 + Fix 2)
+  // ============================================================================
+
+  /** Maximum dropdown height by design — never exceed this */
+  const DROPDOWN_MAX_HEIGHT = 300;
+  /** Minimum useful height — if neither side has this much room, prefer below */
+  const DROPDOWN_MIN_HEIGHT = 120;
+  /** Gap between trigger edge and dropdown panel (pixels) */
+  const DROPDOWN_GAP = 8;
+
+  const [dropdownPosition, setDropdownPosition] = useState<{
+    direction: 'below' | 'above';
+    maxHeight: number;
+  }>({ direction: 'below', maxHeight: DROPDOWN_MAX_HEIGHT });
+
+  /**
+   * Measure available space above and below the trigger, pick the better side,
+   * and cap the height so the dropdown never overflows the viewport.
+   */
+  const calculatePosition = useCallback(() => {
+    if (!wrapperRef.current) return;
+
+    const rect = wrapperRef.current.getBoundingClientRect();
+    const viewportHeight = window.innerHeight;
+
+    // Space available below the trigger (minus the gap + a small screen-edge margin)
+    const spaceBelow = viewportHeight - rect.bottom - DROPDOWN_GAP - 8;
+    // Space available above the trigger
+    const spaceAbove = rect.top - DROPDOWN_GAP - 8;
+
+    // Flip above when there is noticeably more room above AND below is cramped
+    const shouldFlip = spaceBelow < DROPDOWN_MIN_HEIGHT && spaceAbove > spaceBelow;
+
+    if (shouldFlip) {
+      setDropdownPosition({
+        direction: 'above',
+        maxHeight: Math.min(DROPDOWN_MAX_HEIGHT, Math.max(DROPDOWN_MIN_HEIGHT, spaceAbove)),
+      });
+    } else {
+      setDropdownPosition({
+        direction: 'below',
+        maxHeight: Math.min(DROPDOWN_MAX_HEIGHT, Math.max(DROPDOWN_MIN_HEIGHT, spaceBelow)),
+      });
+    }
+  }, []);
+
+  // Recalculate on window resize while the dropdown is open
+  useEffect(() => {
+    if (!isOpen) return;
+    const handleResize = () => calculatePosition();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, [isOpen, calculatePosition]);
+
   // Determine actual error state
   const hasError = error || isInvalid;
   
@@ -470,6 +533,9 @@ export const Select = forwardRef<HTMLDivElement, SelectProps>((
   // Handle dropdown open/close with callbacks
   const handleOpen = () => {
     if (disabled || isLoading) return;
+    // Calculate viewport-aware position BEFORE opening so the first render
+    // already uses the correct direction and max-height (Fix 1 + Fix 2).
+    calculatePosition();
     setIsOpen(true);
     onOpen?.();
     
@@ -843,6 +909,8 @@ export const Select = forwardRef<HTMLDivElement, SelectProps>((
       <DropdownContainer
         ref={dropdownRef}
         $isOpen={isOpen && !disabled}
+        $direction={dropdownPosition.direction}
+        $maxHeight={dropdownPosition.maxHeight}
         className={dropdownClassName}
         role="listbox"
         aria-label={label || 'Select options'}
@@ -889,7 +957,7 @@ export const Select = forwardRef<HTMLDivElement, SelectProps>((
           // PERFORMANCE: VIRTUAL SCROLLING
           // ============================================================================
           <FixedSizeList
-            height={Math.min(300, filteredOptions.length * itemHeight)}
+            height={Math.min(dropdownPosition.maxHeight, filteredOptions.length * itemHeight)}
             itemCount={filteredOptions.length}
             itemSize={itemHeight}
             width="100%"

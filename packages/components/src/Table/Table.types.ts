@@ -141,9 +141,11 @@ export interface TableProps extends React.HTMLAttributes<HTMLDivElement> {
   allowDevRightPin?: boolean;
   /** Show global search in default toolbar */
   showGlobalSearch?: boolean;
-  /** Show filter button in default toolbar */
+  /** Show filter button in default toolbar — only set when onFilter is provided */
   showFilter?: boolean;
-  /** Show download button in default toolbar */
+  /** Filter button handler */
+  onFilter?: () => void;
+  /** Show download button in default toolbar — only set when onDownload is provided */
   showDownload?: boolean;
   /** Download handler */
   onDownload?: () => void;

@@ -440,25 +440,49 @@ Load data as needed instead of all at once.
 
 ---
 
-## Migration from TableTemplate
+## Choosing Between `Table` and `AdvancedDataTable`
 
-If you're using the old `AdvancedDataTable` template:
+Lean DS ships **two** table components:
 
-**Before:**
+| Component | What it is | When to use it |
+|-----------|-----------|----------------|
+| `Table` | Low-level primitive — data rows, columns, sorting, pagination, selection. **No toolbar.** | You need a bare table embedded inside a custom layout, or you are composing your own toolbar/filter UI. |
+| `AdvancedDataTable` | Full-featured template — everything `Table` does **plus** a built-in toolbar (title, global search, filter, download, settings), side panel / modal column management, sub-headers, column pinning, grouped rows, and error/empty/loading states. | **Default choice for almost every screen that shows a data table.** |
+
+### ✅ Recommended pattern (with toolbar)
+
 ```tsx
 import { AdvancedDataTable } from '@ajaysoni7832/lean-ids-components';
 
-<AdvancedDataTable />
+<AdvancedDataTable
+  data={data}
+  initialColumns={columns}
+  toolbarTitle="Claims"            // Always pass a meaningful title
+  showToolbar
+  showGlobalSearch
+  showFilter                        // Only if you wire onFilter
+  onFilter={handleFilter}
+  showDownload                      // Only if you wire onDownload
+  onDownload={handleDownload}
+  selectable
+  paginated
+/>
 ```
 
-**After:**
+**Rules:**
+- Always set `toolbarTitle` — the default is the generic `'Data Table'`.
+- Only set `showFilter` / `showDownload` / `showSettings` (via `useModal`) when you also pass the corresponding handler, otherwise the buttons render but do nothing.
+- Prefer `AdvancedDataTable` over manually composing `TableToolbar` + `Table`.
+
+### When plain `Table` is the right call
+
 ```tsx
 import { Table } from '@ajaysoni7832/lean-ids-components';
 
 <Table data={myData} columns={myColumns} />
 ```
 
-The new `Table` component is more flexible and easier to use!
+Use this only when the design has no toolbar, or when a fully custom toolbar is required.
 
 ---
 

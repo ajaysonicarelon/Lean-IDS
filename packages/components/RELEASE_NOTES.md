@@ -1,3 +1,42 @@
+# Release Notes - Lean DS v1.8.0
+
+**Release Date:** November 6, 2026  
+**Package:** `@ajaysoni7832/lean-ids-components`
+
+---
+
+## 🚀 What's New in v1.8.0
+
+### 🎉 New Components
+
+#### Stepper — Step-by-Step Wizard Indicator
+- **`<Stepper>` orchestrator** — Takes a `steps` array plus `activeStep` and derives each step's status automatically. Supports `horizontal`/`vertical` orientation, 3 sizes (`small`/`medium`/`large`), and 4 semantic types (`default`/`safe`/`warning`/`alert`).
+- **Per-step control** — Each `StepItem` supports `label`, `description`, `status` override, `errorMessage`, `optional`, `disabled`, custom `icon`, and `key`.
+- **Composable primitives** — `StepIndicator` and `StepConnector` are exported separately for fully custom layouts.
+- **Interactivity** — `clickable` + `onStepClick` enable non-linear navigation; `content` switches bubble content between `icon` and `number`; `showLabel` enables compact icon-only mode.
+- **Accessible** — `aria-current` on the active step, labelled navigation landmark, keyboard support on clickable steps.
+
+### ✨ Select Enhancements
+- **Viewport-aware dropdown positioning** — The dropdown now measures available space above and below the trigger on open, flips to render above when space below is under 120px, and dynamically caps `max-height` (up to 300px) so the panel never overflows the viewport.
+
+### ✨ Table Enhancements
+- **`onFilter` prop** — `Table` now accepts a real `onFilter` handler wired to the toolbar filter button (previously a no-op stub).
+- **Toolbar buttons now opt-in** — `showFilter`, `showDownload`, and `showSettings` now default to `false` on `Table` and `TableToolbar`. ⚠️ **Action required:** if you relied on the old defaults, explicitly pass these props (and their handlers) to keep the buttons visible.
+- **`ColumnConfig.sortable`** — New flag in `TableSettings` column config to disable sorting per column (default `true`).
+
+### 📚 Documentation
+- Expanded AI assistant guidelines (`.cursorrules`, `.windsurfrules`, `AI_GUIDELINES.md`) with AdvancedDataTable usage patterns
+- Updated `COMPONENT_MATURITY_CHECKLIST.md` and `mature-component` skill
+- Updated Table README with corrected toolbar prop guidance
+
+### 📦 Installation
+
+```bash
+npm install @ajaysoni7832/lean-ids-components@1.8.0 @ajaysoni7832/lean-ids-tokens@1.8.0
+```
+
+---
+
 # Release Notes - Lean DS v1.7.12
 
 **Release Date:** September 18, 2026  
